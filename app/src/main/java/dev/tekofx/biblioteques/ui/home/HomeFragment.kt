@@ -33,7 +33,7 @@ class HomeFragment : Fragment() {
 
         val textView: TextView = binding.textHome
         val searchButton: Button = binding.SearchButton
-        val searchView: SearchView = binding.searchView;
+        val searchView: SearchView = binding.searchView
 
         homeViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
