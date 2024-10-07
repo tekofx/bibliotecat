@@ -12,9 +12,18 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.add
 import androidx.lifecycle.ViewModelProvider
+import com.fleeksoft.ksoup.Ksoup
+import com.fleeksoft.ksoup.network.parseGetRequest
+import com.fleeksoft.ksoup.network.parseGetRequestBlocking
+import com.fleeksoft.ksoup.select.Elements
 import dev.tekofx.biblioteques.LibraryCard
 import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.databinding.FragmentHomeBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.w3c.dom.Document
 
 class HomeFragment : Fragment() {
 
@@ -35,14 +44,9 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textHome
         val searchButton: Button = binding.SearchButton
         val searchView: SearchView = binding.searchView
 
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-
-        }
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -59,11 +63,36 @@ class HomeFragment : Fragment() {
         searchButton.setOnClickListener {
             val query: String = searchView.query.toString()
             Toast.makeText(this.context, query, Toast.LENGTH_SHORT).show()
-            val libraryCardFragment = LibraryCard.newInstance("param1", "param2")
-            childFragmentManager.beginTransaction().add(R.id.linearLayout, libraryCardFragment).commit()
+            try {
+                fetchWebsiteData()
+
+            } catch (Exception: Exception)
+            {
+                Toast.makeText(this.context, "Error", Toast.LENGTH_SHORT).show()
+            }
+
+            //val libraryCardFragment = LibraryCard.newInstance("param1", "param2")
+            //childFragmentManager.beginTransaction().add(R.id.linearLayout, libraryCardFragment).commit()
         }
 
         return root
+    }
+    fun fetchWebsiteData() {
+        CoroutineScope(Dispatchers.IO).launch {
+                val doc: com.fleeksoft.ksoup.nodes.Document =Ksoup.parseGetRequestBlocking(url = "https://aladi.diba.cat/search*cat/?searchtype=X&searcharg=mistborn&searchscope=171&submit=Cercar")
+                val headlines: Elements = doc.select("span.titular")
+
+
+
+            withContext(Dispatchers.Main) {
+                // Actualiza la interfaz de usuario con los resultados
+                for (headline in headlines) {
+                    val headlineText = headline.getElementsByTag("a")[0].text()
+                    val libraryCard=LibraryCard.newInstance(headlineText,"asdf")
+                    childFragmentManager.beginTransaction().add(R.id.lineartLayout, libraryCard).commit()
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {

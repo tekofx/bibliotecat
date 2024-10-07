@@ -6,6 +6,7 @@ junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
 appcompat = "1.6.1"
+ksoup = "0.1.9"
 material = "1.10.0"
 constraintlayout = "2.1.4"
 lifecycleLivedataKtx = "2.6.1"
@@ -19,6 +20,8 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+ksoup = { module = "com.fleeksoft.ksoup:ksoup", version.ref = "ksoup" }
+ksoup-network = { module = "com.fleeksoft.ksoup:ksoup-network", version.ref = "ksoup" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
