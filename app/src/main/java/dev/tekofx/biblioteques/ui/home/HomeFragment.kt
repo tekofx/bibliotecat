@@ -5,11 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.add
 import androidx.lifecycle.ViewModelProvider
+import dev.tekofx.biblioteques.LibraryCard
+import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
@@ -34,6 +38,8 @@ class HomeFragment : Fragment() {
         val textView: TextView = binding.textHome
         val searchButton: Button = binding.SearchButton
         val searchView: SearchView = binding.searchView
+        val linearLayout: LinearLayout = binding.linearLayout
+        var test:LinearLayout=root.findViewById(R.id.linearLayout)
 
         homeViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
@@ -55,6 +61,8 @@ class HomeFragment : Fragment() {
         searchButton.setOnClickListener {
             val query: String = searchView.query.toString()
             Toast.makeText(this.context, query, Toast.LENGTH_SHORT).show()
+            val libraryCardFragment = LibraryCard.newInstance("param1", "param2")
+            childFragmentManager.beginTransaction().add(R.id.linearLayout, libraryCardFragment).commit()
         }
 
         return root
