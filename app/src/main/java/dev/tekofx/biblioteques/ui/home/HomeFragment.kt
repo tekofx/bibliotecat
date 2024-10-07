@@ -4,7 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.SearchView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import dev.tekofx.biblioteques.databinding.FragmentHomeBinding
@@ -29,9 +32,31 @@ class HomeFragment : Fragment() {
         val root: View = binding.root
 
         val textView: TextView = binding.textHome
+        val searchButton: Button = binding.SearchButton
+        val searchView: SearchView = binding.searchView;
+
         homeViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
+
         }
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                // Acción al pulsar el botón de búsqueda en el teclado
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                searchButton.isEnabled = !newText.isNullOrEmpty()
+                return true
+            }
+        })
+
+        searchButton.setOnClickListener {
+            val query: String = searchView.query.toString()
+            Toast.makeText(this.context, query, Toast.LENGTH_SHORT).show()
+        }
+
         return root
     }
 
