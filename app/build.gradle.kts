@@ -43,6 +43,8 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.ksoup)
     implementation(libs.ksoup.network)
+    implementation (libs.retrofit)
+    implementation (libs.converter.gson)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.constraintlayout)

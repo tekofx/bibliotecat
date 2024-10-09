@@ -16,6 +16,7 @@ import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.network.parseGetRequest
 import com.fleeksoft.ksoup.network.parseGetRequestBlocking
 import com.fleeksoft.ksoup.select.Elements
+import dev.tekofx.biblioteques.BibliotequesAPIService
 import dev.tekofx.biblioteques.LibraryCard
 import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.databinding.FragmentHomeBinding
@@ -24,6 +25,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.w3c.dom.Document
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class HomeFragment : Fragment() {
 
@@ -40,6 +43,9 @@ class HomeFragment : Fragment() {
     ): View {
         val homeViewModel =
             ViewModelProvider(this).get(HomeViewModel::class.java)
+
+        searchBiblioteques()
+
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -63,37 +69,30 @@ class HomeFragment : Fragment() {
         searchButton.setOnClickListener {
             val query: String = searchView.query.toString()
             Toast.makeText(this.context, query, Toast.LENGTH_SHORT).show()
-            try {
-                fetchWebsiteData()
-
-            } catch (Exception: Exception)
-            {
-                Toast.makeText(this.context, "Error", Toast.LENGTH_SHORT).show()
-            }
-
-            //val libraryCardFragment = LibraryCard.newInstance("param1", "param2")
-            //childFragmentManager.beginTransaction().add(R.id.linearLayout, libraryCardFragment).commit()
         }
 
         return root
     }
-    fun fetchWebsiteData() {
+    private fun getRetrofit(): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://do.diba.cat/api/dataset/biblioteques/format/json/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    private fun searchBiblioteques(){
         CoroutineScope(Dispatchers.IO).launch {
-                val doc: com.fleeksoft.ksoup.nodes.Document =Ksoup.parseGetRequestBlocking(url = "https://aladi.diba.cat/search*cat/?searchtype=X&searcharg=mistborn&searchscope=171&submit=Cercar")
-                val headlines: Elements = doc.select("span.titular")
-
-
-
-            withContext(Dispatchers.Main) {
-                // Actualiza la interfaz de usuario con los resultados
-                for (headline in headlines) {
-                    val headlineText = headline.getElementsByTag("a")[0].text()
-                    val libraryCard=LibraryCard.newInstance(headlineText,"asdf")
-                    childFragmentManager.beginTransaction().add(R.id.lineartLayout, libraryCard).commit()
+            val call=getRetrofit().create(BibliotequesAPIService::class.java).getBiblioteques("https://do.diba.cat/api/dataset/biblioteques/format/json/pag-ini/1/pag-fi/29999")
+            val output=call.body()
+            if (call.isSuccessful){
+                withContext(Dispatchers.Main){
+                    Toast.makeText(this@HomeFragment.context, output.toString(), Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()
