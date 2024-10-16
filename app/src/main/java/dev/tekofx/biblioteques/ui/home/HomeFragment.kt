@@ -39,7 +39,7 @@ class HomeFragment : Fragment() {
         val homeViewModel =
             ViewModelProvider(this).get(HomeViewModel::class.java)
 
-        //searchBiblioteques()
+        searchBiblioteques()
 
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -79,14 +79,23 @@ class HomeFragment : Fragment() {
 
     private fun searchBiblioteques() {
         CoroutineScope(Dispatchers.IO).launch {
+            try {
+
             val call = getRetrofit().create(BibliotequesAPIService::class.java)
-                .getBiblioteques("https://do.diba.cat/api/dataset/biblioteques/format/json/pag-ini/1/pag-fi/29999")
+                .getBiblioteques("https://do.diba.cat/api/dataset/biblioteques/format/json")
+
             val output = call.body()
             if (call.isSuccessful) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(this@HomeFragment.context, output.toString(), Toast.LENGTH_SHORT)
                         .show()
                 }
+            }
+            } catch (ex:Exception){
+
+                //TODO: The imatge on the API call is an array but in the Biblioteca class is a string
+                println("Error on API")
+                println(ex)
             }
         }
     }
