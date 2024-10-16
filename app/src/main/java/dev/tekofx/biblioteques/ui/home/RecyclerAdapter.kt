@@ -28,7 +28,7 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        return ViewHolder(layoutInflater.inflate(R.layout.biblioteques_list, parent, false))
+        return ViewHolder(layoutInflater.inflate(R.layout.recycler_view_item, parent, false))
     }
 
     override fun getItemCount(): Int {
