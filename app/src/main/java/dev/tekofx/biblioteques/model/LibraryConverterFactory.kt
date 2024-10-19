@@ -13,16 +13,13 @@ import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 
 
-
 class LibraryConverterFactory : Converter.Factory() {
 
     val timeFormatter = DateTimeFormatter.ofPattern("[H:mm][HH:mm]")
 
 
     override fun responseBodyConverter(
-        type: Type,
-        annotations: Array<Annotation>,
-        retrofit: Retrofit
+        type: Type, annotations: Array<Annotation>, retrofit: Retrofit
     ): Converter<ResponseBody, LibraryResponse>? {
         return Converter { responseBody ->
             val jsonResponse = responseBody.string()
@@ -45,51 +42,21 @@ class LibraryConverterFactory : Converter.Factory() {
                 // Horaris
 
 
+                println("\n")
 
 
-                val timetableDeProva = Timetable(
-                    comenca = LocalDate.of(2024, 10, 17),
-                    dilluns = listOf(
-                        TimeInterval(LocalTime.of(9, 0), LocalTime.of(10, 0)),
-                        TimeInterval(LocalTime.of(11, 0), LocalTime.of(12, 0))
-                    ),
-                    dimarts = listOf(
-                        TimeInterval(LocalTime.of(9, 0), LocalTime.of(10, 0)),
-                        TimeInterval(LocalTime.of(11, 0), LocalTime.of(12, 0))
-                    ),
-                    dimecres = listOf(
-                        TimeInterval(LocalTime.of(10, 0), LocalTime.of(11, 0)),
-                        TimeInterval(LocalTime.of(12, 0), LocalTime.of(13, 0))
-                    ),
-                    dijous = listOf(
-                        TimeInterval(LocalTime.of(8, 0), LocalTime.of(9, 0)),
-                        TimeInterval(LocalTime.of(10, 0), LocalTime.of(11, 0))
-                    ),
-                    divendres = listOf(
-                        TimeInterval(LocalTime.of(9, 0), LocalTime.of(10, 0)),
-                        TimeInterval(LocalTime.of(11, 0), LocalTime.of(12, 0))
-                    ),
-                    dissabte = listOf(
-                        TimeInterval(LocalTime.of(10, 0), LocalTime.of(11, 0)),
-                        TimeInterval(LocalTime.of(12, 0), LocalTime.of(13, 0))
-                    ),
-                    diumenge = listOf(
-                        TimeInterval(LocalTime.of(11, 0), LocalTime.of(12, 0)),
-                        TimeInterval(LocalTime.of(13, 0), LocalTime.of(14, 0))
-                    )
+                val timetableDeProva = getTimetable(libraryElement, "estiu")
+
+                val library = Library(
+                    puntId,
+                    adrecaNom,
+                    descripcio,
+                    municipiNom,
+                    imatge,
+                    timetableDeProva,
+                    timetableDeProva,
+                    timetableDeProva
                 )
-
-                val library =
-                    Library(
-                        puntId,
-                        adrecaNom,
-                        descripcio,
-                        municipiNom,
-                        imatge,
-                        timetableDeProva,
-                        timetableDeProva,
-                        timetableDeProva
-                    )
                 // Rellena los demás atributos según sea necesario
                 libraryList.add(library)
             }
@@ -100,13 +67,131 @@ class LibraryConverterFactory : Converter.Factory() {
     }
 
 
+    fun getTimetable(jsonObject: JSONObject, estacio: String): Timetable {
+
+        val iniciHorari = getIniciHorari(jsonObject, estacio)
+        val timeIntervalsDilluns = getTimeIntervals(jsonObject, estacio, "dilluns")
+        val timeIntervalsDimarts = getTimeIntervals(jsonObject, estacio, "dimarts")
+        val timeIntervalsDimecres = getTimeIntervals(jsonObject, estacio, "dimecres")
+        val timeIntervalsDijous = getTimeIntervals(jsonObject, estacio, "dijous")
+        val timeIntervalsDivendres = getTimeIntervals(jsonObject, estacio, "divendres")
+        val timeIntervalsDissabte = getTimeIntervals(jsonObject, estacio, "dissabte")
+        val timeIntervalsDijumenge = getTimeIntervals(jsonObject, estacio, "diumenge")
+
+        val timetableDeProva = Timetable(
+            comenca = iniciHorari,
+            dilluns = timeIntervalsDilluns,
+            dimarts = timeIntervalsDimarts,
+            dimecres = timeIntervalsDimecres,
+            dijous = timeIntervalsDijous,
+            divendres = timeIntervalsDivendres,
+            dissabte = timeIntervalsDissabte,
+            diumenge = timeIntervalsDijumenge
+        )
+
+        return timetableDeProva
+
+    }
+
+    fun getTimeIntervals(jsonObject: JSONObject, estacio: String, day: String): List<TimeInterval> {
 
 
+        var timeintervalString =
+            jsonObject.getString(String.format("horari_%s_%s", estacio, day)).lowercase()
+
+        println(jsonObject.getString("adreca_nom"))
+        println(jsonObject.getString("descripcio"))
+
+        println("string " + timeintervalString)
+
+        val regexMonths =
+            "(gener|febrer|març|abril|maig|juny|juliol|agost|setembre|octubre|novembre|desembre)".toRegex()
+        val regexDayOfWeek =
+            "(dilluns|dimarts|dimecres|dijous|divendres|dissabte|diumenge)".toRegex()
+
+        // Timetable contains text
+        if (regexMonths.containsMatchIn(timeintervalString) || regexDayOfWeek.containsMatchIn(
+                timeintervalString
+            )
+        ) {
+            println("El string contiene un mes en catalán")
+            val timeInterval = TimeInterval(null, null, timeintervalString)
+            val timeIntervalsList = mutableListOf<TimeInterval>()
+            timeIntervalsList.add(timeInterval)
+            return timeIntervalsList
+        }
+
+        // If its closed
+        if (timeintervalString.contains("tancat")) {
+            val timeInterval = TimeInterval(null, null, null)
+            val timeIntervalsList = mutableListOf<TimeInterval>()
+            timeIntervalsList.add(timeInterval)
+            return timeIntervalsList
+
+        }
+
+        // If the string is blank
+        if (timeintervalString.isEmpty()) {
+            val timeInterval = TimeInterval(null, null, null)
+            val timeIntervalsList = mutableListOf<TimeInterval>()
+            timeIntervalsList.add(timeInterval)
+            return timeIntervalsList
+        }
 
 
+        // If text contains matí o tarda remove it
+        if (timeintervalString.contains("matí") || timeintervalString.contains(" tarda")) timeintervalString.replace(
+            "matí",
+            ""
+        ).replace("tarda", "")
 
 
-    fun parseTime(timeString: String): LocalTime? {
+        // Format timeintervals
+        val regexTime = """(\d+)([:.,])?(\d+)?""".toRegex()
+        val timeIntervalsStrings = regexTime.findAll(timeintervalString).map { it.value }.chunked(2)
+
+
+        val timeIntervals = mutableListOf<TimeInterval>()
+        for (timeIntervalString in timeIntervalsStrings) {
+            println(timeIntervalString)
+            var startTimeString = timeIntervalString[0] // "15:30"
+            var endTimeString = timeIntervalString[1]   // "19:30"
+
+            // Fix minutes if it has an extra 0 like in 15:300
+            if (endTimeString.length > 5)
+                endTimeString = endTimeString.substring(0, 5)
+
+            //Fix minutes if it has an extra 0 like in 15:300
+            if (startTimeString.length > 5) {
+                startTimeString = startTimeString.substring(0, 5)
+            }
+
+            // Fix hours like 13,20 and 14,
+            if (startTimeString.contains(",") && startTimeString.length > 3)
+                startTimeString = startTimeString.replace(",", ":")
+            else
+                startTimeString = startTimeString.replace(",", "")
+
+            if (endTimeString.contains(",") && endTimeString.length > 3)
+                endTimeString = endTimeString.replace(",", ":")
+            else
+                endTimeString = endTimeString.replace(",", "")
+
+            val startTime = parseTime(startTimeString) // LocalTime 15:30
+            val endTime = parseTime(endTimeString)   // LocalTime 19:30
+
+            val timeInterval = TimeInterval(
+                startTime, endTime, null
+            )
+            timeIntervals.add(timeInterval)
+
+        }
+
+        return timeIntervals
+    }
+
+
+    private fun parseTime(timeString: String): LocalTime? {
         return try {
             var timeString = timeString
             if (timeString.length < 3) {
@@ -120,7 +205,6 @@ class LibraryConverterFactory : Converter.Factory() {
             null
         }
     }
-
 
 
     fun parseMonth(monthName: String): Int {

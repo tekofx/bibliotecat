@@ -39,14 +39,17 @@ class LibraryRecyclerAdapter : RecyclerView.Adapter<LibraryRecyclerAdapter.ViewH
         private val timetable: TextView = view.findViewById(R.id.timetable)
 
 
-
         fun bind(biblioteca: Library) {
             municipiNom.text = biblioteca.municipi_nom
             adrecaNom.text = biblioteca.adreca_nom
             timetable.text = "horari"
 
-            if (biblioteca.imatge.isNotEmpty())
+
+            if (biblioteca.imatge.isNotEmpty()) {
                 avatar.loadUrl(biblioteca.imatge)
+            }
+
+
         }
 
         private fun ImageView.loadUrl(url: String) {

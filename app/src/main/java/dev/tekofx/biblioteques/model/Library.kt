@@ -28,8 +28,9 @@ data class Timetable(
     )
 
 data class TimeInterval(
-    val startTime: LocalTime,
-    val endTime: LocalTime,
-    val observation: String? = null
-)
+    val startTime: LocalTime? = null,
+    val endTime: LocalTime? = null,
+    var observation: String? = null
 
+
+)
