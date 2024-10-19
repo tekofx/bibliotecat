@@ -16,7 +16,7 @@
         tools:src="@tools:sample/avatars" />
 
     <TextView
-        android:id="@+id/municipiNom"
+        android:id="@+id/adrecaNom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -28,19 +28,17 @@
         tools:text="@tools:sample/full_names" />
 
     <TextView
-        android:id="@+id/adrecaNom"
+        android:id="@+id/municipiNom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/municipiNom"
+        app:layout_constraintTop_toBottomOf="@+id/adrecaNom"
         tools:text="@tools:sample/lorem[4:10]" />
 
     <TextView
-        android:id="@+id/open"
+        android:id="@+id/timetable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

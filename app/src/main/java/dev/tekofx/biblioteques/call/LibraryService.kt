@@ -1,6 +1,7 @@
 package dev.tekofx.biblioteques.call
 
 import dev.tekofx.biblioteques.dto.LibraryResponse
+import dev.tekofx.biblioteques.model.LibraryConverterFactory
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -24,7 +25,7 @@ interface LibraryService {
             if (libraryService == null) {
                 val retrofit = Retrofit.Builder()
                     .baseUrl("https://do.diba.cat/api/dataset/")
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(LibraryConverterFactory.create())
                     .build()
                 libraryService = retrofit.create(LibraryService::class.java)
             }

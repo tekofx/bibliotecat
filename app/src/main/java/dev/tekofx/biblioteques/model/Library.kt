@@ -1,45 +1,35 @@
 package dev.tekofx.biblioteques.model
 
-import com.google.gson.annotations.SerializedName
+import java.time.LocalDate
+import java.time.LocalTime
 
 data class Library(
-    @SerializedName("punt_id")
-    var puntId: String,
-
-    @SerializedName("adreca_nom")
-    var adrecaNom: String,
-
-    @SerializedName("descripcio")
+    var punt_id: String,
+    var adreca_nom: String,
     var descripcio: String,
+    var municipi_nom: String,
+    var imatge: String,
+    var timetable_actual: Timetable,
+    var timetable_estiu: Timetable,
+    var timetable_hivern: Timetable
+)
 
-    @SerializedName("municipi_nom")
-    var municipiNom: String,
 
-    @SerializedName("imatge")
-    var imatge: Array<String>,
-) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
+data class Timetable(
+    var comenca: LocalDate?,
+    var dilluns: List<TimeInterval>,
+    var dimarts: List<TimeInterval>,
+    var dimecres: List<TimeInterval>,
+    var dijous: List<TimeInterval>,
+    var divendres: List<TimeInterval>,
+    var dissabte: List<TimeInterval>,
+    var diumenge: List<TimeInterval>,
 
-        other as Library
+    )
 
-        if (puntId != other.puntId) return false
-        if (adrecaNom != other.adrecaNom) return false
-        if (descripcio != other.descripcio) return false
-        if (municipiNom != other.municipiNom) return false
-        if (!imatge.contentEquals(other.imatge)) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = puntId.hashCode()
-        result = 31 * result + adrecaNom.hashCode()
-        result = 31 * result + descripcio.hashCode()
-        result = 31 * result + municipiNom.hashCode()
-        result = 31 * result + imatge.contentHashCode()
-        return result
-    }
-}
+data class TimeInterval(
+    val startTime: LocalTime,
+    val endTime: LocalTime,
+    val observation: String? = null
+)
 

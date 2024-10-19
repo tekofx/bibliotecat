@@ -33,18 +33,20 @@ class LibraryRecyclerAdapter : RecyclerView.Adapter<LibraryRecyclerAdapter.ViewH
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val adrecaNom: TextView = view.findViewById(R.id.adrecaNom)
         private val municipiNom: TextView = view.findViewById(R.id.municipiNom)
+        private val adrecaNom: TextView = view.findViewById(R.id.adrecaNom)
         private val avatar: ImageView = view.findViewById(R.id.imageView)
-        private val open: TextView = view.findViewById(R.id.open)
+        private val timetable: TextView = view.findViewById(R.id.timetable)
+
+
 
         fun bind(biblioteca: Library) {
-            adrecaNom.text = biblioteca.adrecaNom
-            municipiNom.text = biblioteca.municipiNom
-            open.text = "Teko buscará el ojo del universo \n con este campo, buena suerte."
+            municipiNom.text = biblioteca.municipi_nom
+            adrecaNom.text = biblioteca.adreca_nom
+            timetable.text = "horari"
 
-            if (biblioteca.imatge.iterator().hasNext())
-                avatar.loadUrl(biblioteca.imatge.iterator().next())
+            if (biblioteca.imatge.isNotEmpty())
+                avatar.loadUrl(biblioteca.imatge)
         }
 
         private fun ImageView.loadUrl(url: String) {

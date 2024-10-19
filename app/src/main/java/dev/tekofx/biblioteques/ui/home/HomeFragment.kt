@@ -55,12 +55,12 @@ class HomeFragment : Fragment() {
 
         setUpRecyclerView(root)
 
-        viewModel.libraries.observe(this, Observer {
+        viewModel.libraries.observe(viewLifecycleOwner, Observer {
             Log.d(TAG, "onCreate: $it")
             libraryRecyclerAdapter.setLibraries(it.toMutableList())
         })
 
-        viewModel.errorMessage.observe(this, Observer {})
+        viewModel.errorMessage.observe(viewLifecycleOwner, Observer {})
         viewModel.getLibraries()
 
         setUpRecyclerView(root)
