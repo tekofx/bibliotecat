@@ -1,13 +1,35 @@
 package dev.tekofx.biblioteques.ui.home
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import dev.tekofx.biblioteques.dto.LibraryResponse
+import dev.tekofx.biblioteques.model.Library
+import dev.tekofx.biblioteques.repository.LibraryRepository
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-class HomeViewModel : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is home Fragment"
+class HomeViewModel(private val repository: LibraryRepository) : ViewModel() {
+
+    val libraries = MutableLiveData<List<Library>>()
+    val errorMessage = MutableLiveData<String>()
+
+    fun getLibraries() {
+        val response = repository.getLibraries()
+
+        response.enqueue(object : Callback<LibraryResponse> {
+            override fun onResponse(
+                call: Call<LibraryResponse>,
+                response: Response<LibraryResponse>
+            ) {
+                libraries.postValue(response.body()?.elements)
+            }
+
+            override fun onFailure(call: Call<LibraryResponse>, t: Throwable) {
+                errorMessage.postValue(t.message)
+            }
+        })
+
     }
-    val text: LiveData<String> = _text
 }
