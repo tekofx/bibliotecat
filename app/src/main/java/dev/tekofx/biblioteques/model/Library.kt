@@ -20,14 +20,14 @@ data class Library(
 data class Timetable(
     var dateInterval: DateInterval,
     var estacio: String? = null,
-    var actualDateInterval: List<TimeInterval>,
-    var dilluns: List<TimeInterval>,
-    var dimarts: List<TimeInterval>,
-    var dimecres: List<TimeInterval>,
-    var dijous: List<TimeInterval>,
-    var divendres: List<TimeInterval>,
-    var dissabte: List<TimeInterval>,
-    var diumenge: List<TimeInterval>,
+    var actualDateInterval: List<TimeInterval>?,
+    var dilluns: List<TimeInterval>?,
+    var dimarts: List<TimeInterval>?,
+    var dimecres: List<TimeInterval>?,
+    var dijous: List<TimeInterval>?,
+    var divendres: List<TimeInterval>?,
+    var dissabte: List<TimeInterval>?,
+    var diumenge: List<TimeInterval>?,
     var observacions: String? = null
 
 )

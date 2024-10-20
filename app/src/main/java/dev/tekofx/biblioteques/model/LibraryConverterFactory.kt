@@ -74,13 +74,9 @@ class LibraryConverterFactory : Converter.Factory() {
                     timetableHivern = timetableHivern,
                     timetableActual = timeTableActual
                 )
-                println("Actual timetable: ${library.timetableActual}")
-                println("Actual timeInterval ${library.timetableActual.actualDateInterval}")
-                println("\n")
                 // Rellena los demás atributos según sea necesario
                 libraryList.add(library)
             }
-            println("End of for loop")
 
             val response = LibraryResponse(libraryList)
             response
@@ -116,7 +112,9 @@ class LibraryConverterFactory : Converter.Factory() {
         val timeIntervalsDivendres = getTimeIntervals(jsonObject, estacio, "divendres")
         val timeIntervalsDissabte = getTimeIntervals(jsonObject, estacio, "dissabte")
         val timeIntervalsDiumenge = getTimeIntervals(jsonObject, estacio, "diumenge")
-        val actualDateOfWeek = LocalDate.now().dayOfWeek
+
+        // TODO: Change to LocalDate.now()
+        val actualDateOfWeek = LocalDate.of(2024, 10, 21).dayOfWeek
 
         val dayOfWeekToTimeIntervalMap = mapOf(
             DayOfWeek.MONDAY to timeIntervalsDilluns,
@@ -131,6 +129,7 @@ class LibraryConverterFactory : Converter.Factory() {
 
         val actualDateInterval =
             dayOfWeekToTimeIntervalMap[actualDateOfWeek] ?: timeIntervalsDilluns
+
 
         val timetableDeProva = Timetable(
             dateInterval = dateInterval,
@@ -154,7 +153,7 @@ class LibraryConverterFactory : Converter.Factory() {
         jsonObject: JSONObject,
         estacio: String,
         day: String
-    ): List<TimeInterval> {
+    ): List<TimeInterval>? {
 
 
         val timeintervalString =
@@ -179,19 +178,21 @@ class LibraryConverterFactory : Converter.Factory() {
 
         // If its closed
         if (timeintervalString.contains("tancat")) {
-            val timeInterval = TimeInterval(null, null, null)
-            val timeIntervalsList = mutableListOf<TimeInterval>()
-            timeIntervalsList.add(timeInterval)
-            return timeIntervalsList
+//            val timeInterval = TimeInterval(null, null, null)
+//            val timeIntervalsList = mutableListOf<TimeInterval>()
+//            timeIntervalsList.add(timeInterval)
+//            return timeIntervalsList
+            return null
 
         }
 
         // If the string is blank
         if (timeintervalString.isEmpty()) {
-            val timeInterval = TimeInterval(null, null, null)
-            val timeIntervalsList = mutableListOf<TimeInterval>()
-            timeIntervalsList.add(timeInterval)
-            return timeIntervalsList
+//            val timeInterval = TimeInterval(null, null, null)
+//            val timeIntervalsList = mutableListOf<TimeInterval>()
+//            timeIntervalsList.add(timeInterval)
+//            return timeIntervalsList
+            return null
         }
 
 

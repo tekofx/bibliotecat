@@ -42,9 +42,24 @@ class LibraryRecyclerAdapter : RecyclerView.Adapter<LibraryRecyclerAdapter.ViewH
         fun bind(biblioteca: Library) {
             municipiNom.text = biblioteca.municipiNom
             adrecaNom.text = biblioteca.adrecaNom
-            timetable.text = ""
+            timetable.text = "Tancat"
+
             println(biblioteca.timetableActual.actualDateInterval)
 
+            if (biblioteca.timetableActual.actualDateInterval != null) {
+                println(1)
+                var timeString = ""
+                for (timeInterval in biblioteca.timetableActual.actualDateInterval!!) {
+                    println(2)
+                    if (timeInterval.startTime != null && timeInterval.endTime != null) {
+                        timeString += timeInterval.startTime.toString() + " - " + timeInterval.endTime.toString()
+
+                    }
+
+                }
+                timetable.text = timeString
+
+            }
 
             if (biblioteca.imatge.isNotEmpty()) {
                 avatar.loadUrl(biblioteca.imatge)
