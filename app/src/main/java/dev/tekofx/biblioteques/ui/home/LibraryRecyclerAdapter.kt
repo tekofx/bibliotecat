@@ -44,21 +44,15 @@ class LibraryRecyclerAdapter : RecyclerView.Adapter<LibraryRecyclerAdapter.ViewH
             adrecaNom.text = biblioteca.adrecaNom
             timetable.text = "Tancat"
 
-            println(biblioteca.timetableActual.actualDateInterval)
 
-            if (biblioteca.timetableActual.actualDateInterval != null) {
-                println(1)
-                var timeString = ""
-                for (timeInterval in biblioteca.timetableActual.actualDateInterval!!) {
-                    println(2)
-                    if (timeInterval.startTime != null && timeInterval.endTime != null) {
-                        timeString += timeInterval.startTime.toString() + " - " + timeInterval.endTime.toString()
-
-                    }
-
-                }
+            if (biblioteca.weekTimetableCurrent.currentTimeInterval != null) {
+                var timeString =
+                    "Obert · Fins a ${biblioteca.weekTimetableCurrent.currentTimeInterval!!.endTime}"
                 timetable.text = timeString
 
+            } else {
+                timetable.text =
+                    "Tancat · Obert ${biblioteca.weekTimetableCurrent.nextTimeInterval?.dayOfWeek} a ${biblioteca.weekTimetableCurrent.nextTimeInterval?.startTime}"
             }
 
             if (biblioteca.imatge.isNotEmpty()) {

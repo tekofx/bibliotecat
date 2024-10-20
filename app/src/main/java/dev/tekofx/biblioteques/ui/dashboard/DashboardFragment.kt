@@ -67,8 +67,7 @@ class DashboardFragment : Fragment() {
             try {
                 fetchWebsiteData()
 
-            } catch (Exception: Exception)
-            {
+            } catch (Exception: Exception) {
                 Toast.makeText(this.context, "Error", Toast.LENGTH_SHORT).show()
             }
 
@@ -80,15 +79,17 @@ class DashboardFragment : Fragment() {
 
     fun fetchWebsiteData() {
         CoroutineScope(Dispatchers.IO).launch {
-            val doc: com.fleeksoft.ksoup.nodes.Document = Ksoup.parseGetRequestBlocking(url = "https://aladi.diba.cat/search*cat/?searchtype=X&searcharg=mistborn&searchscope=171&submit=Cercar")
+            val doc: com.fleeksoft.ksoup.nodes.Document =
+                Ksoup.parseGetRequestBlocking(url = "https://aladi.diba.cat/search*cat/?searchtype=X&searcharg=mistborn&searchscope=171&submit=Cercar")
             val headlines: Elements = doc.select("span.titular")
 
             withContext(Dispatchers.Main) {
-                // Actualiza la interfaz de usuario con los resultados
+                // Currentiza la interfaz de usuario con los resultados
                 for (headline in headlines) {
                     val headlineText = headline.getElementsByTag("a")[0].text()
-                    val libraryCard= LibraryCard.newInstance(headlineText,"asdf")
-                    childFragmentManager.beginTransaction().add(R.id.lineartLayout, libraryCard).commit()
+                    val libraryCard = LibraryCard.newInstance(headlineText, "asdf")
+                    childFragmentManager.beginTransaction().add(R.id.lineartLayout, libraryCard)
+                        .commit()
                 }
             }
         }

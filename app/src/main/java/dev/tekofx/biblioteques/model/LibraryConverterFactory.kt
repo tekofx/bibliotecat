@@ -46,6 +46,8 @@ class LibraryConverterFactory : Converter.Factory() {
                 val imatge = if (imatgeArray.length() > 0) imatgeArray.getString(0) else ""
                 val emails = jsonArrayToStringArray(libraryElement.getJSONArray("email"))
 
+                println(adrecaNom + " " + descripcio)
+
                 // bibliotecavirtual.diba.cat url
                 val emailsTd = doc.selectFirst("td.email:contains(${emails[0]})")
                 val nameTd = emailsTd?.siblingElements()?.select("td.name")
@@ -54,11 +56,11 @@ class LibraryConverterFactory : Converter.Factory() {
 
                 // Horaris
                 val (timetableHivern, timetableEstiu) = getTimetables(libraryElement)
-                val actualDate = LocalDate.now()
+                val currentDate = LocalDate.now()
 
-                var timeTableActual = timetableHivern;
-                if (actualDate >= timetableEstiu.dateInterval.from && actualDate <= timetableEstiu.dateInterval.to) {
-                    timeTableActual = timetableEstiu
+                var timeTableCurrent = timetableHivern;
+                if (currentDate >= timetableEstiu.dateInterval.from && currentDate <= timetableEstiu.dateInterval.to) {
+                    timeTableCurrent = timetableEstiu
                 }
 
 
@@ -70,12 +72,13 @@ class LibraryConverterFactory : Converter.Factory() {
                     bibliotecaVirtualUrl = bibliotecaVirtualUrl,
                     emails = emails,
                     imatge = imatge,
-                    timetableEstiu = timetableEstiu,
-                    timetableHivern = timetableHivern,
-                    timetableActual = timeTableActual
+                    weekTimetableEstiu = timetableEstiu,
+                    weekTimetableHivern = timetableHivern,
+                    weekTimetableCurrent = timeTableCurrent
                 )
                 // Rellena los demás atributos según sea necesario
                 libraryList.add(library)
+                println("\n")
             }
 
             val response = LibraryResponse(libraryList)
@@ -91,7 +94,7 @@ class LibraryConverterFactory : Converter.Factory() {
         return stringList
     }
 
-    private fun getTimetables(jsonObject: JSONObject): Pair<Timetable, Timetable> {
+    private fun getTimetables(jsonObject: JSONObject): Pair<WeekTimetable, WeekTimetable> {
         val (dateIntervalHivern, dateIntervalEstiu) = getDateIntervals(jsonObject)
         val hivernTimeTable = getTimetable(jsonObject, "hivern", dateIntervalHivern)
         val estiuTimeTable = getTimetable(jsonObject, "estiu", dateIntervalEstiu)
@@ -102,7 +105,13 @@ class LibraryConverterFactory : Converter.Factory() {
         jsonObject: JSONObject,
         estacio: String,
         dateInterval: DateInterval
-    ): Timetable {
+    ): WeekTimetable {
+
+        // TODO: Change to LocalDate.now()
+        val currentDate = LocalDate.now()
+        //val currentDate = LocalDate.of(2024, 10, 21)
+        val currentTime = LocalTime.now()
+        //val currentTime = LocalTime.of(15, 30)
 
         val observacions = getObservacionsEstacio(jsonObject, estacio)
         val timeIntervalsDilluns = getTimeIntervals(jsonObject, estacio, "dilluns")
@@ -113,8 +122,7 @@ class LibraryConverterFactory : Converter.Factory() {
         val timeIntervalsDissabte = getTimeIntervals(jsonObject, estacio, "dissabte")
         val timeIntervalsDiumenge = getTimeIntervals(jsonObject, estacio, "diumenge")
 
-        // TODO: Change to LocalDate.now()
-        val actualDateOfWeek = LocalDate.of(2024, 10, 21).dayOfWeek
+        val currentDateOfWeek = currentDate.dayOfWeek
 
         val dayOfWeekToTimeIntervalMap = mapOf(
             DayOfWeek.MONDAY to timeIntervalsDilluns,
@@ -127,13 +135,53 @@ class LibraryConverterFactory : Converter.Factory() {
         )
 
 
-        val actualDateInterval =
-            dayOfWeekToTimeIntervalMap[actualDateOfWeek] ?: timeIntervalsDilluns
+        var currentTimeIntervals =
+            dayOfWeekToTimeIntervalMap[currentDateOfWeek]
+
+        println("currentDateOfWeek +1 ${currentDateOfWeek.plus(1)}")
+
+        var nextDayTimeIntervals = dayOfWeekToTimeIntervalMap[currentDateOfWeek.plus(1)]
+
+        // Join current and nextday
+        var timeIntervals: List<TimeInterval?> =
+            (currentTimeIntervals ?: listOf(null)) + (nextDayTimeIntervals ?: listOf(null))
+
+        println("timeintervals $timeIntervals")
+
+        // TODO: Improve code
+        var currentTimeInterval: TimeInterval? = null
+        var nextDayTimeInterval: TimeInterval? = null
 
 
-        val timetableDeProva = Timetable(
+        if (timeIntervals != null) {
+            for (timeInterval in timeIntervals) {
+                println(1)
+                if (timeInterval != null) {
+                    if (timeInterval.startTime != null && timeInterval.endTime != null) {
+                        println("currenttime $currentTime")
+                        println("timeinterval $timeInterval")
+                        if (currentTime >= timeInterval.startTime && currentTime <= timeInterval.endTime) {
+                            currentTimeInterval = timeInterval
+                            break
+                        } else {
+                            println("not in current time")
+                            nextDayTimeInterval = timeInterval
+                        }
+                    }
+                }
+            }
+        }
+
+        println("dayofweek $currentDateOfWeek")
+        println("nextDayTimeInterval $nextDayTimeInterval")
+        println("dillunsTimeInterval $timeIntervalsDilluns")
+        println("currentTimeInterval $currentTimeInterval")
+
+
+        val weekTimetableDeProva = WeekTimetable(
             dateInterval = dateInterval,
-            actualDateInterval = actualDateInterval,
+            currentTimeInterval = currentTimeInterval,
+            nextTimeInterval = nextDayTimeInterval,
             estacio = estacio,
             observacions = observacions,
             dilluns = timeIntervalsDilluns,
@@ -145,7 +193,7 @@ class LibraryConverterFactory : Converter.Factory() {
             diumenge = timeIntervalsDiumenge
         )
 
-        return timetableDeProva
+        return weekTimetableDeProva
 
     }
 
@@ -170,7 +218,7 @@ class LibraryConverterFactory : Converter.Factory() {
                 timeintervalString
             )
         ) {
-            val timeInterval = TimeInterval(null, null, timeintervalString)
+            val timeInterval = TimeInterval(null, null, timeintervalString, day)
             val timeIntervalsList = mutableListOf<TimeInterval>()
             timeIntervalsList.add(timeInterval)
             return timeIntervalsList
@@ -237,7 +285,7 @@ class LibraryConverterFactory : Converter.Factory() {
             val endTime = parseTime(endTimeString)   // LocalTime 19:30
 
             val timeInterval = TimeInterval(
-                startTime, endTime, null
+                startTime, endTime, null, day
             )
             timeIntervals.add(timeInterval)
 
@@ -317,19 +365,19 @@ class LibraryConverterFactory : Converter.Factory() {
         val (dayComencaEstiu, monthComencaEstiu) = getIniciHorariEstacio("estiu")
 
 
-        val actualDate = LocalDate.now()
-        val summerStartDate = LocalDate.of(actualDate.year, monthComencaEstiu, dayComencaEstiu)
-        val winterStartDate = LocalDate.of(actualDate.year, monthComencaHivern, dayComencaHivern)
-        var yearComencaHivern = actualDate.year
-        var yearTerminaHivern = actualDate.year
-        var yearComencaEstiu = actualDate.year
-        var yearTerminaEstiu = actualDate.year
+        val currentDate = LocalDate.now()
+        val summerStartDate = LocalDate.of(currentDate.year, monthComencaEstiu, dayComencaEstiu)
+        val winterStartDate = LocalDate.of(currentDate.year, monthComencaHivern, dayComencaHivern)
+        var yearComencaHivern = currentDate.year
+        var yearTerminaHivern = currentDate.year
+        var yearComencaEstiu = currentDate.year
+        var yearTerminaEstiu = currentDate.year
 
-        // If actual date is between summer start and winter start. We are in summer
-        if (actualDate >= summerStartDate && actualDate <= winterStartDate) {
+        // If current date is between summer start and winter start. We are in summer
+        if (currentDate >= summerStartDate && currentDate <= winterStartDate) {
             yearTerminaEstiu += 1
         } else {
-            if (actualDate.month.value <= monthComencaEstiu) {
+            if (currentDate.month.value <= monthComencaEstiu) {
                 yearComencaHivern -= 1
             } else {
 
