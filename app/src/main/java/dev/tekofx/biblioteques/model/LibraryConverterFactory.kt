@@ -1,8 +1,11 @@
 package dev.tekofx.biblioteques.model
 
 import com.fleeksoft.ksoup.Ksoup
+import com.fleeksoft.ksoup.network.parseGetRequestBlocking
+import com.fleeksoft.ksoup.nodes.Document
 import dev.tekofx.biblioteques.dto.LibraryResponse
 import okhttp3.ResponseBody
+import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Converter
 import retrofit2.Retrofit
@@ -28,6 +31,9 @@ class LibraryConverterFactory : Converter.Factory() {
             val elementsArray = jsonObject.getJSONArray("elements")
             val libraryList = ArrayList<Library>()
 
+            // Get libraries list from bibliotecavirtual in order to get the library bibliotecavirtual url
+            val doc: Document =
+                Ksoup.parseGetRequestBlocking(url = "https://bibliotecavirtual.diba.cat/busca-una-biblioteca")
             for (i in 0 until elementsArray.length()) {
                 val libraryElement = elementsArray.getJSONObject(i)
                 val imatgeArray = libraryElement.getJSONArray("imatge")
@@ -37,39 +43,75 @@ class LibraryConverterFactory : Converter.Factory() {
                 val municipiNom =
                     libraryElement.getJSONObject("grup_adreca").getString("municipi_nom")
                 val imatge = if (imatgeArray.length() > 0) imatgeArray.getString(0) else ""
+                val emails = jsonArrayToStringArray(libraryElement.getJSONArray("email"))
 
+                // bibliotecavirtual.diba.cat url
+                val emailsTd = doc.selectFirst("td.email:contains(${emails[0]})")
+                val nameTd = emailsTd?.siblingElements()?.select("td.name")
+                    ?.firstOrNull()
+                val bibliotecaVirtualUrl = nameTd?.getElementsByTag("a")?.attr("href")
 
                 // Horaris
+                val timetableEstiu = getTimetable(libraryElement, "estiu")
+                val timetableHivern = getTimetable(libraryElement, "hivern")
+
+                val iniciHorariEstiu = timetableEstiu.comenca;
+                val iniciHorariHivern = timetableHivern.comenca;
+                var timeTableActual = timetableHivern;
+                val actualDate = LocalDate.of(2024, 7, 1)
+
+                if (iniciHorariEstiu != null && iniciHorariHivern != null) {
+                    if (iniciHorariEstiu.month < actualDate.month && actualDate.month < iniciHorariHivern.month) {
+                        println("Horari actual estiu")
+                        println("Horari hivern ${actualDate.year}/${iniciHorariHivern.month} - ${actualDate.year + 1}/${iniciHorariEstiu.month}")
+                        println("Horari estiu ${actualDate.year}/${actualDate.month} - ${actualDate.year}/${iniciHorariHivern.month}")
 
 
-                println("\n")
+                    } else {
+                        println("Horari actual hivern ")
+                        println("Horari hivern ${actualDate.year}/${actualDate.month} - ${actualDate.year + 1}/${iniciHorariEstiu.month}")
+                        println("Horari estiu ${actualDate.year + 1}/${actualDate.month} - ${actualDate.year + 1}/${iniciHorariHivern.month}")
+                    }
+                }
 
 
-                val timetableDeProva = getTimetable(libraryElement, "estiu")
+                println("Inici horari hivern $iniciHorariHivern")
+                println("Inici horari estiu $iniciHorariEstiu")
+                println("Horari actual $timeTableActual")
 
                 val library = Library(
-                    puntId,
-                    adrecaNom,
-                    descripcio,
-                    municipiNom,
-                    imatge,
-                    timetableDeProva,
-                    timetableDeProva,
-                    timetableDeProva
+                    puntId = puntId,
+                    adrecaNom = adrecaNom,
+                    descripcio = descripcio,
+                    municipiNom = municipiNom,
+                    bibliotecaVirtualUrl = bibliotecaVirtualUrl,
+                    emails = emails,
+                    imatge = imatge,
+                    timetableEstiu = timetableEstiu,
+                    timetableHivern = timetableHivern,
+                    timetableActual = timeTableActual
                 )
                 // Rellena los demás atributos según sea necesario
                 libraryList.add(library)
             }
-
+            println("End of for loop")
             val response = LibraryResponse(libraryList)
             response
         }
     }
 
+    fun jsonArrayToStringArray(jsonArray: JSONArray): List<String> {
+        val stringList = mutableListOf<String>()
+        for (i in 0 until jsonArray.length()) {
+            stringList.add(jsonArray.getString(i))
+        }
+        return stringList
+    }
 
-    fun getTimetable(jsonObject: JSONObject, estacio: String): Timetable {
+    private fun getTimetable(jsonObject: JSONObject, estacio: String): Timetable {
 
         val iniciHorari = getIniciHorari(jsonObject, estacio)
+        val observacions = getObservacionsEstacio(jsonObject, estacio)
         val timeIntervalsDilluns = getTimeIntervals(jsonObject, estacio, "dilluns")
         val timeIntervalsDimarts = getTimeIntervals(jsonObject, estacio, "dimarts")
         val timeIntervalsDimecres = getTimeIntervals(jsonObject, estacio, "dimecres")
@@ -80,6 +122,8 @@ class LibraryConverterFactory : Converter.Factory() {
 
         val timetableDeProva = Timetable(
             comenca = iniciHorari,
+            estacio = estacio,
+            observacions = observacions,
             dilluns = timeIntervalsDilluns,
             dimarts = timeIntervalsDimarts,
             dimecres = timeIntervalsDimecres,
@@ -93,16 +137,16 @@ class LibraryConverterFactory : Converter.Factory() {
 
     }
 
-    fun getTimeIntervals(jsonObject: JSONObject, estacio: String, day: String): List<TimeInterval> {
+    private fun getTimeIntervals(
+        jsonObject: JSONObject,
+        estacio: String,
+        day: String
+    ): List<TimeInterval> {
 
 
-        var timeintervalString =
+        val timeintervalString =
             jsonObject.getString(String.format("horari_%s_%s", estacio, day)).lowercase()
 
-        println(jsonObject.getString("adreca_nom"))
-        println(jsonObject.getString("descripcio"))
-
-        println("string " + timeintervalString)
 
         val regexMonths =
             "(gener|febrer|març|abril|maig|juny|juliol|agost|setembre|octubre|novembre|desembre)".toRegex()
@@ -114,7 +158,6 @@ class LibraryConverterFactory : Converter.Factory() {
                 timeintervalString
             )
         ) {
-            println("El string contiene un mes en catalán")
             val timeInterval = TimeInterval(null, null, timeintervalString)
             val timeIntervalsList = mutableListOf<TimeInterval>()
             timeIntervalsList.add(timeInterval)
@@ -153,7 +196,6 @@ class LibraryConverterFactory : Converter.Factory() {
 
         val timeIntervals = mutableListOf<TimeInterval>()
         for (timeIntervalString in timeIntervalsStrings) {
-            println(timeIntervalString)
             var startTimeString = timeIntervalString[0] // "15:30"
             var endTimeString = timeIntervalString[1]   // "19:30"
 
@@ -207,7 +249,7 @@ class LibraryConverterFactory : Converter.Factory() {
     }
 
 
-    fun parseMonth(monthName: String): Int {
+    private fun parseMonth(monthName: String): Int {
         return when {
             monthName.contains("gener", ignoreCase = true) -> 1
             monthName.contains("febrer", ignoreCase = true) -> 2
@@ -229,12 +271,21 @@ class LibraryConverterFactory : Converter.Factory() {
         }
     }
 
+    private fun getObservacionsEstacio(jsonObject: JSONObject, estacio: String): String {
+
+        var htmlString = jsonObject.getString("observacions_$estacio")
+        val doc = Ksoup.parse(htmlString)
+        val span = doc.selectFirst("p")?.text() ?: return ""
+
+        return span
+    }
+
     private fun getIniciHorari(jsonObject: JSONObject, estacio: String): LocalDate? {
 
-        var htmlString = jsonObject.getString("inici_horari_$estacio")
+        val htmlString = jsonObject.getString("inici_horari_$estacio")
 
         val doc = Ksoup.parse(htmlString)
-        var span = doc.selectFirst("span")
+        val span = doc.selectFirst("span")
         var day = 0;
         var month = 0;
 
@@ -248,9 +299,16 @@ class LibraryConverterFactory : Converter.Factory() {
         } else {
             return null
         }
-        // TODO: Change Year
-        return LocalDate.of(2024, month, day)
+        val actualMonth = LocalDate.now().month
+        var year = LocalDate.now().year
 
+        if (month < actualMonth.value) {
+            year += 1
+
+        }
+
+
+        return LocalDate.of(year, month, day)
 
     }
 

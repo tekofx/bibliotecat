@@ -40,8 +40,8 @@ class LibraryRecyclerAdapter : RecyclerView.Adapter<LibraryRecyclerAdapter.ViewH
 
 
         fun bind(biblioteca: Library) {
-            municipiNom.text = biblioteca.municipi_nom
-            adrecaNom.text = biblioteca.adreca_nom
+            municipiNom.text = biblioteca.municipiNom
+            adrecaNom.text = biblioteca.adrecaNom
             timetable.text = "horari"
 
 
