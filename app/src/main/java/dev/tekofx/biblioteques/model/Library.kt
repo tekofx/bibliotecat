@@ -16,45 +16,9 @@ data class Library(
     var timetableHivern: Timetable,
 )
 
-class Test(private val puntId: String) {
-    private lateinit var adrecaNom: String
-    private lateinit var descripcio: String
-    private lateinit var municipiNom: String
-    private lateinit var imatge: String
-    private lateinit var timetableActual: Timetable
-    private lateinit var timetableEstiu: Timetable
-    private lateinit var timetableHivern: Timetable
-    private lateinit var timeIntervalActual: TimeInterval
-
-    constructor(
-        puntId: String,
-        adrecaNom: String,
-        descripcio: String,
-        municipiNom: String,
-        imatge: String,
-        timetableHivern: Timetable,
-        timetableEstiu: Timetable
-    ) : this(puntId) {
-        this.adrecaNom = adrecaNom
-        this.descripcio = descripcio
-        this.municipiNom = municipiNom
-        this.imatge = imatge
-        this.timetableHivern = timetableHivern
-        this.timetableEstiu = timetableEstiu
-
-        // Get timetable actual
-
-    }
-
-    fun getPuntId(): String {
-        return puntId
-    }
-
-}
-
 
 data class Timetable(
-    var comenca: LocalDate?,
+    var dateInterval: DateInterval,
     var estacio: String? = null,
     var dilluns: List<TimeInterval>,
     var dimarts: List<TimeInterval>,
@@ -71,6 +35,26 @@ data class TimeInterval(
     val startTime: LocalTime? = null,
     val endTime: LocalTime? = null,
     var observation: String? = null
-
-
 )
+
+data class DateInterval(
+    val from: LocalDate,
+    val to: LocalDate
+)
+
+
+data class DateWithNoYear(val month: Int, val day: Int) : Comparable<DateWithNoYear> {
+    override fun compareTo(other: DateWithNoYear): Int {
+        return when {
+            month < other.month -> -1
+            month > other.month -> 1
+            day < other.day -> -1
+            day > other.day -> 1
+            else -> 0
+        }
+    }
+
+    override fun toString(): String {
+        return "$day/$month"
+    }
+}

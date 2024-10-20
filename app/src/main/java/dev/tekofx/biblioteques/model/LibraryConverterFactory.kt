@@ -52,32 +52,14 @@ class LibraryConverterFactory : Converter.Factory() {
                 val bibliotecaVirtualUrl = nameTd?.getElementsByTag("a")?.attr("href")
 
                 // Horaris
-                val timetableEstiu = getTimetable(libraryElement, "estiu")
-                val timetableHivern = getTimetable(libraryElement, "hivern")
+                val (timetableHivern, timetableEstiu) = getTimetables(libraryElement)
+                val actualDate = LocalDate.now()
 
-                val iniciHorariEstiu = timetableEstiu.comenca;
-                val iniciHorariHivern = timetableHivern.comenca;
                 var timeTableActual = timetableHivern;
-                val actualDate = LocalDate.of(2024, 7, 1)
-
-                if (iniciHorariEstiu != null && iniciHorariHivern != null) {
-                    if (iniciHorariEstiu.month < actualDate.month && actualDate.month < iniciHorariHivern.month) {
-                        println("Horari actual estiu")
-                        println("Horari hivern ${actualDate.year}/${iniciHorariHivern.month} - ${actualDate.year + 1}/${iniciHorariEstiu.month}")
-                        println("Horari estiu ${actualDate.year}/${actualDate.month} - ${actualDate.year}/${iniciHorariHivern.month}")
-
-
-                    } else {
-                        println("Horari actual hivern ")
-                        println("Horari hivern ${actualDate.year}/${actualDate.month} - ${actualDate.year + 1}/${iniciHorariEstiu.month}")
-                        println("Horari estiu ${actualDate.year + 1}/${actualDate.month} - ${actualDate.year + 1}/${iniciHorariHivern.month}")
-                    }
+                if (actualDate >= timetableEstiu.dateInterval.from && actualDate <= timetableEstiu.dateInterval.to) {
+                    timeTableActual = timetableEstiu
                 }
 
-
-                println("Inici horari hivern $iniciHorariHivern")
-                println("Inici horari estiu $iniciHorariEstiu")
-                println("Horari actual $timeTableActual")
 
                 val library = Library(
                     puntId = puntId,
@@ -100,7 +82,7 @@ class LibraryConverterFactory : Converter.Factory() {
         }
     }
 
-    fun jsonArrayToStringArray(jsonArray: JSONArray): List<String> {
+    private fun jsonArrayToStringArray(jsonArray: JSONArray): List<String> {
         val stringList = mutableListOf<String>()
         for (i in 0 until jsonArray.length()) {
             stringList.add(jsonArray.getString(i))
@@ -108,9 +90,19 @@ class LibraryConverterFactory : Converter.Factory() {
         return stringList
     }
 
-    private fun getTimetable(jsonObject: JSONObject, estacio: String): Timetable {
+    private fun getTimetables(jsonObject: JSONObject): Pair<Timetable, Timetable> {
+        val (dateIntervalHivern, dateIntervalEstiu) = getDateIntervals(jsonObject)
+        val hivernTimeTable = getTimetable(jsonObject, "hivern", dateIntervalHivern)
+        val estiuTimeTable = getTimetable(jsonObject, "estiu", dateIntervalEstiu)
+        return Pair(hivernTimeTable, estiuTimeTable)
+    }
 
-        val iniciHorari = getIniciHorari(jsonObject, estacio)
+    private fun getTimetable(
+        jsonObject: JSONObject,
+        estacio: String,
+        dateInterval: DateInterval
+    ): Timetable {
+
         val observacions = getObservacionsEstacio(jsonObject, estacio)
         val timeIntervalsDilluns = getTimeIntervals(jsonObject, estacio, "dilluns")
         val timeIntervalsDimarts = getTimeIntervals(jsonObject, estacio, "dimarts")
@@ -121,7 +113,7 @@ class LibraryConverterFactory : Converter.Factory() {
         val timeIntervalsDijumenge = getTimeIntervals(jsonObject, estacio, "diumenge")
 
         val timetableDeProva = Timetable(
-            comenca = iniciHorari,
+            dateInterval = dateInterval,
             estacio = estacio,
             observacions = observacions,
             dilluns = timeIntervalsDilluns,
@@ -280,35 +272,69 @@ class LibraryConverterFactory : Converter.Factory() {
         return span
     }
 
-    private fun getIniciHorari(jsonObject: JSONObject, estacio: String): LocalDate? {
+    private fun getDateIntervals(jsonObject: JSONObject): Pair<DateInterval, DateInterval> {
 
-        val htmlString = jsonObject.getString("inici_horari_$estacio")
+        fun getIniciHorariEstacio(estacio: String): Pair<Int, Int> {
+            val htmlStringEstacio = jsonObject.getString("inici_horari_$estacio")
+            val docEstiu = Ksoup.parse(htmlStringEstacio)
+            val span = docEstiu.selectFirst("span")
+            var day = 0;
+            var month = 0;
+            if (span != null && span.text().isNotEmpty()) {
+                val dateParts = span.text().split(" ")
+                day = dateParts[0].toInt()
+                month = parseMonth(span.text())
+                return Pair(day, month)
 
-        val doc = Ksoup.parse(htmlString)
-        val span = doc.selectFirst("span")
-        var day = 0;
-        var month = 0;
+            } else {
+                return Pair(1, 1)
+            }
+        }
 
+        val (dayComencaHivern, monthComencaHivern) = getIniciHorariEstacio("hivern")
+        val (dayComencaEstiu, monthComencaEstiu) = getIniciHorariEstacio("estiu")
+        val actualDate = LocalDate.of(2025, 12, 26)
+        val summerStartDate = LocalDate.of(actualDate.year, monthComencaEstiu, dayComencaEstiu)
+        val winterStartDate = LocalDate.of(actualDate.year, monthComencaHivern, dayComencaHivern)
+        var yearComencaHivern = actualDate.year
+        var yearTerminaHivern = actualDate.year
+        var yearComencaEstiu = actualDate.year
+        var yearTerminaEstiu = actualDate.year
 
-
-        if (span != null && span.text().isNotEmpty()) {
-            val dateParts = span.text().split(" ")
-            day = dateParts[0].toInt()
-            month = parseMonth(span.text())
-
+        // If actual date is between summer start and winter start. We are in summer
+        if (actualDate >= summerStartDate && actualDate <= winterStartDate) {
+            println("Es estiu")
+            yearTerminaEstiu += 1
         } else {
-            return null
+            println("Es hivern")
+            if (actualDate.month.value <= monthComencaEstiu) {
+                println("De enero a junio")
+                yearComencaHivern -= 1
+            } else {
+
+                yearTerminaHivern += 1
+                yearComencaEstiu += 1
+                yearTerminaEstiu += 1
+            }
         }
-        val actualMonth = LocalDate.now().month
-        var year = LocalDate.now().year
 
-        if (month < actualMonth.value) {
-            year += 1
+        val comencaHivern = LocalDate.of(yearComencaHivern, monthComencaHivern, dayComencaHivern)
+        val terminaHivern = LocalDate.of(yearTerminaHivern, monthComencaEstiu, dayComencaEstiu)
+        val comencaEstiu = LocalDate.of(yearComencaEstiu, monthComencaEstiu, dayComencaEstiu)
+        val terminaEstiu = LocalDate.of(yearTerminaEstiu, monthComencaHivern, dayComencaHivern)
 
-        }
+        println("Date now $actualDate")
+        println("Comenca Hivern $comencaHivern")
+        println("Termina Hivern $terminaHivern")
+        println("Comenca Estiu $comencaEstiu")
+        println("Termina Estiu $terminaEstiu")
+        println("\n")
 
+        return Pair(
+            DateInterval(comencaHivern, terminaHivern),
+            DateInterval(comencaEstiu, terminaEstiu)
+        )
 
-        return LocalDate.of(year, month, day)
 
     }
 
