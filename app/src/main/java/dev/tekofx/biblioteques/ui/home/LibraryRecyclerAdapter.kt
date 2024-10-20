@@ -42,7 +42,8 @@ class LibraryRecyclerAdapter : RecyclerView.Adapter<LibraryRecyclerAdapter.ViewH
         fun bind(biblioteca: Library) {
             municipiNom.text = biblioteca.municipiNom
             adrecaNom.text = biblioteca.adrecaNom
-            timetable.text = "horari"
+            timetable.text = ""
+            println(biblioteca.timetableActual.actualDateInterval)
 
 
             if (biblioteca.imatge.isNotEmpty()) {

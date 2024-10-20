@@ -10,6 +10,7 @@ import org.json.JSONObject
 import retrofit2.Converter
 import retrofit2.Retrofit
 import java.lang.reflect.Type
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -73,10 +74,14 @@ class LibraryConverterFactory : Converter.Factory() {
                     timetableHivern = timetableHivern,
                     timetableActual = timeTableActual
                 )
+                println("Actual timetable: ${library.timetableActual}")
+                println("Actual timeInterval ${library.timetableActual.actualDateInterval}")
+                println("\n")
                 // Rellena los demás atributos según sea necesario
                 libraryList.add(library)
             }
             println("End of for loop")
+
             val response = LibraryResponse(libraryList)
             response
         }
@@ -110,10 +115,26 @@ class LibraryConverterFactory : Converter.Factory() {
         val timeIntervalsDijous = getTimeIntervals(jsonObject, estacio, "dijous")
         val timeIntervalsDivendres = getTimeIntervals(jsonObject, estacio, "divendres")
         val timeIntervalsDissabte = getTimeIntervals(jsonObject, estacio, "dissabte")
-        val timeIntervalsDijumenge = getTimeIntervals(jsonObject, estacio, "diumenge")
+        val timeIntervalsDiumenge = getTimeIntervals(jsonObject, estacio, "diumenge")
+        val actualDateOfWeek = LocalDate.now().dayOfWeek
+
+        val dayOfWeekToTimeIntervalMap = mapOf(
+            DayOfWeek.MONDAY to timeIntervalsDilluns,
+            DayOfWeek.TUESDAY to timeIntervalsDimarts,
+            DayOfWeek.WEDNESDAY to timeIntervalsDimecres,
+            DayOfWeek.THURSDAY to timeIntervalsDijous,
+            DayOfWeek.FRIDAY to timeIntervalsDivendres,
+            DayOfWeek.SATURDAY to timeIntervalsDissabte,
+            DayOfWeek.SUNDAY to timeIntervalsDiumenge
+        )
+
+
+        val actualDateInterval =
+            dayOfWeekToTimeIntervalMap[actualDateOfWeek] ?: timeIntervalsDilluns
 
         val timetableDeProva = Timetable(
             dateInterval = dateInterval,
+            actualDateInterval = actualDateInterval,
             estacio = estacio,
             observacions = observacions,
             dilluns = timeIntervalsDilluns,
@@ -122,7 +143,7 @@ class LibraryConverterFactory : Converter.Factory() {
             dijous = timeIntervalsDijous,
             divendres = timeIntervalsDivendres,
             dissabte = timeIntervalsDissabte,
-            diumenge = timeIntervalsDijumenge
+            diumenge = timeIntervalsDiumenge
         )
 
         return timetableDeProva
@@ -293,7 +314,9 @@ class LibraryConverterFactory : Converter.Factory() {
 
         val (dayComencaHivern, monthComencaHivern) = getIniciHorariEstacio("hivern")
         val (dayComencaEstiu, monthComencaEstiu) = getIniciHorariEstacio("estiu")
-        val actualDate = LocalDate.of(2025, 12, 26)
+
+
+        val actualDate = LocalDate.now()
         val summerStartDate = LocalDate.of(actualDate.year, monthComencaEstiu, dayComencaEstiu)
         val winterStartDate = LocalDate.of(actualDate.year, monthComencaHivern, dayComencaHivern)
         var yearComencaHivern = actualDate.year
@@ -303,12 +326,9 @@ class LibraryConverterFactory : Converter.Factory() {
 
         // If actual date is between summer start and winter start. We are in summer
         if (actualDate >= summerStartDate && actualDate <= winterStartDate) {
-            println("Es estiu")
             yearTerminaEstiu += 1
         } else {
-            println("Es hivern")
             if (actualDate.month.value <= monthComencaEstiu) {
-                println("De enero a junio")
                 yearComencaHivern -= 1
             } else {
 
@@ -322,13 +342,6 @@ class LibraryConverterFactory : Converter.Factory() {
         val terminaHivern = LocalDate.of(yearTerminaHivern, monthComencaEstiu, dayComencaEstiu)
         val comencaEstiu = LocalDate.of(yearComencaEstiu, monthComencaEstiu, dayComencaEstiu)
         val terminaEstiu = LocalDate.of(yearTerminaEstiu, monthComencaHivern, dayComencaHivern)
-
-        println("Date now $actualDate")
-        println("Comenca Hivern $comencaHivern")
-        println("Termina Hivern $terminaHivern")
-        println("Comenca Estiu $comencaEstiu")
-        println("Termina Estiu $terminaEstiu")
-        println("\n")
 
         return Pair(
             DateInterval(comencaHivern, terminaHivern),

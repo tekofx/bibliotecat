@@ -20,6 +20,7 @@ data class Library(
 data class Timetable(
     var dateInterval: DateInterval,
     var estacio: String? = null,
+    var actualDateInterval: List<TimeInterval>,
     var dilluns: List<TimeInterval>,
     var dimarts: List<TimeInterval>,
     var dimecres: List<TimeInterval>,
@@ -43,18 +44,3 @@ data class DateInterval(
 )
 
 
-data class DateWithNoYear(val month: Int, val day: Int) : Comparable<DateWithNoYear> {
-    override fun compareTo(other: DateWithNoYear): Int {
-        return when {
-            month < other.month -> -1
-            month > other.month -> 1
-            day < other.day -> -1
-            day > other.day -> 1
-            else -> 0
-        }
-    }
-
-    override fun toString(): String {
-        return "$day/$month"
-    }
-}
