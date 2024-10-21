@@ -13,8 +13,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.network.parseGetRequestBlocking
 import com.fleeksoft.ksoup.select.Elements
-import dev.tekofx.biblioteques.LibraryCard
-import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.databinding.FragmentDashboardBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -87,9 +85,7 @@ class DashboardFragment : Fragment() {
                 // Currentiza la interfaz de usuario con los resultados
                 for (headline in headlines) {
                     val headlineText = headline.getElementsByTag("a")[0].text()
-                    val libraryCard = LibraryCard.newInstance(headlineText, "asdf")
-                    childFragmentManager.beginTransaction().add(R.id.lineartLayout, libraryCard)
-                        .commit()
+
                 }
             }
         }
