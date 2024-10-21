@@ -37,9 +37,15 @@ data class TimeTable(
 /**
  * Represents a library with summer and winter timetables.
  *
+ * @property puntId The ID of the library.
+ * @property adrecaNom The name of the library.
+ * @property descripcio A description of the library.
+ * @property municipiNom The name of the municipality.
+ * @property bibliotecaVirtualUrl The URL of the bibliotecavirtual.diba.cat/
+ * @property emails A list of email addresses associated with the library.
+ * @property imatge The URL of the library's image.
  * @property summerTimeTable The timetable for the summer period.
  * @property winterTimetable The timetable for the winter period.
- * @property locale The locale used for formatting dates.
  */
 class Library(
     val puntId: String,
