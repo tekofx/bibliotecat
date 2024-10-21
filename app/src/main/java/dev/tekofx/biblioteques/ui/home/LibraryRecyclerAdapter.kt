@@ -51,20 +51,19 @@ class LibraryRecyclerAdapter : RecyclerView.Adapter<LibraryRecyclerAdapter.ViewH
             val localTime = LocalTime.now()
             municipiNom.text = biblioteca.municipiNom
             adrecaNom.text = biblioteca.adrecaNom
-            timetable.text = "Tancat"
+            timetable.text = biblioteca.generateStateMessage(localDate, localTime)
+
+
             val openStatusCircle = ShapeDrawable(OvalShape())
             openStatusCircle.intrinsicHeight = 20
             openStatusCircle.intrinsicWidth = 20
             openStatusCircle.paint.color = red
 
             if (biblioteca.isOpen(localDate, localTime)) {
-                // Círculo Verde
                 openStatusCircle.paint.color = green
             }
             openIcon.setImageDrawable(openStatusCircle)
 
-
-            timetable.text = biblioteca.generateStateMessage(localDate, localTime)
 
             if (biblioteca.imatge.isNotEmpty()) {
                 avatar.loadUrl(biblioteca.imatge)
