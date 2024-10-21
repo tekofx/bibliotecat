@@ -70,7 +70,6 @@ class LibraryConverterFactory : Converter.Factory() {
                 )
                 // Rellena los demás atributos según sea necesario
                 libraryList.add(library)
-                println("\n")
             }
 
             val response = LibraryResponse(libraryList)
@@ -150,6 +149,7 @@ class LibraryConverterFactory : Converter.Factory() {
             val timeInterval = Interval(null, null, timeintervalString)
             val timeIntervalsList = mutableListOf<Interval>()
             timeIntervalsList.add(timeInterval)
+            println("w " + timeInterval)
             return timeIntervalsList
         }
 

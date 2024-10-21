@@ -85,7 +85,7 @@ class DashboardFragment : Fragment() {
                 // Currentiza la interfaz de usuario con los resultados
                 for (headline in headlines) {
                     val headlineText = headline.getElementsByTag("a")[0].text()
-                    println(headlineText)
+                    println("headlineText " + headlineText)
 
                 }
             }
