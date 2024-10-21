@@ -2,252 +2,141 @@ package dev.tekofx.biblioteques.model
 
 import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
-data class Library(
-    var puntId: String,
-    var adrecaNom: String,
-    var descripcio: String,
-    var municipiNom: String,
-    var bibliotecaVirtualUrl: String?,
-    var emails: List<String>,
+/**
+ * Represents a time interval with a start and end time.
+ *
+ * @property from The start time of the interval.
+ * @property to The end time of the interval.
+ */
+data class Interval(val from: LocalTime?, val to: LocalTime?, val observation: String? = null)
+
+/**
+ * Represents a timetable for a specific day, containing multiple intervals.
+ *
+ * @property intervals A list of time intervals for the day.
+ */
+data class DayTimeTable(val intervals: List<Interval>)
+
+/**
+ * Represents a timetable for a period, containing day-specific timetables.
+ *
+ * @property start The start date of the timetable period.
+ * @property end The end date of the timetable period.
+ * @property dayTimetables A map of day-specific timetables.
+ */
+data class TimeTable(
+    val start: LocalDate,
+    val end: LocalDate,
+    val dayTimetables: Map<DayOfWeek, DayTimeTable>
+)
+
+/**
+ * Represents a library with summer and winter timetables.
+ *
+ * @property summerTimeTable The timetable for the summer period.
+ * @property winterTimetable The timetable for the winter period.
+ * @property locale The locale used for formatting dates.
+ */
+class Library(
+    val puntId: String,
+    val adrecaNom: String,
+    val descripcio: String,
+    val municipiNom: String,
+    val bibliotecaVirtualUrl: String?,
+    val emails: List<String>,
     var imatge: String,
-    var weekTimetableCurrent: WeekTimetable,
-    var weekTimetableEstiu: WeekTimetable,
-    var weekTimetableHivern: WeekTimetable,
-)
+    val summerTimeTable: TimeTable,
+    val winterTimetable: TimeTable,
+) {
+    private val dayFormatter = DateTimeFormatter.ofPattern("EEEE", Locale("cat"))
 
+    /**
+     * Gets the current timetable based on the given date.
+     *
+     * @param date The date to check.
+     * @return The current timetable.
+     */
+    fun getCurrentTimetable(date: LocalDate): TimeTable {
+        return if (date.isAfter(summerTimeTable.start) && date.isBefore(summerTimeTable.end)) {
+            summerTimeTable
+        } else {
+            winterTimetable
+        }
+    }
 
-data class WeekTimetable(
-    var dateInterval: DateInterval,
-    var estacio: String,
-    var currentTimeInterval: TimeInterval?,
-    var nextTimeInterval: TimeInterval?,
-    var dilluns: List<TimeInterval>?,
-    var dimarts: List<TimeInterval>?,
-    var dimecres: List<TimeInterval>?,
-    var dijous: List<TimeInterval>?,
-    var divendres: List<TimeInterval>?,
-    var dissabte: List<TimeInterval>?,
-    var diumenge: List<TimeInterval>?,
-    var observacions: String? = null
-)
+    /**
+     * Checks if the library is open at a given date and time.
+     *
+     * @param date The date to check.
+     * @param hora The time to check.
+     * @return True if the library is open, false otherwise.
+     */
+    fun isOpen(date: LocalDate, hora: LocalTime): Boolean {
+        val currentTimetable = getCurrentTimetable(date)
+        val dayTimetable = currentTimetable.dayTimetables[date.dayOfWeek]
+        return dayTimetable?.intervals?.any { interval ->
+            hora.isAfter(interval.from) && hora.isBefore(interval.to)
+        } ?: false
+    }
 
+    /**
+     * Generates a state message indicating whether the library is open or closed.
+     *
+     * @param date The date to check.
+     * @param time The time to check.
+     * @return A message indicating the state of the library.
+     */
+    fun generateStateMessage(date: LocalDate, time: LocalTime): String {
+        val currentTimetable = getCurrentTimetable(date)
+        val dayTimeTable = currentTimetable.dayTimetables[date.dayOfWeek]
 
-data class TimeInterval(
-    val startTime: LocalTime? = null,
-    val endTime: LocalTime? = null,
-    var observation: String? = null,
-    var dayOfWeek: String
-)
+        if (isOpen(date, time)) {
+            val currentInterval = dayTimeTable?.intervals?.find { interval ->
+                time.isAfter(interval.from) && time.isBefore(interval.to)
+            }
+            return "Obert · Fins a ${currentInterval?.to}"
+        } else {
+            // Verify if there are more intervals in the same day
+            val nextInterval = dayTimeTable?.intervals?.find { interval ->
+                time.isBefore(interval.from)
+            }
+            if (nextInterval != null) {
+                return "Tancat · Obre a las ${nextInterval.from}"
+            }
 
-enum class DayPeriod {
-    MORNING,
-    AFTERNOON
+            // If there are no more intervals today, look for the next opening day
+            val nextDay = getNextDayOpen(date)
+            val nextTimetable = getCurrentTimetable(nextDay)
+            val nextDayTimetable = nextTimetable.dayTimetables[nextDay.dayOfWeek]
+            val nextDayName = nextDay.format(dayFormatter)
+            return "Tancat · Obre el $nextDayName a las ${nextDayTimetable?.intervals?.firstOrNull()?.from}"
+        }
+    }
+
+    /**
+     * Gets the next day the library is open after the given date.
+     *
+     * @param date The date to start checking from.
+     * @return The next date the library is open.
+     */
+    fun getNextDayOpen(date: LocalDate): LocalDate {
+        var nextDay = date.plusDays(1)
+        var currentTimetable = getCurrentTimetable(nextDay)
+
+        while (currentTimetable.dayTimetables[nextDay.dayOfWeek]?.intervals.isNullOrEmpty()) {
+            nextDay = nextDay.plusDays(1)
+            currentTimetable = getCurrentTimetable(nextDay)
+        }
+
+        return nextDay
+    }
 }
-
 
 data class DateInterval(
     val from: LocalDate,
     val to: LocalDate
 )
-
-
-class LibraryTest(
-    var puntId: String,
-    var adrecaNom: String,
-    var descripcio: String,
-    var municipiNom: String,
-    var bibliotecaVirtualUrl: String?,
-    var emails: List<String>,
-    var imatge: String,
-    var estiuTimetable: SeasonTimetableTest,
-    var hivernTimetable: SeasonTimetableTest
-) {
-    var currentSeasonalTimetable: SeasonTimetableTest
-    var currentDayTimetable: DayTimetableTest
-    var currentTimeInterval: TimeIntervalTest?
-    var isOpen: Boolean = false
-    var openUntilHour: LocalTime? = null
-    var nextOpeningDay: String? = null
-    var nextOpeningHour: LocalTime? = null
-
-    init {
-        val currentDate = LocalDate.of(2024, 10, 19)
-
-        // Set weektimetable current
-        this.currentSeasonalTimetable = hivernTimetable
-        if (currentDate >= estiuTimetable.start && currentDate <= estiuTimetable.end) {
-            this.currentSeasonalTimetable = estiuTimetable
-        }
-
-        // Set daytimetable current
-        this.currentDayTimetable = currentSeasonalTimetable.getCurrentDayTimetable()
-
-        // Set timeinterval current
-        this.currentTimeInterval = currentSeasonalTimetable.getCurrentTimeInterval()
-
-
-    }
-
-    /**
-     * @return the next DateTime where the library is open
-     */
-    fun getNextOpening(): LocalDateTime {
-        // TODO: Implement
-        val currentDate = LocalDate.of(2024, 10, 19)
-        val dayOfWeek = currentDate.dayOfWeek
-
-        if (currentTimeInterval == null) {
-            println("closed")
-            this.isOpen = false
-            this.openUntilHour = null
-
-            if (currentDayTimetable.getNextTimeInterval() == null) {
-                println("next day")
-                var nextDay = currentDate.plusDays(1)
-                // Get day timetable for next day, checking if it's from actual season or not
-                var seasonalTimetable = getSeasonalTimetableOfDate(nextDay)
-                var dayTimetable = seasonalTimetable.weekTimetables[nextDay.dayOfWeek]!!
-
-                while (dayTimetable.isClosed) {
-                    nextDay = nextDay.plusDays(1)
-                    seasonalTimetable = getSeasonalTimetableOfDate(nextDay)
-                    dayTimetable = seasonalTimetable.weekTimetables[nextDay.dayOfWeek]!!
-                }
-
-
-                this.nextOpeningDay = nextDay.toString()
-                this.nextOpeningHour = dayTimetable.getNextTimeInterval()!!.startTime
-
-            } else {
-                println("same day")
-                this.nextOpeningDay = null
-                this.nextOpeningHour = currentDayTimetable.getNextTimeInterval()!!.startTime
-
-            }
-
-        } else {
-            println("open")
-            this.isOpen = true
-            this.openUntilHour = currentTimeInterval!!.endTime
-            this.nextOpeningHour = null
-            this.nextOpeningDay = null
-        }
-
-
-        return LocalDateTime.now()
-    }
-
-    fun getSeasonalTimetableOfDate(date: LocalDate): SeasonTimetableTest {
-        if (date >= estiuTimetable.start && date <= estiuTimetable.end) {
-            return estiuTimetable
-        }
-        return hivernTimetable
-    }
-}
-
-data class SeasonTimetableTest(
-    var start: LocalDate,
-    var end: LocalDate,
-    var estacio: String,
-    var weekTimetables: Map<DayOfWeek, DayTimetableTest>,
-    var observacions: String? = null
-) {
-    init {
-
-    }
-
-
-    fun getCurrentDayTimetable(): DayTimetableTest {
-        val currentDate = LocalDate.of(2024, 10, 19)
-        val currentDayOfWeek = currentDate.dayOfWeek
-
-        return weekTimetables[currentDayOfWeek]!!
-    }
-
-    fun getCurrentTimeInterval(): TimeIntervalTest? {
-        val currentDayTimetable = getCurrentDayTimetable()
-        return currentDayTimetable.getCurrentTimeInterval()
-    }
-
-
-}
-
-data class DayTimetableTest(
-    var morningTimeInterval: TimeIntervalTest,
-    var afternoonTimeInterval: TimeIntervalTest,
-    var dayOfWeek: DayOfWeek
-) {
-
-    var isClosed: Boolean
-
-    init {
-        if (morningTimeInterval.isClosed || afternoonTimeInterval.isClosed) {
-            isClosed = true
-        } else {
-            isClosed = false
-        }
-
-    }
-
-
-    fun getNextTimeInterval(): TimeIntervalTest? {
-        val currentTime = LocalTime.of(14, 30)
-
-        if (currentTime.isBefore(morningTimeInterval.startTime)) {
-            return morningTimeInterval
-
-        } else if (currentTime.isAfter(morningTimeInterval.startTime) && currentTime.isBefore(
-                afternoonTimeInterval.startTime
-            )
-        ) {
-            return afternoonTimeInterval
-        } else if (currentTime.isAfter(afternoonTimeInterval.startTime)) {
-            return null
-        }
-
-        return null
-    }
-
-    fun getCurrentTimeInterval(): TimeIntervalTest? {
-        val currentTime = LocalTime.of(14, 30)
-        if (currentTime.isAfter(morningTimeInterval.startTime) && currentTime.isBefore(
-                morningTimeInterval.endTime
-            )
-        ) {
-            return morningTimeInterval
-        } else if (currentTime.isAfter(afternoonTimeInterval.startTime) && currentTime.isBefore(
-                afternoonTimeInterval.endTime
-            )
-        ) {
-            return afternoonTimeInterval
-        }
-
-        return null
-    }
-
-}
-
-class TimeIntervalTest(
-    val startTime: LocalTime? = null,
-    val endTime: LocalTime? = null,
-    var observation: String? = null,
-
-    ) {
-
-    var isClosed: Boolean
-
-    init {
-        if (startTime == null || endTime == null) {
-            isClosed = true
-        } else {
-            isClosed = false
-        }
-    }
-
-    override fun toString(): String {
-        return "$startTime - $endTime"
-    }
-}

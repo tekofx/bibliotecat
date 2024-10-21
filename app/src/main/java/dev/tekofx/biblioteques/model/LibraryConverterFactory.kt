@@ -59,7 +59,7 @@ class LibraryConverterFactory : Converter.Factory() {
                 val currentDate = LocalDate.now()
 
                 var timeTableCurrent = timetableHivern;
-                if (currentDate >= timetableEstiu.dateInterval.from && currentDate <= timetableEstiu.dateInterval.to) {
+                if (currentDate >= timetableEstiu.start && currentDate <= timetableEstiu.end) {
                     timeTableCurrent = timetableEstiu
                 }
 
@@ -72,9 +72,8 @@ class LibraryConverterFactory : Converter.Factory() {
                     bibliotecaVirtualUrl = bibliotecaVirtualUrl,
                     emails = emails,
                     imatge = imatge,
-                    weekTimetableEstiu = timetableEstiu,
-                    weekTimetableHivern = timetableHivern,
-                    weekTimetableCurrent = timeTableCurrent
+                    summerTimeTable = timetableEstiu,
+                    winterTimetable = timetableHivern,
                 )
                 // Rellena los demás atributos según sea necesario
                 libraryList.add(library)
@@ -94,7 +93,7 @@ class LibraryConverterFactory : Converter.Factory() {
         return stringList
     }
 
-    private fun getTimetables(jsonObject: JSONObject): Pair<WeekTimetable, WeekTimetable> {
+    private fun getTimetables(jsonObject: JSONObject): Pair<TimeTable, TimeTable> {
         val (dateIntervalHivern, dateIntervalEstiu) = getDateIntervals(jsonObject)
         val hivernTimeTable = getTimetable(jsonObject, "hivern", dateIntervalHivern)
         val estiuTimeTable = getTimetable(jsonObject, "estiu", dateIntervalEstiu)
@@ -105,7 +104,7 @@ class LibraryConverterFactory : Converter.Factory() {
         jsonObject: JSONObject,
         estacio: String,
         dateInterval: DateInterval
-    ): WeekTimetable {
+    ): TimeTable {
 
         // TODO: Change to LocalDate.now()
         val currentDate = LocalDate.now()
@@ -143,24 +142,24 @@ class LibraryConverterFactory : Converter.Factory() {
         var nextDayTimeIntervals = dayOfWeekToTimeIntervalMap[currentDateOfWeek.plus(1)]
 
         // Join current and nextday
-        var timeIntervals: List<TimeInterval?> =
+        var timeIntervals: List<Interval?> =
             (currentTimeIntervals ?: listOf(null)) + (nextDayTimeIntervals ?: listOf(null))
 
         println("timeintervals $timeIntervals")
 
         // TODO: Improve code
-        var currentTimeInterval: TimeInterval? = null
-        var nextDayTimeInterval: TimeInterval? = null
+        var currentTimeInterval: Interval? = null
+        var nextDayTimeInterval: Interval? = null
 
 
         if (timeIntervals != null) {
             for (timeInterval in timeIntervals) {
                 println(1)
                 if (timeInterval != null) {
-                    if (timeInterval.startTime != null && timeInterval.endTime != null) {
+                    if (timeInterval.from != null && timeInterval.to != null) {
                         println("currenttime $currentTime")
                         println("timeinterval $timeInterval")
-                        if (currentTime >= timeInterval.startTime && currentTime <= timeInterval.endTime) {
+                        if (currentTime >= timeInterval.from && currentTime <= timeInterval.to) {
                             currentTimeInterval = timeInterval
                             break
                         } else {
@@ -178,19 +177,18 @@ class LibraryConverterFactory : Converter.Factory() {
         println("currentTimeInterval $currentTimeInterval")
 
 
-        val weekTimetableDeProva = WeekTimetable(
-            dateInterval = dateInterval,
-            currentTimeInterval = currentTimeInterval,
-            nextTimeInterval = nextDayTimeInterval,
-            estacio = estacio,
-            observacions = observacions,
-            dilluns = timeIntervalsDilluns,
-            dimarts = timeIntervalsDimarts,
-            dimecres = timeIntervalsDimecres,
-            dijous = timeIntervalsDijous,
-            divendres = timeIntervalsDivendres,
-            dissabte = timeIntervalsDissabte,
-            diumenge = timeIntervalsDiumenge
+        val weekTimetableDeProva = TimeTable(
+            start = dateInterval.from,
+            end = dateInterval.to,
+            mapOf(
+                DayOfWeek.MONDAY to DayTimeTable(timeIntervalsDilluns ?: listOf()),
+                DayOfWeek.TUESDAY to DayTimeTable(timeIntervalsDimarts ?: listOf()),
+                DayOfWeek.WEDNESDAY to DayTimeTable(timeIntervalsDimecres ?: listOf()),
+                DayOfWeek.THURSDAY to DayTimeTable(timeIntervalsDijous ?: listOf()),
+                DayOfWeek.FRIDAY to DayTimeTable(timeIntervalsDivendres ?: listOf()),
+                DayOfWeek.SATURDAY to DayTimeTable(timeIntervalsDissabte ?: listOf()),
+                DayOfWeek.SUNDAY to DayTimeTable(timeIntervalsDiumenge ?: listOf())
+            )
         )
 
         return weekTimetableDeProva
@@ -201,7 +199,7 @@ class LibraryConverterFactory : Converter.Factory() {
         jsonObject: JSONObject,
         estacio: String,
         day: String
-    ): List<TimeInterval>? {
+    ): List<Interval>? {
 
 
         val timeintervalString =
@@ -218,8 +216,8 @@ class LibraryConverterFactory : Converter.Factory() {
                 timeintervalString
             )
         ) {
-            val timeInterval = TimeInterval(null, null, timeintervalString, day)
-            val timeIntervalsList = mutableListOf<TimeInterval>()
+            val timeInterval = Interval(null, null, timeintervalString)
+            val timeIntervalsList = mutableListOf<Interval>()
             timeIntervalsList.add(timeInterval)
             return timeIntervalsList
         }
@@ -256,7 +254,7 @@ class LibraryConverterFactory : Converter.Factory() {
         val timeIntervalsStrings = regexTime.findAll(timeintervalString).map { it.value }.chunked(2)
 
 
-        val timeIntervals = mutableListOf<TimeInterval>()
+        val timeIntervals = mutableListOf<Interval>()
         for (timeIntervalString in timeIntervalsStrings) {
             var startTimeString = timeIntervalString[0] // "15:30"
             var endTimeString = timeIntervalString[1]   // "19:30"
@@ -284,8 +282,8 @@ class LibraryConverterFactory : Converter.Factory() {
             val startTime = parseTime(startTimeString) // LocalTime 15:30
             val endTime = parseTime(endTimeString)   // LocalTime 19:30
 
-            val timeInterval = TimeInterval(
-                startTime, endTime, null, day
+            val timeInterval = Interval(
+                startTime, endTime, null
             )
             timeIntervals.add(timeInterval)
 

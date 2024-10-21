@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.model.Library
+import java.time.LocalDate
+import java.time.LocalTime
 
 class LibraryRecyclerAdapter : RecyclerView.Adapter<LibraryRecyclerAdapter.ViewHolder>() {
 
@@ -44,16 +46,9 @@ class LibraryRecyclerAdapter : RecyclerView.Adapter<LibraryRecyclerAdapter.ViewH
             adrecaNom.text = biblioteca.adrecaNom
             timetable.text = "Tancat"
 
-
-            if (biblioteca.weekTimetableCurrent.currentTimeInterval != null) {
-                var timeString =
-                    "Obert · Fins a ${biblioteca.weekTimetableCurrent.currentTimeInterval!!.endTime}"
-                timetable.text = timeString
-
-            } else {
-                timetable.text =
-                    "Tancat · Obert ${biblioteca.weekTimetableCurrent.nextTimeInterval?.dayOfWeek} a ${biblioteca.weekTimetableCurrent.nextTimeInterval?.startTime}"
-            }
+            val localDate = LocalDate.now()
+            val localTime = LocalTime.now()
+            timetable.text = biblioteca.generateStateMessage(localDate, localTime)
 
             if (biblioteca.imatge.isNotEmpty()) {
                 avatar.loadUrl(biblioteca.imatge)
