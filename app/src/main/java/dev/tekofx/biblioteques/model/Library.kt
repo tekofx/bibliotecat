@@ -52,7 +52,7 @@ class Library(
     val summerTimeTable: TimeTable,
     val winterTimetable: TimeTable,
 ) {
-    private val dayFormatter = DateTimeFormatter.ofPattern("EEEE", Locale("cat"))
+    private val dayFormatter = DateTimeFormatter.ofPattern("EEEE", Locale("ca"))
 
     /**
      * Gets the current timetable based on the given date.
