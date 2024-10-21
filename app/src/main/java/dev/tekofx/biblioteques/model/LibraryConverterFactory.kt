@@ -218,16 +218,15 @@ class LibraryConverterFactory : Converter.Factory() {
 
     private fun parseTime(timeString: String): LocalTime? {
         return try {
-            var timeString = timeString
-            if (timeString.length < 3) {
-                timeString += ":00"
+            var output = timeString
+            if (output.length < 3) {
+                output += ":00"
             }
 
-            LocalTime.parse(timeString.replace(".", ":"), timeFormatter)
+            LocalTime.parse(output.replace(".", ":"), timeFormatter)
         } catch (e: DateTimeParseException) {
             println("Error parsing time: $timeString")
             throw RuntimeException("Time parsing failed")
-            null
         }
     }
 
@@ -269,8 +268,8 @@ class LibraryConverterFactory : Converter.Factory() {
             val htmlStringEstacio = jsonObject.getString("inici_horari_$estacio")
             val docEstiu = Ksoup.parse(htmlStringEstacio)
             val span = docEstiu.selectFirst("span")
-            var day = 0;
-            var month = 0;
+            val day: Int
+            val month: Int
             if (span != null && span.text().isNotEmpty()) {
                 val dateParts = span.text().split(" ")
                 day = dateParts[0].toInt()

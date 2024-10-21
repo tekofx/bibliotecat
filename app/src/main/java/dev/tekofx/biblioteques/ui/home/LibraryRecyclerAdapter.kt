@@ -46,6 +46,7 @@ class LibraryRecyclerAdapter : RecyclerView.Adapter<LibraryRecyclerAdapter.ViewH
         private val green = getColor(view.context, R.color.green_open)
         private val red = getColor(view.context, R.color.red_closed)
 
+
         fun bind(biblioteca: Library) {
             val localDate = LocalDate.now()
             val localTime = LocalTime.now()
