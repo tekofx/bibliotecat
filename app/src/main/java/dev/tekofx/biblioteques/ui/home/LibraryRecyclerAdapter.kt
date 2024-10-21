@@ -1,10 +1,13 @@
 package dev.tekofx.biblioteques.ui.home
 
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.OvalShape
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat.getColor
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import dev.tekofx.biblioteques.R
@@ -39,15 +42,28 @@ class LibraryRecyclerAdapter : RecyclerView.Adapter<LibraryRecyclerAdapter.ViewH
         private val adrecaNom: TextView = view.findViewById(R.id.adrecaNom)
         private val avatar: ImageView = view.findViewById(R.id.imageView)
         private val timetable: TextView = view.findViewById(R.id.timetable)
-
+        private val openIcon: ImageView = view.findViewById(R.id.openIcon)
+        private val green = getColor(view.context, R.color.green_open)
+        private val red = getColor(view.context, R.color.red_closed)
 
         fun bind(biblioteca: Library) {
+            val localDate = LocalDate.now()
+            val localTime = LocalTime.now()
             municipiNom.text = biblioteca.municipiNom
             adrecaNom.text = biblioteca.adrecaNom
             timetable.text = "Tancat"
+            val openStatusCircle = ShapeDrawable(OvalShape())
+            openStatusCircle.intrinsicHeight = 20
+            openStatusCircle.intrinsicWidth = 20
+            openStatusCircle.paint.color = red
 
-            val localDate = LocalDate.now()
-            val localTime = LocalTime.now()
+            if (biblioteca.isOpen(localDate, localTime)) {
+                // Círculo Verde
+                openStatusCircle.paint.color = green
+            }
+            openIcon.setImageDrawable(openStatusCircle)
+
+
             timetable.text = biblioteca.generateStateMessage(localDate, localTime)
 
             if (biblioteca.imatge.isNotEmpty()) {
