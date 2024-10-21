@@ -19,12 +19,12 @@ import java.time.format.DateTimeParseException
 
 class LibraryConverterFactory : Converter.Factory() {
 
-    val timeFormatter = DateTimeFormatter.ofPattern("[H:mm][HH:mm]")
+    private val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("[H:mm][HH:mm]")
 
 
     override fun responseBodyConverter(
         type: Type, annotations: Array<Annotation>, retrofit: Retrofit
-    ): Converter<ResponseBody, LibraryResponse>? {
+    ): Converter<ResponseBody, LibraryResponse> {
         return Converter { responseBody ->
             val jsonResponse = responseBody.string()
             val jsonObject = JSONObject(jsonResponse)
@@ -46,22 +46,15 @@ class LibraryConverterFactory : Converter.Factory() {
                 val imatge = if (imatgeArray.length() > 0) imatgeArray.getString(0) else ""
                 val emails = jsonArrayToStringArray(libraryElement.getJSONArray("email"))
 
-                println(adrecaNom + " " + descripcio)
-
-                // bibliotecavirtual.diba.cat url
                 val emailsTd = doc.selectFirst("td.email:contains(${emails[0]})")
                 val nameTd = emailsTd?.siblingElements()?.select("td.name")
                     ?.firstOrNull()
+
+                // bibliotecavirtual.diba.cat url
                 val bibliotecaVirtualUrl = nameTd?.getElementsByTag("a")?.attr("href")
 
                 // Horaris
                 val (timetableHivern, timetableEstiu) = getTimetables(libraryElement)
-                val currentDate = LocalDate.now()
-
-                var timeTableCurrent = timetableHivern;
-                if (currentDate >= timetableEstiu.start && currentDate <= timetableEstiu.end) {
-                    timeTableCurrent = timetableEstiu
-                }
 
 
                 val library = Library(
@@ -106,13 +99,6 @@ class LibraryConverterFactory : Converter.Factory() {
         dateInterval: DateInterval
     ): TimeTable {
 
-        // TODO: Change to LocalDate.now()
-        val currentDate = LocalDate.now()
-        //val currentDate = LocalDate.of(2024, 10, 21)
-        val currentTime = LocalTime.now()
-        //val currentTime = LocalTime.of(15, 30)
-
-        val observacions = getObservacionsEstacio(jsonObject, estacio)
         val timeIntervalsDilluns = getTimeIntervals(jsonObject, estacio, "dilluns")
         val timeIntervalsDimarts = getTimeIntervals(jsonObject, estacio, "dimarts")
         val timeIntervalsDimecres = getTimeIntervals(jsonObject, estacio, "dimecres")
@@ -120,61 +106,6 @@ class LibraryConverterFactory : Converter.Factory() {
         val timeIntervalsDivendres = getTimeIntervals(jsonObject, estacio, "divendres")
         val timeIntervalsDissabte = getTimeIntervals(jsonObject, estacio, "dissabte")
         val timeIntervalsDiumenge = getTimeIntervals(jsonObject, estacio, "diumenge")
-
-        val currentDateOfWeek = currentDate.dayOfWeek
-
-        val dayOfWeekToTimeIntervalMap = mapOf(
-            DayOfWeek.MONDAY to timeIntervalsDilluns,
-            DayOfWeek.TUESDAY to timeIntervalsDimarts,
-            DayOfWeek.WEDNESDAY to timeIntervalsDimecres,
-            DayOfWeek.THURSDAY to timeIntervalsDijous,
-            DayOfWeek.FRIDAY to timeIntervalsDivendres,
-            DayOfWeek.SATURDAY to timeIntervalsDissabte,
-            DayOfWeek.SUNDAY to timeIntervalsDiumenge
-        )
-
-
-        var currentTimeIntervals =
-            dayOfWeekToTimeIntervalMap[currentDateOfWeek]
-
-        println("currentDateOfWeek +1 ${currentDateOfWeek.plus(1)}")
-
-        var nextDayTimeIntervals = dayOfWeekToTimeIntervalMap[currentDateOfWeek.plus(1)]
-
-        // Join current and nextday
-        var timeIntervals: List<Interval?> =
-            (currentTimeIntervals ?: listOf(null)) + (nextDayTimeIntervals ?: listOf(null))
-
-        println("timeintervals $timeIntervals")
-
-        // TODO: Improve code
-        var currentTimeInterval: Interval? = null
-        var nextDayTimeInterval: Interval? = null
-
-
-        if (timeIntervals != null) {
-            for (timeInterval in timeIntervals) {
-                println(1)
-                if (timeInterval != null) {
-                    if (timeInterval.from != null && timeInterval.to != null) {
-                        println("currenttime $currentTime")
-                        println("timeinterval $timeInterval")
-                        if (currentTime >= timeInterval.from && currentTime <= timeInterval.to) {
-                            currentTimeInterval = timeInterval
-                            break
-                        } else {
-                            println("not in current time")
-                            nextDayTimeInterval = timeInterval
-                        }
-                    }
-                }
-            }
-        }
-
-        println("dayofweek $currentDateOfWeek")
-        println("nextDayTimeInterval $nextDayTimeInterval")
-        println("dillunsTimeInterval $timeIntervalsDilluns")
-        println("currentTimeInterval $currentTimeInterval")
 
 
         val weekTimetableDeProva = TimeTable(
@@ -224,20 +155,12 @@ class LibraryConverterFactory : Converter.Factory() {
 
         // If its closed
         if (timeintervalString.contains("tancat")) {
-//            val timeInterval = TimeInterval(null, null, null)
-//            val timeIntervalsList = mutableListOf<TimeInterval>()
-//            timeIntervalsList.add(timeInterval)
-//            return timeIntervalsList
             return null
 
         }
 
         // If the string is blank
         if (timeintervalString.isEmpty()) {
-//            val timeInterval = TimeInterval(null, null, null)
-//            val timeIntervalsList = mutableListOf<TimeInterval>()
-//            timeIntervalsList.add(timeInterval)
-//            return timeIntervalsList
             return null
         }
 
@@ -333,7 +256,7 @@ class LibraryConverterFactory : Converter.Factory() {
 
     private fun getObservacionsEstacio(jsonObject: JSONObject, estacio: String): String {
 
-        var htmlString = jsonObject.getString("observacions_$estacio")
+        val htmlString = jsonObject.getString("observacions_$estacio")
         val doc = Ksoup.parse(htmlString)
         val span = doc.selectFirst("p")?.text() ?: return ""
 
