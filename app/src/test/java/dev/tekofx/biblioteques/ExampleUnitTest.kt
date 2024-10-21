@@ -1,6 +1,5 @@
 package dev.tekofx.biblioteques
 
-import dev.tekofx.biblioteques.model.DayPeriod
 import dev.tekofx.biblioteques.model.DayTimetableTest
 import dev.tekofx.biblioteques.model.LibraryTest
 import dev.tekofx.biblioteques.model.SeasonTimetableTest
@@ -33,93 +32,78 @@ class ExampleUnitTest {
     @Before
     fun setUp() {
         mondayTimetable = DayTimetableTest(
-            listOf(
-                TimeIntervalTest(
-                    startTime = LocalTime.of(9, 30),
-                    endTime = LocalTime.of(14, 0),
-                    dayPeriod = DayPeriod.MORNING
-                ),
 
-                TimeIntervalTest(
-                    startTime = LocalTime.of(15, 0),
-                    endTime = LocalTime.of(20, 0),
-                    dayPeriod = DayPeriod.AFTERNOON
-                )
+            morningTimeInterval = TimeIntervalTest(
+                startTime = LocalTime.of(9, 30),
+                endTime = LocalTime.of(14, 0),
             ),
-            DayOfWeek.MONDAY
+
+            afternoonTimeInterval = TimeIntervalTest(
+                startTime = LocalTime.of(15, 0),
+                endTime = LocalTime.of(20, 0),
+            ),
+            dayOfWeek = DayOfWeek.MONDAY
         )
 
         tuesdayTimetable = DayTimetableTest(
-            listOf(
-                TimeIntervalTest(
-                    startTime = LocalTime.of(10, 0),
-                    endTime = LocalTime.of(14, 0),
-                    dayPeriod = DayPeriod.MORNING
+            morningTimeInterval = TimeIntervalTest(
+                startTime = LocalTime.of(10, 0),
+                endTime = LocalTime.of(14, 0),
 
                 ),
+            afternoonTimeInterval = TimeIntervalTest(),
 
-                ),
-            DayOfWeek.TUESDAY
+            dayOfWeek = DayOfWeek.TUESDAY
         )
 
         wednesdayTimetable = DayTimetableTest(
-            listOf(
-                TimeIntervalTest(
-                    startTime = LocalTime.of(11, 20),
-                    endTime = LocalTime.of(13, 0),
-                    dayPeriod = DayPeriod.MORNING
-                ),
-
-                TimeIntervalTest(
-                    startTime = LocalTime.of(17, 15),
-                    endTime = LocalTime.of(20, 0),
-                    dayPeriod = DayPeriod.AFTERNOON
-                )
-
+            morningTimeInterval = TimeIntervalTest(
+                startTime = LocalTime.of(11, 20),
+                endTime = LocalTime.of(13, 0),
             ),
-            DayOfWeek.WEDNESDAY
+
+            afternoonTimeInterval = TimeIntervalTest(
+                startTime = LocalTime.of(17, 15),
+                endTime = LocalTime.of(20, 0),
+            ),
+
+            dayOfWeek = DayOfWeek.WEDNESDAY
         )
 
         thursdayTimetable = DayTimetableTest(
-            listOf(
-                TimeIntervalTest(
-                    startTime = LocalTime.of(16, 15),
-                    endTime = LocalTime.of(21, 0),
-                    dayPeriod = DayPeriod.AFTERNOON
-                )
-
+            afternoonTimeInterval = TimeIntervalTest(
+                startTime = LocalTime.of(16, 15),
+                endTime = LocalTime.of(21, 0),
             ),
-            DayOfWeek.THURSDAY
+
+            morningTimeInterval = TimeIntervalTest(),
+
+            dayOfWeek = DayOfWeek.THURSDAY
         )
 
         fridayTimetable = DayTimetableTest(
-            listOf(
-                TimeIntervalTest(
-                    startTime = LocalTime.of(18, 0),
-                    endTime = LocalTime.of(20, 30),
-                    dayPeriod = DayPeriod.AFTERNOON
-                )
-
+            afternoonTimeInterval = TimeIntervalTest(
+                startTime = LocalTime.of(18, 0),
+                endTime = LocalTime.of(20, 30),
             ),
-            DayOfWeek.FRIDAY
+            morningTimeInterval = TimeIntervalTest(),
+            dayOfWeek = DayOfWeek.FRIDAY
         )
 
         saturdayTimetable = DayTimetableTest(
-            listOf(
-                TimeIntervalTest(
-                    startTime = LocalTime.of(9, 0),
-                    endTime = LocalTime.of(13, 30),
-                    dayPeriod = DayPeriod.MORNING
+            morningTimeInterval = TimeIntervalTest(
+                startTime = LocalTime.of(9, 0),
+                endTime = LocalTime.of(13, 30),
 
-                )
-
-            ),
-            DayOfWeek.SATURDAY
+                ),
+            afternoonTimeInterval = TimeIntervalTest(),
+            dayOfWeek = DayOfWeek.SATURDAY
         )
 
         sundayTimetable = DayTimetableTest(
-            listOf(),
-            DayOfWeek.SUNDAY
+            morningTimeInterval = TimeIntervalTest(),
+            afternoonTimeInterval = TimeIntervalTest(),
+            dayOfWeek = DayOfWeek.SUNDAY
         )
 
         weekTimetable = mapOf(
@@ -162,8 +146,8 @@ class ExampleUnitTest {
 
     @Test
     fun getCurrentDayTimetable() {
-        println(libraryTest.nextOpeningDay)
-        println(libraryTest.nextOpeningHour)
+        println(libraryTest.getNextOpening())
+        println(libraryTest)
 
 
         assert(true)
