@@ -15,7 +15,7 @@ import java.time.LocalTime
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
-class ExampleUnitTest {
+class LibraryTest {
 
     private lateinit var mondayTimetable: DayTimeTable
     private lateinit var tuesdayTimetable: DayTimeTable
@@ -27,9 +27,13 @@ class ExampleUnitTest {
     private lateinit var winterTimetable: TimeTable
     private lateinit var summerTimetable: TimeTable
     private lateinit var libraryTest: Library
+    private lateinit var lastDateOfWinter: LocalDate
+
 
     @Before
     fun setUp() {
+        lastDateOfWinter = LocalDate.of(2025, 6, 20)
+
         mondayTimetable = DayTimeTable(
             intervals = listOf(
 
@@ -110,7 +114,7 @@ class ExampleUnitTest {
 
         winterTimetable = TimeTable(
             start = LocalDate.of(2024, 9, 24),
-            end = LocalDate.of(2025, 6, 20),
+            end = lastDateOfWinter,
             dayTimetables = mapOf(
                 DayOfWeek.MONDAY to mondayTimetable,
                 DayOfWeek.TUESDAY to tuesdayTimetable,
@@ -154,9 +158,48 @@ class ExampleUnitTest {
     @Test
     fun getNextDayOpenTest() {
         val saturday = LocalDate.of(2024, 10, 26)
-        val latestDayOfWinter = LocalDate.of(2025, 6, 20)
-        
+
         assert(libraryTest.getNextDayOpen(saturday) == LocalDate.of(2024, 10, 28))
-        assert(libraryTest.getNextDayOpen(latestDayOfWinter) == LocalDate.of(2025, 6, 21))
+        assert(libraryTest.getNextDayOpen(lastDateOfWinter) == LocalDate.of(2025, 6, 21))
+    }
+
+    @Test
+    fun generateStateMessageTest() {
+        val monday = LocalDate.of(2024, 10, 21)
+        val saturday = LocalDate.of(2024, 10, 26)
+        val time10 = LocalTime.of(10, 0)
+        val time14 = LocalTime.of(14, 30)
+        val time16 = LocalTime.of(16, 30)
+        val time21 = LocalTime.of(21, 0)
+
+
+        // Check all timetables of day
+        assert(libraryTest.generateStateMessage(monday, time10) == "Obert · Fins a 14:00")
+        assert(libraryTest.generateStateMessage(monday, time14) == "Tancat · Obre a las 15:00")
+        assert(libraryTest.generateStateMessage(monday, time16) == "Obert · Fins a 20:00")
+        assert(
+            libraryTest.generateStateMessage(
+                monday,
+                time21
+            ) == "Tancat · Obre el dimarts a las 10:00"
+        )
+
+        // Check next day closed
+        assert(
+            libraryTest.generateStateMessage(
+                saturday,
+                time21
+            ) == "Tancat · Obre el dilluns a las 09:30"
+        )
+    }
+
+    @Test
+    fun getCurrentTimetableTest() {
+        // TODO: Implement
+    }
+
+    @Test
+    fun isOpenTest() {
+        // TODO: Implement
     }
 }
