@@ -47,12 +47,13 @@ class LibraryRecyclerAdapter : RecyclerView.Adapter<LibraryRecyclerAdapter.ViewH
         private val red = getColor(view.context, R.color.red_closed)
 
 
-        fun bind(biblioteca: Library) {
+        fun bind(library: Library) {
+            
             val localDate = LocalDate.now()
             val localTime = LocalTime.now()
-            municipiNom.text = biblioteca.municipiNom
-            adrecaNom.text = biblioteca.adrecaNom
-            timetable.text = biblioteca.generateStateMessage(localDate, localTime)
+            municipiNom.text = library.municipiNom
+            adrecaNom.text = library.adrecaNom
+            timetable.text = library.generateStateMessage(localDate, localTime)
 
 
             val openStatusCircle = ShapeDrawable(OvalShape())
@@ -60,14 +61,14 @@ class LibraryRecyclerAdapter : RecyclerView.Adapter<LibraryRecyclerAdapter.ViewH
             openStatusCircle.intrinsicWidth = 20
             openStatusCircle.paint.color = red
 
-            if (biblioteca.isOpen(localDate, localTime)) {
+            if (library.isOpen(localDate, localTime)) {
                 openStatusCircle.paint.color = green
             }
             openIcon.setImageDrawable(openStatusCircle)
 
 
-            if (biblioteca.imatge.isNotEmpty()) {
-                avatar.loadUrl(biblioteca.imatge)
+            if (library.imatge.isNotEmpty()) {
+                avatar.loadUrl(library.imatge)
             }
 
 
