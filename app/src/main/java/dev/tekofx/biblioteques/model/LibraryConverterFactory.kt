@@ -149,7 +149,6 @@ class LibraryConverterFactory : Converter.Factory() {
             val timeInterval = Interval(null, null, timeintervalString)
             val timeIntervalsList = mutableListOf<Interval>()
             timeIntervalsList.add(timeInterval)
-            println("w " + timeInterval)
             return timeIntervalsList
         }
 
