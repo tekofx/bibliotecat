@@ -12,14 +12,35 @@ import java.util.Locale
  * @property from The start time of the interval.
  * @property to The end time of the interval.
  */
-data class Interval(val from: LocalTime?, val to: LocalTime?, val observation: String? = null)
+data class Interval(val from: LocalTime?, val to: LocalTime?, val observation: String? = null) {
+    override fun toString(): String {
+        var output = "[${from} - ${to}]"
+        if (!observation.isNullOrEmpty()) {
+            output += " ${observation}"
+        }
+        return output
+    }
+}
 
 /**
  * Represents a timetable for a specific day, containing multiple intervals.
  *
  * @property intervals A list of time intervals for the day.
  */
-data class DayTimeTable(val intervals: List<Interval>)
+data class DayTimeTable(val intervals: List<Interval>) {
+    override fun toString(): String {
+        var output = ""
+        if (intervals.isEmpty()) {
+            output += "Tancat"
+        } else {
+
+            for (interval in intervals) {
+                output += interval.toString() + "\n"
+            }
+        }
+        return output
+    }
+}
 
 /**
  * Represents a timetable for a period, containing day-specific timetables.
@@ -32,7 +53,16 @@ data class TimeTable(
     val start: LocalDate,
     val end: LocalDate,
     val dayTimetables: Map<DayOfWeek, DayTimeTable>
-)
+) {
+
+    override fun toString(): String {
+        var output = "${start} - ${end}\n"
+        for (day in dayTimetables) {
+            output += "${day.key}: ${day.value}"
+        }
+        return output
+    }
+}
 
 /**
  * Represents a library with summer and winter timetables.
@@ -139,6 +169,10 @@ class Library(
         }
 
         return nextDay
+    }
+
+    override fun toString(): String {
+        return "${adrecaNom} - ${municipiNom}\nWinterTimetable: ${winterTimetable}\n\nSummerTimetable ${summerTimeTable}"
     }
 }
 
