@@ -5,6 +5,8 @@ import android.graphics.drawable.shapes.OvalShape
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat.getColor
@@ -15,13 +17,50 @@ import dev.tekofx.biblioteques.model.Library
 import java.time.LocalDate
 import java.time.LocalTime
 
-class LibraryRecyclerAdapter : RecyclerView.Adapter<LibraryRecyclerAdapter.ViewHolder>() {
+class LibraryRecyclerAdapter : RecyclerView.Adapter<LibraryRecyclerAdapter.ViewHolder>(),
+    Filterable {
 
-    private var library: MutableList<Library> = mutableListOf()
+    private var libraries: MutableList<Library> = mutableListOf()
+    private var originalLibraryList: List<Library> = listOf()
 
     fun setLibraries(libraries: MutableList<Library>) {
-        this.library = libraries
+        this.libraries = libraries
+        this.originalLibraryList = libraries
+
         notifyDataSetChanged()
+    }
+
+    fun setFilteredLibraries(libraries: MutableList<Library>) {
+        this.libraries = libraries
+        notifyDataSetChanged()
+    }
+
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val filteredResults = FilterResults()
+                if (constraint.isNullOrEmpty()) {
+                    filteredResults.values = originalLibraryList
+                } else {
+                    val filterPattern = constraint.toString().lowercase().trim()
+                    val filteredList = originalLibraryList.filter { item ->
+                        // Apply your filtering logic here
+                        item.adrecaNom.contains(filterPattern, ignoreCase = true)
+                        item.municipiNom.contains(filterPattern, ignoreCase = true)
+                    }
+                    filteredResults.values = filteredList
+                }
+                return filteredResults
+            }
+
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                val filteredList = results?.values as List<Library>
+                setFilteredLibraries(filteredList.toMutableList())
+                //Log.d("LibraryRecyclerAdapter", "Filtered Results: $filteredList")
+
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -30,11 +69,11 @@ class LibraryRecyclerAdapter : RecyclerView.Adapter<LibraryRecyclerAdapter.ViewH
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(library[position])
+        holder.bind(libraries[position])
     }
 
     override fun getItemCount(): Int {
-        return library.size
+        return libraries.size
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -48,7 +87,7 @@ class LibraryRecyclerAdapter : RecyclerView.Adapter<LibraryRecyclerAdapter.ViewH
 
 
         fun bind(library: Library) {
-            
+
             val localDate = LocalDate.now()
             val localTime = LocalTime.now()
             municipiNom.text = library.municipiNom

@@ -53,10 +53,9 @@ class HomeFragment : Fragment() {
             HomeViewModelFactory(LibraryRepository(LibraryService.getInstance()))
         )[HomeViewModel::class.java]
 
-        setUpRecyclerView(root)
 
         viewModel.libraries.observe(viewLifecycleOwner, Observer {
-            Log.d(TAG, "onCreate: $it")
+            //Log.d(TAG, "onCreate: $it")
             libraryRecyclerAdapter.setLibraries(it.toMutableList())
         })
 
@@ -64,6 +63,7 @@ class HomeFragment : Fragment() {
         viewModel.getLibraries()
 
         setUpRecyclerView(root)
+        setUpSearchView()
         return root
     }
 
@@ -99,6 +99,8 @@ class HomeFragment : Fragment() {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 searchButton.isEnabled = !newText.isNullOrEmpty()
+                val test = libraryRecyclerAdapter.filter.filter(newText)
+                Log.d("HomeFragment", "onQueryTextChange: $test")
                 return true
             }
         })
@@ -106,6 +108,7 @@ class HomeFragment : Fragment() {
         searchButton.setOnClickListener {
             val query: String = searchView.query.toString()
             Toast.makeText(this.context, query, Toast.LENGTH_SHORT).show()
+
         }
 
     }
