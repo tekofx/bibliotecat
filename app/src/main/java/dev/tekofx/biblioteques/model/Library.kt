@@ -146,9 +146,15 @@ class Library(
 
             // If there are no more intervals today, look for the next opening day
             val nextDay = getNextDayOpen(date)
+
             val nextTimetable = getCurrentTimetable(nextDay)
             val nextDayTimetable = nextTimetable.dayTimetables[nextDay.dayOfWeek]
             val nextDayName = nextDay.format(dayFormatter)
+            // Opens tomorrow
+            if (nextDay == date.plusDays(1)) {
+                return "Tancat · Obre demà a las ${nextDayTimetable?.intervals?.firstOrNull()?.from}"
+
+            }
             return "Tancat · Obre el $nextDayName a las ${nextDayTimetable?.intervals?.firstOrNull()?.from}"
         }
     }
