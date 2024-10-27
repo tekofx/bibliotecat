@@ -46,8 +46,8 @@ class LibraryRecyclerAdapter : RecyclerView.Adapter<LibraryRecyclerAdapter.ViewH
                     val filterPattern = constraint.toString().lowercase().trim()
                     val filteredList = originalLibraryList.filter { item ->
                         // Apply your filtering logic here
-                        item.adrecaNom.contains(filterPattern, ignoreCase = true)
-                        item.municipiNom.contains(filterPattern, ignoreCase = true)
+                        item.adrecaNom.contains(filterPattern, ignoreCase = true) ||
+                                item.municipiNom.contains(filterPattern, ignoreCase = true)
                     }
                     filteredResults.values = filteredList
                 }
@@ -89,8 +89,8 @@ class LibraryRecyclerAdapter : RecyclerView.Adapter<LibraryRecyclerAdapter.ViewH
 
         fun bind(library: Library) {
 
-            val localDate = LocalDate.of(2024, 10, 28)
-            val localTime = LocalTime.of(19, 0)
+            val localDate = LocalDate.now()
+            val localTime = LocalTime.now()
             municipiNom.text = library.municipiNom
             adrecaNom.text = library.adrecaNom
             timetable.text = library.generateStateMessage(localDate, localTime)
