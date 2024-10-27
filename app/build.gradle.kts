@@ -46,7 +46,10 @@ android {
 }
 
 dependencies {
-
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.ui.tooling.preview.android)
     testImplementation(libs.junit)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -61,6 +64,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(libs.picasso)
+    implementation(libs.coil.compose)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
 
