@@ -265,6 +265,27 @@ class LibraryTest {
     }
 
     @Test
+    fun isOpenTest() {
+        val monday = LocalDate.of(2024, 10, 21)
+        val sunday = LocalDate.of(2024, 10, 27)
+        val time = LocalTime.of(10, 0)
+        val time14 = LocalTime.of(14, 0)
+        assert(libraryTest.isOpen(monday, time))
+        assert(!libraryTest.isOpen(monday, time14))
+        assert(!libraryTest.isOpen(sunday, time))
+
+    }
+
+    @Test
+    fun isClosingSoonTest() {
+        val monday = LocalDate.of(2024, 10, 21)
+        val time = LocalTime.of(10, 0)
+        val time13 = LocalTime.of(13, 0)
+        assert(!libraryTest.isClosingSoon(monday, time))
+        assert(libraryTest.isClosingSoon(monday, time13))
+    }
+
+    @Test
     fun getNextDayOpenTest() {
         val saturday = LocalDate.of(2024, 10, 26)
 
@@ -311,17 +332,6 @@ class LibraryTest {
         assert(libraryTest.getCurrentSeasonTimetable(firstDayOfWinter) == winterTimetable)
     }
 
-    @Test
-    fun isOpenTest() {
-        val monday = LocalDate.of(2024, 10, 21)
-        val sunday = LocalDate.of(2024, 10, 27)
-        val time = LocalTime.of(10, 0)
-        val time14 = LocalTime.of(14, 0)
-        assert(libraryTest.isOpen(monday, time))
-        assert(!libraryTest.isOpen(monday, time14))
-        assert(!libraryTest.isOpen(sunday, time))
-
-    }
 
     @Test
     fun getCurrentDayTimetableTest() {
