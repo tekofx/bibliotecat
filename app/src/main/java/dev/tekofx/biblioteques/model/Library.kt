@@ -104,7 +104,7 @@ class Library(
      */
     fun isClosingSoon(date: LocalDate, time: LocalTime): Boolean {
         val currentInterval = getCurrentInterval(date, time)!!
-        return Duration.between(time, currentInterval.to).toHours() <= 1
+        return Duration.between(time, currentInterval.to).toMinutes() <= 60
     }
 
     /**
@@ -195,9 +195,9 @@ class Library(
         val dayTimeTable = currentTimetable.dayTimetables[date.dayOfWeek]
 
         if (isOpen(date, time)) {
-            val currentInterval = getCurrentInterval(date, time)
+            val currentInterval = getCurrentInterval(date, time)!!
 
-            if (Duration.between(time, currentInterval!!.to).toHours() < 1) {
+            if (isClosingSoon(date, time)) {
                 return "Obert · Tanca a les ${currentInterval.to}"
             }
 
