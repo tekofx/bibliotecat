@@ -7,7 +7,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -30,10 +29,6 @@ fun LibraryList(viewModel: HomeViewModel) {
                 }
             }
         }
-    }
-
-    LaunchedEffect(Unit) {
-        viewModel.getLibraries()
     }
 
 

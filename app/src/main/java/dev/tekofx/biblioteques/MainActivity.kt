@@ -12,11 +12,16 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
+import dev.tekofx.biblioteques.call.LibraryService
 import dev.tekofx.biblioteques.components.BottomNavigation
 import dev.tekofx.biblioteques.navigation.Navigation
+import dev.tekofx.biblioteques.repository.LibraryRepository
+import dev.tekofx.biblioteques.ui.home.HomeViewModel
+import dev.tekofx.biblioteques.ui.home.HomeViewModelFactory
 
 class MainActivity : AppCompatActivity() {
-
+    val libraryRepository = LibraryRepository(LibraryService.getInstance())
+    val homeViewModel = HomeViewModelFactory(libraryRepository).create(HomeViewModel::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +31,7 @@ class MainActivity : AppCompatActivity() {
                 color = MaterialTheme.colorScheme.background
 
             ) {
-                MainScreen()
+                MainScreen(homeViewModel)
             }
 
         }
@@ -35,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 }
 
 @Composable
-fun MainScreen() {
+fun MainScreen(homeViewModel: HomeViewModel) {
     val navController = rememberNavController()
     Scaffold(
         bottomBar = {
@@ -47,7 +52,7 @@ fun MainScreen() {
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            Navigation(navController)
+            Navigation(navController, homeViewModel)
         }
 
     }
