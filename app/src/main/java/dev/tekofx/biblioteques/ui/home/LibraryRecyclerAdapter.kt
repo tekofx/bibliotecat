@@ -65,7 +65,7 @@ class LibraryRecyclerAdapter : RecyclerView.Adapter<LibraryRecyclerAdapter.ViewH
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        return ViewHolder(layoutInflater.inflate(R.layout.recycler_view_item, parent, false))
+        return ViewHolder(layoutInflater.inflate(R.layout.library_card, parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
