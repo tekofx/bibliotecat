@@ -191,9 +191,6 @@ class Library(
      * @return A message indicating the state of the library.
      */
     fun generateStateMessage(date: LocalDate, time: LocalTime): String {
-        val currentTimetable = getCurrentSeasonTimetable(date)
-        val dayTimeTable = currentTimetable.dayTimetables[date.dayOfWeek]
-
         if (isOpen(date, time)) {
             val currentInterval = getCurrentInterval(date, time)!!
 
