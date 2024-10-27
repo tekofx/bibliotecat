@@ -1,5 +1,6 @@
 package dev.tekofx.biblioteques.ui.home
 
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dev.tekofx.biblioteques.dto.LibraryResponse
@@ -12,7 +13,7 @@ import retrofit2.Response
 
 class HomeViewModel(private val repository: LibraryRepository) : ViewModel() {
 
-    val libraries = MutableLiveData<List<Library>>()
+    val libraries = mutableStateListOf<Library>()
     val errorMessage = MutableLiveData<String>()
 
     fun getLibraries() {
@@ -23,7 +24,8 @@ class HomeViewModel(private val repository: LibraryRepository) : ViewModel() {
                 call: Call<LibraryResponse>,
                 response: Response<LibraryResponse>
             ) {
-                libraries.postValue(response.body()?.elements)
+
+                libraries.addAll(response.body()?.elements)
             }
 
             override fun onFailure(call: Call<LibraryResponse>, t: Throwable) {

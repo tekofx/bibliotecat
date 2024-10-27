@@ -8,6 +8,15 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView
 import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.call.LibraryService
 import dev.tekofx.biblioteques.databinding.FragmentHomeBinding
+import dev.tekofx.biblioteques.model.Library
 import dev.tekofx.biblioteques.repository.LibraryRepository
 
 
@@ -33,6 +43,7 @@ class HomeFragment : Fragment() {
 
     // Recycler
     lateinit var libraryRecyclerView: RecyclerView
+    lateinit var composeView: ComposeView
     val libraryRecyclerAdapter: LibraryRecyclerAdapter = LibraryRecyclerAdapter()
 
 
@@ -62,8 +73,18 @@ class HomeFragment : Fragment() {
         viewModel.errorMessage.observe(viewLifecycleOwner, Observer {})
         viewModel.getLibraries()
 
-        setUpRecyclerView(root)
-        setUpSearchView()
+        //setUpRecyclerView(root)
+
+        val llibraries: List<Library> =
+            LibraryService.getInstance().getLibraries().execute().body()?.elements!!
+        composeView.setContent {
+            LazyColumn(Modifier.fillMaxSize()) {
+                items(llibraries) {
+                    ListItem(it)
+                }
+            }
+        }
+        //setUpSearchView()
         return root
     }
 
@@ -73,10 +94,13 @@ class HomeFragment : Fragment() {
     private fun setUpRecyclerView(root: View) {
 
         try {
+
             libraryRecyclerView = root.findViewById(R.id.bibliotequesRecycler)
             libraryRecyclerView.setHasFixedSize(true)
             libraryRecyclerView.layoutManager = LinearLayoutManager(this.context)
             libraryRecyclerView.adapter = libraryRecyclerAdapter
+
+
         } catch (ex: Exception) {
             println(ex)
         }
@@ -119,5 +143,12 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+}
+
+@Composable
+fun ListItem(data: Library, modifier: Modifier = Modifier) {
+    Row(modifier.fillMaxWidth()) {
+        Text(text = data.adrecaNom)
     }
 }
