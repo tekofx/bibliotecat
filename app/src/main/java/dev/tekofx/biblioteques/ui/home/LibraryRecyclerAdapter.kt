@@ -120,7 +120,7 @@ class LibraryRecyclerAdapter : RecyclerView.Adapter<LibraryRecyclerAdapter.ViewH
         }
 
         private fun ImageView.loadUrl(url: String) {
-            Picasso.with(context).load(url).into(this)
+            Picasso.get().load(url).into(this)
         }
     }
 }
