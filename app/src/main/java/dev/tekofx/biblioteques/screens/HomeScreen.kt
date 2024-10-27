@@ -1,6 +1,7 @@
 package dev.tekofx.biblioteques.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -52,26 +54,25 @@ fun HomeScreen() {
     }
 }
 
-
-@Composable
-fun ListItem(data: Library?, modifier: Modifier = Modifier) {
-    Row(modifier.fillMaxWidth()) {
-        if (data != null) {
-            Text(text = data.adrecaNom)
-        }
-    }
-}
-
 @Composable
 fun LibraryList(viewModel: HomeViewModel) {
     val libraries by viewModel.libraries.observeAsState(emptyList())
     val listState = rememberLazyListState()
+    val isLoading by viewModel.isLoading.observeAsState(false)
 
-    LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
-        items(libraries) { library ->
-            LibraryItemComposable(library)
+    Box(modifier = Modifier.fillMaxSize()) {
+        if (isLoading) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        } else {
+            LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
+                items(libraries) { library ->
+                    LibraryItemComposable(library)
+                }
+            }
         }
     }
+
+
 
     LaunchedEffect(listState) {
         snapshotFlow { listState.firstVisibleItemIndex }

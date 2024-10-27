@@ -12,6 +12,7 @@ import retrofit2.Response
 
 class HomeViewModel(private val repository: LibraryRepository) : ViewModel() {
 
+    val isLoading = MutableLiveData<Boolean>(true)
     val libraries = MutableLiveData<List<Library>>()
     val errorMessage = MutableLiveData<String>()
 
@@ -25,10 +26,12 @@ class HomeViewModel(private val repository: LibraryRepository) : ViewModel() {
             ) {
 
                 libraries.postValue(response.body()?.elements)
+                isLoading.postValue(false)
             }
 
             override fun onFailure(call: Call<LibraryResponse>, t: Throwable) {
                 errorMessage.postValue(t.message)
+                isLoading.postValue(false)
             }
         })
 
