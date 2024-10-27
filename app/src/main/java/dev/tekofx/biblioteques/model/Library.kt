@@ -1,6 +1,7 @@
 package dev.tekofx.biblioteques.model
 
 import java.time.DayOfWeek
+import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -12,15 +13,7 @@ import java.util.Locale
  * @property from The start time of the interval.
  * @property to The end time of the interval.
  */
-data class Interval(val from: LocalTime?, val to: LocalTime?, val observation: String? = null) {
-    override fun toString(): String {
-        var output = "[${from} - ${to}]"
-        if (!observation.isNullOrEmpty()) {
-            output += " ${observation}"
-        }
-        return output
-    }
-}
+data class Interval(val from: LocalTime?, val to: LocalTime?, val observation: String? = null)
 
 /**
  * Represents a timetable for a specific day, containing multiple intervals.
@@ -96,9 +89,11 @@ class Library(
      * @param date The date to check.
      * @return The current timetable.
      */
-    fun getCurrentTimetable(date: LocalDate): TimeTable {
-        return if (date.isAfter(summerTimeTable.start) && date.isBefore(summerTimeTable.end)) {
+    fun getCurrentSeasonTimetable(date: LocalDate): TimeTable {
+        return if (date == summerTimeTable.start || date == summerTimeTable.end) {
             summerTimeTable
+        } else if (date.isAfter(summerTimeTable.start) && date.isBefore(summerTimeTable.end)) {
+            return summerTimeTable
         } else {
             winterTimetable
         }
@@ -112,11 +107,39 @@ class Library(
      * @return True if the library is open, false otherwise.
      */
     fun isOpen(date: LocalDate, hora: LocalTime): Boolean {
-        val currentTimetable = getCurrentTimetable(date)
+        val currentTimetable = getCurrentSeasonTimetable(date)
         val dayTimetable = currentTimetable.dayTimetables[date.dayOfWeek]
         return dayTimetable?.intervals?.any { interval ->
             hora.isAfter(interval.from) && hora.isBefore(interval.to)
         } ?: false
+    }
+
+    /**
+     * Gets the current day's timetable based on the given date.
+     *
+     * @param date The date to check.
+     * @return The current day's timetable, or null if it doesn't exist.
+     */
+    fun getCurrentDayTimetable(date: LocalDate): DayTimeTable? {
+        val currentTimetable = getCurrentSeasonTimetable(date)
+        return currentTimetable.dayTimetables[date.dayOfWeek]
+    }
+
+
+    /**
+     * Gets the next interval of day based on the given date and time.
+     * @param date The date to check.
+     * @param time The time to check.
+     * @return The next interval of day, or null if it doesn't exist.
+     */
+    fun getNextIntervalOfDay(date: LocalDate, time: LocalTime): Interval? {
+        val dayTimeTable = getCurrentDayTimetable(date)
+        val nextInterval = dayTimeTable?.intervals?.find { interval ->
+            time.isBefore(interval.from)
+        }
+
+        return nextInterval
+
     }
 
     /**
@@ -127,27 +150,29 @@ class Library(
      * @return A message indicating the state of the library.
      */
     fun generateStateMessage(date: LocalDate, time: LocalTime): String {
-        val currentTimetable = getCurrentTimetable(date)
+        val currentTimetable = getCurrentSeasonTimetable(date)
         val dayTimeTable = currentTimetable.dayTimetables[date.dayOfWeek]
 
         if (isOpen(date, time)) {
-            val currentInterval = dayTimeTable?.intervals?.find { interval ->
-                time.isAfter(interval.from) && time.isBefore(interval.to)
+            val currentInterval = getCurrentInterval(date, time)
+
+            if (Duration.between(time, currentInterval!!.to).toHours() < 1) {
+                return "Obert · Tanca a les ${currentInterval.to}"
             }
-            return "Obert · Fins a ${currentInterval?.to}"
+
+
+            return "Obert · Fins a ${currentInterval.to}"
         } else {
             // Verify if there are more intervals in the same day
-            val nextInterval = dayTimeTable?.intervals?.find { interval ->
-                time.isBefore(interval.from)
-            }
-            if (nextInterval != null) {
-                return "Tancat · Obre a las ${nextInterval.from}"
+            val nextIntervalOfDay = getNextIntervalOfDay(date, time)
+            if (nextIntervalOfDay != null) {
+                return "Tancat · Obre a las ${nextIntervalOfDay.from}"
             }
 
             // If there are no more intervals today, look for the next opening day
             val nextDay = getNextDayOpen(date)
 
-            val nextTimetable = getCurrentTimetable(nextDay)
+            val nextTimetable = getCurrentSeasonTimetable(nextDay)
             val nextDayTimetable = nextTimetable.dayTimetables[nextDay.dayOfWeek]
             val nextDayName = nextDay.format(dayFormatter)
             // Opens tomorrow
@@ -167,18 +192,32 @@ class Library(
      */
     fun getNextDayOpen(date: LocalDate): LocalDate {
         var nextDay = date.plusDays(1)
-        var currentTimetable = getCurrentTimetable(nextDay)
+        var currentTimetable = getCurrentSeasonTimetable(nextDay)
 
         while (currentTimetable.dayTimetables[nextDay.dayOfWeek]?.intervals.isNullOrEmpty()) {
             nextDay = nextDay.plusDays(1)
-            currentTimetable = getCurrentTimetable(nextDay)
+            currentTimetable = getCurrentSeasonTimetable(nextDay)
         }
 
         return nextDay
     }
 
+    /**
+     * Gets the current Interval
+     * @param date The date to check.
+     * @param time The time to check.
+     * @return The current interval, or null if it doesn't exist.
+     */
+    fun getCurrentInterval(date: LocalDate, time: LocalTime): Interval? {
+        val currentTimetable = getCurrentSeasonTimetable(date)
+        val dayTimeTable = currentTimetable.dayTimetables[date.dayOfWeek]
+        return dayTimeTable?.intervals?.find { interval ->
+            time == interval.from || (time.isAfter(interval.from) && time.isBefore(interval.to))
+        }
+    }
+
     override fun toString(): String {
-        return "${adrecaNom} - ${municipiNom}\nWinterTimetable: ${winterTimetable}\n\nSummerTimetable ${summerTimeTable}"
+        return "$adrecaNom - ${municipiNom}\nWinterTimetable: ${winterTimetable}\n\nSummerTimetable ${summerTimeTable}"
     }
 }
 

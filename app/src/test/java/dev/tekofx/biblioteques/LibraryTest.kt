@@ -17,24 +17,54 @@ import java.time.LocalTime
  */
 class LibraryTest {
 
-    private lateinit var mondayTimetable: DayTimeTable
-    private lateinit var tuesdayTimetable: DayTimeTable
-    private lateinit var wednesdayTimetable: DayTimeTable
-    private lateinit var thursdayTimetable: DayTimeTable
-    private lateinit var fridayTimetable: DayTimeTable
-    private lateinit var saturdayTimetable: DayTimeTable
-    private lateinit var sundayTimetable: DayTimeTable
+    private lateinit var mondayWinterTimetable: DayTimeTable
+    private lateinit var tuesdayWinterTimetable: DayTimeTable
+    private lateinit var wednesdayWinterTimetable: DayTimeTable
+    private lateinit var thursdayWinterTimetable: DayTimeTable
+    private lateinit var fridayWinterTimetable: DayTimeTable
+    private lateinit var saturdayWinterTimetable: DayTimeTable
+    private lateinit var sundayWinterTimetable: DayTimeTable
+    private lateinit var mondaySummerTimetable: DayTimeTable
+    private lateinit var tuesdaySummerTimetable: DayTimeTable
+    private lateinit var wednesdaySummerTimetable: DayTimeTable
+    private lateinit var thursdaySummerTimetable: DayTimeTable
+    private lateinit var fridaySummerTimetable: DayTimeTable
+    private lateinit var saturdaySummerTimetable: DayTimeTable
+    private lateinit var sundaySummerTimetable: DayTimeTable
     private lateinit var winterTimetable: TimeTable
     private lateinit var summerTimetable: TimeTable
     private lateinit var libraryTest: Library
-    private lateinit var lastDateOfWinter: LocalDate
+
+    /**
+     * Saturday 21/06/2025
+     */
+    private lateinit var firstDayOfSummer: LocalDate
+
+    /**
+     * Monday 23/09/2024
+     */
+    private lateinit var firstDayOfWinter: LocalDate
+
+    /**
+     * Friday = 20/06/2025
+     */
+    private lateinit var lastDayOfWinter: LocalDate
+
+    /**
+     * Monday = 22/09/2025
+     */
+    private lateinit var lastDayOfSummer: LocalDate
 
 
     @Before
     fun setUp() {
-        lastDateOfWinter = LocalDate.of(2025, 6, 20)
 
-        mondayTimetable = DayTimeTable(
+        firstDayOfWinter = LocalDate.of(2024, 9, 23)// Monday
+        lastDayOfWinter = LocalDate.of(2025, 6, 20) // Friday
+        firstDayOfSummer = LocalDate.of(2025, 6, 21) // Saturday
+        lastDayOfSummer = LocalDate.of(2025, 9, 22) // Monday
+
+        mondayWinterTimetable = DayTimeTable(
             intervals = listOf(
 
 
@@ -50,7 +80,7 @@ class LibraryTest {
             )
         )
 
-        tuesdayTimetable = DayTimeTable(
+        tuesdayWinterTimetable = DayTimeTable(
             intervals = listOf(
                 Interval(
                     from = LocalTime.of(10, 0),
@@ -61,7 +91,7 @@ class LibraryTest {
 
         )
 
-        wednesdayTimetable = DayTimeTable(
+        wednesdayWinterTimetable = DayTimeTable(
             listOf(
                 Interval(
                     from = LocalTime.of(11, 20),
@@ -76,7 +106,7 @@ class LibraryTest {
 
         )
 
-        thursdayTimetable = DayTimeTable(
+        thursdayWinterTimetable = DayTimeTable(
             listOf(
 
                 Interval(
@@ -87,7 +117,7 @@ class LibraryTest {
 
         )
 
-        fridayTimetable = DayTimeTable(
+        fridayWinterTimetable = DayTimeTable(
             listOf(
 
                 Interval(
@@ -97,7 +127,7 @@ class LibraryTest {
             )
         )
 
-        saturdayTimetable = DayTimeTable(
+        saturdayWinterTimetable = DayTimeTable(
             listOf(
 
                 Interval(
@@ -108,35 +138,114 @@ class LibraryTest {
             )
         )
 
-        sundayTimetable = DayTimeTable(
+        sundayWinterTimetable = DayTimeTable(
+            listOf()
+        )
+
+
+        mondaySummerTimetable = DayTimeTable(
+            intervals = listOf(
+
+
+                Interval(
+                    from = LocalTime.of(11, 30),
+                    to = LocalTime.of(14, 0)
+                ),
+
+                Interval(
+                    from = LocalTime.of(17, 0),
+                    to = LocalTime.of(22, 0),
+                ),
+            )
+        )
+
+        tuesdaySummerTimetable = DayTimeTable(
+            intervals = listOf(
+                Interval(
+                    from = LocalTime.of(17, 0),
+                    to = LocalTime.of(22, 0),
+
+                    ),
+            )
+
+        )
+
+        wednesdaySummerTimetable = DayTimeTable(
+            listOf(
+                Interval(
+                    from = LocalTime.of(9, 20),
+                    to = LocalTime.of(11, 0),
+                ),
+
+                Interval(
+                    from = LocalTime.of(17, 15),
+                    to = LocalTime.of(18, 0),
+                ),
+            )
+
+        )
+
+        thursdaySummerTimetable = DayTimeTable(
+            listOf(
+
+                Interval(
+                    from = LocalTime.of(15, 0),
+                    to = LocalTime.of(21, 40),
+                ),
+            )
+
+        )
+
+        fridaySummerTimetable = DayTimeTable(
+            listOf(
+
+                Interval(
+                    from = LocalTime.of(14, 0),
+                    to = LocalTime.of(19, 30),
+                ),
+            )
+        )
+
+        saturdaySummerTimetable = DayTimeTable(
+            listOf(
+
+                Interval(
+                    from = LocalTime.of(9, 0),
+                    to = LocalTime.of(22, 30),
+
+                    ),
+            )
+        )
+
+        sundaySummerTimetable = DayTimeTable(
             listOf()
         )
 
         winterTimetable = TimeTable(
-            start = LocalDate.of(2024, 9, 24),
-            end = lastDateOfWinter,
+            start = firstDayOfWinter,
+            end = lastDayOfWinter,
             dayTimetables = mapOf(
-                DayOfWeek.MONDAY to mondayTimetable,
-                DayOfWeek.TUESDAY to tuesdayTimetable,
-                DayOfWeek.WEDNESDAY to wednesdayTimetable,
-                DayOfWeek.THURSDAY to thursdayTimetable,
-                DayOfWeek.FRIDAY to fridayTimetable,
-                DayOfWeek.SATURDAY to saturdayTimetable,
-                DayOfWeek.SUNDAY to sundayTimetable
+                DayOfWeek.MONDAY to mondayWinterTimetable,
+                DayOfWeek.TUESDAY to tuesdayWinterTimetable,
+                DayOfWeek.WEDNESDAY to wednesdayWinterTimetable,
+                DayOfWeek.THURSDAY to thursdayWinterTimetable,
+                DayOfWeek.FRIDAY to fridayWinterTimetable,
+                DayOfWeek.SATURDAY to saturdayWinterTimetable,
+                DayOfWeek.SUNDAY to sundayWinterTimetable
             )
         )
 
         summerTimetable = TimeTable(
-            start = LocalDate.of(2024, 6, 21),
-            end = LocalDate.of(2024, 9, 23),
+            start = firstDayOfSummer,
+            end = lastDayOfSummer,
             dayTimetables = mapOf(
-                DayOfWeek.MONDAY to mondayTimetable,
-                DayOfWeek.TUESDAY to tuesdayTimetable,
-                DayOfWeek.WEDNESDAY to wednesdayTimetable,
-                DayOfWeek.THURSDAY to thursdayTimetable,
-                DayOfWeek.FRIDAY to fridayTimetable,
-                DayOfWeek.SATURDAY to saturdayTimetable,
-                DayOfWeek.SUNDAY to sundayTimetable
+                DayOfWeek.MONDAY to mondaySummerTimetable,
+                DayOfWeek.TUESDAY to tuesdaySummerTimetable,
+                DayOfWeek.WEDNESDAY to wednesdaySummerTimetable,
+                DayOfWeek.THURSDAY to thursdaySummerTimetable,
+                DayOfWeek.FRIDAY to fridaySummerTimetable,
+                DayOfWeek.SATURDAY to saturdaySummerTimetable,
+                DayOfWeek.SUNDAY to sundaySummerTimetable
             )
         )
 
@@ -160,7 +269,7 @@ class LibraryTest {
         val saturday = LocalDate.of(2024, 10, 26)
 
         assert(libraryTest.getNextDayOpen(saturday) == LocalDate.of(2024, 10, 28))
-        assert(libraryTest.getNextDayOpen(lastDateOfWinter) == LocalDate.of(2025, 6, 21))
+        assert(libraryTest.getNextDayOpen(lastDayOfWinter) == LocalDate.of(2025, 6, 21))
     }
 
     @Test
@@ -172,7 +281,6 @@ class LibraryTest {
         val time16 = LocalTime.of(16, 30)
         val time21 = LocalTime.of(21, 0)
 
-
         // Check all timetables of day
         assert(libraryTest.generateStateMessage(monday, time10) == "Obert · Fins a 14:00")
         assert(libraryTest.generateStateMessage(monday, time14) == "Tancat · Obre a las 15:00")
@@ -181,7 +289,7 @@ class LibraryTest {
             libraryTest.generateStateMessage(
                 monday,
                 time21
-            ) == "Tancat · Obre el dimarts a las 10:00"
+            ) == "Tancat · Obre demà a las 10:00"
         )
 
         // Check next day closed
@@ -194,12 +302,66 @@ class LibraryTest {
     }
 
     @Test
-    fun getCurrentTimetableTest() {
-        // TODO: Implement
+    fun getCurrentSeasonTimetableTest() {
+        val day = LocalDate.of(2024, 10, 21)
+        assert(libraryTest.getCurrentSeasonTimetable(day) == winterTimetable)
+        assert(libraryTest.getCurrentSeasonTimetable(lastDayOfWinter) == winterTimetable)
+        assert(libraryTest.getCurrentSeasonTimetable(lastDayOfSummer) == summerTimetable)
+        assert(libraryTest.getCurrentSeasonTimetable(firstDayOfSummer) == summerTimetable)
+        assert(libraryTest.getCurrentSeasonTimetable(firstDayOfWinter) == winterTimetable)
     }
 
     @Test
     fun isOpenTest() {
-        // TODO: Implement
+        val monday = LocalDate.of(2024, 10, 21)
+        val sunday = LocalDate.of(2024, 10, 27)
+        val time = LocalTime.of(10, 0)
+        val time14 = LocalTime.of(14, 0)
+        assert(libraryTest.isOpen(monday, time))
+        assert(!libraryTest.isOpen(monday, time14))
+        assert(!libraryTest.isOpen(sunday, time))
+
+    }
+
+    @Test
+    fun getCurrentDayTimetableTest() {
+        val monday = LocalDate.of(2024, 10, 21)
+        val sunday = LocalDate.of(2024, 10, 27)
+        assert(libraryTest.getCurrentDayTimetable(monday) == mondayWinterTimetable)
+        assert(libraryTest.getCurrentDayTimetable(sunday) == sundayWinterTimetable)
+
+    }
+
+    @Test
+    fun getCurrentIntervalTest() {
+        val monday = LocalDate.of(2024, 10, 21)
+        val time = LocalTime.of(10, 0)
+        val time17 = LocalTime.of(17, 0)
+
+        assert(
+            libraryTest.getCurrentInterval(monday, time) == Interval(
+                from = LocalTime.of(9, 30),
+                to = LocalTime.of(14, 0)
+            )
+        )
+        assert(
+            libraryTest.getCurrentInterval(lastDayOfSummer, time17) == Interval(
+                from = LocalTime.of(17, 0),
+                to = LocalTime.of(22, 0),
+            )
+        )
+    }
+
+    @Test
+    fun getNextIntervalOfDayTest() {
+        val monday = LocalDate.of(2024, 10, 21)
+        val time = LocalTime.of(10, 0)
+
+        assert(
+            libraryTest.getNextIntervalOfDay(monday, time) == Interval(
+                from = LocalTime.of(15, 0),
+                to = LocalTime.of(20, 0),
+            )
+        )
     }
 }
