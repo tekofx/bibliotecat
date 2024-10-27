@@ -84,16 +84,16 @@ class LibraryRecyclerAdapter : RecyclerView.Adapter<LibraryRecyclerAdapter.ViewH
         private val openIcon: ImageView = view.findViewById(R.id.openIcon)
         private val green = getColor(view.context, R.color.green_open)
         private val red = getColor(view.context, R.color.red_closed)
+        private val yellow = getColor(view.context, R.color.yellow_soon)
 
 
         fun bind(library: Library) {
 
-            val localDate = LocalDate.now()
-            val localTime = LocalTime.now()
+            val localDate = LocalDate.of(2024, 10, 28)
+            val localTime = LocalTime.of(19, 0)
             municipiNom.text = library.municipiNom
             adrecaNom.text = library.adrecaNom
             timetable.text = library.generateStateMessage(localDate, localTime)
-
 
             val openStatusCircle = ShapeDrawable(OvalShape())
             openStatusCircle.intrinsicHeight = 20
@@ -101,7 +101,13 @@ class LibraryRecyclerAdapter : RecyclerView.Adapter<LibraryRecyclerAdapter.ViewH
             openStatusCircle.paint.color = red
 
             if (library.isOpen(localDate, localTime)) {
-                openStatusCircle.paint.color = green
+                // If the library is closing in less than an hour
+                if (library.isClosingSoon(localDate, localTime)) {
+                    openStatusCircle.paint.color = yellow
+                } else {
+                    openStatusCircle.paint.color = green
+
+                }
             }
             openIcon.setImageDrawable(openStatusCircle)
 
