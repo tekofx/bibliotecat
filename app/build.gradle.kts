@@ -76,5 +76,7 @@ dependencies {
     // Material Design 3
     implementation(libs.material3)
 
+    implementation(libs.androidx.hilt.navigation.compose)
+
 
 }
