@@ -40,7 +40,9 @@ fun LibraryList(
 
     Column(modifier = Modifier.fillMaxSize()) {
 
-        Box(modifier = Modifier.weight(1f)) {
+        Box(modifier = Modifier
+            .weight(1f)
+            .fillMaxWidth()) {
             if (isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             } else {
