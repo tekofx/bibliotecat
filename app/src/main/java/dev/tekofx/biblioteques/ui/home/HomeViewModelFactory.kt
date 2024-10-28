@@ -1,5 +1,6 @@
 package dev.tekofx.biblioteques.ui.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import dev.tekofx.biblioteques.repository.LibraryRepository
@@ -9,6 +10,7 @@ class HomeViewModelFactory(private val repository: LibraryRepository) :
     ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        Log.d("HomeViewModelFactory", "create called")
         return if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
             HomeViewModel(this.repository) as T
         } else {

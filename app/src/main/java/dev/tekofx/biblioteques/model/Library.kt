@@ -226,6 +226,8 @@ class Library(
     override fun toString(): String {
         return "$adrecaNom - ${municipiNom}\nWinterTimetable: ${winterTimetable}\n\nSummerTimetable ${summerTimeTable}"
     }
+
+   
 }
 
 data class DateInterval(
