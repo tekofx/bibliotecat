@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import dev.tekofx.biblioteques.components.BottomNavigation
 import dev.tekofx.biblioteques.navigation.Navigation
+import dev.tekofx.biblioteques.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
 //    val libraryRepository = LibraryRepository(LibraryService.getInstance())
@@ -22,14 +23,18 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Surface(
-                modifier = Modifier
-                    .fillMaxSize(),
-                color = MaterialTheme.colorScheme.background
+            MyApplicationTheme {
 
-            ) {
-                MainScreen()
+                Surface(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+
+                ) {
+                    MainScreen()
+                }
             }
+
 
         }
 
