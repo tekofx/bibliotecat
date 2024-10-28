@@ -1,8 +1,8 @@
 package dev.tekofx.biblioteques
 
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -15,7 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import dev.tekofx.biblioteques.components.BottomNavigation
 import dev.tekofx.biblioteques.navigation.Navigation
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
 //    val libraryRepository = LibraryRepository(LibraryService.getInstance())
 //    val homeViewModel = HomeViewModelFactory(libraryRepository).create(HomeViewModel::class.java)
 
@@ -23,7 +23,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             Surface(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize(),
                 color = MaterialTheme.colorScheme.background
 
             ) {

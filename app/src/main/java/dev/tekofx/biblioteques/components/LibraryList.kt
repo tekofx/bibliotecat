@@ -2,10 +2,8 @@ package dev.tekofx.biblioteques.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -38,23 +36,31 @@ fun LibraryList(
     val listState = rememberLazyListState()
     val isLoading by homeViewModel.isLoading.observeAsState(false)
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
 
-        Box(modifier = Modifier
-            .weight(1f)
-            .fillMaxWidth()) {
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+        ) {
             if (isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             } else {
 
-                LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
                     items(libraries) { library ->
                         LibraryItem(library)
                     }
                 }
             }
         }
-        Spacer(modifier = Modifier.height(16.dp))
         TextField(
             value = homeViewModel.queryText,
             onValueChange = { newText ->
