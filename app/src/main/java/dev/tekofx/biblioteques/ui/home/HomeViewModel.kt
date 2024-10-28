@@ -23,6 +23,10 @@ class HomeViewModel(private val repository: LibraryRepository) : ViewModel() {
     var queryText by mutableStateOf("")
         private set
 
+    init {
+        getLibraries()
+    }
+
 
     fun getLibraries() {
         Log.d("HomeViewModel", "getLibraries called")

@@ -6,13 +6,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import dev.tekofx.biblioteques.screens.DashboardScreen
 import dev.tekofx.biblioteques.screens.HomeScreen
-import dev.tekofx.biblioteques.ui.home.HomeViewModel
 
 @Composable
-fun Navigation(navController: NavHostController, homeViewModel: HomeViewModel) {
+fun Navigation(navController: NavHostController) {
     NavHost(navController = navController, startDestination = NavScreen.HomeScreen.name) {
         composable(NavScreen.HomeScreen.name) {
-            HomeScreen(homeViewModel)
+            HomeScreen()
         }
 
         composable(NavScreen.BottomNavigationItems.name) {

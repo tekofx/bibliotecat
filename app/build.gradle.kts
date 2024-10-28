@@ -81,6 +81,7 @@ dependencies {
     implementation(libs.material3)
 
     implementation(libs.androidx.hilt.navigation.compose)
+    debugImplementation(libs.androidx.ui.tooling)
 
 
 }
