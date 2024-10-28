@@ -6,6 +6,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import dev.tekofx.biblioteques.model.ItemsBottomNav
 import dev.tekofx.biblioteques.navigation.currentRoute
@@ -23,7 +24,15 @@ fun BottomNavigation(navHostController: NavHostController) {
                 val selected = currentRoute(navController = navHostController) == item.path
                 NavigationBarItem(
                     selected = selected,
-                    onClick = { navHostController.navigate(item.path) },
+                    onClick = {
+                        navHostController.navigate(item.path)
+                        {
+                            popUpTo(navHostController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            restoreState = true
+                        }
+                    },
                     icon = { Icon(imageVector = item.icon, contentDescription = item.title) },
                     label = {
                         Text(text = item.title)
