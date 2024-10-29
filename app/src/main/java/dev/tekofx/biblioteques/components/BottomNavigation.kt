@@ -1,11 +1,14 @@
 package dev.tekofx.biblioteques.components
 
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import dev.tekofx.biblioteques.model.ItemsBottomNav
@@ -18,7 +21,7 @@ fun BottomNavigation(navHostController: NavHostController) {
         ItemsBottomNav.Item2
     )
 
-    BottomAppBar {
+    BottomAppBar(modifier = Modifier.height(70.dp)) {
         NavigationBar {
             items.forEach { item ->
                 val selected = currentRoute(navController = navHostController) == item.path
@@ -50,3 +53,4 @@ fun BottomNavigation(navHostController: NavHostController) {
     }
 
 }
+
