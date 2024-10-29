@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import dev.tekofx.biblioteques.components.LibraryList
 
 @Composable
-fun HomeScreen() {
+fun LibraryScreen() {
     Column(Modifier.fillMaxSize()) {
         LibraryList()
     }

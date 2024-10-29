@@ -33,7 +33,12 @@ fun BottomNavigation(navHostController: NavHostController) {
                             restoreState = true
                         }
                     },
-                    icon = { Icon(imageVector = item.icon, contentDescription = item.title) },
+                    icon = {
+                        Icon(
+                            item.icon.asPainterResource(),
+                            contentDescription = item.title
+                        )
+                    },
                     label = {
                         Text(text = item.title)
                     }

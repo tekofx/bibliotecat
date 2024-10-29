@@ -1,25 +1,25 @@
 package dev.tekofx.biblioteques.model
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Search
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.material.icons.filled.Home
+import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.navigation.NavScreen
+import dev.tekofx.biblioteques.ui.IconResource
 
 sealed class ItemsBottomNav(
-    val icon: ImageVector,
+    val icon: IconResource,
     val title: String,
     val path: String
 ) {
     object Item1 : ItemsBottomNav(
-        Icons.Outlined.Home,
-        "Home",
+        IconResource.fromImageVector(Icons.Filled.Home),
+        "Biblioteques",
         NavScreen.HomeScreen.name
     )
 
     object Item2 : ItemsBottomNav(
-        Icons.Outlined.Search,
-        "Dashboard",
+        IconResource.fromDrawableResource(R.drawable.book),
+        "Llibres",
         NavScreen.BottomNavigationItems.name
     )
 
