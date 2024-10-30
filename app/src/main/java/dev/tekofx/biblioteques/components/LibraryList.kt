@@ -66,6 +66,7 @@ fun LibraryList(
             onValueChange = { newText ->
                 homeViewModel.onSearchTextChanged(newText)
             },
+            singleLine = true,
 
             modifier = Modifier
                 .fillMaxWidth()
