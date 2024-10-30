@@ -13,7 +13,12 @@ import java.util.Locale
  * @property from The start time of the interval.
  * @property to The end time of the interval.
  */
-data class Interval(val from: LocalTime?, val to: LocalTime?, val observation: String? = null)
+data class Interval(val from: LocalTime?, val to: LocalTime?, val observation: String? = null) {
+
+    fun isNull(): Boolean {
+        return from == null || to == null
+    }
+}
 
 /**
  * Represents a timetable for a specific day, containing multiple intervals.
@@ -21,6 +26,18 @@ data class Interval(val from: LocalTime?, val to: LocalTime?, val observation: S
  * @property intervals A list of time intervals for the day.
  */
 data class DayTimeTable(val intervals: List<Interval>) {
+
+    var open = false
+
+
+    init {
+        for (interval in intervals) {
+            if (!interval.isNull()) {
+                open = true
+            }
+        }
+    }
+
     override fun toString(): String {
         var output = ""
         if (intervals.isEmpty()) {
@@ -45,6 +62,17 @@ data class DayTimeTable(val intervals: List<Interval>) {
 data class TimeTable(
     val start: LocalDate, val end: LocalDate, val dayTimetables: Map<DayOfWeek, DayTimeTable>
 ) {
+
+    var open = false
+
+    init {
+        for (daytimetable in dayTimetables) {
+            if (daytimetable.value.open) {
+                open = true
+            }
+        }
+
+    }
 
     override fun toString(): String {
         var output = "${start} - ${end}\n"
@@ -80,6 +108,7 @@ class Library(
     val winterTimetable: TimeTable,
 ) {
     private val dayFormatter = DateTimeFormatter.ofPattern("EEEE", Locale("ca"))
+
 
     /**
      * Checks if the library is open at a given date and time.
@@ -140,9 +169,13 @@ class Library(
      * @param date The date to start checking from.
      * @return The next date the library is open.
      */
-    fun getNextDayOpen(date: LocalDate): LocalDate {
+    fun getNextDayOpen(date: LocalDate): LocalDate? {
         var nextDay = date.plusDays(1)
         var currentTimetable = getCurrentSeasonTimetable(nextDay)
+
+        if (!summerTimeTable.open && !winterTimetable.open) {
+            return null
+        }
 
         while (currentTimetable.dayTimetables[nextDay.dayOfWeek]?.intervals.isNullOrEmpty()) {
             nextDay = nextDay.plusDays(1)
@@ -208,7 +241,9 @@ class Library(
             }
 
             // If there are no more intervals today, look for the next opening day
-            val nextDay = getNextDayOpen(date)
+            // If next day null means Permanently closed
+            val nextDay = getNextDayOpen(date) ?: return "Tancat Permanentment"
+
 
             val nextTimetable = getCurrentSeasonTimetable(nextDay)
             val nextDayTimetable = nextTimetable.dayTimetables[nextDay.dayOfWeek]
@@ -227,7 +262,7 @@ class Library(
         return "$adrecaNom - ${municipiNom}\nWinterTimetable: ${winterTimetable}\n\nSummerTimetable ${summerTimeTable}"
     }
 
-   
+
 }
 
 data class DateInterval(

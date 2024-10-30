@@ -4,16 +4,15 @@ import dev.tekofx.biblioteques.dto.LibraryResponse
 import dev.tekofx.biblioteques.model.LibraryConverterFactory
 import retrofit2.Call
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 
 interface LibraryService {
 
-    @GET(value = "biblioteques/format/json/")
+    @GET(value = "biblioteques/format/json/ord-municipi_nom/desc")
     fun getLibraries(): Call<LibraryResponse>
 
     companion object {
-        
+
         private var libraryService: LibraryService? = null
 
         /**
