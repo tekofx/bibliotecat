@@ -18,6 +18,20 @@ data class Interval(val from: LocalTime?, val to: LocalTime?, val observation: S
     fun isNull(): Boolean {
         return from == null || to == null
     }
+
+    override fun toString(): String {
+        if (this.from == null && observation == null) {
+            return "Tancat"
+        }
+
+        var output = "$from - $to"
+
+        if (observation != null) {
+            output += " ($observation)"
+        }
+
+        return output
+    }
 }
 
 /**
@@ -44,9 +58,7 @@ data class DayTimeTable(val intervals: List<Interval>) {
             output += "Tancat"
         } else {
 
-            for (interval in intervals) {
-                output += interval.toString() + "\n"
-            }
+            output += intervals.joinToString(", ")
         }
         return output
     }
@@ -75,9 +87,9 @@ data class TimeTable(
     }
 
     override fun toString(): String {
-        var output = "${start} - ${end}\n"
+        var output = "(${start} - ${end})\n"
         for (day in dayTimetables) {
-            output += "${day.key}: ${day.value}"
+            output += "${day.key}: ${day.value}\n"
         }
         return output
     }
@@ -259,7 +271,10 @@ class Library(
 
 
     override fun toString(): String {
-        return "$adrecaNom - ${municipiNom}\nWinterTimetable: ${winterTimetable}\n\nSummerTimetable ${summerTimeTable}"
+        var output = "------------------------------------------------------\n"
+        output += "$adrecaNom - ${municipiNom}\nWinterTimetable: ${winterTimetable}\nSummerTimetable ${summerTimeTable}"
+        output += "------------------------------------------------------"
+        return output
     }
 
 
