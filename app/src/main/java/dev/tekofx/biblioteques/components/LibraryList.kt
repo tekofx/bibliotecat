@@ -1,5 +1,6 @@
 package dev.tekofx.biblioteques.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,9 +11,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -40,8 +45,10 @@ fun LibraryList(
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(0.dp)
     ) {
+
 
         Box(
             modifier = Modifier
@@ -69,18 +76,21 @@ fun LibraryList(
                 }
             }
         }
-        TextField(
+        OutlinedTextField(
             value = homeViewModel.queryText,
             onValueChange = { newText ->
                 homeViewModel.onSearchTextChanged(newText)
             },
             singleLine = true,
-
+            leadingIcon = { Icon(imageVector = Icons.Outlined.Search, contentDescription = null) },
+            shape = RoundedCornerShape(50.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(horizontal = 10.dp),
+
             label = { Text("Buscar") }
         )
+
     }
 
 
