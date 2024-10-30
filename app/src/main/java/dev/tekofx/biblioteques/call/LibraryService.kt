@@ -8,7 +8,7 @@ import retrofit2.http.GET
 
 interface LibraryService {
 
-    @GET(value = "biblioteques/format/json/ord-municipi_nom/desc")
+    @GET(value = "biblioteques/format/json/ord-municipi_nom/asc")
     fun getLibraries(): Call<LibraryResponse>
 
     companion object {
