@@ -1,6 +1,8 @@
 package dev.tekofx.biblioteques.components
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -21,11 +23,17 @@ fun BottomNavigation(navHostController: NavHostController) {
         ItemsBottomNav.Item2
     )
 
-    BottomAppBar(modifier = Modifier.height(70.dp)) {
+    BottomAppBar(
+        contentPadding = PaddingValues(0.dp),
+        modifier = Modifier
+            .padding(0.dp)
+            .height(80.dp)
+    ) {
         NavigationBar {
             items.forEach { item ->
                 val selected = currentRoute(navController = navHostController) == item.path
                 NavigationBarItem(
+                    modifier = Modifier.height(30.dp),
                     selected = selected,
                     onClick = {
                         navHostController.navigate(item.path)
@@ -53,4 +61,3 @@ fun BottomNavigation(navHostController: NavHostController) {
     }
 
 }
-
