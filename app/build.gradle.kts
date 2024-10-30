@@ -63,8 +63,10 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+
     implementation(libs.picasso)
-    implementation(libs.coil.compose)
+    implementation(libs.coil3.coil.compose)
+    implementation(libs.coil.network.okhttp)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
 
