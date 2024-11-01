@@ -18,18 +18,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import dev.tekofx.biblioteques.model.Library
-import dev.tekofx.biblioteques.model.LibraryDummy
 
 @Composable
-fun LibraryItem(library: Library) {
-
-
-    Surface(tonalElevation = 40.dp, shape = RoundedCornerShape(20.dp)) {
+fun LibraryItem(navHostController: NavHostController, library: Library) {
+    Surface(tonalElevation = 40.dp,
+        shape = RoundedCornerShape(20.dp),
+        onClick = { navHostController.navigate("library/${library.puntId}") }
+    ) {
 
         Row(
             modifier = Modifier
@@ -68,8 +68,8 @@ fun LibraryItem(library: Library) {
 }
 
 
-@Preview
-@Composable
-fun LibraryCardPreview() {
-    LibraryItem(LibraryDummy)
-}
+//@Preview
+//@Composable
+//fun LibraryCardPreview() {
+//    LibraryItem(LibraryDummy)
+//}

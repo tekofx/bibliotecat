@@ -23,9 +23,9 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import dev.tekofx.biblioteques.call.LibraryService
 import dev.tekofx.biblioteques.repository.LibraryRepository
 import dev.tekofx.biblioteques.ui.home.HomeViewModel
@@ -33,6 +33,7 @@ import dev.tekofx.biblioteques.ui.home.HomeViewModelFactory
 
 @Composable
 fun LibraryList(
+    navHostController: NavHostController,
     homeViewModel: HomeViewModel = viewModel(
         factory = HomeViewModelFactory(
             LibraryRepository(LibraryService.getInstance())
@@ -60,7 +61,7 @@ fun LibraryList(
                         .padding(top = 10.dp)
                 ) {
                     items(libraries) { library ->
-                        LibraryItem(library)
+                        LibraryItem(navHostController, library)
                         Spacer(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -103,8 +104,8 @@ fun LibraryList(
 }
 
 
-@Preview
-@Composable
-fun LibraryListPreview() {
-    LibraryList()
-}
+//@Preview
+//@Composable
+//fun LibraryListPreview() {
+//    LibraryList()
+//}
