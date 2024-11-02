@@ -23,12 +23,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import dev.tekofx.biblioteques.model.Library
+import dev.tekofx.biblioteques.navigation.NavScreen
 
 @Composable
 fun LibraryItem(navHostController: NavHostController, library: Library) {
     Surface(tonalElevation = 40.dp,
         shape = RoundedCornerShape(20.dp),
-        onClick = { navHostController.navigate("library/${library.puntId}") }
+        onClick = { navHostController.navigate("${NavScreen.LibraryScreen.name}/${library.puntId}") }
     ) {
 
         Row(
