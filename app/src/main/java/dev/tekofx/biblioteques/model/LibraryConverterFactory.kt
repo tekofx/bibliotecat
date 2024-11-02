@@ -1,5 +1,6 @@
 package dev.tekofx.biblioteques.model
 
+import android.util.Log
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.network.parseGetRequestBlocking
 import com.fleeksoft.ksoup.nodes.Document
@@ -33,9 +34,19 @@ class LibraryConverterFactory : Converter.Factory() {
             val libraryList = ArrayList<Library>()
 
             // Get libraries list from bibliotecavirtual in order to get the library bibliotecavirtual url
-            val doc: Document =
-                Ksoup.parseGetRequestBlocking(url = "https://bibliotecavirtual.diba.cat/busca-una-biblioteca")
+            var doc: Document? = null
+            try {
+
+                doc =
+                    Ksoup.parseGetRequestBlocking(url = "https://bibliotecavirtual.diba.cat/busca-una-biblioteca")
+            } catch (exception: Exception) {
+                Log.e(
+                    "LibraryConverterFactory",
+                    "Error getting bibliotecavirtual.diba.cat: $exception"
+                )
+            }
             for (i in 0 until elementsArray.length()) {
+
                 val libraryElement = elementsArray.getJSONObject(i)
                 val imatgeArray = libraryElement.getJSONArray("imatge")
                 val puntId = libraryElement.getString("punt_id")
@@ -46,12 +57,15 @@ class LibraryConverterFactory : Converter.Factory() {
                 val imatge = if (imatgeArray.length() > 0) imatgeArray.getString(0) else ""
                 val emails = jsonArrayToStringArray(libraryElement.getJSONArray("email"))
 
-                val emailsTd = doc.selectFirst("td.email:contains(${emails[0]})")
-                val nameTd = emailsTd?.siblingElements()?.select("td.name")
-                    ?.firstOrNull()
+                // Get bibliotecavirtual.diba.cat url
+                var bibliotecaVirtualUrl: String? = null
+                if (doc != null) {
 
-                // bibliotecavirtual.diba.cat url
-                val bibliotecaVirtualUrl = nameTd?.getElementsByTag("a")?.attr("href")
+                    val emailsTd = doc.selectFirst("td.email:contains(${emails[0]})")
+                    val nameTd = emailsTd?.siblingElements()?.select("td.name")
+                        ?.firstOrNull()
+                    bibliotecaVirtualUrl = nameTd?.getElementsByTag("a")?.attr("href")
+                }
 
                 // Horaris
                 val (timetableHivern, timetableEstiu) = getTimetables(libraryElement)
