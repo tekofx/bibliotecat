@@ -1,4 +1,4 @@
-package dev.tekofx.biblioteques.components
+package dev.tekofx.biblioteques.components.library
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import dev.tekofx.biblioteques.call.LibraryService
+import dev.tekofx.biblioteques.components.OverlappingBoxes
 import dev.tekofx.biblioteques.repository.LibraryRepository
 import dev.tekofx.biblioteques.ui.home.HomeViewModel
 import dev.tekofx.biblioteques.ui.home.HomeViewModelFactory

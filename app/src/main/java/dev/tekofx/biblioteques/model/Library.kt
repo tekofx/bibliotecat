@@ -74,6 +74,7 @@ data class DayTimeTable(val intervals: List<Interval>) {
 data class TimeTable(
     val start: LocalDate, val end: LocalDate, val dayTimetables: Map<DayOfWeek, DayTimeTable>
 ) {
+    private val dayFormatter = DateTimeFormatter.ofPattern("EEEE", Locale("ca"))
 
     var open = false
 
@@ -89,7 +90,7 @@ data class TimeTable(
     override fun toString(): String {
         var output = "(${start} - ${end})\n"
         for (day in dayTimetables) {
-            output += "${day.key}: ${day.value}\n"
+            output += "${dayFormatter.format(day.key)}: ${day.value}\n"
         }
         return output
     }

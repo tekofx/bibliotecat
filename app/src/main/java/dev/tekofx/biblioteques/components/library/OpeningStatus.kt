@@ -1,4 +1,4 @@
-package dev.tekofx.biblioteques.components
+package dev.tekofx.biblioteques.components.library
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row

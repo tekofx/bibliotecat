@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import dev.tekofx.biblioteques.components.LibraryList
+import dev.tekofx.biblioteques.components.library.LibraryList
 
 @Composable
 fun LibrariesScreen(navHostController: NavHostController) {

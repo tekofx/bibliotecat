@@ -234,6 +234,7 @@ class LibraryTest {
                 DayOfWeek.SUNDAY to sundayWinterTimetable
             )
         )
+        println(winterTimetable)
 
         summerTimetable = TimeTable(
             start = firstDayOfSummer,
