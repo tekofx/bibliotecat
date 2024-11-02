@@ -3,7 +3,9 @@ package dev.tekofx.biblioteques.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Tab
@@ -78,6 +80,7 @@ fun TabRowComponent(
         }
 
         // Display the content screen corresponding to the selected tab
+        Spacer(modifier = Modifier.height(10.dp))
         contentScreens.getOrNull(selectedTabIndex)?.invoke()
     }
 }

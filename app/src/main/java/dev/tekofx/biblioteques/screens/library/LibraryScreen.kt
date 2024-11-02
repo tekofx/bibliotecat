@@ -94,7 +94,7 @@ fun LibraryScreen(
                     tabEntries = tabEntries,
                     contentScreens = listOf(
                         { LibraryInfo(library) },  // Content screen for Tab 1
-                        { LibraryContact() },      // Content screen for Tab 2
+                        { LibraryContact(library) },      // Content screen for Tab 2
                     ),
                     modifier = Modifier.fillMaxSize(),
                     containerColor = Color.Gray,
