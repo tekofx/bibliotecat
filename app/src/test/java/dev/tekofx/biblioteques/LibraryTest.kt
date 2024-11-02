@@ -259,6 +259,7 @@ class LibraryTest {
             municipiNom = "municipiNom",
             bibliotecaVirtualUrl = "bibliotecaVirtualUrl",
             emails = listOf("emails"),
+            phones = listOf("123456789"),
             imatge = "imatge",
             summerTimeTable = summerTimetable,
             winterTimetable = winterTimetable,

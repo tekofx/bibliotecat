@@ -116,6 +116,7 @@ class Library(
     val municipiNom: String,
     val bibliotecaVirtualUrl: String?,
     val emails: List<String>,
+    val phones: List<String>,
     var imatge: String,
     val summerTimeTable: TimeTable,
     val winterTimetable: TimeTable,
