@@ -1,7 +1,6 @@
 package dev.tekofx.biblioteques.screens.library
 
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
@@ -25,10 +24,10 @@ fun LibraryScreen(
         )
     )
 ) {
-    val library = homeViewModel.getLibrary(punt_id = pointID)
-    if (library != null) {
-        Log.d("test2", library.puntId)
-    }
+//    val library = homeViewModel.getLibrary(punt_id = pointID)
+//    if (library != null) {
+//        Log.d("test2", library.puntId)
+//    }
     Column {
 //        AsyncImage(
 //            model = library.imatge, // Ajusta con tu imagen

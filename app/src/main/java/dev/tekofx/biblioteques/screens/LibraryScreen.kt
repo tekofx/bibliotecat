@@ -16,7 +16,7 @@ import dev.tekofx.biblioteques.model.Library
 import dev.tekofx.biblioteques.model.LibraryDummy
 
 @Composable
-fun LibraryScreen(library: Library) {
+fun LibrariesScreen(library: Library) {
     Column {
         AsyncImage(
             model = library.imatge, // Ajusta con tu imagen
@@ -26,7 +26,7 @@ fun LibraryScreen(library: Library) {
                 .clip(RoundedCornerShape(10.dp)),
             contentScale = ContentScale.Crop
         )
-        Text(text = library.adrecaNom )
+        Text(text = library.adrecaNom)
         Text(text = library.municipiNom)
         OpeningStatus(library)
     }
@@ -35,5 +35,5 @@ fun LibraryScreen(library: Library) {
 @Preview
 @Composable
 fun LibraryScreenTest() {
-    LibraryScreen(LibraryDummy)
+    LibrariesScreen(LibraryDummy)
 }
