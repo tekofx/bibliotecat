@@ -1,4 +1,4 @@
-package dev.tekofx.biblioteques.screens
+package dev.tekofx.biblioteques.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize

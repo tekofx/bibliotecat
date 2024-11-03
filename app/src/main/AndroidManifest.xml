@@ -17,7 +17,7 @@
         android:theme="@style/Theme.Biblioteques"
         tools:targetApi="31">
         <activity
-            android:name=".ui.home.Test"
+            android:name=".ui.library.Test"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

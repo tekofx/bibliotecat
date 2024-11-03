@@ -1,18 +1,12 @@
-package dev.tekofx.biblioteques.screens.library
+package dev.tekofx.biblioteques.ui.screens.library
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Call
-import androidx.compose.material.icons.outlined.MailOutline
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.tekofx.biblioteques.components.library.ContactType
 import dev.tekofx.biblioteques.components.library.LibraryContactCard
 import dev.tekofx.biblioteques.model.Library
-import dev.tekofx.biblioteques.model.LibraryDummy
-import dev.tekofx.biblioteques.ui.IconResource
 
 @Composable
 fun LibraryContact(library: Library) {

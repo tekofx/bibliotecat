@@ -46,8 +46,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import dev.tekofx.biblioteques.call.LibraryService
 import dev.tekofx.biblioteques.repository.LibraryRepository
-import dev.tekofx.biblioteques.ui.home.HomeViewModel
-import dev.tekofx.biblioteques.ui.home.HomeViewModelFactory
+import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModel
+import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModelFactory
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -55,15 +55,15 @@ import kotlinx.coroutines.launch
 @Composable
 fun LibraryList(
     navHostController: NavHostController,
-    homeViewModel: HomeViewModel = viewModel(
-        factory = HomeViewModelFactory(
+    libraryViewModel: LibraryViewModel = viewModel(
+        factory = LibraryViewModelFactory(
             LibraryRepository(LibraryService.getInstance())
         )
     )
 ) {
-    val libraries by homeViewModel.libraries.observeAsState(emptyList())
+    val libraries by libraryViewModel.libraries.observeAsState(emptyList())
     val listState = rememberLazyListState()
-    val isLoading by homeViewModel.isLoading.observeAsState(false)
+    val isLoading by libraryViewModel.isLoading.observeAsState(false)
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -143,9 +143,9 @@ fun LibraryList(
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent,
                         ),
-                        value = homeViewModel.queryText,
+                        value = libraryViewModel.queryText,
                         onValueChange = { newText ->
-                            homeViewModel.onSearchTextChanged(newText)
+                            libraryViewModel.onSearchTextChanged(newText)
                         },
                         singleLine = true,
                         trailingIcon = {
@@ -168,7 +168,7 @@ fun LibraryList(
                             checked = showOnlyOpen,
                             onCheckedChange = {
                                 showOnlyOpen = it
-                                homeViewModel.filterOpen(it)
+                                libraryViewModel.filterOpen(it)
                             }
                         )
                     }

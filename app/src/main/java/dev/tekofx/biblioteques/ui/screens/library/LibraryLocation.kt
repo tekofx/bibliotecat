@@ -1,4 +1,4 @@
-package dev.tekofx.biblioteques.screens.library
+package dev.tekofx.biblioteques.ui.screens.library
 
 import android.content.ActivityNotFoundException
 import android.content.Context

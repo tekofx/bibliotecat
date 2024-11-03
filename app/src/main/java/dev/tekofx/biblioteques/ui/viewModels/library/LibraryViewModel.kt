@@ -1,4 +1,4 @@
-package dev.tekofx.biblioteques.ui.home
+package dev.tekofx.biblioteques.ui.viewModels.library
 
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -17,7 +17,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 
-class HomeViewModel(private val repository: LibraryRepository) : ViewModel() {
+class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() {
 
     val isLoading = MutableLiveData<Boolean>(false)
     val libraries = MutableLiveData<List<Library>>()

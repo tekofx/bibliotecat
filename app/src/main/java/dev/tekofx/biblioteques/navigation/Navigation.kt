@@ -6,9 +6,9 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import dev.tekofx.biblioteques.screens.DashboardScreen
-import dev.tekofx.biblioteques.screens.LibrariesScreen
-import dev.tekofx.biblioteques.screens.library.LibraryScreen
+import dev.tekofx.biblioteques.ui.screens.DashboardScreen
+import dev.tekofx.biblioteques.ui.screens.LibrariesScreen
+import dev.tekofx.biblioteques.ui.screens.library.LibraryScreen
 
 @Composable
 fun Navigation(navController: NavHostController) {

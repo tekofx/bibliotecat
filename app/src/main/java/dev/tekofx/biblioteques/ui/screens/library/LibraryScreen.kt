@@ -1,4 +1,4 @@
-package dev.tekofx.biblioteques.screens.library
+package dev.tekofx.biblioteques.ui.screens.library
 
 
 import android.util.Log
@@ -36,8 +36,8 @@ import dev.tekofx.biblioteques.components.TabRowComponent
 import dev.tekofx.biblioteques.components.library.OpeningStatus
 import dev.tekofx.biblioteques.repository.LibraryRepository
 import dev.tekofx.biblioteques.ui.IconResource
-import dev.tekofx.biblioteques.ui.home.HomeViewModel
-import dev.tekofx.biblioteques.ui.home.HomeViewModelFactory
+import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModel
+import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModelFactory
 
 
 val tabEntries = listOf(
@@ -48,17 +48,17 @@ val tabEntries = listOf(
 
 @Composable
 fun LibraryScreen(
-    pointID: String, homeViewModel: HomeViewModel = viewModel(
-        factory = HomeViewModelFactory(
+    pointID: String, libraryViewModel: LibraryViewModel = viewModel(
+        factory = LibraryViewModelFactory(
             LibraryRepository(LibraryService.getInstance())
         )
     )
 ) {
     Log.d("LibraryScreen", "Navigated to $pointID")
-    val currentLibrary by homeViewModel.currentLibrary.observeAsState(null)
-    val isLoading by homeViewModel.isLoading.observeAsState(false)
+    val currentLibrary by libraryViewModel.currentLibrary.observeAsState(null)
+    val isLoading by libraryViewModel.isLoading.observeAsState(false)
     LaunchedEffect(key1 = Unit) {
-        homeViewModel.getLibrary(pointID)
+        libraryViewModel.getLibrary(pointID)
     }
 
     currentLibrary?.let { library ->
