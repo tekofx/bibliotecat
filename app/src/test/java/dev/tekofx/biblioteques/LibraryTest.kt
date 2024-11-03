@@ -257,6 +257,7 @@ class LibraryTest {
             adrecaNom = "Biblioteca de Test",
             descripcio = "descripcio",
             municipiNom = "municipiNom",
+            fullAddress = "Avinguda Josep Tarradellas, 08901 Hospitalet de Llobregat, L'",
             bibliotecaVirtualUrl = "bibliotecaVirtualUrl",
             emails = listOf("emails"),
             phones = listOf("123456789"),
