@@ -1,5 +1,6 @@
 package dev.tekofx.biblioteques.components.library
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,6 +50,7 @@ import dev.tekofx.biblioteques.ui.home.HomeViewModel
 import dev.tekofx.biblioteques.ui.home.HomeViewModelFactory
 import kotlinx.coroutines.launch
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryList(
@@ -79,7 +81,7 @@ fun LibraryList(
                 }
             )
         }
-    ) { contentPadding ->
+    ) {
         // Screen content
 
         Box(

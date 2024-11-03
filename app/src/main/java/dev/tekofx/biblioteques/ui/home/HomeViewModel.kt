@@ -79,16 +79,6 @@ class HomeViewModel(private val repository: LibraryRepository) : ViewModel() {
 
     }
 
-    fun getLibraryTest(pointId: String) {
-        println("test")
-        _libraries.value?.forEach() {
-            println(it)
-        }
-        _currentLibrary.postValue(_libraries.value?.filter {
-            it.id == pointId
-        }?.get(0))
-    }
-
     fun onSearchTextChanged(text: String) {
         queryText = text
         libraries.postValue(_libraries.value?.filter {
