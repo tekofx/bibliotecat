@@ -3,6 +3,7 @@ package dev.tekofx.biblioteques
 import dev.tekofx.biblioteques.model.DayTimeTable
 import dev.tekofx.biblioteques.model.Interval
 import dev.tekofx.biblioteques.model.Library
+import dev.tekofx.biblioteques.model.Season
 import dev.tekofx.biblioteques.model.TimeTable
 import org.junit.Before
 import org.junit.Test
@@ -232,7 +233,8 @@ class LibraryTest {
                 DayOfWeek.FRIDAY to fridayWinterTimetable,
                 DayOfWeek.SATURDAY to saturdayWinterTimetable,
                 DayOfWeek.SUNDAY to sundayWinterTimetable
-            )
+            ),
+            season = Season.WINTER
         )
         println(winterTimetable)
 
@@ -247,7 +249,8 @@ class LibraryTest {
                 DayOfWeek.FRIDAY to fridaySummerTimetable,
                 DayOfWeek.SATURDAY to saturdaySummerTimetable,
                 DayOfWeek.SUNDAY to sundaySummerTimetable
-            )
+            ),
+            season = Season.SUMMER
         )
 
 
@@ -321,7 +324,7 @@ class LibraryTest {
             libraryTest.generateStateMessage(
                 saturday,
                 time21
-            ) == "Tancat · Obre el dilluns a las 09:30"
+            ) == "Tancat · Obre el Dilluns a las 09:30"
         )
     }
 
