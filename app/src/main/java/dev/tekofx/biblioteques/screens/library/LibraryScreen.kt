@@ -22,7 +22,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,8 +35,6 @@ import dev.tekofx.biblioteques.repository.LibraryRepository
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.home.HomeViewModel
 import dev.tekofx.biblioteques.ui.home.HomeViewModelFactory
-
-val tabs = listOf("Info", "Contacta")
 
 
 val tabEntries = listOf(
@@ -97,9 +94,6 @@ fun LibraryScreen(
                         { LibraryContact(library) },      // Content screen for Tab 2
                     ),
                     modifier = Modifier.fillMaxSize(),
-                    containerColor = Color.Gray,
-                    contentColor = Color.White,
-                    indicatorColor = Color.DarkGray
                 )
             }
         }
@@ -113,8 +107,3 @@ fun LibraryScreen(
     }
 }
 
-//@Preview
-//@Composable
-//fun LibraryScreenTest() {
-//    LibrariesScreen(LibraryDummy)
-//}
