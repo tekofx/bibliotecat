@@ -83,7 +83,7 @@ class HomeViewModel(private val repository: LibraryRepository) : ViewModel() {
             println(it)
         }
         _currentLibrary.postValue(_libraries.value?.filter {
-            it.puntId == pointId
+            it.id == pointId
         }?.get(0))
     }
 
@@ -93,7 +93,7 @@ class HomeViewModel(private val repository: LibraryRepository) : ViewModel() {
             it.adrecaNom.contains(
                 text,
                 ignoreCase = true
-            ) || it.municipiNom.contains(text, ignoreCase = true)
+            ) || it.municipality.contains(text, ignoreCase = true)
         })
 
 

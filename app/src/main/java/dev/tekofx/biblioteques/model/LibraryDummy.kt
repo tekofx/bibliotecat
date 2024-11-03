@@ -197,15 +197,15 @@ var summerTimetable = TimeTable(
 
 var LibraryDummy = Library(
 
-    puntId = "biblioteca424096",
+    id = "biblioteca424096",
     adrecaNom = "Biblioteca L Esqueller",
-    descripcio = " Biblioteca L Esqueller. Sant Pere de Torelló",
-    municipiNom = "Sant Pere de Torelló",
-    fullAddress = "Josep Badrena, 10 08572 Sant Pere de Torelló",
+    description = " Biblioteca L Esqueller. Sant Pere de Torelló",
+    municipality = "Sant Pere de Torelló",
+    address = "Josep Badrena, 10 08572 Sant Pere de Torelló",
     bibliotecaVirtualUrl = "bibliotecaVirtualUrl",
     emails = listOf("b.st.peret.e@diba.cat"),
     phones = listOf("123456789"),
-    imatge = "https://bibliotecavirtual.diba.cat/documents/350986/0/P1120129.JPGfoto+portada.jpg/9ff2c56c-7424-4d95-b734-0ef67225a281?t=1364040065786",
+    image = "https://bibliotecavirtual.diba.cat/documents/350986/0/P1120129.JPGfoto+portada.jpg/9ff2c56c-7424-4d95-b734-0ef67225a281?t=1364040065786",
     summerTimeTable = summerTimetable,
     winterTimetable = winterTimetable,
 )

@@ -68,7 +68,7 @@ fun LibraryScreen(
         ) {
 
             AsyncImage(
-                model = library.imatge, // Ajusta con tu imagen
+                model = library.image, // Ajusta con tu imagen
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -86,7 +86,7 @@ fun LibraryScreen(
             ) {
 
                 Text(text = library.adrecaNom, fontSize = 30.sp)
-                Text(text = library.municipiNom, fontSize = 26.sp)
+                Text(text = library.municipality, fontSize = 26.sp)
                 OpeningStatus(library)
                 TabRowComponent(
                     tabEntries = tabEntries,

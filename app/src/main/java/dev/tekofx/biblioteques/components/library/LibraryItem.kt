@@ -29,7 +29,7 @@ import dev.tekofx.biblioteques.navigation.NavScreen
 fun LibraryItem(navHostController: NavHostController, library: Library) {
     Surface(tonalElevation = 40.dp,
         shape = RoundedCornerShape(20.dp),
-        onClick = { navHostController.navigate("${NavScreen.LibraryScreen.name}/${library.puntId}") }
+        onClick = { navHostController.navigate("${NavScreen.LibraryScreen.name}/${library.id}") }
     ) {
 
         Row(
@@ -40,7 +40,7 @@ fun LibraryItem(navHostController: NavHostController, library: Library) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = library.imatge, // Ajusta con tu imagen
+                model = library.image, // Ajusta con tu imagen
                 contentDescription = null,
                 modifier = Modifier
                     .size(130.dp)
@@ -58,7 +58,7 @@ fun LibraryItem(navHostController: NavHostController, library: Library) {
                         text = library.adrecaNom,
                         fontSize = 20.sp
                     )
-                    Text(text = library.municipiNom, modifier = Modifier.padding(top = 8.dp))
+                    Text(text = library.municipality, modifier = Modifier.padding(top = 8.dp))
                 }
                 OpeningStatus(library)
 

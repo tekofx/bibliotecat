@@ -32,7 +32,7 @@ import dev.tekofx.biblioteques.ui.IconResource
 fun LibraryLocation(library: Library) {
     val context = LocalContext.current
     Surface(
-        modifier = Modifier.clickable { openGoogleMaps(context, library.fullAddress) },
+        modifier = Modifier.clickable { openGoogleMaps(context, library.address) },
         tonalElevation = 20.dp,
         shape = RoundedCornerShape(10.dp),
 
@@ -50,7 +50,7 @@ fun LibraryLocation(library: Library) {
                     .asPainterResource(),
                 contentDescription = "Location"
             )
-            Text(text = library.fullAddress)
+            Text(text = library.address)
         }
     }
 }

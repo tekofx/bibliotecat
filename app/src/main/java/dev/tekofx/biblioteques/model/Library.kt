@@ -99,28 +99,28 @@ data class TimeTable(
 /**
  * Represents a library with summer and winter timetables.
  *
- * @property puntId The ID of the library.
+ * @property id The ID of the library.
  * @property adrecaNom The name of the library.
- * @property descripcio A description of the library.
- * @property municipiNom The name of the municipality.
- * @property fullAddress The complete address of the library
+ * @property description A description of the library.
+ * @property municipality The name of the municipality.
+ * @property address The complete address of the library
  * @property bibliotecaVirtualUrl The URL of the bibliotecavirtual.diba.cat/
  * @property emails A list of email addresses associated with the library.
  * @property phones A list of phones associated with the library.
- * @property imatge The URL of the library's image.
+ * @property image The URL of the library's image.
  * @property summerTimeTable The timetable for the summer period.
  * @property winterTimetable The timetable for the winter period.
  */
 class Library(
-    val puntId: String,
+    val id: String,
     val adrecaNom: String,
-    val descripcio: String,
-    val municipiNom: String,
-    val fullAddress: String,
+    val description: String,
+    val municipality: String,
+    val address: String,
     val bibliotecaVirtualUrl: String?,
     val emails: List<String>,
     val phones: List<String>,
-    var imatge: String,
+    var image: String,
     val summerTimeTable: TimeTable,
     val winterTimetable: TimeTable,
 ) {
@@ -277,7 +277,7 @@ class Library(
 
     override fun toString(): String {
         var output = "------------------------------------------------------\n"
-        output += "$adrecaNom - ${municipiNom}\nWinterTimetable: ${winterTimetable}\nSummerTimetable ${summerTimeTable}"
+        output += "$adrecaNom - ${municipality}\nWinterTimetable: ${winterTimetable}\nSummerTimetable ${summerTimeTable}"
         output += "------------------------------------------------------"
         return output
     }

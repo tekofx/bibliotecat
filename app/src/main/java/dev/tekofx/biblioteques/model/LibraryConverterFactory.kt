@@ -75,15 +75,15 @@ class LibraryConverterFactory : Converter.Factory() {
 
 
                 val library = Library(
-                    puntId = puntId,
+                    id = puntId,
                     adrecaNom = adrecaNom,
-                    descripcio = descripcio,
-                    municipiNom = municipiNom,
-                    fullAddress = adrecaCompleta,
+                    description = descripcio,
+                    municipality = municipiNom,
+                    address = adrecaCompleta,
                     bibliotecaVirtualUrl = bibliotecaVirtualUrl,
                     emails = emails,
                     phones = phones,
-                    imatge = imatge,
+                    image = imatge,
                     summerTimeTable = timetableEstiu,
                     winterTimetable = timetableHivern,
                 )
