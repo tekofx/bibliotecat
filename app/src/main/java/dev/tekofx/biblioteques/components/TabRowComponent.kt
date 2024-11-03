@@ -7,10 +7,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.primaryContainerColor
+import androidx.compose.material3.TabRowDefaults.primaryContentColor
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import dev.tekofx.biblioteques.ui.IconResource
 
 class TabEntry(
@@ -34,9 +39,9 @@ fun TabRowComponent(
     tabEntries: List<TabEntry>,
     contentScreens: List<@Composable () -> Unit>,
     modifier: Modifier = Modifier,
-    containerColor: Color = Color.Gray,
-    contentColor: Color = Color.White,
-    indicatorColor: Color = Color.DarkGray
+    containerColor: Color = Color.Transparent,
+    contentColor: Color = Color.Transparent,
+    indicatorColor: Color = MaterialTheme.colorScheme.primary
 ) {
 
     // State to keep track of the selected tab index
@@ -47,8 +52,8 @@ fun TabRowComponent(
         // TabRow composable to display tabs
         TabRow(
             selectedTabIndex = selectedTabIndex,
-            containerColor = containerColor,
-            contentColor = contentColor,
+            containerColor = primaryContainerColor,
+            contentColor = primaryContentColor,
             indicator = { tabPositions ->
                 // Indicator for the selected tab
                 TabRowDefaults.SecondaryIndicator(
@@ -62,18 +67,26 @@ fun TabRowComponent(
                 Tab(
                     modifier = Modifier.padding(all = 16.dp),
                     selected = selectedTabIndex == index,
-                    onClick = { selectedTabIndex = index }
-                ) {
+                    onClick = { selectedTabIndex = index },
+
+                    selectedContentColor = MaterialTheme.colorScheme.primary
+
+                )
+                {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(5.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
 
                         Icon(
-                            tabEntry.icon.asPainterResource(),
-                            contentDescription = tabEntry.name
+                            modifier = Modifier
+                                .height(40.dp)
+                                .width(40.dp),
+                            painter = tabEntry.icon.asPainterResource(),
+                            contentDescription = tabEntry.name,
+                            tint = contentColor
                         )
-                        Text(text = tabEntry.name)
+                        Text(text = tabEntry.name, color = contentColor, fontSize = 20.sp)
                     }
                 }
             }
