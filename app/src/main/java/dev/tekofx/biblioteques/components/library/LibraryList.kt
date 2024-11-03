@@ -132,7 +132,7 @@ fun LibraryList(
                 // Sheet content
                 Column(
                     modifier = Modifier.padding(10.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
 
 
@@ -172,14 +172,15 @@ fun LibraryList(
                     }
 
 
-                    Button(onClick = {
-                        scope.launch { sheetState.hide() }.invokeOnCompletion {
-                            if (!sheetState.isVisible) {
-                                showBottomSheet = false
+                    Button(
+                        onClick = {
+                            scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                if (!sheetState.isVisible) {
+                                    showBottomSheet = false
+                                }
                             }
-                        }
-                    }) {
-                        Text("Hide bottom sheet")
+                        }) {
+                        Text("Tanca")
                     }
                 }
 
