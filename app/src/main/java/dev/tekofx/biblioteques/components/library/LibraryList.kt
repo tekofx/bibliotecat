@@ -38,7 +38,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import dev.tekofx.biblioteques.call.LibraryService
@@ -87,6 +89,18 @@ fun LibraryList(
         ) {
             if (isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+
+
+            } else if (libraries.isEmpty()) {
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(20.dp),
+                    text = "No hi ha llibreries que coincideixin amb els filtres :(",
+                    lineHeight = 40.sp,
+                    textAlign = TextAlign.Center,
+                    fontSize = 30.sp
+                )
             } else {
 
                 LazyColumn(
