@@ -54,6 +54,8 @@ class LibraryConverterFactory : Converter.Factory() {
                 val descripcio = libraryElement.getString("descripcio")
                 val municipiNom =
                     libraryElement.getJSONObject("grup_adreca").getString("municipi_nom")
+                val adrecaCompleta =
+                    libraryElement.getJSONObject("grup_adreca").getString("adreca_completa")
                 val imatge = if (imatgeArray.length() > 0) imatgeArray.getString(0) else ""
                 val emails = jsonArrayToStringArray(libraryElement.getJSONArray("email"))
                 val phones = jsonArrayToStringArray(libraryElement.getJSONArray("telefon_contacte"))
@@ -77,6 +79,7 @@ class LibraryConverterFactory : Converter.Factory() {
                     adrecaNom = adrecaNom,
                     descripcio = descripcio,
                     municipiNom = municipiNom,
+                    fullAddress = adrecaCompleta,
                     bibliotecaVirtualUrl = bibliotecaVirtualUrl,
                     emails = emails,
                     phones = phones,

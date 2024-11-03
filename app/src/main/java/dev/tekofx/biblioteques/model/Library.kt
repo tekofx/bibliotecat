@@ -103,8 +103,10 @@ data class TimeTable(
  * @property adrecaNom The name of the library.
  * @property descripcio A description of the library.
  * @property municipiNom The name of the municipality.
+ * @property fullAddress The complete address of the library
  * @property bibliotecaVirtualUrl The URL of the bibliotecavirtual.diba.cat/
  * @property emails A list of email addresses associated with the library.
+ * @property phones A list of phones associated with the library.
  * @property imatge The URL of the library's image.
  * @property summerTimeTable The timetable for the summer period.
  * @property winterTimetable The timetable for the winter period.
@@ -114,6 +116,7 @@ class Library(
     val adrecaNom: String,
     val descripcio: String,
     val municipiNom: String,
+    val fullAddress: String,
     val bibliotecaVirtualUrl: String?,
     val emails: List<String>,
     val phones: List<String>,

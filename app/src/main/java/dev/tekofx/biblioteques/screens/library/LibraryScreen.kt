@@ -12,6 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.MailOutline
 import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material3.CircularProgressIndicator
@@ -39,8 +40,8 @@ import dev.tekofx.biblioteques.ui.home.HomeViewModelFactory
 
 val tabEntries = listOf(
     TabEntry("Info", IconResource.fromImageVector(Icons.Outlined.Menu)),
-    TabEntry("Contacta", IconResource.fromImageVector(Icons.Outlined.MailOutline))
-
+    TabEntry("Com Arribar", IconResource.fromImageVector(Icons.Outlined.LocationOn)),
+    TabEntry("Contacta", IconResource.fromImageVector(Icons.Outlined.MailOutline)),
 )
 
 @Composable
@@ -90,8 +91,9 @@ fun LibraryScreen(
                 TabRowComponent(
                     tabEntries = tabEntries,
                     contentScreens = listOf(
-                        { LibraryInfo(library) },  // Content screen for Tab 1
-                        { LibraryContact(library) },      // Content screen for Tab 2
+                        { LibraryInfo(library) },
+                        { LibraryLocation(library) },
+                        { LibraryContact(library) },
                     ),
                     modifier = Modifier.fillMaxSize(),
                 )

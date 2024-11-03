@@ -201,6 +201,7 @@ var LibraryDummy = Library(
     adrecaNom = "Biblioteca L Esqueller",
     descripcio = " Biblioteca L Esqueller. Sant Pere de Torelló",
     municipiNom = "Sant Pere de Torelló",
+    fullAddress = "Josep Badrena, 10 08572 Sant Pere de Torelló",
     bibliotecaVirtualUrl = "bibliotecaVirtualUrl",
     emails = listOf("b.st.peret.e@diba.cat"),
     phones = listOf("123456789"),
