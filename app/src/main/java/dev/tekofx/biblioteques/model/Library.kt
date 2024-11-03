@@ -1,11 +1,11 @@
 package dev.tekofx.biblioteques.model
 
+import dev.tekofx.biblioteques.utils.formatDayOfWeek
 import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
-import java.util.Locale
+
 
 /**
  * Represents a time interval with a start and end time.
@@ -87,7 +87,6 @@ data class TimeTable(
     val dayTimetables: Map<DayOfWeek, DayTimeTable>,
     val season: Season
 ) {
-    private val dayFormatter = DateTimeFormatter.ofPattern("EEEE", Locale("ca"))
 
     var open = false
 
@@ -103,7 +102,7 @@ data class TimeTable(
     override fun toString(): String {
         var output = "(${start} - ${end})\n"
         for (day in dayTimetables) {
-            output += "${dayFormatter.format(day.key)}: ${day.value}\n"
+            output += "${formatDayOfWeek(day.key)}: ${day.value}\n"
         }
         return output
     }
@@ -137,7 +136,6 @@ class Library(
     val summerTimeTable: TimeTable,
     val winterTimetable: TimeTable,
 ) {
-    private val dayFormatter = DateTimeFormatter.ofPattern("EEEE", Locale("ca"))
 
 
     /**
@@ -290,7 +288,7 @@ class Library(
 
             val nextTimetable = getCurrentSeasonTimetable(nextDay)
             val nextDayTimetable = nextTimetable.dayTimetables[nextDay.dayOfWeek]
-            val nextDayName = nextDay.format(dayFormatter)
+            val nextDayName = formatDayOfWeek(nextDay.dayOfWeek)
             // Opens tomorrow
             if (nextDay == date.plusDays(1)) {
                 return "Tancat · Obre demà a las ${nextDayTimetable?.intervals?.firstOrNull()?.from}"
