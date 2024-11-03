@@ -15,7 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import dev.tekofx.biblioteques.components.BottomNavigation
+import dev.tekofx.biblioteques.components.BottomNavigationBar
 import dev.tekofx.biblioteques.navigation.Navigation
 import dev.tekofx.biblioteques.ui.theme.MyApplicationTheme
 
@@ -54,7 +54,7 @@ fun MainScreen() {
     Scaffold(
         bottomBar = {
             if (currentRoute != "LibraryScreen/{libraryId}") {
-                BottomNavigation(navHostController = navController)
+                BottomNavigationBar(navHostController = navController)
             }
         }
     ) { padding ->

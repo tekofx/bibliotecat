@@ -13,14 +13,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import dev.tekofx.biblioteques.model.ItemsBottomNav
+import dev.tekofx.biblioteques.navigation.BottomNavigationItems
 import dev.tekofx.biblioteques.navigation.currentRoute
 
 @Composable
-fun BottomNavigation(navHostController: NavHostController) {
+fun BottomNavigationBar(navHostController: NavHostController) {
     val items = listOf(
-        ItemsBottomNav.Item1,
-        ItemsBottomNav.Item2
+        BottomNavigationItems.Item1,
+        BottomNavigationItems.Item2
     )
 
     BottomAppBar(
