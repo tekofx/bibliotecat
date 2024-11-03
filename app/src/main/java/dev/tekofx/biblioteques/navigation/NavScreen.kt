@@ -1,7 +1,7 @@
 package dev.tekofx.biblioteques.navigation
 
 enum class NavScreen {
-    HomeScreen,
-    BottomNavigationItems,
+    LibrariesScreen,
+    BooksScreen,
     LibraryScreen
 }

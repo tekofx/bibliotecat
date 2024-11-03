@@ -12,12 +12,12 @@ import dev.tekofx.biblioteques.screens.library.LibraryScreen
 
 @Composable
 fun Navigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = NavScreen.HomeScreen.name) {
-        composable(NavScreen.HomeScreen.name) {
+    NavHost(navController = navController, startDestination = NavScreen.LibrariesScreen.name) {
+        composable(NavScreen.LibrariesScreen.name) {
             LibrariesScreen(navController)
         }
 
-        composable(NavScreen.BottomNavigationItems.name) {
+        composable(NavScreen.BooksScreen.name) {
             DashboardScreen()
         }
 
