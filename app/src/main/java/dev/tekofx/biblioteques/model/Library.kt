@@ -64,6 +64,16 @@ data class DayTimeTable(val intervals: List<Interval>) {
     }
 }
 
+enum class Season {
+    WINTER,
+    SUMMER
+}
+
+val seasonTranslation = mapOf(
+    Season.WINTER to "Hivern",
+    Season.SUMMER to "Estiu"
+)
+
 /**
  * Represents a timetable for a period, containing day-specific timetables.
  *
@@ -72,7 +82,10 @@ data class DayTimeTable(val intervals: List<Interval>) {
  * @property dayTimetables A map of day-specific timetables.
  */
 data class TimeTable(
-    val start: LocalDate, val end: LocalDate, val dayTimetables: Map<DayOfWeek, DayTimeTable>
+    val start: LocalDate,
+    val end: LocalDate,
+    val dayTimetables: Map<DayOfWeek, DayTimeTable>,
+    val season: Season
 ) {
     private val dayFormatter = DateTimeFormatter.ofPattern("EEEE", Locale("ca"))
 
@@ -167,6 +180,19 @@ class Library(
         } else {
             winterTimetable
         }
+    }
+
+    /**
+     * Gets the next season timetable based on the given date.
+     *
+     * @param date The date to check.
+     * @return The next season timetable.
+     */
+    fun getNextSeasonTimetable(date: LocalDate): TimeTable {
+        if (getCurrentSeasonTimetable(date) == summerTimetable) {
+            return winterTimetable
+        }
+        return summerTimetable
     }
 
     /**

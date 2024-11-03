@@ -106,16 +106,23 @@ class LibraryConverterFactory : Converter.Factory() {
 
     private fun getTimetables(jsonObject: JSONObject): Pair<TimeTable, TimeTable> {
         val (dateIntervalHivern, dateIntervalEstiu) = getDateIntervals(jsonObject)
-        val hivernTimeTable = getTimetable(jsonObject, "hivern", dateIntervalHivern)
-        val estiuTimeTable = getTimetable(jsonObject, "estiu", dateIntervalEstiu)
+        val hivernTimeTable = getTimetable(jsonObject, Season.WINTER, dateIntervalHivern)
+        val estiuTimeTable = getTimetable(jsonObject, Season.SUMMER, dateIntervalEstiu)
         return Pair(hivernTimeTable, estiuTimeTable)
     }
 
     private fun getTimetable(
         jsonObject: JSONObject,
-        estacio: String,
+        season: Season,
         dateInterval: DateInterval
     ): TimeTable {
+
+        var estacio = "hivern"
+
+        if (season == Season.SUMMER) {
+            estacio = "estiu"
+        }
+
 
         val timeIntervalsDilluns = getTimeIntervals(jsonObject, estacio, "dilluns")
         val timeIntervalsDimarts = getTimeIntervals(jsonObject, estacio, "dimarts")
@@ -137,7 +144,8 @@ class LibraryConverterFactory : Converter.Factory() {
                 DayOfWeek.FRIDAY to DayTimeTable(timeIntervalsDivendres ?: listOf()),
                 DayOfWeek.SATURDAY to DayTimeTable(timeIntervalsDissabte ?: listOf()),
                 DayOfWeek.SUNDAY to DayTimeTable(timeIntervalsDiumenge ?: listOf())
-            )
+            ),
+            season = season
         )
 
         return weekTimetableDeProva

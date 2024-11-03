@@ -11,29 +11,25 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.tekofx.biblioteques.model.Library
-import dev.tekofx.biblioteques.model.LibraryDummy
-import java.time.LocalDate
+import dev.tekofx.biblioteques.model.TimeTable
 
 @Composable
-fun LibraryTimeTable(library: Library) {
+fun LibraryTimeTable(timeTable: TimeTable) {
 
-    val currentTimeTable = library.getCurrentSeasonTimetable(LocalDate.now())
 
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
 
-        currentTimeTable.dayTimetables.forEach {
+        timeTable.dayTimetables.forEach {
             Surface(
                 tonalElevation = if (it.value.open) 100.dp else 5.dp,
-                shape = RoundedCornerShape(5.dp),
+                shape = RoundedCornerShape(10.dp),
             ) {
 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(5.dp),
+                        .padding(10.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -54,10 +50,4 @@ fun LibraryTimeTable(library: Library) {
     }
 
 
-}
-
-@Preview
-@Composable
-fun LibraryTimeTablePreview() {
-    LibraryTimeTable(LibraryDummy)
 }

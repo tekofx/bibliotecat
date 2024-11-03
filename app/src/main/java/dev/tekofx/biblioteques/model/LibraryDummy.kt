@@ -177,7 +177,8 @@ var winterTimetable = TimeTable(
         DayOfWeek.FRIDAY to fridayWinterTimetable,
         DayOfWeek.SATURDAY to saturdayWinterTimetable,
         DayOfWeek.SUNDAY to sundayWinterTimetable
-    )
+    ),
+    season = Season.WINTER
 )
 
 var summerTimetable = TimeTable(
@@ -191,7 +192,8 @@ var summerTimetable = TimeTable(
         DayOfWeek.FRIDAY to fridaySummerTimetable,
         DayOfWeek.SATURDAY to saturdaySummerTimetable,
         DayOfWeek.SUNDAY to sundaySummerTimetable
-    )
+    ),
+    season = Season.SUMMER
 )
 
 

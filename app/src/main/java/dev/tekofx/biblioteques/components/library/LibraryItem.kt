@@ -27,7 +27,8 @@ import dev.tekofx.biblioteques.navigation.NavScreen
 
 @Composable
 fun LibraryItem(navHostController: NavHostController, library: Library) {
-    Surface(tonalElevation = 40.dp,
+    Surface(
+        tonalElevation = 40.dp,
         shape = RoundedCornerShape(20.dp),
         onClick = { navHostController.navigate("${NavScreen.LibraryScreen.name}/${library.id}") }
     ) {
