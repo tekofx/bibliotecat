@@ -13,6 +13,8 @@ import dev.tekofx.biblioteques.repository.LibraryRepository
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.LocalDate
+import java.time.LocalTime
 
 
 class HomeViewModel(private val repository: LibraryRepository) : ViewModel() {
@@ -95,7 +97,11 @@ class HomeViewModel(private val repository: LibraryRepository) : ViewModel() {
                 ignoreCase = true
             ) || it.municipality.contains(text, ignoreCase = true)
         })
+    }
 
-
+    fun filterOpen(open: Boolean) {
+        libraries.postValue(_libraries.value?.filter {
+            it.isOpen(LocalDate.now(), LocalTime.now()) == open
+        })
     }
 }
