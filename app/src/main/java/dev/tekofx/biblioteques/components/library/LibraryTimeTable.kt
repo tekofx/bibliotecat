@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.tekofx.biblioteques.model.TimeTable
+import dev.tekofx.biblioteques.utils.formatDate
 import dev.tekofx.biblioteques.utils.formatDayOfWeek
 
 @Composable
@@ -23,8 +24,16 @@ fun LibraryTimeTable(timeTable: TimeTable) {
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Surface(
+            tonalElevation = 20.dp,
+            shape = RoundedCornerShape(50.dp)
+        ) {
 
-        Text(text = "${timeTable.start} - ${timeTable.end}")
+            Text(
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
+                text = "${formatDate(timeTable.start)} - ${formatDate(timeTable.end)}"
+            )
+        }
 
         timeTable.dayTimetables.forEach {
             Surface(
