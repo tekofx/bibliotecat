@@ -8,6 +8,7 @@ import androidx.compose.material.icons.outlined.MailOutline
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.tekofx.biblioteques.components.library.ContactType
 import dev.tekofx.biblioteques.components.library.LibraryContactCard
 import dev.tekofx.biblioteques.model.Library
 import dev.tekofx.biblioteques.model.LibraryDummy
@@ -22,14 +23,14 @@ fun LibraryContact(library: Library) {
 
         library.emails.forEach {
             LibraryContactCard(
-                iconResource = IconResource.fromImageVector(Icons.Outlined.MailOutline),
+                contactType = ContactType.mail,
                 text = it
             )
         }
 
         library.phones.forEach {
             LibraryContactCard(
-                iconResource = IconResource.fromImageVector(Icons.Outlined.Call),
+                contactType = ContactType.phone,
                 text = it
             )
         }
