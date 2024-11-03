@@ -13,7 +13,10 @@ import dev.tekofx.biblioteques.ui.IconResource
 
 @Composable
 fun LibraryContact(library: Library) {
-    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
 
         library.emails.forEach {
             LibraryContactCard(

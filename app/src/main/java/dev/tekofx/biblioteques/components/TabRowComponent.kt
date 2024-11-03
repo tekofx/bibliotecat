@@ -3,16 +3,21 @@ package dev.tekofx.biblioteques.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.tekofx.biblioteques.ui.IconResource
@@ -31,6 +36,17 @@ fun TabRowComponent(
 
     // State to keep track of the selected tab index
     var selectedTabIndex by remember { mutableIntStateOf(0) }
+    val pagerState = rememberPagerState {
+        tabEntries.size
+    }
+
+    LaunchedEffect(selectedTabIndex) {
+        pagerState.animateScrollToPage(selectedTabIndex)
+    }
+
+    LaunchedEffect(pagerState.currentPage) {
+        selectedTabIndex = pagerState.currentPage
+    }
 
     // Column layout to arrange tabs vertically and display content screens
     Column(modifier = modifier.fillMaxSize()) {
@@ -57,8 +73,15 @@ fun TabRowComponent(
             }
         }
 
-        // Display the content screen corresponding to the selected tab
-        Spacer(modifier = Modifier.height(10.dp))
-        contentScreens.getOrNull(selectedTabIndex)?.invoke()
+        Spacer(modifier = Modifier.height(20.dp))
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.Top
+        ) { index ->
+            contentScreens.getOrNull(index)?.invoke()
+
+        }
+
     }
 }
