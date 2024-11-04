@@ -1,6 +1,13 @@
 package dev.tekofx.biblioteques.components.library
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,6 +46,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -68,6 +76,7 @@ fun LibraryList(
     val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
     var showOnlyOpen by remember { mutableStateOf(false) }
+    val density = LocalDensity.current
 
 
 
@@ -91,8 +100,6 @@ fun LibraryList(
         ) {
             if (isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-
-
             } else if (libraries.isEmpty()) {
                 Text(
                     modifier = Modifier
@@ -103,7 +110,21 @@ fun LibraryList(
                     textAlign = TextAlign.Center,
                     fontSize = 30.sp
                 )
-            } else {
+            }
+            AnimatedVisibility(
+                visible = libraries.isNotEmpty(),
+                enter = slideInVertically {
+                    // Slide in from 40 dp from the top.
+                    with(density) { -40.dp.roundToPx() }
+                } + expandVertically(
+                    // Expand from the top.
+                    expandFrom = Alignment.Top
+                ) + fadeIn(
+                    // Fade in with the initial alpha of 0.3f.
+                    initialAlpha = 0.3f
+                ),
+                exit = slideOutVertically() + shrinkVertically() + fadeOut()
+            ) {
 
                 LazyColumn(
                     state = listState,
@@ -191,7 +212,6 @@ fun LibraryList(
     }
 
 }
-
 
 //@Preview
 //@Composable
