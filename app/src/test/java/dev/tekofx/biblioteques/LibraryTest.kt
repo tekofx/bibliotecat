@@ -1,10 +1,10 @@
 package dev.tekofx.biblioteques
 
-import dev.tekofx.biblioteques.model.DayTimeTable
-import dev.tekofx.biblioteques.model.Interval
-import dev.tekofx.biblioteques.model.Library
-import dev.tekofx.biblioteques.model.Season
-import dev.tekofx.biblioteques.model.TimeTable
+import dev.tekofx.biblioteques.model.library.DayTimeTable
+import dev.tekofx.biblioteques.model.library.Interval
+import dev.tekofx.biblioteques.model.library.Library
+import dev.tekofx.biblioteques.model.library.Season
+import dev.tekofx.biblioteques.model.library.TimeTable
 import org.junit.Before
 import org.junit.Test
 import java.time.DayOfWeek

@@ -24,8 +24,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.tekofx.biblioteques.model.Library
-import dev.tekofx.biblioteques.model.LibraryDummy
+import dev.tekofx.biblioteques.model.library.Library
+import dev.tekofx.biblioteques.model.library.LibraryDummy
 import dev.tekofx.biblioteques.ui.IconResource
 
 @Composable

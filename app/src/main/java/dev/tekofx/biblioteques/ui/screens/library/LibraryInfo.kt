@@ -13,9 +13,9 @@ import androidx.compose.ui.unit.dp
 import dev.tekofx.biblioteques.components.SegmentedButtonItem
 import dev.tekofx.biblioteques.components.SegmentedButtons
 import dev.tekofx.biblioteques.components.library.LibraryTimeTable
-import dev.tekofx.biblioteques.model.Library
-import dev.tekofx.biblioteques.model.LibraryDummy
-import dev.tekofx.biblioteques.model.seasonTranslation
+import dev.tekofx.biblioteques.model.library.Library
+import dev.tekofx.biblioteques.model.library.LibraryDummy
+import dev.tekofx.biblioteques.model.library.seasonTranslation
 import java.time.LocalDate
 
 @Composable

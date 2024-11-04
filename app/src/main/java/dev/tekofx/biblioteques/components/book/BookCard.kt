@@ -20,7 +20,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import dev.tekofx.biblioteques.model.Book
+import dev.tekofx.biblioteques.model.book.Book
 
 @Composable
 fun BookCard(book: Book) {

@@ -1,4 +1,4 @@
-package dev.tekofx.biblioteques.model
+package dev.tekofx.biblioteques.model.library
 
 import android.util.Log
 import com.fleeksoft.ksoup.Ksoup

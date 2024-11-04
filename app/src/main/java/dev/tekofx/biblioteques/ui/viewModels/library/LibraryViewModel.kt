@@ -8,7 +8,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dev.tekofx.biblioteques.dto.LibraryResponse
-import dev.tekofx.biblioteques.model.Library
+import dev.tekofx.biblioteques.model.library.Library
 import dev.tekofx.biblioteques.repository.LibraryRepository
 import retrofit2.Call
 import retrofit2.Callback

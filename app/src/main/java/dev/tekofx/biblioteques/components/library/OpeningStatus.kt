@@ -14,7 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.tekofx.biblioteques.R
-import dev.tekofx.biblioteques.model.Library
+import dev.tekofx.biblioteques.model.library.Library
 import java.time.LocalDate
 import java.time.LocalTime
 

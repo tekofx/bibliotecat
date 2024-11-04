@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
-import dev.tekofx.biblioteques.model.Library
+import dev.tekofx.biblioteques.model.library.Library
 import dev.tekofx.biblioteques.navigation.NavScreen
 
 @Composable

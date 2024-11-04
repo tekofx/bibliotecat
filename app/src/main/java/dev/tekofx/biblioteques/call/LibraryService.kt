@@ -1,7 +1,7 @@
 package dev.tekofx.biblioteques.call
 
 import dev.tekofx.biblioteques.dto.LibraryResponse
-import dev.tekofx.biblioteques.model.LibraryConverterFactory
+import dev.tekofx.biblioteques.model.library.LibraryConverterFactory
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.http.GET

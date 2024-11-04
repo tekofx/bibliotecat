@@ -1,4 +1,4 @@
-package dev.tekofx.biblioteques.model
+package dev.tekofx.biblioteques.model.library
 
 import java.time.DayOfWeek
 import java.time.LocalDate

@@ -7,7 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dev.tekofx.biblioteques.dto.BookResponse
-import dev.tekofx.biblioteques.model.Book
+import dev.tekofx.biblioteques.model.book.Book
 import dev.tekofx.biblioteques.repository.BookRepository
 import retrofit2.Call
 import retrofit2.Callback

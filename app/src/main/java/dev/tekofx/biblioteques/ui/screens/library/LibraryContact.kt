@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import dev.tekofx.biblioteques.components.library.ContactType
 import dev.tekofx.biblioteques.components.library.LibraryContactCard
-import dev.tekofx.biblioteques.model.Library
+import dev.tekofx.biblioteques.model.library.Library
 
 @Composable
 fun LibraryContact(library: Library) {
