@@ -16,6 +16,8 @@ import retrofit2.Response
 class BookViewModel(private val repository: BookRepository) : ViewModel() {
     private var _books = MutableLiveData<List<Book>>()
     val books = MutableLiveData<List<Book>>()
+    val isLoading = MutableLiveData<Boolean>(false)
+
     var queryText by mutableStateOf("")
         private set
     val errorMessage = MutableLiveData<String>()
@@ -23,6 +25,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     fun getBook(query: String) {
         val response = repository.getBook(query)
         println(response.toString())
+        isLoading.postValue(true)
 
         response.enqueue(object : Callback<BookResponse> {
             override fun onResponse(
@@ -30,12 +33,15 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
             ) {
                 _books.postValue(response.body()?.books ?: arrayListOf())
                 books.postValue(response.body()?.books ?: arrayListOf())
+                isLoading.postValue(false)
 
             }
 
             override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
                 Log.e("BookViewModel", t.message.toString())
                 errorMessage.postValue(t.message)
+                isLoading.postValue(false)
+                
             }
 
         })
