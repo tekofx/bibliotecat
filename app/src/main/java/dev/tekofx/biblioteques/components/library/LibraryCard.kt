@@ -26,7 +26,7 @@ import dev.tekofx.biblioteques.model.Library
 import dev.tekofx.biblioteques.navigation.NavScreen
 
 @Composable
-fun LibraryItem(navHostController: NavHostController, library: Library) {
+fun LibraryCard(navHostController: NavHostController, library: Library) {
     Surface(
         tonalElevation = 40.dp,
         shape = RoundedCornerShape(20.dp),

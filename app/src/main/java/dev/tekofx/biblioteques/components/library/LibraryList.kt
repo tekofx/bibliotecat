@@ -112,7 +112,7 @@ fun LibraryList(
                         .padding(top = 10.dp)
                 ) {
                     items(libraries) { library ->
-                        LibraryItem(navHostController, library)
+                        LibraryCard(navHostController, library)
                         Spacer(
                             modifier = Modifier
                                 .fillMaxWidth()
