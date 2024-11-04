@@ -1,11 +1,9 @@
-package dev.tekofx.biblioteques.ui.screens.library
+package dev.tekofx.biblioteques.components.library
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
-import dev.tekofx.biblioteques.components.library.ContactType
-import dev.tekofx.biblioteques.components.library.LibraryContactCard
 import dev.tekofx.biblioteques.model.library.Library
 
 @Composable

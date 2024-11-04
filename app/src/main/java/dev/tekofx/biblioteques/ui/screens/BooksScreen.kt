@@ -115,7 +115,7 @@ fun BooksScreen(
                         bookViewModel.getBook(query)
                         focus.clearFocus()
                     },
-                    enabled = query.isNotEmpty()
+                    enabled = query.isNotEmpty() && !isLoading
 
                 ) {
 

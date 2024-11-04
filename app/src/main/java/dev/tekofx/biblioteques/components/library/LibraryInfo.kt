@@ -1,4 +1,4 @@
-package dev.tekofx.biblioteques.ui.screens.library
+package dev.tekofx.biblioteques.components.library
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,7 +12,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.tekofx.biblioteques.components.SegmentedButtonItem
 import dev.tekofx.biblioteques.components.SegmentedButtons
-import dev.tekofx.biblioteques.components.library.LibraryTimeTable
 import dev.tekofx.biblioteques.model.library.Library
 import dev.tekofx.biblioteques.model.library.LibraryDummy
 import dev.tekofx.biblioteques.model.library.seasonTranslation
