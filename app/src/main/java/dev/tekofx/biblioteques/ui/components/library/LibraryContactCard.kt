@@ -26,8 +26,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import dev.tekofx.biblioteques.ui.IconResource
+import dev.tekofx.biblioteques.ui.theme.Typography
 
 enum class ContactType {
     mail,
@@ -65,7 +65,11 @@ fun LibraryContactCard(contactType: ContactType, text: String) {
                     .width(50.dp)
                     .height(50.dp)
             )
-            Text(text = text, fontSize = 20.sp)
+            Text(
+                text = text,
+                style = Typography.bodyLarge
+
+            )
         }
     }
 }

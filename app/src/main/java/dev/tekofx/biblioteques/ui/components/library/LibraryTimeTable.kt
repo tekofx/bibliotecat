@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.tekofx.biblioteques.model.library.TimeTable
+import dev.tekofx.biblioteques.ui.theme.Typography
 import dev.tekofx.biblioteques.utils.formatDate
 import dev.tekofx.biblioteques.utils.formatDayOfWeek
 
@@ -31,7 +32,8 @@ fun LibraryTimeTable(timeTable: TimeTable) {
 
             Text(
                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
-                text = "${formatDate(timeTable.start)} - ${formatDate(timeTable.end)}"
+                text = "${formatDate(timeTable.start)} - ${formatDate(timeTable.end)}",
+                style = Typography.bodyLarge
             )
         }
 
@@ -49,16 +51,28 @@ fun LibraryTimeTable(timeTable: TimeTable) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                    Text(formatDayOfWeek(it.key))
+                    Text(
+                        text = formatDayOfWeek(it.key),
+                        style = Typography.bodyLarge
+                    )
                     if (it.value.intervals.size > 1) {
                         Column {
-                            Text(text = it.value.intervals[0].toString())
-                            Text(text = it.value.intervals[1].toString())
+                            Text(
+                                text = it.value.intervals[0].toString(),
+                                style = Typography.bodyMedium
+                            )
+                            Text(
+                                text = it.value.intervals[1].toString(),
+                                style = Typography.bodyMedium
+                            )
                         }
 
                     } else {
 
-                        Text(text = it.value.toString())
+                        Text(
+                            text = it.value.toString(),
+                            style = Typography.bodyLarge
+                        )
                     }
                 }
             }

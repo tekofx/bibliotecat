@@ -42,6 +42,7 @@ import androidx.navigation.NavHostController
 import dev.tekofx.biblioteques.call.LibraryService
 import dev.tekofx.biblioteques.repository.LibraryRepository
 import dev.tekofx.biblioteques.ui.components.library.LibraryList
+import dev.tekofx.biblioteques.ui.theme.Typography
 import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModel
 import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModelFactory
 import kotlinx.coroutines.launch
@@ -137,7 +138,7 @@ fun LibrariesScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        Text(text = "Obert ara")
+                        Text(text = "Obert ara", style = Typography.bodyLarge)
                         Switch(
                             checked = showOnlyOpen,
                             onCheckedChange = {

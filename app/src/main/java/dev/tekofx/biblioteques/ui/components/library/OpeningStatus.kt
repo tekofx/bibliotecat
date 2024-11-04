@@ -11,15 +11,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.model.library.Library
 import java.time.LocalDate
 import java.time.LocalTime
 
 @Composable
-fun OpeningStatus(library: Library) {
+fun OpeningStatus(library: Library, textStyle: TextStyle) {
     val date = LocalDate.now()
     val time = LocalTime.now()
     var color = R.color.red_closed
@@ -41,6 +41,9 @@ fun OpeningStatus(library: Library) {
                 .padding(end = 8.dp),
             colorFilter = ColorFilter.tint(colorResource(id = color))
         )
-        Text(text = library.generateStateMessage(date, time), fontSize = 14.sp)
+        Text(
+            text = library.generateStateMessage(date, time),
+            style = textStyle
+        )
     }
 }

@@ -19,11 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import dev.tekofx.biblioteques.model.library.Library
 import dev.tekofx.biblioteques.navigation.NavScreen
+import dev.tekofx.biblioteques.ui.theme.Typography
 
 @Composable
 fun LibraryCard(navHostController: NavHostController, library: Library) {
@@ -57,11 +57,15 @@ fun LibraryCard(navHostController: NavHostController, library: Library) {
 
                     Text(
                         text = library.adrecaNom,
-                        fontSize = 20.sp
+                        style = Typography.titleLarge
                     )
-                    Text(text = library.municipality, modifier = Modifier.padding(top = 8.dp))
+                    Text(
+                        text = library.municipality,
+                        style = Typography.titleMedium,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
                 }
-                OpeningStatus(library)
+                OpeningStatus(library, Typography.bodyMedium)
 
             }
         }

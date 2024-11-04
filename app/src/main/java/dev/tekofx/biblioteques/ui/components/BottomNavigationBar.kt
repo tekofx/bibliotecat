@@ -51,7 +51,9 @@ fun BottomNavigationBar(navHostController: NavHostController) {
                         )
                     },
                     label = {
-                        Text(text = item.title)
+                        Text(
+                            text = item.title,
+                        )
                     }
                 )
 

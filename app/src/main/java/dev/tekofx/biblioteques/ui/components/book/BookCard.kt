@@ -18,11 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import dev.tekofx.biblioteques.model.book.Book
 import dev.tekofx.biblioteques.navigation.NavScreen
+import dev.tekofx.biblioteques.ui.theme.Typography
 
 @Composable
 fun BookCard(book: Book, navHostController: NavHostController) {
@@ -54,9 +54,18 @@ fun BookCard(book: Book, navHostController: NavHostController) {
                 verticalArrangement = Arrangement.Top
             ) {
 
-                Text(text = book.title, fontSize = 20.sp)
-                Text(text = book.author)
-                Text(text = book.publication)
+                Text(
+                    text = book.title,
+                    style = Typography.titleLarge
+                )
+                Text(
+                    text = book.author,
+                    style = Typography.titleMedium
+                )
+                Text(
+                    text = book.publication,
+                    style = Typography.titleMedium
+                )
             }
         }
     }

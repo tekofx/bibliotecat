@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.tekofx.biblioteques.ui.IconResource
+import dev.tekofx.biblioteques.ui.theme.Typography
 
 class TabEntry(
     val name: String,
@@ -60,7 +61,7 @@ fun TabRowComponent(
                 Tab(
                     selected = selectedTabIndex == index,
                     onClick = { selectedTabIndex = index },
-                    text = { Text(text = tabEntry.name) },
+                    text = { Text(text = tabEntry.name, style = Typography.bodyLarge) },
                     icon = {
                         Icon(
                             painter = tabEntry.icon.asPainterResource(),

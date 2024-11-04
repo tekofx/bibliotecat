@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import dev.tekofx.biblioteques.model.library.Library
 import dev.tekofx.biblioteques.model.library.LibraryDummy
 import dev.tekofx.biblioteques.ui.IconResource
+import dev.tekofx.biblioteques.ui.theme.Typography
 
 @Composable
 fun LibraryLocation(library: Library) {
@@ -50,7 +51,10 @@ fun LibraryLocation(library: Library) {
                     .asPainterResource(),
                 contentDescription = "Location"
             )
-            Text(text = library.address)
+            Text(
+                text = library.address,
+                style = Typography.bodyLarge
+            )
         }
     }
 }

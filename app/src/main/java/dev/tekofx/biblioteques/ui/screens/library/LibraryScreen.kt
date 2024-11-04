@@ -27,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import dev.tekofx.biblioteques.call.LibraryService
@@ -39,6 +38,7 @@ import dev.tekofx.biblioteques.ui.components.library.LibraryContact
 import dev.tekofx.biblioteques.ui.components.library.LibraryInfo
 import dev.tekofx.biblioteques.ui.components.library.LibraryLocation
 import dev.tekofx.biblioteques.ui.components.library.OpeningStatus
+import dev.tekofx.biblioteques.ui.theme.Typography
 import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModel
 import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModelFactory
 
@@ -90,9 +90,9 @@ fun LibraryScreen(
 
             ) {
 
-                Text(text = library.adrecaNom, fontSize = 30.sp)
-                Text(text = library.municipality, fontSize = 26.sp)
-                OpeningStatus(library)
+                Text(text = library.adrecaNom, style = Typography.headlineMedium)
+                Text(text = library.municipality, style = Typography.headlineSmall)
+                OpeningStatus(library, Typography.titleLarge)
                 TabRowComponent(
                     tabEntries = tabEntries,
                     contentScreens = listOf(
