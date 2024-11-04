@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -56,7 +55,6 @@ fun BooksScreen(
     )
 ) {
 
-    val listState = rememberLazyListState()
     val books by bookViewModel.books.observeAsState(emptyList())
     var query by remember { mutableStateOf("") }
     val isLoading by bookViewModel.isLoading.observeAsState(false)
@@ -79,20 +77,8 @@ fun BooksScreen(
         BooksList(books)
         AnimatedVisibility(
             visible = books.isEmpty(),
-            enter = slideInVertically {
-                // Slide in from 40 dp from the top.
-                with(density) { -40.dp.roundToPx() }
-            } + expandVertically(
-                // Expand from the top.
-                expandFrom = Alignment.Top
-            ) + fadeIn(
-                // Fade in with the initial alpha of 0.3f.
-                initialAlpha = 0.3f
-            ),
-            exit = slideOutVertically {
-                with(density) { -40.dp.roundToPx() }
-            } + shrinkVertically(
-            ) + fadeOut()
+            exit = slideOutVertically(targetOffsetY = { it })
+                    + fadeOut()
         ) {
             Column(
                 modifier = Modifier
@@ -122,7 +108,7 @@ fun BooksScreen(
                     shape = RoundedCornerShape(50.dp),
                     modifier = Modifier
                         .fillMaxWidth(),
-                    label = { Text("Llibre") }
+                    label = { Text("Cerca qualsevol paraula") }
                 )
                 Button(
                     onClick = {
