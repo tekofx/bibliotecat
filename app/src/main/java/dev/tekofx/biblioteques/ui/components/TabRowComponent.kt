@@ -1,4 +1,4 @@
-package dev.tekofx.biblioteques.components
+package dev.tekofx.biblioteques.ui.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

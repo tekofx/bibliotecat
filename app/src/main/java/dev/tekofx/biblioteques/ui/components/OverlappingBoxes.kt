@@ -1,4 +1,4 @@
-package dev.tekofx.biblioteques.components
+package dev.tekofx.biblioteques.ui.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

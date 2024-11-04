@@ -1,4 +1,4 @@
-package dev.tekofx.biblioteques.components
+package dev.tekofx.biblioteques.ui.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -35,9 +35,9 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import dev.tekofx.biblioteques.components.SegmentedButtonsDefaults.ITEM_ANIMATION_MILLIS
-import dev.tekofx.biblioteques.components.SegmentedButtonsDefaults.minimumHeight
-import dev.tekofx.biblioteques.components.SegmentedButtonsDefaults.outlineThickness
+import dev.tekofx.biblioteques.ui.components.SegmentedButtonsDefaults.ITEM_ANIMATION_MILLIS
+import dev.tekofx.biblioteques.ui.components.SegmentedButtonsDefaults.minimumHeight
+import dev.tekofx.biblioteques.ui.components.SegmentedButtonsDefaults.outlineThickness
 
 /**
  * Segmented buttons implemented similar to M3 spec. Use for simple choices between two to five items.

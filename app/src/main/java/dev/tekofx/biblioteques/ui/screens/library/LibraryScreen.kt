@@ -31,14 +31,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import dev.tekofx.biblioteques.call.LibraryService
-import dev.tekofx.biblioteques.components.TabEntry
-import dev.tekofx.biblioteques.components.TabRowComponent
-import dev.tekofx.biblioteques.components.library.LibraryContact
-import dev.tekofx.biblioteques.components.library.LibraryInfo
-import dev.tekofx.biblioteques.components.library.LibraryLocation
-import dev.tekofx.biblioteques.components.library.OpeningStatus
 import dev.tekofx.biblioteques.repository.LibraryRepository
 import dev.tekofx.biblioteques.ui.IconResource
+import dev.tekofx.biblioteques.ui.components.TabEntry
+import dev.tekofx.biblioteques.ui.components.TabRowComponent
+import dev.tekofx.biblioteques.ui.components.library.LibraryContact
+import dev.tekofx.biblioteques.ui.components.library.LibraryInfo
+import dev.tekofx.biblioteques.ui.components.library.LibraryLocation
+import dev.tekofx.biblioteques.ui.components.library.OpeningStatus
 import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModel
 import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModelFactory
 

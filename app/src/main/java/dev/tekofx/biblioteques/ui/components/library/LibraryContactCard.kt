@@ -1,4 +1,4 @@
-package dev.tekofx.biblioteques.components.library
+package dev.tekofx.biblioteques.ui.components.library
 
 import android.content.ActivityNotFoundException
 import android.content.Context

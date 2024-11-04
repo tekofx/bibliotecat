@@ -15,8 +15,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import dev.tekofx.biblioteques.components.BottomNavigationBar
 import dev.tekofx.biblioteques.navigation.Navigation
+import dev.tekofx.biblioteques.ui.components.BottomNavigationBar
 import dev.tekofx.biblioteques.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {

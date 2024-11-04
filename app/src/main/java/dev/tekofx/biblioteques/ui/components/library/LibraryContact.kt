@@ -1,4 +1,4 @@
-package dev.tekofx.biblioteques.components.library
+package dev.tekofx.biblioteques.ui.components.library
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

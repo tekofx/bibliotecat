@@ -1,4 +1,4 @@
-package dev.tekofx.biblioteques.components.library
+package dev.tekofx.biblioteques.ui.components.library
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,11 +10,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.tekofx.biblioteques.components.SegmentedButtonItem
-import dev.tekofx.biblioteques.components.SegmentedButtons
 import dev.tekofx.biblioteques.model.library.Library
 import dev.tekofx.biblioteques.model.library.LibraryDummy
 import dev.tekofx.biblioteques.model.library.seasonTranslation
+import dev.tekofx.biblioteques.ui.components.SegmentedButtonItem
+import dev.tekofx.biblioteques.ui.components.SegmentedButtons
 import java.time.LocalDate
 
 @Composable
