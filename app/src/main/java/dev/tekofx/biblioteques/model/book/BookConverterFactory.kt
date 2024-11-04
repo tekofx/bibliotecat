@@ -33,7 +33,7 @@ class BookConverterFactory : Converter.Factory() {
 
 
                 val author = descriptionFields[2].trim()
-                val edition = descriptionFields[3].split("<!--")[0].trim()
+                val publication = descriptionFields[3].split("<!--")[0].trim()
 
                 //val bookCopies = getBookCopies(bookElement)
 
@@ -44,7 +44,7 @@ class BookConverterFactory : Converter.Factory() {
                             title = titleElement.text(),
                             author = author,
                             image = imageElement.attr("src"),
-                            edition = edition
+                            publication = publication
                         )
                     )
                 }

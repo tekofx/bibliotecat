@@ -19,10 +19,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import dev.tekofx.biblioteques.model.book.Book
 
 @Composable
-fun BooksList(books: List<Book>) {
+fun BooksList(books: List<Book>, navHostController: NavHostController) {
     val density = LocalDensity.current
     val listState = rememberLazyListState()
 
@@ -47,7 +48,7 @@ fun BooksList(books: List<Book>) {
 
         ) {
             items(books) { book ->
-                BookCard(book)
+                BookCard(book, navHostController)
                 Spacer(
                     modifier = Modifier
                         .fillMaxWidth()

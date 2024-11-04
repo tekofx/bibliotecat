@@ -1,4 +1,4 @@
-package dev.tekofx.biblioteques.ui.screens
+package dev.tekofx.biblioteques.ui.screens.book
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
@@ -36,9 +36,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import dev.tekofx.biblioteques.call.BookService
 import dev.tekofx.biblioteques.repository.BookRepository
 import dev.tekofx.biblioteques.ui.components.book.BooksList
@@ -48,6 +48,7 @@ import dev.tekofx.biblioteques.ui.viewModels.BookViewModelFactory
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun BooksScreen(
+    navHostController: NavHostController,
     bookViewModel: BookViewModel = viewModel(
         factory = BookViewModelFactory(
             BookRepository(BookService.getInstance())
@@ -74,7 +75,7 @@ fun BooksScreen(
         }
     ) {
 
-        BooksList(books)
+        BooksList(books, navHostController)
         AnimatedVisibility(
             visible = books.isEmpty(),
             exit = slideOutVertically(targetOffsetY = { it })
@@ -146,9 +147,3 @@ fun BooksScreen(
     }
 }
 
-
-@Preview
-@Composable
-fun BooksScreenPreview() {
-    BooksScreen()
-}

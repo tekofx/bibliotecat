@@ -1,4 +1,4 @@
-package dev.tekofx.biblioteques.ui.screens
+package dev.tekofx.biblioteques.ui.screens.library
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement

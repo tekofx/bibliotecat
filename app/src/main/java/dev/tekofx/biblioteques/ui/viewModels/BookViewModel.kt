@@ -17,6 +17,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     private var _books = MutableLiveData<List<Book>>()
     val books = MutableLiveData<List<Book>>()
     val isLoading = MutableLiveData<Boolean>(false)
+    val currentBook = MutableLiveData<Book>()
 
     var queryText by mutableStateOf("")
         private set
@@ -41,10 +42,16 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                 Log.e("BookViewModel", t.message.toString())
                 errorMessage.postValue(t.message)
                 isLoading.postValue(false)
-                
+
             }
 
         })
 
+    }
+
+    fun filterBook(string: String) {
+        println(string)
+        println(_books.value)
+        currentBook.postValue(_books.value?.find { book: Book -> book.id == string })
     }
 }

@@ -30,7 +30,7 @@ fun LibraryCard(navHostController: NavHostController, library: Library) {
     Surface(
         tonalElevation = 40.dp,
         shape = RoundedCornerShape(20.dp),
-        onClick = { navHostController.navigate("${NavScreen.LibraryScreen.name}/${library.id}") }
+        onClick = { navHostController.navigate("${NavScreen.LibrariesScreen.name}/${library.id}") }
     ) {
 
         Row(
