@@ -5,12 +5,10 @@ class Book(
     val title: String,
     val author: String,
     val image: String,
-    val publication: String
-
-
+    val publication: String,
+    var bookCopies: List<BookCopy>,
+    val temporalUrl: String
 ) {
-
-
     override fun toString(): String {
         return "$id $author - $title"
     }
@@ -22,7 +20,6 @@ class BookCopy(
     val status: String,
     val notes: String
 ) {
-
     override fun toString(): String {
         return "$location $signature $status $notes"
     }
