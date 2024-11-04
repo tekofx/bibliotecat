@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.tekofx.biblioteques.call.BookService
+import dev.tekofx.biblioteques.components.book.BookCard
 import dev.tekofx.biblioteques.repository.BookRepository
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModelFactory
@@ -96,7 +97,7 @@ fun BooksScreen(
                         .padding(top = 10.dp)
                 ) {
                     items(books) { book ->
-                        Text(text = book.title)
+                        BookCard(book)
                         Spacer(
                             modifier = Modifier
                                 .fillMaxWidth()
