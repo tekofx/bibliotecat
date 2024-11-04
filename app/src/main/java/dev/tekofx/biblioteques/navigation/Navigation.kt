@@ -24,11 +24,7 @@ fun Navigation(
 
     NavHost(navController = navController, startDestination = NavScreen.LibrariesScreen.name) {
         composable(NavScreen.LibrariesScreen.name) {
-            LibrariesScreen(navController)
-        }
-
-        composable(NavScreen.BooksScreen.name) {
-            BooksScreen(navController, bookViewModel)
+            LibrariesScreen(navController, libraryViewModel)
         }
 
         composable(
@@ -36,7 +32,11 @@ fun Navigation(
             arguments = listOf(navArgument("libraryId") { type = NavType.StringType })
         ) { backStackEntry ->
             val libraryId = backStackEntry.arguments!!.getString("libraryId")!!
-            LibraryScreen(libraryId)
+            LibraryScreen(libraryId, libraryViewModel)
+        }
+
+        composable(NavScreen.BooksScreen.name) {
+            BooksScreen(navController, bookViewModel)
         }
 
         composable(

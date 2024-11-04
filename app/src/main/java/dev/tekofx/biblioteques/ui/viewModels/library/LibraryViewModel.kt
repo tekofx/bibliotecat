@@ -37,23 +37,7 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
             "HomeViewModel",
             "getLibrary called with pointId: $pointId"
         )
-        isLoading.postValue(true)
-        val response = repository.getLibrary(pointId)
-        response.enqueue(object : Callback<LibraryResponse> {
-            override fun onResponse(
-                call: Call<LibraryResponse>,
-                response: Response<LibraryResponse>
-            ) {
-
-                _currentLibrary.postValue(response.body()?.elements?.get(0))
-                isLoading.postValue(false)
-            }
-
-            override fun onFailure(call: Call<LibraryResponse>, t: Throwable) {
-                errorMessage.postValue(t.message)
-                isLoading.postValue(false)
-            }
-        })
+        _currentLibrary.postValue(_libraries.value?.find { library: Library -> library.id == pointId })
     }
 
     fun getLibraries() {
@@ -94,4 +78,5 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
             it.isOpen(LocalDate.now(), LocalTime.now()) == open
         })
     }
+
 }
