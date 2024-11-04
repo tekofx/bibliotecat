@@ -29,13 +29,20 @@ class BookConverterFactory : Converter.Factory() {
                 val descriptionElement = x.selectFirst("div.descript")
                 val titleElement = descriptionElement?.selectFirst("span.titular")?.selectFirst("a")
                 val imageElement = x.selectFirst("div.brief_portada")?.selectFirst("img")
+
+                val descriptionFields = descriptionElement.toString().split("<br>")
+
+                val author = descriptionFields[2].trim()
+                val edition = descriptionFields[3].trim()
+
                 if (titleElement != null && imageElement != null) {
                     bookList.add(
                         Book(
                             id = "1",
                             title = titleElement.text(),
-                            author = "test",
-                            image = imageElement.attr("src")
+                            author = author,
+                            image = imageElement.attr("src"),
+                            edition = edition
                         )
                     )
                 }

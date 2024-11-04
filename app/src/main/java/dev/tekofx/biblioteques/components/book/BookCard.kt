@@ -35,7 +35,7 @@ fun BookCard(book: Book) {
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .padding(10.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.Top,
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             AsyncImage(
@@ -54,8 +54,10 @@ fun BookCard(book: Book) {
 
                 Text(text = book.title, fontSize = 20.sp)
                 Text(text = book.author)
+                Text(text = book.edition)
             }
         }
     }
 
 }
+
