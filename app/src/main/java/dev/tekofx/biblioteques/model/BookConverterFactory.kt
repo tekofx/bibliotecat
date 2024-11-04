@@ -1,5 +1,9 @@
 package dev.tekofx.biblioteques.model
 
+import android.util.Log
+import com.fleeksoft.ksoup.Ksoup
+import com.fleeksoft.ksoup.nodes.Document
+import com.fleeksoft.ksoup.select.Elements
 import dev.tekofx.biblioteques.dto.BookResponse
 import okhttp3.ResponseBody
 import retrofit2.Converter
@@ -12,13 +16,31 @@ class BookConverterFactory : Converter.Factory() {
         type: Type, annotations: Array<Annotation>, retrofit: Retrofit
     ): Converter<ResponseBody, BookResponse> {
         return Converter { responseBody ->
-            val list = arrayListOf(
-                Book("1", "Title", "Author"),
-                Book("2", "Title2", "Author2")
+            val bookList = arrayListOf<Book>()
+            Log.d("BookConverterFactory", "1")
+            val doc: Document = Ksoup.parse(html = responseBody.string())
+            Log.d("BookConverterFactory", "2")
 
-            )
+            val tdElements: Elements = doc.select("td.briefCitRow")
 
-            val response = BookResponse(list)
+            println(tdElements.size)
+
+            for (x in tdElements) {
+                val descriptionElement = x.selectFirst("div.descript")
+                val titleElement = descriptionElement?.selectFirst("span.titular")?.selectFirst("a")
+
+                if (titleElement != null) {
+                    bookList.add(
+                        Book(
+                            id = "1",
+                            title = titleElement.text(),
+                            author = "test"
+                        )
+                    )
+                }
+            }
+
+            val response = BookResponse(bookList)
             response
         }
     }

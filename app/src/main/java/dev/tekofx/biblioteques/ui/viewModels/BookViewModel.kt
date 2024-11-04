@@ -29,6 +29,8 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                 call: Call<BookResponse>, response: Response<BookResponse>
             ) {
                 _books.postValue(response.body()?.books ?: arrayListOf())
+                books.postValue(response.body()?.books ?: arrayListOf())
+
             }
 
             override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
