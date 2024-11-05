@@ -2,8 +2,10 @@ package dev.tekofx.biblioteques.ui.screens.book
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -17,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -64,6 +67,7 @@ fun BookScreen(
     }
 
     if (currentBook == null) {
+        Text(text = "No es puc trobar el llibre", textAlign = TextAlign.Justify)
 
     } else {
 
@@ -85,15 +89,33 @@ fun BookScreen(
             )
             Text(text = currentBook!!.title, style = Typography.titleLarge)
             Text(text = currentBook!!.author, style = Typography.titleMedium)
+
+            Text(text = "Publicació")
             Text(text = currentBook!!.publication, style = Typography.titleMedium)
 
             if (isLoading) {
-                CircularProgressIndicator()
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                ) {
+                    CircularProgressIndicator(Modifier.align(Alignment.Center))
+                }
             } else {
-                currentBook!!.edition?.let { Text(text = it) }
-                currentBook!!.description?.let { Text(text = it) }
-                currentBook!!.isbn?.let { Text(text = it) }
-                currentBook!!.synopsis?.let { Text(text = it, textAlign = TextAlign.Justify) }
+                currentBook!!.edition?.let {
+                    Text(text = "Edició", style = Typography.titleMedium)
+                    Text(text = it)
+                }
+                currentBook!!.description?.let {
+                    Text(text = "Description", style = Typography.titleMedium)
+                    Text(text = it)
+                }
+                currentBook!!.isbn?.let {
+                    Text(text = "ISBN", style = Typography.titleMedium)
+                    Text(text = it)
+                }
+                currentBook!!.synopsis?.let {
+                    Text(text = "Sinopsi", style = Typography.titleMedium)
+                    Text(text = it, textAlign = TextAlign.Justify)
+                }
 
                 if (currentBook!!.bookCopies.isNotEmpty()) {
                     Text(text = "Exemplars", style = Typography.titleMedium)
