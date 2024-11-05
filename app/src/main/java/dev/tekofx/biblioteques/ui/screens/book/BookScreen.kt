@@ -2,12 +2,14 @@ package dev.tekofx.biblioteques.ui.screens.book
 
 import android.util.Log
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountBox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
@@ -38,20 +41,21 @@ fun BookScreen(
 ) {
 
     val currentBook by bookViewModel.currentBook.observeAsState(null)
+    val isLoading by bookViewModel.isLoading.observeAsState(false)
 
     // Get book info
     LaunchedEffect(key1 = null) {
-        bookViewModel.filterBook(libraryUrl)
+        bookViewModel.filterBook(libraryUrl.toInt())
         Log.d("BookScreen", "Retrived book")
     }
 
     // Observe currentBook and trigger getBookCopies when it's not null
     LaunchedEffect(currentBook) {
         currentBook?.let {
-            if (currentBook!!.bookCopies.isEmpty()) {
+            if (currentBook!!.description == null) {
 
-                bookViewModel.getBookCopies()
-                Log.d("BookScreen", "Got bookcopies ${currentBook!!.bookCopies}")
+                bookViewModel.getBookDetails()
+                Log.d("BookScreen", "Got bookdetails ${currentBook!!.bookCopies}")
             }
         }
     }
@@ -78,13 +82,25 @@ fun BookScreen(
             Text(text = currentBook!!.author, style = Typography.titleMedium)
             Text(text = currentBook!!.publication, style = Typography.titleMedium)
 
-            currentBook!!.bookCopies.forEach { bookCopy: BookCopy ->
-                Column {
+            if (isLoading) {
+                CircularProgressIndicator()
+            } else {
+                currentBook!!.edition?.let { Text(text = it) }
+                currentBook!!.description?.let { Text(text = it) }
+                currentBook!!.isbn?.let { Text(text = it) }
+                currentBook!!.synopsis?.let { Text(text = it, textAlign = TextAlign.Justify) }
 
-                    Text(text = bookCopy.location)
-                    Text(text = bookCopy.signature)
+                if (currentBook!!.bookCopies.isNotEmpty()) {
+                    Text(text = "Exemplars")
+                    currentBook!!.bookCopies.forEach { bookCopy: BookCopy ->
+                        Row {
+                            Text(text = bookCopy.location)
+                            Text(text = bookCopy.signature)
+                            Text(text = bookCopy.status)
+                            Text(text = bookCopy.notes)
+                        }
+                    }
                 }
-
             }
 
         }

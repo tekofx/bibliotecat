@@ -13,7 +13,7 @@ interface BookService {
     fun getBook(@Query("searcharg") searchArg: String): Call<BookResponse>
 
     @GET(value = "{url}")
-    fun getBookCopies(@Path("url") url: String): Call<BookResponse>
+    fun getBookDetails(@Path("url") url: String): Call<BookResponse>
 
 
     companion object {

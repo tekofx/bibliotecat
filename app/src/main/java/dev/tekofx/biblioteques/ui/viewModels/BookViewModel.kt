@@ -62,7 +62,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
         Log.d("BookConverterFactory", "2")
 
         val bookElements: Elements = doc.select("td.briefCitRow")
-
+        var index = 0
         for (bookElement in bookElements) {
             val descriptionElement = bookElement.selectFirst("div.descript")
             val titleElement = descriptionElement?.selectFirst("span.titular")?.selectFirst("a")
@@ -77,7 +77,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
             if (titleElement != null && imageElement != null) {
                 bookList.add(
                     Book(
-                        id = "1",
+                        id = index,
                         title = titleElement.text(),
                         author = author,
                         image = imageElement.attr("src"),
@@ -86,6 +86,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                         temporalUrl = url!!
                     )
                 )
+                index++
             }
         }
         return bookList
@@ -110,19 +111,15 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                         notes = notes
                     )
                 )
-
-
             }
         }
-
         return bookCopies
-
 
     }
 
-    fun getBookCopies() {
+    fun getBookDetails() {
         currentBook.value?.let { book ->
-            val response = repository.getBookCopies(book.temporalUrl)
+            val response = repository.getBookDetails(book.temporalUrl)
             isLoading.postValue(true)
             response.enqueue(object : Callback<BookResponse> {
                 override fun onResponse(
@@ -130,11 +127,30 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                     response: Response<BookResponse>
                 ) {
                     val bookCopies = response.body()?.let { constructBookCopy(it.body) }
-                    println(bookCopies)
+
+                    val doc: Document = Ksoup.parse(html = response.body()!!.body)
+
+                    val editionElement =
+                        doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Edició" }
+                            ?.nextElementSibling()
+
+                    val descriptionElement =
+                        doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Descripció" }
+                            ?.nextElementSibling()
+                    val synopsisElement =
+                        doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Sinopsi" }
+                            ?.nextElementSibling()
+
+                    val isbnElement =
+                        doc.select("td.bibInfoLabel").firstOrNull { it.text() == "ISBN" }
+                            ?.nextElementSibling()
+
+                    val edition = editionElement?.text()
+                    val description = descriptionElement?.text()
+                    val synopsis = synopsisElement?.text()
+                    val isbn = isbnElement?.text()
                     bookCopies?.let { copies ->
                         book.bookCopies = copies
-                        println("a")
-                        println("bbok " + book)
                         // Create a new book object with updated bookCopies
                         val updatedBook = Book(
                             id = book.id,
@@ -143,10 +159,13 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                             temporalUrl = book.temporalUrl,
                             bookCopies = bookCopies,
                             image = book.image,
-                            publication = book.publication
+                            publication = book.publication,
+                            edition = edition,
+                            description = description,
+                            synopsis = synopsis,
+                            isbn = isbn
                         )
                         currentBook.postValue(updatedBook)
-                        println("currentBook " + currentBook.value)
                     }
                     isLoading.postValue(false)
                 }
@@ -160,10 +179,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
         }
     }
 
-    fun filterBook(string: String): Book? {
-        println(string)
-        println("books_value ${_books.value?.find { book: Book -> book.id == string }}")
-        currentBook.postValue(_books.value?.find { book: Book -> book.id == string })
-        return _books.value?.find { book: Book -> book.id == string }
+    fun filterBook(id: Int) {
+        currentBook.postValue(_books.value?.find { book: Book -> book.id == id })
     }
 }

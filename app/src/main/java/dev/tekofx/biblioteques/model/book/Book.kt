@@ -1,13 +1,18 @@
 package dev.tekofx.biblioteques.model.book
 
 class Book(
-    val id: String,
+    val id: Int,
     val title: String,
     val author: String,
     val image: String,
     val publication: String,
     var bookCopies: List<BookCopy>,
-    val temporalUrl: String
+    val temporalUrl: String,
+    val edition: String? = null,
+    val description: String? = null,
+    val synopsis: String? = null,
+    val isbn: String? = null,
+    val permanentUrl: String? = null
 ) {
     override fun toString(): String {
         var output = "$id $author - $title"
@@ -28,3 +33,4 @@ class BookCopy(
         return "$location $signature $status $notes"
     }
 }
+

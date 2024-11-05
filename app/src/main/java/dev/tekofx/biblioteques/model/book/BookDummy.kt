@@ -1,7 +1,7 @@
 package dev.tekofx.biblioteques.model.book
 
 val bookDummy = Book(
-    id = "test",
+    id = 0,
     title = "Aleación de Ley",
     author = "Sanderson, Brandon",
     image = "",
