@@ -1,4 +1,4 @@
-package dev.tekofx.biblioteques.ui.components.library
+package dev.tekofx.biblioteques.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
@@ -14,21 +14,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import dev.tekofx.biblioteques.R
-import dev.tekofx.biblioteques.model.library.Library
-import java.time.LocalDate
-import java.time.LocalTime
+import dev.tekofx.biblioteques.model.StatusColor
 
 @Composable
-fun OpeningStatus(library: Library, textStyle: TextStyle) {
-    val date = LocalDate.now()
-    val time = LocalTime.now()
-    var color = R.color.red_closed
-    if (library.isOpen(date, time)) {
-        color = R.color.green_open
-        if (library.isClosingSoon(date, time)) {
-            color = R.color.yellow_soon
-        }
+fun StatusBadge(statusColor: StatusColor, text: String, textStyle: TextStyle) {
+    val color = when (statusColor) {
+        StatusColor.GREEN -> R.color.green_open
+        StatusColor.YELLOW -> R.color.yellow_soon
+        StatusColor.RED -> R.color.red_closed
     }
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(top = 8.dp)
@@ -42,7 +37,7 @@ fun OpeningStatus(library: Library, textStyle: TextStyle) {
             colorFilter = ColorFilter.tint(colorResource(id = color))
         )
         Text(
-            text = library.generateStateMessage(date, time),
+            text = text,
             style = textStyle
         )
     }

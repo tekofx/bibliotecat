@@ -10,6 +10,7 @@ import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.nodes.Document
 import com.fleeksoft.ksoup.select.Elements
 import dev.tekofx.biblioteques.dto.BookResponse
+import dev.tekofx.biblioteques.model.StatusColor
 import dev.tekofx.biblioteques.model.book.Book
 import dev.tekofx.biblioteques.model.book.BookCopy
 import dev.tekofx.biblioteques.repository.BookRepository
@@ -107,12 +108,21 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                 if (notes!!.isEmpty()) {
                     notes = null
                 }
+
+                val statusColor: StatusColor = when {
+                    status.contains("Disponible", ignoreCase = true) -> StatusColor.GREEN
+                    status.contains("Venç", ignoreCase = true) -> StatusColor.YELLOW
+                    else -> StatusColor.RED
+                }
+
+
                 bookCopies.add(
                     BookCopy(
                         location = location,
                         signature = signature,
                         status = status,
-                        notes = notes
+                        notes = notes,
+                        statusColor = statusColor
                     )
                 )
             }

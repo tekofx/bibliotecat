@@ -23,7 +23,10 @@ import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import dev.tekofx.biblioteques.model.library.Library
 import dev.tekofx.biblioteques.navigation.NavScreen
+import dev.tekofx.biblioteques.ui.components.StatusBadge
 import dev.tekofx.biblioteques.ui.theme.Typography
+import java.time.LocalDate
+import java.time.LocalTime
 
 @Composable
 fun LibraryCard(navHostController: NavHostController, library: Library) {
@@ -65,7 +68,11 @@ fun LibraryCard(navHostController: NavHostController, library: Library) {
                         modifier = Modifier.padding(top = 8.dp)
                     )
                 }
-                OpeningStatus(library, Typography.bodyMedium)
+                StatusBadge(
+                    library.getStatusColor(),
+                    library.generateStateMessage(LocalDate.now(), LocalTime.now()),
+                    Typography.bodyMedium
+                )
 
             }
         }

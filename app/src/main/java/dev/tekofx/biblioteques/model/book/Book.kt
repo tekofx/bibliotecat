@@ -1,5 +1,7 @@
 package dev.tekofx.biblioteques.model.book
 
+import dev.tekofx.biblioteques.model.StatusColor
+
 class Book(
     val id: Int,
     val title: String,
@@ -27,7 +29,8 @@ class BookCopy(
     val location: String,
     val signature: String,
     val status: String,
-    val notes: String?
+    val notes: String?,
+    val statusColor: StatusColor = StatusColor.RED
 ) {
     override fun toString(): String {
         return "$location $signature $status $notes"

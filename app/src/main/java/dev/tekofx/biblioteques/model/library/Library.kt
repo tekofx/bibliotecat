@@ -1,5 +1,6 @@
 package dev.tekofx.biblioteques.model.library
 
+import dev.tekofx.biblioteques.model.StatusColor
 import dev.tekofx.biblioteques.utils.formatDayOfWeek
 import java.time.DayOfWeek
 import java.time.Duration
@@ -108,6 +109,7 @@ data class TimeTable(
     }
 }
 
+
 /**
  * Represents a library with summer and winter timetables.
  *
@@ -152,6 +154,20 @@ class Library(
             hora.isAfter(interval.from) && hora.isBefore(interval.to)
         } ?: false
     }
+
+    fun getStatusColor(): StatusColor {
+        val currentDate = LocalDate.now()
+        val currentTime = LocalTime.now()
+        if (isOpen(currentDate, currentTime)) {
+            if (isClosingSoon(currentDate, currentTime)) {
+                return StatusColor.YELLOW
+            }
+            return StatusColor.GREEN
+        } else {
+            return StatusColor.RED
+        }
+    }
+
 
     /**
      * Checks if the library is closing in an hour or less at a given date and time.

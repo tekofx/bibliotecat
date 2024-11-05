@@ -10,6 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.tekofx.biblioteques.model.book.BookCopy
+import dev.tekofx.biblioteques.ui.components.StatusBadge
+import dev.tekofx.biblioteques.ui.theme.Typography
 
 @Composable
 fun BookCopyCard(bookCopy: BookCopy) {
@@ -25,6 +27,11 @@ fun BookCopyCard(bookCopy: BookCopy) {
             Text(text = bookCopy.location)
             Text(text = bookCopy.signature)
             Text(text = bookCopy.status)
+            StatusBadge(
+                bookCopy.statusColor,
+                text = bookCopy.status,
+                textStyle = Typography.bodyMedium
+            )
             bookCopy.notes?.let { Text(text = it) }
         }
     }
