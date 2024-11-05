@@ -14,6 +14,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,6 +33,7 @@ import coil3.compose.AsyncImage
 import dev.tekofx.biblioteques.call.BookService
 import dev.tekofx.biblioteques.model.book.BookCopy
 import dev.tekofx.biblioteques.repository.BookRepository
+import dev.tekofx.biblioteques.ui.components.InfoCard
 import dev.tekofx.biblioteques.ui.components.book.BookCopyCard
 import dev.tekofx.biblioteques.ui.theme.Typography
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
@@ -75,7 +78,8 @@ fun BookScreen(
         Column(
             modifier = Modifier
                 .padding(horizontal = 10.dp)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             AsyncImage(
                 model = currentBook!!.image,
@@ -87,11 +91,28 @@ fun BookScreen(
                     .clip(RoundedCornerShape(10.dp)),
                 contentScale = ContentScale.Crop
             )
-            Text(text = currentBook!!.title, style = Typography.titleLarge)
-            Text(text = currentBook!!.author, style = Typography.titleMedium)
 
-            Text(text = "Publicació")
-            Text(text = currentBook!!.publication, style = Typography.titleMedium)
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                tonalElevation = 20.dp,
+                shape = RoundedCornerShape(10.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+
+
+                    Text(text = currentBook!!.title, style = Typography.titleLarge)
+                    Text(text = currentBook!!.author, style = Typography.titleMedium)
+                    HorizontalDivider()
+                    Text(text = "Publicació")
+                    Text(text = currentBook!!.publication, style = Typography.titleMedium)
+                }
+            }
+
 
             if (isLoading) {
                 Box(
@@ -101,20 +122,16 @@ fun BookScreen(
                 }
             } else {
                 currentBook!!.edition?.let {
-                    Text(text = "Edició", style = Typography.titleMedium)
-                    Text(text = it)
+                    InfoCard("Edició", it)
                 }
                 currentBook!!.description?.let {
-                    Text(text = "Description", style = Typography.titleMedium)
-                    Text(text = it)
+                    InfoCard("Descripció", it)
                 }
                 currentBook!!.isbn?.let {
-                    Text(text = "ISBN", style = Typography.titleMedium)
-                    Text(text = it)
+                    InfoCard("ISBN", it)
                 }
                 currentBook!!.synopsis?.let {
-                    Text(text = "Sinopsi", style = Typography.titleMedium)
-                    Text(text = it, textAlign = TextAlign.Justify)
+                    InfoCard("Sinopsi", it)
                 }
 
                 if (currentBook!!.bookCopies.isNotEmpty()) {
@@ -127,6 +144,8 @@ fun BookScreen(
                             BookCopyCard(bookCopy)
                         }
                     }
+                } else {
+                    Text(text = "No hi ha exemplars")
                 }
             }
 
