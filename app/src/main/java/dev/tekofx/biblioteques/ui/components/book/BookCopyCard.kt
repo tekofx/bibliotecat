@@ -1,6 +1,8 @@
 package dev.tekofx.biblioteques.ui.components.book
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,8 +27,13 @@ fun BookCopyCard(bookCopy: BookCopy) {
                 .fillMaxWidth()
         ) {
             Text(text = bookCopy.location)
-            Text(text = bookCopy.signature)
-            Text(text = bookCopy.status)
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Text(text = "Signatura")
+                Text(text = bookCopy.signature)
+
+            }
             StatusBadge(
                 bookCopy.statusColor,
                 text = bookCopy.status,
