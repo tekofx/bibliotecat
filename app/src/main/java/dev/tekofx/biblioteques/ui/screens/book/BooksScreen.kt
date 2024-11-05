@@ -28,9 +28,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -57,7 +54,7 @@ fun BooksScreen(
 ) {
 
     val books by bookViewModel.books.observeAsState(emptyList())
-    var query by remember { mutableStateOf("") }
+
     val isLoading by bookViewModel.isLoading.observeAsState(false)
     val density = LocalDensity.current
     val focus = LocalFocusManager.current
@@ -95,9 +92,9 @@ fun BooksScreen(
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
                     ),
-                    value = query,
+                    value = bookViewModel.queryText,
                     onValueChange = { newText ->
-                        query = newText
+                        bookViewModel.onSearchTextChanged(newText)
                     },
                     singleLine = true,
                     trailingIcon = {
@@ -113,10 +110,10 @@ fun BooksScreen(
                 )
                 Button(
                     onClick = {
-                        bookViewModel.getBook(query)
+                        bookViewModel.findBooks()
                         focus.clearFocus()
                     },
-                    enabled = query.isNotEmpty() && !isLoading
+                    enabled = bookViewModel.queryText.isNotEmpty() && !isLoading
 
                 ) {
 

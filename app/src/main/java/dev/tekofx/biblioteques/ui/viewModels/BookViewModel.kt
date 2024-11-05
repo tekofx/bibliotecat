@@ -28,8 +28,8 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
         private set
     val errorMessage = MutableLiveData<String>()
 
-    fun getBook(query: String) {
-        val response = repository.getBook(query)
+    fun findBooks() {
+        val response = repository.getBook(queryText)
         println(response.toString())
         isLoading.postValue(true)
 
@@ -195,5 +195,9 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
 
     fun filterBook(id: Int) {
         currentBook.postValue(_books.value?.find { book: Book -> book.id == id })
+    }
+
+    fun onSearchTextChanged(text: String) {
+        queryText = text
     }
 }
