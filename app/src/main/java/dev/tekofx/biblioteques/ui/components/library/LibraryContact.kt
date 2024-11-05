@@ -15,17 +15,22 @@ fun LibraryContact(library: Library) {
 
         library.emails.forEach {
             LibraryContactCard(
-                contactType = ContactType.mail,
+                contactType = ContactType.MAIL,
                 text = it
             )
         }
 
         library.phones.forEach {
             LibraryContactCard(
-                contactType = ContactType.phone,
+                contactType = ContactType.PHONE,
                 text = it
             )
         }
+
+        LibraryContactCard(
+            ContactType.WEB,
+            library.webUrl
+        )
     }
 
 }

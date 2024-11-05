@@ -134,6 +134,7 @@ class Library(
     val bibliotecaVirtualUrl: String?,
     val emails: List<String>,
     val phones: List<String>,
+    val webUrl: String,
     var image: String,
     val summerTimeTable: TimeTable,
     val winterTimetable: TimeTable,

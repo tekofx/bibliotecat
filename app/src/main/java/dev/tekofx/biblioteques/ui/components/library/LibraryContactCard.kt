@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.MailOutline
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material3.Icon
@@ -30,8 +31,9 @@ import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.theme.Typography
 
 enum class ContactType {
-    mail,
-    phone
+    MAIL,
+    PHONE,
+    WEB
 }
 
 @Composable
@@ -41,8 +43,9 @@ fun LibraryContactCard(contactType: ContactType, text: String) {
 
     val iconResource = remember(contactType) {
         when (contactType) {
-            ContactType.mail -> IconResource.fromImageVector(Icons.Outlined.MailOutline)
-            ContactType.phone -> IconResource.fromImageVector(Icons.Outlined.Phone)
+            ContactType.MAIL -> IconResource.fromImageVector(Icons.Outlined.MailOutline)
+            ContactType.PHONE -> IconResource.fromImageVector(Icons.Outlined.Phone)
+            ContactType.WEB -> IconResource.fromImageVector(Icons.Outlined.Info)
         }
     }
 
@@ -77,8 +80,9 @@ fun LibraryContactCard(contactType: ContactType, text: String) {
 fun openApp(context: Context, contactType: ContactType, data: String) {
 
     val uri = when (contactType) {
-        ContactType.phone -> Uri.parse("tel:${Uri.encode("+34$data")}")
-        ContactType.mail -> Uri.parse("mailto:${Uri.encode(data)}")
+        ContactType.PHONE -> Uri.parse("tel:${Uri.encode("+34$data")}")
+        ContactType.MAIL -> Uri.parse("mailto:${Uri.encode(data)}")
+        ContactType.WEB -> Uri.parse(Uri.encode(data))
     }
 
     val intent = Intent(

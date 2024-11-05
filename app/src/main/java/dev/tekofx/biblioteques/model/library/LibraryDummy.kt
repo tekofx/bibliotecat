@@ -207,6 +207,7 @@ var LibraryDummy = Library(
     bibliotecaVirtualUrl = "bibliotecaVirtualUrl",
     emails = listOf("b.st.peret.e@diba.cat"),
     phones = listOf("123456789"),
+    webUrl = "https://test.com",
     image = "https://bibliotecavirtual.diba.cat/documents/350986/0/P1120129.JPGfoto+portada.jpg/9ff2c56c-7424-4d95-b734-0ef67225a281?t=1364040065786",
     summerTimeTable = summerTimetable,
     winterTimetable = winterTimetable,

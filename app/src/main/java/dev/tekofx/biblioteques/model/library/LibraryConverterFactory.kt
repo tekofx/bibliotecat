@@ -59,6 +59,7 @@ class LibraryConverterFactory : Converter.Factory() {
                 val imatge = if (imatgeArray.length() > 0) imatgeArray.getString(0) else ""
                 val emails = jsonArrayToStringArray(libraryElement.getJSONArray("email"))
                 val phones = jsonArrayToStringArray(libraryElement.getJSONArray("telefon_contacte"))
+                val webUrl = libraryElement.getString("url_general")
 
                 // Get bibliotecavirtual.diba.cat url
                 var bibliotecaVirtualUrl: String? = null
@@ -83,6 +84,7 @@ class LibraryConverterFactory : Converter.Factory() {
                     bibliotecaVirtualUrl = bibliotecaVirtualUrl,
                     emails = emails,
                     phones = phones,
+                    webUrl = webUrl,
                     image = imatge,
                     summerTimeTable = timetableEstiu,
                     winterTimetable = timetableHivern,
