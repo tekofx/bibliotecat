@@ -10,4 +10,9 @@ class BookRepository(private val bookService: BookService) {
         Log.d("BookRepository", "test")
         return bookService.getBook(query)
     }
+
+    fun getBookCopies(url: String): Call<BookResponse> {
+        Log.d("BookRepository", "test")
+        return bookService.getBookCopies(url)
+    }
 }

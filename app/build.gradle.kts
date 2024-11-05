@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.ui.tooling.preview.android)
+    implementation(libs.androidx.animation.core.android)
     testImplementation(libs.junit)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

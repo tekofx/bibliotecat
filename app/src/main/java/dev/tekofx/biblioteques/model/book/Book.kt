@@ -10,7 +10,11 @@ class Book(
     val temporalUrl: String
 ) {
     override fun toString(): String {
-        return "$id $author - $title"
+        var output = "$id $author - $title"
+        for (bookCopy in bookCopies) {
+            output += "\n$bookCopy"
+        }
+        return output
     }
 }
 
