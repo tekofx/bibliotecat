@@ -1,12 +1,14 @@
 package dev.tekofx.biblioteques.ui.screens.book
 
 import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material3.CircularProgressIndicator
@@ -26,6 +28,7 @@ import coil3.compose.AsyncImage
 import dev.tekofx.biblioteques.call.BookService
 import dev.tekofx.biblioteques.model.book.BookCopy
 import dev.tekofx.biblioteques.repository.BookRepository
+import dev.tekofx.biblioteques.ui.components.book.BookCopyCard
 import dev.tekofx.biblioteques.ui.theme.Typography
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModelFactory
@@ -66,10 +69,12 @@ fun BookScreen(
 
 
         Column(
-            modifier = Modifier.padding(horizontal = 10.dp)
+            modifier = Modifier
+                .padding(horizontal = 10.dp)
+                .verticalScroll(rememberScrollState())
         ) {
             AsyncImage(
-                model = currentBook!!.image, // Ajusta con tu imagen
+                model = currentBook!!.image,
                 contentDescription = null,
                 placeholder = rememberVectorPainter(image = Icons.Outlined.AccountBox),
                 modifier = Modifier
@@ -91,13 +96,13 @@ fun BookScreen(
                 currentBook!!.synopsis?.let { Text(text = it, textAlign = TextAlign.Justify) }
 
                 if (currentBook!!.bookCopies.isNotEmpty()) {
-                    Text(text = "Exemplars")
-                    currentBook!!.bookCopies.forEach { bookCopy: BookCopy ->
-                        Row {
-                            Text(text = bookCopy.location)
-                            Text(text = bookCopy.signature)
-                            Text(text = bookCopy.status)
-                            Text(text = bookCopy.notes)
+                    Text(text = "Exemplars", style = Typography.titleMedium)
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        currentBook!!.bookCopies.forEach { bookCopy: BookCopy ->
+                            Log.d("BookScreen", "Processing book copy: $bookCopy")
+                            BookCopyCard(bookCopy)
                         }
                     }
                 }

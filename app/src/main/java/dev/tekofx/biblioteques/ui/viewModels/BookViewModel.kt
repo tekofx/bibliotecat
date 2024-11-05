@@ -92,17 +92,21 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
         return bookList
     }
 
-    private fun constructBookCopy(html: String): List<BookCopy> {
+    private fun constructBookCopies(html: String): List<BookCopy> {
         val doc: Document = Ksoup.parse(html = html)
         val trElements = doc.select("tr.bibItemsEntry")
         val bookCopies = arrayListOf<BookCopy>()
         for (x in trElements) {
+            println("w")
             val tdElements = x.select("td")
             val location = tdElements[0].text()
             if (location.isNotEmpty()) {
                 val signature = tdElements[1].text()
                 val status = tdElements[2].text()
-                val notes = tdElements[3].text()
+                var notes: String? = tdElements[3].text()
+                if (notes!!.isEmpty()) {
+                    notes = null
+                }
                 bookCopies.add(
                     BookCopy(
                         location = location,
@@ -126,7 +130,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                     call: Call<BookResponse>,
                     response: Response<BookResponse>
                 ) {
-                    val bookCopies = response.body()?.let { constructBookCopy(it.body) }
+                    val bookCopies = response.body()?.let { constructBookCopies(it.body) }
 
                     val doc: Document = Ksoup.parse(html = response.body()!!.body)
 
