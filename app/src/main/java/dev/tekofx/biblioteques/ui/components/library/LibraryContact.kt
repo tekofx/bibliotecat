@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import dev.tekofx.biblioteques.model.library.Library
+import dev.tekofx.biblioteques.ui.components.ContactType
+import dev.tekofx.biblioteques.ui.components.InfoIntentCard
 
 @Composable
 fun LibraryContact(library: Library) {
@@ -14,23 +16,25 @@ fun LibraryContact(library: Library) {
     ) {
 
         library.emails.forEach {
-            LibraryContactCard(
+            InfoIntentCard(
                 contactType = ContactType.MAIL,
                 text = it
             )
         }
 
         library.phones.forEach {
-            LibraryContactCard(
+            InfoIntentCard(
                 contactType = ContactType.PHONE,
                 text = it
             )
         }
 
-        LibraryContactCard(
-            ContactType.WEB,
-            library.webUrl
-        )
+        if (library.webUrl.isNotEmpty()) {
+            InfoIntentCard(
+                ContactType.WEB,
+                library.webUrl
+            )
+        }
     }
 
 }

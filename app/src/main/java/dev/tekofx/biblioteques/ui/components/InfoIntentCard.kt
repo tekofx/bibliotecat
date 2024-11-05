@@ -1,4 +1,5 @@
-package dev.tekofx.biblioteques.ui.components.library
+package dev.tekofx.biblioteques.ui.components
+
 
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.MailOutline
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material3.Icon
@@ -33,11 +35,12 @@ import dev.tekofx.biblioteques.ui.theme.Typography
 enum class ContactType {
     MAIL,
     PHONE,
-    WEB
+    WEB,
+    LOCATION
 }
 
 @Composable
-fun LibraryContactCard(contactType: ContactType, text: String) {
+fun InfoIntentCard(contactType: ContactType, text: String) {
     val context = LocalContext.current
 
 
@@ -46,6 +49,7 @@ fun LibraryContactCard(contactType: ContactType, text: String) {
             ContactType.MAIL -> IconResource.fromImageVector(Icons.Outlined.MailOutline)
             ContactType.PHONE -> IconResource.fromImageVector(Icons.Outlined.Phone)
             ContactType.WEB -> IconResource.fromImageVector(Icons.Outlined.Info)
+            ContactType.LOCATION -> IconResource.fromImageVector(Icons.Outlined.LocationOn)
         }
     }
 
@@ -83,6 +87,7 @@ fun openApp(context: Context, contactType: ContactType, data: String) {
         ContactType.PHONE -> Uri.parse("tel:${Uri.encode("+34$data")}")
         ContactType.MAIL -> Uri.parse("mailto:${Uri.encode(data)}")
         ContactType.WEB -> Uri.parse(Uri.encode(data))
+        ContactType.LOCATION -> Uri.parse("geo:0,0?q=${Uri.encode(data)}")
     }
 
     val intent = Intent(
