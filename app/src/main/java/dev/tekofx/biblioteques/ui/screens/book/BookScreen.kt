@@ -61,7 +61,7 @@ fun BookScreen(
     // Observe currentBook and trigger getBookCopies when it's not null
     LaunchedEffect(currentBook) {
         currentBook?.let {
-            if (currentBook!!.description == null) {
+            if (currentBook!!.bookDetails == null) {
 
                 bookViewModel.getBookDetails()
                 Log.d("BookScreen", "Got bookdetails ${currentBook!!.bookCopies}")
@@ -121,17 +121,21 @@ fun BookScreen(
                     CircularProgressIndicator(Modifier.align(Alignment.Center))
                 }
             } else {
-                currentBook!!.edition?.let {
-                    InfoCard("Edició", it)
-                }
-                currentBook!!.description?.let {
-                    InfoCard("Descripció", it)
-                }
-                currentBook!!.isbn?.let {
-                    InfoCard("ISBN", it)
-                }
-                currentBook!!.synopsis?.let {
-                    InfoCard("Sinopsi", it)
+
+                if (currentBook!!.bookDetails != null) {
+
+                    currentBook!!.bookDetails!!.edition?.let {
+                        InfoCard("Edició", it)
+                    }
+                    currentBook!!.bookDetails!!.description?.let {
+                        InfoCard("Descripció", it)
+                    }
+                    currentBook!!.bookDetails!!.isbn?.let {
+                        InfoCard("ISBN", it)
+                    }
+                    currentBook!!.bookDetails!!.synopsis?.let {
+                        InfoCard("Sinopsi", it)
+                    }
                 }
 
                 if (currentBook!!.bookCopies.isNotEmpty()) {

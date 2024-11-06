@@ -2,6 +2,7 @@ package dev.tekofx.biblioteques.ui.viewModels
 
 import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.MutableLiveData
@@ -18,35 +19,67 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+
 class BookViewModel(private val repository: BookRepository) : ViewModel() {
     private var _books = MutableLiveData<List<Book>>()
     val books = MutableLiveData<List<Book>>()
+
     val isLoading = MutableLiveData<Boolean>(false)
     val currentBook = MutableLiveData<Book>()
+    var totalBooks = mutableIntStateOf(29)
+        private set
+    val indexPage = mutableIntStateOf(13)
 
     var queryText by mutableStateOf("")
         private set
     val errorMessage = MutableLiveData<String>()
 
+
+    fun getResultPage() {
+        Log.d("BookViewModel", "index: ${indexPage.value} totalbooks ${totalBooks.intValue}")
+        val response = repository.getResultPage(queryText, indexPage.intValue, totalBooks.intValue)
+        response.enqueue(object : Callback<BookResponse> {
+            override fun onResponse(
+                call: Call<BookResponse>, response: Response<BookResponse>
+            ) {
+
+                val constructedBooks = response.body()?.let { constructBooks(it.body) }
+
+                _books.postValue(constructedBooks!!)
+                books.postValue(constructedBooks!!)
+                isLoading.postValue(false)
+                indexPage.intValue++
+            }
+
+            override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
+                Log.e("BookViewModel", t.message.toString())
+                errorMessage.postValue(t.message)
+                isLoading.postValue(false)
+            }
+        })
+    }
+
     fun findBooks() {
-        val response = repository.getBook(queryText)
-        println(response.toString())
+        val response = repository.findBooks(queryText)
+        println(1)
         isLoading.postValue(true)
 
         response.enqueue(object : Callback<BookResponse> {
             override fun onResponse(
                 call: Call<BookResponse>, response: Response<BookResponse>
             ) {
-                val test = response.body()?.let { constructBooks(it.body) }
+                val booksResponse = response.body()?.books
+                Log.d("BookViewModel", "test")
 
-                _books.postValue(test!!)
-                books.postValue(test!!)
+                totalBooks.intValue = response.body()?.totalBooks ?: 0
+                _books.postValue(booksResponse!!)
+                books.postValue(booksResponse!!)
                 isLoading.postValue(false)
 
             }
 
             override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
-                Log.e("BookViewModel", t.message.toString())
+                Log.e("BookViewModel.findBooks", t.message.toString())
                 errorMessage.postValue(t.message)
                 isLoading.postValue(false)
 
@@ -93,43 +126,6 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
         return bookList
     }
 
-    private fun constructBookCopies(html: String): List<BookCopy> {
-        val doc: Document = Ksoup.parse(html = html)
-        val trElements = doc.select("tr.bibItemsEntry")
-        val bookCopies = arrayListOf<BookCopy>()
-        for (x in trElements) {
-            println("w")
-            val tdElements = x.select("td")
-            val location = tdElements[0].text()
-            if (location.isNotEmpty()) {
-                val signature = tdElements[1].text()
-                val status = tdElements[2].text()
-                var notes: String? = tdElements[3].text()
-                if (notes!!.isEmpty()) {
-                    notes = null
-                }
-
-                val statusColor: StatusColor = when {
-                    status.contains("Disponible", ignoreCase = true) -> StatusColor.GREEN
-                    status.contains("Venç", ignoreCase = true) -> StatusColor.YELLOW
-                    else -> StatusColor.RED
-                }
-
-
-                bookCopies.add(
-                    BookCopy(
-                        location = location,
-                        signature = signature,
-                        status = status,
-                        notes = notes,
-                        statusColor = statusColor
-                    )
-                )
-            }
-        }
-        return bookCopies
-
-    }
 
     fun getBookDetails() {
         currentBook.value?.let { book ->
@@ -140,29 +136,9 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                     call: Call<BookResponse>,
                     response: Response<BookResponse>
                 ) {
-                    val bookCopies = response.body()?.let { constructBookCopies(it.body) }
-
-                    val doc: Document = Ksoup.parse(html = response.body()!!.body)
-
-                    val editionElement =
-                        doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Edició" }
-                            ?.nextElementSibling()
-
-                    val descriptionElement =
-                        doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Descripció" }
-                            ?.nextElementSibling()
-                    val synopsisElement =
-                        doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Sinopsi" }
-                            ?.nextElementSibling()
-
-                    val isbnElement =
-                        doc.select("td.bibInfoLabel").firstOrNull { it.text() == "ISBN" }
-                            ?.nextElementSibling()
-
-                    val edition = editionElement?.text()
-                    val description = descriptionElement?.text()
-                    val synopsis = synopsisElement?.text()
-                    val isbn = isbnElement?.text()
+                    val bookCopies = response.body()?.bookCopies
+                    val bookDetails = response.body()?.bookDetails
+                    println(bookDetails)
                     bookCopies?.let { copies ->
                         book.bookCopies = copies
                         // Create a new book object with updated bookCopies
@@ -174,10 +150,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                             bookCopies = bookCopies,
                             image = book.image,
                             publication = book.publication,
-                            edition = edition,
-                            description = description,
-                            synopsis = synopsis,
-                            isbn = isbn
+                            bookDetails = bookDetails
                         )
                         currentBook.postValue(updatedBook)
                     }

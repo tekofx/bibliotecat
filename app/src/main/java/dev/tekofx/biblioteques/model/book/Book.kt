@@ -10,11 +10,7 @@ class Book(
     val publication: String,
     var bookCopies: List<BookCopy>,
     val temporalUrl: String,
-    val edition: String? = null,
-    val description: String? = null,
-    val synopsis: String? = null,
-    val isbn: String? = null,
-    val permanentUrl: String? = null
+    val bookDetails: BookDetails? = null
 ) {
     override fun toString(): String {
         var output = "$id $author - $title"
@@ -24,6 +20,14 @@ class Book(
         return output
     }
 }
+
+class BookDetails(
+    val edition: String?,
+    val description: String?,
+    val synopsis: String?,
+    val isbn: String?,
+    val permanentUrl: String?
+)
 
 class BookCopy(
     val location: String,

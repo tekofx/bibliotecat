@@ -15,17 +15,72 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import dev.tekofx.biblioteques.call.BookService
 import dev.tekofx.biblioteques.model.book.Book
+import dev.tekofx.biblioteques.repository.BookRepository
+import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
+import dev.tekofx.biblioteques.ui.viewModels.BookViewModelFactory
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 
 @Composable
-fun BooksList(books: List<Book>, navHostController: NavHostController) {
+fun BooksList(
+    books: List<Book>,
+    navHostController: NavHostController,
+    bookViewModel: BookViewModel = viewModel(
+        factory = BookViewModelFactory(
+            BookRepository(BookService.getInstance())
+        )
+    )
+) {
     val density = LocalDensity.current
     val listState = rememberLazyListState()
+    val isLoading by bookViewModel.isLoading.observeAsState(false)
+    val shouldLoadMore = remember {
+        derivedStateOf {
+
+            if (books.isEmpty()) {
+                return@derivedStateOf (false)
+            }
+            // Get the total number of items in the list
+            val totalItemsCount = listState.layoutInfo.totalItemsCount
+            // Get the index of the last visible item
+            val lastVisibleItemIndex =
+                listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+            // Check if we have scrolled near the end of the list and more items should be loaded
+            lastVisibleItemIndex >= (totalItemsCount - 2) && !isLoading
+        }
+    }
+    LaunchedEffect(listState) {
+        println(listState.layoutInfo.visibleItemsInfo)
+        snapshotFlow { shouldLoadMore.value }
+            .distinctUntilChanged()
+            .filter { it }  // Ensure that we load more items only when needed
+            .collect {
+                println("loadMore")
+                bookViewModel.getResultPage()
+            }
+        snapshotFlow { listState.layoutInfo.visibleItemsInfo }.distinctUntilChanged()
+            .collect { visibleItems ->
+                // Print visible items
+                visibleItems.forEach { itemInfo ->
+                    val visibleItem = books[itemInfo.index]
+                    println("Visible item: ${visibleItem.title} at index ${itemInfo.index}")
+                }
+            }
+    }
 
     AnimatedVisibility(
         visible = books.isNotEmpty(),
