@@ -1,6 +1,5 @@
 package dev.tekofx.biblioteques.ui.components.book
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -16,12 +15,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
@@ -33,8 +26,6 @@ import dev.tekofx.biblioteques.model.book.Book
 import dev.tekofx.biblioteques.repository.BookRepository
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModelFactory
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
 
 @Composable
 fun BooksList(
@@ -48,28 +39,6 @@ fun BooksList(
 ) {
     val density = LocalDensity.current
     val listState = rememberLazyListState()
-    val isLoading by bookViewModel.isLoading.observeAsState(false)
-    val shouldLoadMore = remember {
-        derivedStateOf {
-            val totalItemsCount = listState.layoutInfo.totalItemsCount
-            val lastVisibleItemIndex =
-                listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-            lastVisibleItemIndex >= (totalItemsCount - 2) && !isLoading && books.isNotEmpty()
-        }
-    }
-
-    LaunchedEffect(listState) {
-        Log.d("BooksList", "liststate")
-        snapshotFlow { shouldLoadMore.value }
-            .distinctUntilChanged()
-            .filter { it }  // Ensure that we load more items only when needed
-            .collect {
-                println("loadMore")
-                bookViewModel.getResultPage()
-            }
-
-    }
-
 
     AnimatedVisibility(
         visible = books.isNotEmpty(),
