@@ -19,7 +19,6 @@ import retrofit2.Response
 
 
 class BookViewModel(private val repository: BookRepository) : ViewModel() {
-    private var _books = MutableLiveData<List<Book>>()
     val books = MutableLiveData<List<Book>>()
 
     val isLoading = MutableLiveData<Boolean>(false)
@@ -43,7 +42,6 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                 val constructedBooks = response.body()?.let { constructBooks(it.body) }
                 Log.d("BookViewModel", constructedBooks.toString())
 
-                _books.postValue(constructedBooks!!)
                 books.postValue(constructedBooks!!)
                 isLoading.postValue(false)
                 indexPage.intValue++
@@ -59,7 +57,6 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
 
     fun findBooks() {
         val response = repository.findBooks(queryText)
-        println(1)
         isLoading.postValue(true)
 
         response.enqueue(object : Callback<BookResponse> {
@@ -73,7 +70,6 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
 
                 totalBooks.intValue = response.body()?.totalBooks ?: 0
                 indexPage.intValue += 11
-                _books.postValue(booksResponse!!)
                 books.postValue(booksResponse!!)
                 isLoading.postValue(false)
 
@@ -166,7 +162,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     }
 
     fun filterBook(id: Int) {
-        currentBook.postValue(_books.value?.find { book: Book -> book.id == id })
+        currentBook.postValue(books.value?.find { book: Book -> book.id == id })
     }
 
     fun onSearchTextChanged(text: String) {
