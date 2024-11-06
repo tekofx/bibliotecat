@@ -11,9 +11,7 @@ import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.nodes.Document
 import com.fleeksoft.ksoup.select.Elements
 import dev.tekofx.biblioteques.dto.BookResponse
-import dev.tekofx.biblioteques.model.StatusColor
 import dev.tekofx.biblioteques.model.book.Book
-import dev.tekofx.biblioteques.model.book.BookCopy
 import dev.tekofx.biblioteques.repository.BookRepository
 import retrofit2.Call
 import retrofit2.Callback
@@ -25,10 +23,9 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     val books = MutableLiveData<List<Book>>()
 
     val isLoading = MutableLiveData<Boolean>(false)
-    val currentBook = MutableLiveData<Book>()
-    var totalBooks = mutableIntStateOf(29)
-        private set
-    val indexPage = mutableIntStateOf(13)
+    val currentBook = MutableLiveData<Book?>()
+    var totalBooks = mutableIntStateOf(0)
+    val indexPage = mutableIntStateOf(1)
 
     var queryText by mutableStateOf("")
         private set
@@ -36,14 +33,15 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
 
 
     fun getResultPage() {
-        Log.d("BookViewModel", "index: ${indexPage.value} totalbooks ${totalBooks.intValue}")
-        val response = repository.getResultPage(queryText, indexPage.intValue, totalBooks.intValue)
+        Log.d("BookViewModel", "index: ${indexPage.intValue} totalbooks ${totalBooks.intValue}")
+        val response = repository.getResultPage(queryText, indexPage.intValue, 29)
         response.enqueue(object : Callback<BookResponse> {
             override fun onResponse(
                 call: Call<BookResponse>, response: Response<BookResponse>
             ) {
 
                 val constructedBooks = response.body()?.let { constructBooks(it.body) }
+                Log.d("BookViewModel", constructedBooks.toString())
 
                 _books.postValue(constructedBooks!!)
                 books.postValue(constructedBooks!!)
@@ -52,8 +50,8 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
             }
 
             override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
-                Log.e("BookViewModel", t.message.toString())
-                errorMessage.postValue(t.message)
+                Log.e("BookViewModel", "Error getting results page: ${t.message.toString()}")
+                errorMessage.postValue("Book not found")
                 isLoading.postValue(false)
             }
         })
@@ -69,9 +67,12 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                 call: Call<BookResponse>, response: Response<BookResponse>
             ) {
                 val booksResponse = response.body()?.books
-                Log.d("BookViewModel", "test")
+
+                Log.d("BookViewModel", "findBooks")
+                Log.d("BookViewModel", "totalBooks ${response.body()?.totalBooks}")
 
                 totalBooks.intValue = response.body()?.totalBooks ?: 0
+                indexPage.intValue += 11
                 _books.postValue(booksResponse!!)
                 books.postValue(booksResponse!!)
                 isLoading.postValue(false)
@@ -79,8 +80,8 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
             }
 
             override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
-                Log.e("BookViewModel.findBooks", t.message.toString())
-                errorMessage.postValue(t.message)
+                Log.e("BookViewModel", "Error finding books: ${t.message.toString()}")
+                errorMessage.postValue("Error getting books")
                 isLoading.postValue(false)
 
             }
@@ -91,9 +92,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
 
     fun constructBooks(html: String): List<Book> {
         val bookList = arrayListOf<Book>()
-        Log.d("BookConverterFactory", "1")
         val doc: Document = Ksoup.parse(html = html)
-        Log.d("BookConverterFactory", "2")
 
         val bookElements: Elements = doc.select("td.briefCitRow")
         var index = 0

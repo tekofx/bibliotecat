@@ -1,5 +1,6 @@
 package dev.tekofx.biblioteques.ui.components.book
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -50,21 +51,15 @@ fun BooksList(
     val isLoading by bookViewModel.isLoading.observeAsState(false)
     val shouldLoadMore = remember {
         derivedStateOf {
-
-            if (books.isEmpty()) {
-                return@derivedStateOf (false)
-            }
-            // Get the total number of items in the list
             val totalItemsCount = listState.layoutInfo.totalItemsCount
-            // Get the index of the last visible item
             val lastVisibleItemIndex =
                 listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-            // Check if we have scrolled near the end of the list and more items should be loaded
-            lastVisibleItemIndex >= (totalItemsCount - 2) && !isLoading
+            lastVisibleItemIndex >= (totalItemsCount - 2) && !isLoading && books.isNotEmpty()
         }
     }
+
     LaunchedEffect(listState) {
-        println(listState.layoutInfo.visibleItemsInfo)
+        Log.d("BooksList", "liststate")
         snapshotFlow { shouldLoadMore.value }
             .distinctUntilChanged()
             .filter { it }  // Ensure that we load more items only when needed
@@ -72,15 +67,9 @@ fun BooksList(
                 println("loadMore")
                 bookViewModel.getResultPage()
             }
-        snapshotFlow { listState.layoutInfo.visibleItemsInfo }.distinctUntilChanged()
-            .collect { visibleItems ->
-                // Print visible items
-                visibleItems.forEach { itemInfo ->
-                    val visibleItem = books[itemInfo.index]
-                    println("Visible item: ${visibleItem.title} at index ${itemInfo.index}")
-                }
-            }
+
     }
+
 
     AnimatedVisibility(
         visible = books.isNotEmpty(),
@@ -96,10 +85,12 @@ fun BooksList(
         ),
         exit = slideOutVertically() + shrinkVertically() + fadeOut()
     ) {
+
+
         LazyColumn(
             state = listState,
             modifier = Modifier
-                .padding(top = 10.dp)
+                .padding(top = 10.dp, bottom = 20.dp)
 
         ) {
             items(books) { book ->
@@ -110,6 +101,8 @@ fun BooksList(
                         .height(10.dp)
                 )
             }
+
+
         }
     }
 }

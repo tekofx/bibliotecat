@@ -31,7 +31,8 @@ class BookConverterFactory : Converter.Factory() {
 
             if (notResultsH2Element != null) {
                 Log.d("BookConverterFactory", "Not book found")
-                BookResponse(responseBodyString, emptyList(), emptyList(), 0)
+                throw Error()
+                //BookResponse(responseBodyString, emptyList(), emptyList(), 0)
             } else if (bibInfoLabelElement != null) {
                 val bookCopies = constructBookCopies(doc)
                 val bookDetails = constructBookDetails(doc)
@@ -40,7 +41,9 @@ class BookConverterFactory : Converter.Factory() {
             } else {
                 val books = constructBooks(doc)
                 val totalBooks = getTotalBooks(doc)
-                Log.d("BookConverterFactory", "Books list")
+                Log.d("BookConverterFactory", "First search")
+                Log.d("BookConverterFactory", "totalBooksCount $totalBooks")
+                Log.d("BookConverterFactory", "books ${books.size}")
                 BookResponse(responseBodyString, books, emptyList(), totalBooks)
             }
 
