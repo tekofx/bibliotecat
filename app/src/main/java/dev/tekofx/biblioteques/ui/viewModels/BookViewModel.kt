@@ -7,9 +7,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.fleeksoft.ksoup.Ksoup
-import com.fleeksoft.ksoup.nodes.Document
-import com.fleeksoft.ksoup.select.Elements
 import dev.tekofx.biblioteques.dto.BookResponse
 import dev.tekofx.biblioteques.model.book.Book
 import dev.tekofx.biblioteques.repository.BookRepository
@@ -91,42 +88,6 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
         })
 
     }
-
-    fun constructBooks(html: String): List<Book> {
-        val bookList = arrayListOf<Book>()
-        val doc: Document = Ksoup.parse(html = html)
-
-        val bookElements: Elements = doc.select("td.briefCitRow")
-        var index = 0
-        for (bookElement in bookElements) {
-            val descriptionElement = bookElement.selectFirst("div.descript")
-            val titleElement = descriptionElement?.selectFirst("span.titular")?.selectFirst("a")
-            val imageElement = bookElement.selectFirst("div.brief_portada")?.selectFirst("img")
-
-            val descriptionFields = descriptionElement.toString().split("<br>")
-
-            val url = titleElement?.attr("href")
-            val author = descriptionFields[2].trim()
-            val publication = descriptionFields[3].split("<!--")[0].trim()
-
-            if (titleElement != null && imageElement != null) {
-                bookList.add(
-                    Book(
-                        id = index,
-                        title = titleElement.text(),
-                        author = author,
-                        image = imageElement.attr("src"),
-                        publication = publication,
-                        bookCopies = arrayListOf(),
-                        temporalUrl = url!!
-                    )
-                )
-                index++
-            }
-        }
-        return bookList
-    }
-
 
     fun getBookDetails() {
         currentBook.value?.let { book ->

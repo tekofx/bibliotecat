@@ -94,7 +94,6 @@ class BookConverterFactory : Converter.Factory() {
         val trElements = doc.select("tr.bibItemsEntry")
         val bookCopies = arrayListOf<BookCopy>()
         for (x in trElements) {
-            println("w")
             val tdElements = x.select("td")
             val location = tdElements[0].text()
             if (location.isNotEmpty()) {
@@ -143,10 +142,8 @@ class BookConverterFactory : Converter.Factory() {
                 val url = titleElement.attr("href")
                 val author = descriptionFields[2].trim()
                 val publication = descriptionFields[3].split("<!--")[0].trim()
-                println(url)
 
                 val id = url.split("&").last().split("%")[0].toInt()
-                println(id)
                 bookList.add(
                     Book(
                         id = id,
