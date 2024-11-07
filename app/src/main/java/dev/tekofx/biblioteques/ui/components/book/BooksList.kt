@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -69,6 +71,15 @@ fun BooksList(
                         .fillMaxWidth()
                         .height(10.dp)
                 )
+            }
+            item {
+                Button(
+                    onClick = {
+                        bookViewModel.getResultPage()
+                    }
+                ) {
+                    Text(text = "Load more")
+                }
             }
 
 

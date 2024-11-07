@@ -42,7 +42,8 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                 val constructedBooks = response.body()?.let { constructBooks(it.body) }
                 Log.d("BookViewModel", constructedBooks.toString())
 
-                books.postValue(constructedBooks!!)
+                val bigList: List<Book> = books.value!!.plus(constructedBooks!!)
+                books.postValue(bigList)
                 isLoading.postValue(false)
                 indexPage.intValue++
             }
@@ -69,7 +70,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                 Log.d("BookViewModel", "totalBooks ${response.body()?.totalBooks}")
 
                 totalBooks.intValue = response.body()?.totalBooks ?: 0
-                indexPage.intValue += 11
+                indexPage.intValue += 12
                 books.postValue(booksResponse!!)
                 isLoading.postValue(false)
 

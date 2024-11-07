@@ -12,3 +12,4 @@ data class BookResponse(
     @SerializedName("totalBooks") var totalBooks: Int = 0,
     @SerializedName("bookDetails") var bookDetails: BookDetails? = null
 )
+

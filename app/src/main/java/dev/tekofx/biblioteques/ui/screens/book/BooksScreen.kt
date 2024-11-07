@@ -72,7 +72,7 @@ fun BooksScreen(
         }
     ) {
 
-        BooksList(books, navHostController)
+        BooksList(books, navHostController, bookViewModel)
         AnimatedVisibility(
             visible = books.isEmpty(),
             exit = slideOutVertically(targetOffsetY = { it })

@@ -8,6 +8,7 @@ import retrofit2.Call
 class BookRepository(private val bookService: BookService) {
     fun findBooks(query: String): Call<BookResponse> {
         Log.d("BookRepository", "test")
+
         return bookService.findBooks(query)
     }
 
@@ -15,7 +16,7 @@ class BookRepository(private val bookService: BookService) {
         Log.d("BookRepository", "searchArg $searchArg index $index total $total")
         val url =
             "search~S171*cat?/X$searchArg&searchscope=171&SORT=DZ/X$searchArg&searchscope=171&SORT=DZ&extended=0&SUBKEY=$searchArg/$index%2C$total%2C$total%2CB/browse"
-        
+
         return bookService.getResultPage(url)
     }
 

@@ -73,8 +73,6 @@ fun BookScreen(
         Text(text = "No es puc trobar el llibre", textAlign = TextAlign.Justify)
 
     } else {
-
-
         Column(
             modifier = Modifier
                 .padding(horizontal = 10.dp)

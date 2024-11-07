@@ -51,7 +51,8 @@ import kotlinx.coroutines.launch
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun LibrariesScreen(
-    navHostController: NavHostController, libraryViewModel: LibraryViewModel = viewModel(
+    navHostController: NavHostController,
+    libraryViewModel: LibraryViewModel = viewModel(
         factory = LibraryViewModelFactory(
             LibraryRepository(LibraryService.getInstance())
         )
