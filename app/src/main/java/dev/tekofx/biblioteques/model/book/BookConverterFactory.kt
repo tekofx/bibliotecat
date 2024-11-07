@@ -30,8 +30,6 @@ class BookConverterFactory : Converter.Factory() {
             val bibInfoLabelElement = doc.select("td.bibInfoLabel").firstOrNull()
             val browserHeaderDataElement = doc.selectFirst("td.browseHeaderData")
 
-
-
             if (notResultsH2Element != null) {
                 Log.d("BookConverterFactory", "Not book found")
                 throw Error()
@@ -47,9 +45,7 @@ class BookConverterFactory : Converter.Factory() {
                         .split("-")[0].toInt()
                 val totalBooks = getTotalBooks(doc)
                 val books = constructBooks(doc, firstId)
-                Log.d("BookConverterFactory", "First search")
-                Log.d("BookConverterFactory", "totalBooksCount $totalBooks")
-                Log.d("BookConverterFactory", "books ${books.size}")
+                Log.d("BookConverterFactory", "Book Search")
                 BookResponse(responseBodyString, books, emptyList(), totalBooks)
             }
 
