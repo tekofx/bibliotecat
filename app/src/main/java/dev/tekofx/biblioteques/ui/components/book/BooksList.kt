@@ -17,30 +17,26 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import dev.tekofx.biblioteques.call.BookService
 import dev.tekofx.biblioteques.model.book.Book
-import dev.tekofx.biblioteques.repository.BookRepository
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
-import dev.tekofx.biblioteques.ui.viewModels.BookViewModelFactory
 
 @Composable
 fun BooksList(
     books: List<Book>,
     navHostController: NavHostController,
-    bookViewModel: BookViewModel = viewModel(
-        factory = BookViewModelFactory(
-            BookRepository(BookService.getInstance())
-        )
-    )
+    bookViewModel: BookViewModel
 ) {
     val density = LocalDensity.current
     val listState = rememberLazyListState()
+    val thereAreMoreBooks by bookViewModel.thereAreMoreBooks.observeAsState(false)
+
 
     AnimatedVisibility(
         visible = books.isNotEmpty(),
@@ -72,13 +68,16 @@ fun BooksList(
                         .height(10.dp)
                 )
             }
-            item {
-                Button(
-                    onClick = {
-                        bookViewModel.getResultPage()
+            if (thereAreMoreBooks) {
+
+                item {
+                    Button(
+                        onClick = {
+                            bookViewModel.getResultPage()
+                        }
+                    ) {
+                        Text(text = "Load more")
                     }
-                ) {
-                    Text(text = "Load more")
                 }
             }
 

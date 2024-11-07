@@ -53,6 +53,9 @@ fun BookCard(book: Book, navHostController: NavHostController) {
                 modifier = Modifier.fillMaxHeight(),
                 verticalArrangement = Arrangement.Top
             ) {
+                Text(
+                    text = book.id.toString()
+                )
 
                 Text(
                     text = book.title,

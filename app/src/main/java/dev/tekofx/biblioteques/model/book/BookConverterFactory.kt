@@ -28,7 +28,7 @@ class BookConverterFactory : Converter.Factory() {
                     .firstOrNull() { it.text().contains("no hi ha resultats", ignoreCase = true) }
 
             val bibInfoLabelElement = doc.select("td.bibInfoLabel").firstOrNull()
-            val browserHeaderDataElement = doc.selectFirst("td.browseHeaderData")
+
 
             if (notResultsH2Element != null) {
                 Log.d("BookConverterFactory", "Not book found")
@@ -40,11 +40,9 @@ class BookConverterFactory : Converter.Factory() {
                 Log.d("BookConverterFactory", "Book details")
                 BookResponse(responseBodyString, emptyList(), bookCopies, 0, bookDetails)
             } else {
-                val firstId =
-                    browserHeaderDataElement?.text()!!.replace("Paraules clau (", "")
-                        .split("-")[0].toInt()
+
                 val totalBooks = getTotalBooks(doc)
-                val books = constructBooks(doc, firstId)
+                val books = constructBooks(doc)
                 Log.d("BookConverterFactory", "Book Search")
                 BookResponse(responseBodyString, books, emptyList(), totalBooks)
             }
@@ -129,9 +127,10 @@ class BookConverterFactory : Converter.Factory() {
 
     }
 
-    fun constructBooks(doc: Document, firstId: Int): List<Book> {
+    fun constructBooks(doc: Document): List<Book> {
+
+        Log.d("BookConverterFactory", "ConstructBooks")
         val bookList = arrayListOf<Book>()
-        var index = firstId
 
         val bookElements: Elements = doc.select("td.briefCitRow")
         for (bookElement in bookElements) {
@@ -139,25 +138,26 @@ class BookConverterFactory : Converter.Factory() {
             val titleElement = descriptionElement?.selectFirst("span.titular")?.selectFirst("a")
             val imageElement = bookElement.selectFirst("div.brief_portada")?.selectFirst("img")
 
-            val descriptionFields = descriptionElement.toString().split("<br>")
-
-            val url = titleElement?.attr("href")
-            val author = descriptionFields[2].trim()
-            val publication = descriptionFields[3].split("<!--")[0].trim()
-
             if (titleElement != null && imageElement != null) {
+                val descriptionFields = descriptionElement.toString().split("<br>")
+                val url = titleElement.attr("href")
+                val author = descriptionFields[2].trim()
+                val publication = descriptionFields[3].split("<!--")[0].trim()
+                println(url)
+
+                val id = url.split("&").last().split("%")[0].toInt()
+                println(id)
                 bookList.add(
                     Book(
-                        id = index,
+                        id = id,
                         title = titleElement.text(),
                         author = author,
                         image = imageElement.attr("src"),
                         publication = publication,
                         bookCopies = arrayListOf(),
-                        temporalUrl = url!!
+                        temporalUrl = url
                     )
                 )
-                index++
             }
         }
         return bookList

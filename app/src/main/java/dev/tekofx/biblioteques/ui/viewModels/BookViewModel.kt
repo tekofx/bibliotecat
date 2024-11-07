@@ -20,6 +20,9 @@ import retrofit2.Response
 
 class BookViewModel(private val repository: BookRepository) : ViewModel() {
     val books = MutableLiveData<List<Book>>()
+    val bookStep = 12
+
+    var thereAreMoreBooks = MutableLiveData<Boolean>(false)
 
     val isLoading = MutableLiveData<Boolean>(false)
     val currentBook = MutableLiveData<Book?>()
@@ -39,13 +42,14 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                 call: Call<BookResponse>, response: Response<BookResponse>
             ) {
 
-                val constructedBooks = response.body()?.let { constructBooks(it.body) }
-                Log.d("BookViewModel", constructedBooks.toString())
+                val nextBooks = response.body()?.books!!
+                Log.d("BookViewModel", nextBooks.toString())
 
-                val bigList: List<Book> = books.value!!.plus(constructedBooks!!)
+                val bigList: List<Book> = books.value!!.plus(nextBooks)
+                updateThereAreMoreBooks()
                 books.postValue(bigList)
                 isLoading.postValue(false)
-                indexPage.intValue++
+                indexPage.intValue += bookStep
             }
 
             override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
@@ -70,7 +74,8 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                 Log.d("BookViewModel", "totalBooks ${response.body()?.totalBooks}")
 
                 totalBooks.intValue = response.body()?.totalBooks ?: 0
-                indexPage.intValue += 12
+                updateThereAreMoreBooks()
+                indexPage.intValue += bookStep
                 books.postValue(booksResponse!!)
                 isLoading.postValue(false)
 
@@ -159,6 +164,16 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                     isLoading.postValue(false)
                 }
             })
+        }
+    }
+
+    fun updateThereAreMoreBooks() {
+        if (indexPage.intValue + bookStep >= totalBooks.intValue) {
+            Log.d("BookViewModel", "index ${indexPage.intValue}")
+            thereAreMoreBooks.value = false
+
+        } else {
+            thereAreMoreBooks.value = true
         }
     }
 

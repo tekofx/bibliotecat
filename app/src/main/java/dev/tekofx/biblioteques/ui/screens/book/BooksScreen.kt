@@ -34,23 +34,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import dev.tekofx.biblioteques.call.BookService
-import dev.tekofx.biblioteques.repository.BookRepository
 import dev.tekofx.biblioteques.ui.components.book.BooksList
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
-import dev.tekofx.biblioteques.ui.viewModels.BookViewModelFactory
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun BooksScreen(
     navHostController: NavHostController,
-    bookViewModel: BookViewModel = viewModel(
-        factory = BookViewModelFactory(
-            BookRepository(BookService.getInstance())
-        )
-    )
+    bookViewModel: BookViewModel
 ) {
 
     val books by bookViewModel.books.observeAsState(emptyList())
