@@ -31,16 +31,16 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     val errorMessage = MutableLiveData<String>()
 
 
-    fun getResultPage() {
-        Log.d("BookViewModel", "index: ${indexPage.intValue} totalbooks ${totalBooks.intValue}")
-        val response = repository.getResultPage(queryText, indexPage.intValue, 29)
+    fun getNextResultsPage() {
+        Log.d("BookViewModel", "Get results page ${indexPage.intValue}/${totalBooks.intValue}")
+        val response = repository.getResultPage(queryText, indexPage.intValue, totalBooks.intValue)
+        isLoading.postValue(true)
         response.enqueue(object : Callback<BookResponse> {
             override fun onResponse(
                 call: Call<BookResponse>, response: Response<BookResponse>
             ) {
 
                 val nextBooks = response.body()?.books!!
-                Log.d("BookViewModel", nextBooks.toString())
 
                 val bigList: List<Book> = books.value!!.plus(nextBooks)
                 updateThereAreMoreBooks()
