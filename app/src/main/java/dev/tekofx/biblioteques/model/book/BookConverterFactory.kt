@@ -28,6 +28,9 @@ class BookConverterFactory : Converter.Factory() {
                     .firstOrNull() { it.text().contains("no hi ha resultats", ignoreCase = true) }
 
             val bibInfoLabelElement = doc.select("td.bibInfoLabel").firstOrNull()
+            val browserHeaderDataElement = doc.selectFirst("td.browseHeaderData")
+
+
 
             if (notResultsH2Element != null) {
                 Log.d("BookConverterFactory", "Not book found")
@@ -39,8 +42,11 @@ class BookConverterFactory : Converter.Factory() {
                 Log.d("BookConverterFactory", "Book details")
                 BookResponse(responseBodyString, emptyList(), bookCopies, 0, bookDetails)
             } else {
-                val books = constructBooks(doc)
+                val firstId =
+                    browserHeaderDataElement?.text()!!.replace("Paraules clau (", "")
+                        .split("-")[0].toInt()
                 val totalBooks = getTotalBooks(doc)
+                val books = constructBooks(doc, firstId)
                 Log.d("BookConverterFactory", "First search")
                 Log.d("BookConverterFactory", "totalBooksCount $totalBooks")
                 Log.d("BookConverterFactory", "books ${books.size}")
@@ -127,11 +133,11 @@ class BookConverterFactory : Converter.Factory() {
 
     }
 
-    fun constructBooks(doc: Document): List<Book> {
+    fun constructBooks(doc: Document, firstId: Int): List<Book> {
         val bookList = arrayListOf<Book>()
+        var index = firstId
 
         val bookElements: Elements = doc.select("td.briefCitRow")
-        var index = 0
         for (bookElement in bookElements) {
             val descriptionElement = bookElement.selectFirst("div.descript")
             val titleElement = descriptionElement?.selectFirst("span.titular")?.selectFirst("a")
