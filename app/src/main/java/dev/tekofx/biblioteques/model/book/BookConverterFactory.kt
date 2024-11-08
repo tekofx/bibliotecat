@@ -5,6 +5,7 @@ import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.nodes.Document
 import com.fleeksoft.ksoup.select.Elements
 import dev.tekofx.biblioteques.dto.BookResponse
+import dev.tekofx.biblioteques.model.SearchResult
 import dev.tekofx.biblioteques.model.StatusColor
 import okhttp3.ResponseBody
 import retrofit2.Converter
@@ -31,10 +32,18 @@ class BookConverterFactory : Converter.Factory() {
 
             val bibPagerElement = doc.select("div.bibPager").firstOrNull()
 
+            val browseHeaderEntriesElement = doc.select("td.browseHeaderEntries").firstOrNull()
 
             if (notResultsH2Element != null) {
                 Log.d("BookConverterFactory", "Not book found")
                 throw Error()
+            } else if (browseHeaderEntriesElement != null) {
+                Log.d("BookConverterFactory", "Result Search")
+                val searchResults = constructSearchResults(doc)
+                BookResponse(
+                    body = responseBodyString,
+                    searchResults = searchResults
+                )
             } else if (bibPagerElement != null) {
                 val book = constructBookFromBookDetails(doc)
                 Log.d("BookConverterFactory", "Search with only 1 book")
@@ -48,7 +57,6 @@ class BookConverterFactory : Converter.Factory() {
                 Log.d("BookConverterFactory", "Book details")
                 BookResponse(
                     body = responseBodyString,
-                    books = emptyList(),
                     bookCopies = bookCopies,
                     totalBooks = 0,
                     bookDetails = bookDetails
@@ -61,12 +69,35 @@ class BookConverterFactory : Converter.Factory() {
                 BookResponse(
                     body = responseBodyString,
                     books = books,
-                    bookCopies = emptyList(),
                     totalBooks = totalBooks
                 )
             }
 
         }
+    }
+
+    private fun constructSearchResults(doc: Document): List<SearchResult> {
+        val browseEntryDataElements = doc.select("tr.browseEntry")
+        val searchResults = arrayListOf<SearchResult>()
+
+
+        for (browseEntrydataElement in browseEntryDataElements) {
+            val text = browseEntrydataElement.select("td.browseEntryData").text()
+            val url =
+                browseEntrydataElement.select("a").last()?.attr("href")
+                    ?.replace("https://aladi.diba.cat/", "") ?: continue
+            val entries =
+                browseEntrydataElement.selectFirst("td.browseEntryEntries")?.text()?.toInt()
+                    ?: continue
+            searchResults.add(
+                SearchResult(
+                    text = text,
+                    url = url,
+                    entries = entries
+                )
+            )
+        }
+        return searchResults
     }
 
     private fun constructBookFromBookDetails(doc: Document): Book {

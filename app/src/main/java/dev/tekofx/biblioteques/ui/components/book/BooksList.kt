@@ -10,6 +10,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,6 +19,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -30,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import dev.tekofx.biblioteques.model.SearchResult
 import dev.tekofx.biblioteques.model.book.Book
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -38,13 +41,12 @@ import kotlinx.coroutines.flow.filter
 @Composable
 fun BooksList(
     books: List<Book>,
+    searchResults: List<SearchResult>,
     navHostController: NavHostController,
     bookViewModel: BookViewModel
 ) {
     val density = LocalDensity.current
     val listState = rememberLazyListState()
-    val thereAreMoreBooks by bookViewModel.thereAreMoreBooks.observeAsState(false)
-    val totalBooks by bookViewModel.totalBooks
     val isLoading by bookViewModel.isLoading.observeAsState(false)
 
     val shouldLoadMore = remember {
@@ -55,10 +57,7 @@ fun BooksList(
             val lastVisibleItemIndex =
                 listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
 
-
             // Check if we have scrolled near the end of the list and more items should be loaded
-            // FIXME: Runs twice at first search
-            //lastVisibleItemIndex == (totalItemsCount - 1) && thereAreMoreBooks && !isLoading
             lastVisibleItemIndex != 0 && (lastVisibleItemIndex + 1) % 12 == 0
         }
     }
@@ -74,7 +73,7 @@ fun BooksList(
             }
     }
     AnimatedVisibility(
-        visible = books.isNotEmpty(),
+        visible = books.isNotEmpty() || searchResults.isNotEmpty(),
         enter = slideInVertically {
             // Slide in from 40 dp from the top.
             with(density) { -40.dp.roundToPx() }
@@ -105,6 +104,28 @@ fun BooksList(
                 itemsIndexed(books, key = { _: Int, book: Book -> book.id }) { _: Int, book: Book ->
 
                     BookCard(book, navHostController)
+                }
+                itemsIndexed(
+                    searchResults,
+                    key = { _: Int, searchResult: SearchResult -> searchResult.text }) { _: Int, searchResult: SearchResult ->
+                    Surface(
+                        onClick = {
+                            println(searchResult.url)
+                            bookViewModel.getBooksBySearchResult(searchResult.url)
+                        }
+                    )
+                    {
+                        Row {
+
+
+                            Text(
+                                text = searchResult.text
+                            )
+                            Text(
+                                text = searchResult.entries.toString()
+                            )
+                        }
+                    }
                 }
 
             }

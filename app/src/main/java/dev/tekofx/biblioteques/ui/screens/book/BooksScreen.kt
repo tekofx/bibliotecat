@@ -52,6 +52,7 @@ fun BooksScreen(
 ) {
 
     val books by bookViewModel.books.observeAsState(emptyList())
+    val searchResults by bookViewModel.searchResults.observeAsState(emptyList())
 
     val isLoading by bookViewModel.isLoading.observeAsState(false)
     val errorMessage by bookViewModel.errorMessage.observeAsState()
@@ -72,9 +73,12 @@ fun BooksScreen(
             }
         }
     ) {
-        BooksList(books, navHostController, bookViewModel)
+        BooksList(
+            books = books,
+            searchResults = searchResults, navHostController, bookViewModel
+        )
         AnimatedVisibility(
-            visible = books.isEmpty(),
+            visible = books.isEmpty() && searchResults.isEmpty(),
             exit = slideOutVertically(targetOffsetY = { it })
                     + fadeOut()
         ) {

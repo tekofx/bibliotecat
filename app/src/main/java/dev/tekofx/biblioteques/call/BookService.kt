@@ -24,7 +24,7 @@ interface BookService {
     ): Call<BookResponse>
 
     @GET(value = "{url}")
-    fun getBookDetails(@Path("url") url: String): Call<BookResponse>
+    fun getHtmlByUrl(@Path("url") url: String): Call<BookResponse>
 
 
     companion object {
