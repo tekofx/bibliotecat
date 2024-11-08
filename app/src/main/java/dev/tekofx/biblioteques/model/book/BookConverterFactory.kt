@@ -40,20 +40,24 @@ class BookConverterFactory : Converter.Factory() {
             } else if (browseHeaderEntriesElement != null) {
                 Log.d("BookConverterFactory", "Result Search")
                 val searchResults = constructSearchResults(doc)
+                val pages = getPages(doc)
                 BookResponse(
                     body = responseBodyString,
-                    searchResults = searchResults
+                    searchResults = searchResults,
+                    pages = pages
+
                 )
             } else if (bibPagerElement != null) {
                 val book = constructBookFromBookDetails(doc)
                 Log.d("BookConverterFactory", "Search with only 1 book")
                 BookResponse(
                     body = responseBodyString,
-                    books = listOf(book)
+                    books = listOf(book),
                 )
             } else if (bibInfoLabelElement != null) {
                 val bookCopies = constructBookCopies(doc)
                 val bookDetails = constructBookDetails(doc)
+
                 Log.d("BookConverterFactory", "Book details")
                 BookResponse(
                     body = responseBodyString,
@@ -65,15 +69,35 @@ class BookConverterFactory : Converter.Factory() {
 
                 val totalBooks = getTotalBooks(doc)
                 val books = constructBooks(doc)
+                val pages = getPages(doc)
+
                 Log.d("BookConverterFactory", "Search with multiple books")
                 BookResponse(
                     body = responseBodyString,
                     books = books,
-                    totalBooks = totalBooks
+                    totalBooks = totalBooks,
+                    pages = pages
                 )
             }
 
         }
+    }
+
+
+    private fun getPages(doc: Document): List<String> {
+        val tdElement = doc.selectFirst("td.browsePager")!!
+        val liElements = tdElement.select("li.wpPagerList")
+        val list = arrayListOf<String>()
+        for (liElement in liElements) {
+            if (liElement.text().contains("Anterior") || liElement.text().contains("Següent")) {
+                continue
+            }
+            val aElement = liElement.selectFirst("a") ?: continue
+            val url = aElement.attr("href")
+            list.add(url)
+        }
+        return list
+
     }
 
     private fun constructSearchResults(doc: Document): List<SearchResult> {

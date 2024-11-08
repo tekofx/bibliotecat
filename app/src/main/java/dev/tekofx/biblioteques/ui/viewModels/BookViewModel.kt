@@ -29,12 +29,13 @@ val searchTypes = listOf(
 class BookViewModel(private val repository: BookRepository) : ViewModel() {
     val books = MutableLiveData<List<Book>>()
     val searchResults = MutableLiveData<List<SearchResult>>()
-    val bookStep = 12
 
     var thereAreMoreBooks = MutableLiveData<Boolean>(false)
     val isLoading = MutableLiveData<Boolean>(false)
     val currentBook = MutableLiveData<Book?>()
     var totalBooks = mutableIntStateOf(0)
+    val pageIndex = mutableIntStateOf(0)
+    val pages = mutableStateOf<List<String>>(emptyList())
     val indexPage = mutableIntStateOf(1)
     val selectedSearchType = mutableStateOf(searchTypes.first())
 
@@ -55,7 +56,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                 Log.d("BookViewModel", "findBooks BookResult")
                 totalBooks.intValue = response.body()?.totalBooks ?: 0
                 updateThereAreMoreBooks()
-                indexPage.intValue += bookStep
+                indexPage.intValue += 1
                 books.postValue(booksResponse.books)
                 isLoading.postValue(false)
                 Log.d("BookViewModel", "totalBooks ${response.body()?.totalBooks}")
@@ -66,14 +67,15 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                 errorMessage.postValue("Book not found")
                 isLoading.postValue(false)
             }
-            
+
         })
     }
 
 
     fun getNextResultsPage() {
-        Log.d("BookViewModel", "Get results page ${indexPage.intValue}/${totalBooks.intValue}")
-        val response = repository.getResultPage(queryText, indexPage.intValue, totalBooks.intValue)
+        Log.d("BookViewModel", "Get results page ${indexPage.intValue}/${pages.value.size}")
+        val url = pages.value[pageIndex.intValue]
+        val response = repository.getHtmlByUrl(url)
         isLoading.postValue(true)
         response.enqueue(object : Callback<BookResponse> {
             override fun onResponse(
@@ -86,7 +88,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                 updateThereAreMoreBooks()
                 books.postValue(bigList)
                 isLoading.postValue(false)
-                indexPage.intValue += bookStep
+                indexPage.intValue += 1
             }
 
             override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
@@ -115,8 +117,9 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                 } else {
                     Log.d("BookViewModel", "findBooks BookResult")
                     totalBooks.intValue = response.body()?.totalBooks ?: 0
+                    pages.value = booksResponse.pages
                     updateThereAreMoreBooks()
-                    indexPage.intValue += bookStep
+                    indexPage.intValue += 1
                     books.postValue(booksResponse.books)
                     Log.d("BookViewModel", "totalBooks ${response.body()?.totalBooks}")
                 }
@@ -174,7 +177,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     }
 
     fun updateThereAreMoreBooks() {
-        if (indexPage.intValue + bookStep >= totalBooks.intValue) {
+        if (indexPage.intValue >= pages.value.size) {
             Log.d("BookViewModel", "index ${indexPage.intValue}")
             thereAreMoreBooks.value = false
 

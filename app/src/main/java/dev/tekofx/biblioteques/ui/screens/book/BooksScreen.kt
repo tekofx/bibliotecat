@@ -36,8 +36,11 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import dev.tekofx.biblioteques.model.SearchResult
+import dev.tekofx.biblioteques.model.book.Book
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.ButtonSelect
+import dev.tekofx.biblioteques.ui.components.ButtonSelectItem
 import dev.tekofx.biblioteques.ui.components.TextIconButton
 import dev.tekofx.biblioteques.ui.components.book.BooksList
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
@@ -56,8 +59,6 @@ fun BooksScreen(
 
     val isLoading by bookViewModel.isLoading.observeAsState(false)
     val errorMessage by bookViewModel.errorMessage.observeAsState()
-    val density = LocalDensity.current
-    val focus = LocalFocusManager.current
 
     var selectedSearchTpe by bookViewModel.selectedSearchType
 
@@ -77,83 +78,108 @@ fun BooksScreen(
             books = books,
             searchResults = searchResults, navHostController, bookViewModel
         )
-        AnimatedVisibility(
-            visible = books.isEmpty() && searchResults.isEmpty(),
-            exit = slideOutVertically(targetOffsetY = { it })
-                    + fadeOut()
+        BookSearch(
+            books = books,
+            searchResults = searchResults,
+            errorMessage = errorMessage,
+            onSearchTextChanged = { bookViewModel.onSearchTextChanged(it) },
+            queryText = bookViewModel.queryText,
+            isLoading = isLoading,
+            selectedSearchTpe = selectedSearchTpe,
+            onSearch = { bookViewModel.findBooks() },
+            onOptionSelected = { selectedSearchTpe = it }
+        )
+
+    }
+}
+
+@Composable
+fun BookSearch(
+    books: List<Book>,
+    searchResults: List<SearchResult>,
+    errorMessage: String?,
+    onSearchTextChanged: (String) -> Unit,
+    queryText: String,
+    selectedSearchTpe: ButtonSelectItem,
+    isLoading: Boolean,
+    onOptionSelected: (ButtonSelectItem) -> Unit,
+    onSearch: () -> Unit
+) {
+    val focus = LocalFocusManager.current
+    val density = LocalDensity.current
+
+    AnimatedVisibility(
+        visible = books.isEmpty() && searchResults.isEmpty(),
+        exit = slideOutVertically(targetOffsetY = { it })
+                + fadeOut()
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 10.dp)
+                .fillMaxHeight(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically)
         ) {
-            Column(
+            if (!errorMessage.isNullOrEmpty()) {
+                Text(text = "Llibre no trobat :(")
+            }
+            TextField(
+                colors = TextFieldDefaults.colors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                ),
+                value = queryText,
+                onValueChange = { onSearchTextChanged(it) },
+                singleLine = true,
+                trailingIcon = {
+                    Icon(
+                        imageVector = Icons.Outlined.Search,
+                        contentDescription = null
+                    )
+                },
+                shape = RoundedCornerShape(50.dp),
                 modifier = Modifier
-                    .padding(horizontal = 10.dp)
-                    .fillMaxHeight(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically)
+                    .fillMaxWidth(),
+                label = { Text("Cerca ${selectedSearchTpe.text.lowercase()}") }
+            )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                if (!errorMessage.isNullOrEmpty()) {
-                    Text(text = "Llibre no trobat :(")
-                }
-                TextField(
-                    colors = TextFieldDefaults.colors(
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                    ),
-                    value = bookViewModel.queryText,
-                    onValueChange = { newText ->
-                        bookViewModel.onSearchTextChanged(newText)
-                    },
-                    singleLine = true,
-                    trailingIcon = {
-                        Icon(
-                            imageVector = Icons.Outlined.Search,
-                            contentDescription = null
-                        )
-                    },
-                    shape = RoundedCornerShape(50.dp),
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    label = { Text("Cerca ${selectedSearchTpe.text.lowercase()}") }
+                ButtonSelect(
+                    selectedOption = selectedSearchTpe,
+                    options = searchTypes,
+                    onOptionSelected = {
+                        onOptionSelected(it)
+                    }
                 )
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    ButtonSelect(
-                        selectedOption = selectedSearchTpe,
-                        options = searchTypes,
-                        onOptionSelected = {
-                            println("Selected ${it.text}")
-                            selectedSearchTpe = it
-                        }
-                    )
-                    TextIconButton(
-                        text = "Cerca",
-                        icon = IconResource.fromImageVector(Icons.Outlined.Search),
-                        enabled = bookViewModel.queryText.isNotEmpty() && !isLoading,
-                        onClick = {
-                            bookViewModel.findBooks()
-                            focus.clearFocus()
-                        }
-                    )
-                }
-                AnimatedVisibility(
-                    visible = isLoading,
-                    enter = slideInVertically {
-                        // Slide in from 40 dp from the top.
-                        with(density) { -40.dp.roundToPx() }
-                    } + expandVertically(
-                        // Expand from the top.
-                        expandFrom = Alignment.Top
-                    ) + fadeIn(
-                        // Fade in with the initial alpha of 0.3f.
-                        initialAlpha = 0.3f
-                    ),
-                    exit = slideOutVertically() + shrinkVertically(
-                        shrinkTowards = Alignment.Bottom
-                    ) + fadeOut()
-                ) {
-                    CircularProgressIndicator()
-                }
+                TextIconButton(
+                    text = "Cerca",
+                    icon = IconResource.fromImageVector(Icons.Outlined.Search),
+                    enabled = queryText.isNotEmpty() && !isLoading,
+                    onClick = {
+                        onSearch()
+                        focus.clearFocus()
+                    }
+                )
+            }
+            AnimatedVisibility(
+                visible = isLoading,
+                enter = slideInVertically {
+                    // Slide in from 40 dp from the top.
+                    with(density) { -40.dp.roundToPx() }
+                } + expandVertically(
+                    // Expand from the top.
+                    expandFrom = Alignment.Top
+                ) + fadeIn(
+                    // Fade in with the initial alpha of 0.3f.
+                    initialAlpha = 0.3f
+                ),
+                exit = slideOutVertically() + shrinkVertically(
+                    shrinkTowards = Alignment.Bottom
+                ) + fadeOut()
+            ) {
+                CircularProgressIndicator()
             }
         }
     }
 }
-

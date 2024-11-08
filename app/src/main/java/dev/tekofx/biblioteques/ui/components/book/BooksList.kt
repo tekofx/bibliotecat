@@ -86,23 +86,17 @@ fun BooksList(
         ),
         exit = slideOutVertically() + shrinkVertically() + fadeOut()
     ) {
-
-
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
-
-
             LazyColumn(
                 state = listState,
                 modifier = Modifier
                     .padding(vertical = 10.dp)
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
-
             ) {
                 itemsIndexed(books, key = { _: Int, book: Book -> book.id }) { _: Int, book: Book ->
-
                     BookCard(book, navHostController)
                 }
                 itemsIndexed(
@@ -116,8 +110,6 @@ fun BooksList(
                     )
                     {
                         Row {
-
-
                             Text(
                                 text = searchResult.text
                             )
@@ -127,7 +119,6 @@ fun BooksList(
                         }
                     }
                 }
-
             }
 
             AnimatedVisibility(
