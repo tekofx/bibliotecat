@@ -11,8 +11,11 @@ import retrofit2.http.Url
 
 
 interface BookService {
-    @GET(value = "search*cat/?searchtype=X&searchscope=171&submit=Cercar")
-    fun findBooks(@Query("searcharg") searchArg: String): Call<BookResponse>
+    @GET(value = "search*cat/?searchscope=171&submit=Cercar")
+    fun findBooks(
+        @Query("searcharg") searchArg: String,
+        @Query("searchtype") searchType: String
+    ): Call<BookResponse>
 
 
     @GET

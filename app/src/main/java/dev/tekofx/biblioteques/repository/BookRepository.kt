@@ -6,10 +6,10 @@ import dev.tekofx.biblioteques.dto.BookResponse
 import retrofit2.Call
 
 class BookRepository(private val bookService: BookService) {
-    fun findBooks(query: String): Call<BookResponse> {
-        Log.d("BookRepository", "test")
+    fun findBooks(query: String, searchType: String): Call<BookResponse> {
+        Log.d("BookRepository", "Request $query $searchType")
 
-        return bookService.findBooks(query)
+        return bookService.findBooks(query, searchType)
     }
 
     fun getResultPage(searchArg: String, index: Int, total: Int): Call<BookResponse> {

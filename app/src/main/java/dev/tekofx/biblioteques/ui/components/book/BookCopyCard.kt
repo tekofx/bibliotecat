@@ -26,7 +26,10 @@ fun BookCopyCard(bookCopy: BookCopy) {
                 .padding(10.dp)
                 .fillMaxWidth()
         ) {
-            Text(text = bookCopy.location)
+            Text(
+                text = bookCopy.location,
+                style = Typography.titleMedium
+            )
             Row(
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
@@ -39,7 +42,15 @@ fun BookCopyCard(bookCopy: BookCopy) {
                 text = bookCopy.status,
                 textStyle = Typography.bodyMedium
             )
-            bookCopy.notes?.let { Text(text = it) }
+            bookCopy.notes?.let {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Text(text = "Notes")
+                    Text(text = it)
+                }
+            }
         }
     }
 }
+

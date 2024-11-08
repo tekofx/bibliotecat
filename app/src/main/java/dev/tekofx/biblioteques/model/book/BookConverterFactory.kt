@@ -35,7 +35,6 @@ class BookConverterFactory : Converter.Factory() {
             if (notResultsH2Element != null) {
                 Log.d("BookConverterFactory", "Not book found")
                 throw Error()
-                //BookResponse(responseBodyString, emptyList(), emptyList(), 0)
             } else if (bibPagerElement != null) {
                 val book = constructBookFromBookDetails(doc)
                 Log.d("BookConverterFactory", "Search with only 1 book")
