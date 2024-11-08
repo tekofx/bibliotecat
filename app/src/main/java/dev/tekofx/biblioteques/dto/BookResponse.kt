@@ -10,6 +10,6 @@ data class BookResponse(
     @SerializedName("books") var books: List<Book>,
     @SerializedName("bookCopies") var bookCopies: List<BookCopy> = arrayListOf(),
     @SerializedName("totalBooks") var totalBooks: Int = 0,
-    @SerializedName("bookDetails") var bookDetails: BookDetails? = null
+    @SerializedName("bookDetails") var bookDetails: BookDetails? = null,
 )
 

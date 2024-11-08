@@ -10,12 +10,6 @@ import retrofit2.http.Query
 import retrofit2.http.Url
 
 
-enum class BookResponseType {
-    BOOKLIST,
-    BOOKCOPIES,
-    BOOKDETAILS
-}
-
 interface BookService {
     @GET(value = "search*cat/?searchtype=X&searchscope=171&submit=Cercar")
     fun findBooks(@Query("searcharg") searchArg: String): Call<BookResponse>

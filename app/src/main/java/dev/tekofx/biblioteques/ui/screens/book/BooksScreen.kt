@@ -48,6 +48,8 @@ fun BooksScreen(
     val books by bookViewModel.books.observeAsState(emptyList())
 
     val isLoading by bookViewModel.isLoading.observeAsState(false)
+    val errorMessage by bookViewModel.errorMessage.observeAsState()
+
     val density = LocalDensity.current
     val focus = LocalFocusManager.current
 
@@ -64,6 +66,7 @@ fun BooksScreen(
         }
     ) {
 
+
         BooksList(books, navHostController, bookViewModel)
         AnimatedVisibility(
             visible = books.isEmpty(),
@@ -74,10 +77,13 @@ fun BooksScreen(
                 modifier = Modifier
                     .padding(horizontal = 10.dp)
                     .fillMaxHeight(),
-
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically)
             ) {
+                if (!errorMessage.isNullOrEmpty()) {
+
+                    Text(text = "Llibre no trobat :(")
+                }
 
                 TextField(
                     colors = TextFieldDefaults.colors(

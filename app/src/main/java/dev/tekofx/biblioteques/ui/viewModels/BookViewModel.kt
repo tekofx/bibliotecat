@@ -64,7 +64,8 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
             override fun onResponse(
                 call: Call<BookResponse>, response: Response<BookResponse>
             ) {
-                val booksResponse = response.body()?.books
+                val booksResponse = response.body() ?: throw Error()
+
 
                 Log.d("BookViewModel", "findBooks")
                 Log.d("BookViewModel", "totalBooks ${response.body()?.totalBooks}")
@@ -72,7 +73,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                 totalBooks.intValue = response.body()?.totalBooks ?: 0
                 updateThereAreMoreBooks()
                 indexPage.intValue += bookStep
-                books.postValue(booksResponse!!)
+                books.postValue(booksResponse.books)
                 isLoading.postValue(false)
 
             }
@@ -145,5 +146,5 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
         queryText = text
     }
 
-   
+
 }

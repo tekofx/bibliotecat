@@ -29,25 +29,82 @@ class BookConverterFactory : Converter.Factory() {
 
             val bibInfoLabelElement = doc.select("td.bibInfoLabel").firstOrNull()
 
+            val bibPagerElement = doc.select("div.bibPager").firstOrNull()
+
 
             if (notResultsH2Element != null) {
                 Log.d("BookConverterFactory", "Not book found")
                 throw Error()
                 //BookResponse(responseBodyString, emptyList(), emptyList(), 0)
+            } else if (bibPagerElement != null) {
+                val book = constructBookFromBookDetails(doc)
+                Log.d("BookConverterFactory", "Search with only 1 book")
+                BookResponse(
+                    body = responseBodyString,
+                    books = listOf(book)
+                )
             } else if (bibInfoLabelElement != null) {
                 val bookCopies = constructBookCopies(doc)
                 val bookDetails = constructBookDetails(doc)
                 Log.d("BookConverterFactory", "Book details")
-                BookResponse(responseBodyString, emptyList(), bookCopies, 0, bookDetails)
+                BookResponse(
+                    body = responseBodyString,
+                    books = emptyList(),
+                    bookCopies = bookCopies,
+                    totalBooks = 0,
+                    bookDetails = bookDetails
+                )
             } else {
 
                 val totalBooks = getTotalBooks(doc)
                 val books = constructBooks(doc)
-                Log.d("BookConverterFactory", "Book Search")
-                BookResponse(responseBodyString, books, emptyList(), totalBooks)
+                Log.d("BookConverterFactory", "Search with multiple books")
+                BookResponse(
+                    body = responseBodyString,
+                    books = books,
+                    bookCopies = emptyList(),
+                    totalBooks = totalBooks
+                )
             }
 
         }
+    }
+
+    private fun constructBookFromBookDetails(doc: Document): Book {
+        val titleElement =
+            doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Títol" }
+                ?.nextElementSibling()
+
+        val authorElement =
+            doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Autor/Artista" }
+                ?.nextElementSibling()
+
+        val imageElement = doc.selectFirst("div.fitxa_imatge")?.selectFirst("img")
+        val publicationElement =
+            doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Publicació" }
+                ?.nextElementSibling()
+
+        val bookDetails = constructBookDetails(doc)
+        val bookCopies = constructBookCopies(doc)
+
+        val title = titleElement?.text()?.split("/")?.get(0) ?: ""
+        val author = authorElement?.text() ?: ""
+        val image = imageElement?.attr("src") ?: ""
+        val publication = publicationElement?.text() ?: ""
+
+        val book = Book(
+            id = 0,
+            title = title,
+            author = author,
+            image = image,
+            publication = publication,
+            temporalUrl = "",
+            bookCopies = bookCopies,
+            bookDetails = bookDetails
+        )
+
+        return book
+
     }
 
     private fun constructBookDetails(doc: Document): BookDetails {
@@ -84,11 +141,18 @@ class BookConverterFactory : Converter.Factory() {
         )
     }
 
+    /**
+     * Gets the number of results from a search
+     * @param doc
+     *
+     * @return Number of results for a search
+     */
     private fun getTotalBooks(doc: Document): Int {
         val divElement = doc.selectFirst("div.browseSearchtoolMessage")
         val total = divElement?.text()?.split(" ")?.get(0)?.toInt() ?: 0
         return total
     }
+
 
     private fun constructBookCopies(doc: Document): List<BookCopy> {
         val trElements = doc.select("tr.bibItemsEntry")
