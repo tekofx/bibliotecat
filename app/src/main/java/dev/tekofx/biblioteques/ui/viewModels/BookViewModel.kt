@@ -20,7 +20,6 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     val bookStep = 12
 
     var thereAreMoreBooks = MutableLiveData<Boolean>(false)
-
     val isLoading = MutableLiveData<Boolean>(false)
     val currentBook = MutableLiveData<Book?>()
     var totalBooks = mutableIntStateOf(0)
@@ -145,4 +144,6 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     fun onSearchTextChanged(text: String) {
         queryText = text
     }
+
+   
 }

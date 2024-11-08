@@ -36,13 +36,10 @@ fun LibraryList(
     AnimatedVisibility(
         visible = libraries.isNotEmpty(),
         enter = slideInVertically {
-            // Slide in from 40 dp from the top.
             with(density) { 100.dp.roundToPx() }
         } + expandVertically(
-            // Expand from the top.
             expandFrom = Alignment.Bottom
         ) + fadeIn(
-            // Fade in with the initial alpha of 0.3f.
             initialAlpha = 0.3f
         ),
         exit = slideOutVertically() + shrinkVertically() + fadeOut()

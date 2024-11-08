@@ -9,11 +9,15 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -49,10 +53,12 @@ fun BooksList(
             // Get the index of the last visible item
             val lastVisibleItemIndex =
                 listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-            println(lastVisibleItemIndex >= (totalItemsCount))
+
+
             // Check if we have scrolled near the end of the list and more items should be loaded
             // FIXME: Runs twice at first search
-            lastVisibleItemIndex >= (totalItemsCount) && thereAreMoreBooks && !isLoading
+            //lastVisibleItemIndex == (totalItemsCount - 1) && thereAreMoreBooks && !isLoading
+            lastVisibleItemIndex != 0 && (lastVisibleItemIndex + 1) % 12 == 0 && lastVisibleItemIndex == (totalItemsCount - 1)
         }
     }
 
@@ -81,26 +87,47 @@ fun BooksList(
         exit = slideOutVertically() + shrinkVertically() + fadeOut()
     ) {
 
-
-        LazyColumn(
-            state = listState,
-            modifier = Modifier
-                .padding(vertical = 10.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-
+        Box(
+            modifier = Modifier.fillMaxSize()
         ) {
-            itemsIndexed(books, key = { _: Int, book: Book -> book.id }) { _: Int, book: Book ->
-                BookCard(book, navHostController)
+
+
+            LazyColumn(
+                state = listState,
+                modifier = Modifier
+                    .padding(vertical = 10.dp)
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+
+            ) {
+                itemsIndexed(books, key = { _: Int, book: Book -> book.id }) { _: Int, book: Book ->
+
+                    BookCard(book, navHostController)
+                }
+
             }
 
-            if (isLoading) {
+            AnimatedVisibility(
+                visible = isLoading,
+                enter = slideInVertically(initialOffsetY = { it / 4 }) + expandVertically(
+                    // Expand from the top.
+                    expandFrom = Alignment.Bottom
+                ) + fadeIn(
+                    // Fade in with the initial alpha of 0.3f.
+                    initialAlpha = 0.3f
+                ),
+                exit = slideOutVertically(targetOffsetY = { it / 4 }) + shrinkVertically() + fadeOut(),
+                modifier = Modifier.align(Alignment.BottomCenter)
+            ) {
+                Surface(
+                    shape = RoundedCornerShape(50.dp),
+                    tonalElevation = 1.dp
+                ) {
 
-                item {
-                    Text(text = "Loading")
+                    CircularProgressIndicator()
                 }
             }
-
-
         }
+
     }
 }

@@ -4,7 +4,7 @@
     <selectionStates>
       <SelectionState runConfigName="MainActivity">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-10-30T13:16:50.405231140Z">
+        <DropdownSelection timestamp="2024-11-07T12:32:14.764227992Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=/home/teko/.android/avd/Medium_Phone_API_35.avd" />
