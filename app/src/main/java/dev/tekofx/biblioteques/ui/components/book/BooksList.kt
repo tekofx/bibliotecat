@@ -44,6 +44,7 @@ fun BooksList(
     val density = LocalDensity.current
     val listState = rememberLazyListState()
     val thereAreMoreBooks by bookViewModel.thereAreMoreBooks.observeAsState(false)
+    val totalBooks by bookViewModel.totalBooks
     val isLoading by bookViewModel.isLoading.observeAsState(false)
 
     val shouldLoadMore = remember {
@@ -58,7 +59,7 @@ fun BooksList(
             // Check if we have scrolled near the end of the list and more items should be loaded
             // FIXME: Runs twice at first search
             //lastVisibleItemIndex == (totalItemsCount - 1) && thereAreMoreBooks && !isLoading
-            lastVisibleItemIndex != 0 && (lastVisibleItemIndex + 1) % 12 == 0 && lastVisibleItemIndex == (totalItemsCount - 1)
+            lastVisibleItemIndex != 0 && (lastVisibleItemIndex + 1) % 12 == 0
         }
     }
 
@@ -86,6 +87,7 @@ fun BooksList(
         ),
         exit = slideOutVertically() + shrinkVertically() + fadeOut()
     ) {
+
 
         Box(
             modifier = Modifier.fillMaxSize()
