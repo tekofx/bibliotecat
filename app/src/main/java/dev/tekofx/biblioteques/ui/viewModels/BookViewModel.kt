@@ -29,13 +29,12 @@ val searchTypes = listOf(
 class BookViewModel(private val repository: BookRepository) : ViewModel() {
     val books = MutableLiveData<List<Book>>()
     val searchResults = MutableLiveData<List<SearchResult>>()
+    val pages = mutableStateOf<List<String>>(emptyList())
 
-    var thereAreMoreBooks = MutableLiveData<Boolean>(false)
     val isLoading = MutableLiveData<Boolean>(false)
     val currentBook = MutableLiveData<Book?>()
     var totalBooks = mutableIntStateOf(0)
     val pageIndex = mutableIntStateOf(0)
-    val pages = mutableStateOf<List<String>>(emptyList())
     val selectedSearchType = mutableStateOf(searchTypes.first())
 
     var queryText by mutableStateOf("")
@@ -54,7 +53,6 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                 searchResults.postValue(emptyList())
                 Log.d("BookViewModel", "getBooksBySearchResult")
                 totalBooks.intValue = response.body()?.totalBooks ?: 0
-                updateThereAreMoreBooks()
                 pages.value = booksResponse.pages
                 pageIndex.intValue += 1
                 books.postValue(booksResponse.books)
@@ -71,6 +69,9 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     }
 
 
+    /**
+     * Get the next resultspage
+     */
     fun getNextResultsPage() {
         Log.d("BookViewModel", "Get results page ${pageIndex.intValue}/${pages.value.size}")
         println(pages.value.size)
@@ -85,7 +86,6 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                 val nextBooks = response.body()?.books!!
 
                 val bigList: List<Book> = books.value!!.plus(nextBooks)
-                updateThereAreMoreBooks()
                 books.postValue(bigList)
                 isLoading.postValue(false)
                 pageIndex.intValue += 1
@@ -99,6 +99,10 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
         })
     }
 
+    /**
+     * Searchs a term in aladi. It uses a query and a [searchTypes]
+     *
+     */
     fun search() {
         Log.d(
             "BookViewModel",
@@ -121,8 +125,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                     Log.d("BookViewModel", "search Books Found")
                     totalBooks.intValue = response.body()?.totalBooks ?: 0
                     pages.value = booksResponse.pages
-                    updateThereAreMoreBooks()
-                    pageIndex.intValue += 1
+                    //pageIndex.intValue += 1
                     books.postValue(booksResponse.books)
                 }
                 isLoading.postValue(false)
@@ -139,6 +142,9 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
 
     }
 
+    /**
+     * Gets the books details of a book from the url of a book
+     */
     fun getBookDetails() {
         currentBook.value?.let { book ->
             val response = repository.getBookDetails(book.temporalUrl)
@@ -178,15 +184,6 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
         }
     }
 
-    fun updateThereAreMoreBooks() {
-        if (pageIndex.intValue >= pages.value.size) {
-            Log.d("BookViewModel", "index ${pageIndex.intValue}")
-            thereAreMoreBooks.value = false
-
-        } else {
-            thereAreMoreBooks.value = true
-        }
-    }
 
     fun filterBook(id: Int) {
         currentBook.postValue(books.value?.find { book: Book -> book.id == id })

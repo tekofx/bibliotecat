@@ -1,4 +1,5 @@
-package dev.tekofx.biblioteques.ui.components.book
+package dev.tekofx.biblioteques.ui.components
+
 
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
@@ -10,44 +11,36 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import dev.tekofx.biblioteques.model.SearchResult
-import dev.tekofx.biblioteques.model.book.Book
-import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 
 @Composable
-fun BooksList(
-    books: List<Book>,
-    searchResults: List<SearchResult>,
-    navHostController: NavHostController,
-    bookViewModel: BookViewModel
+fun <T> PaginatedList(
+    items: List<T>,
+    key: ((item: T) -> Any)? = null,
+    onLoadMore: () -> Unit,
+    isLoading: Boolean,
+    content: @Composable (item: T) -> Unit,
 ) {
     val density = LocalDensity.current
     val listState = rememberLazyListState()
-    val isLoading by bookViewModel.isLoading.observeAsState(false)
 
     val shouldLoadMore = remember {
         derivedStateOf {
@@ -67,11 +60,11 @@ fun BooksList(
             .filter { it }  // Ensure that we load more items only when needed
             .collect {
                 Log.d("BooksList", "loading more books")
-                bookViewModel.getNextResultsPage()
+                onLoadMore()
             }
     }
     AnimatedVisibility(
-        visible = books.isNotEmpty() || searchResults.isNotEmpty(),
+        visible = items.isNotEmpty(),
         enter = slideInVertically {
             // Slide in from 40 dp from the top.
             with(density) { -40.dp.roundToPx() }
@@ -94,29 +87,10 @@ fun BooksList(
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                itemsIndexed(books, key = { _: Int, book: Book -> book.id }) { _: Int, book: Book ->
-                    BookCard(book, navHostController)
+                items(items, key) {
+                    content(it)
                 }
-                itemsIndexed(
-                    searchResults,
-                    key = { _: Int, searchResult: SearchResult -> searchResult.text }) { _: Int, searchResult: SearchResult ->
-                    Surface(
-                        onClick = {
-                            println(searchResult.url)
-                            bookViewModel.getBooksBySearchResult(searchResult.url)
-                        }
-                    )
-                    {
-                        Row {
-                            Text(
-                                text = searchResult.text
-                            )
-                            Text(
-                                text = searchResult.entries.toString()
-                            )
-                        }
-                    }
-                }
+
             }
 
             AnimatedVisibility(

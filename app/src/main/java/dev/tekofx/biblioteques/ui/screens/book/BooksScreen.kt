@@ -22,6 +22,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -41,8 +42,9 @@ import dev.tekofx.biblioteques.model.book.Book
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.ButtonSelect
 import dev.tekofx.biblioteques.ui.components.ButtonSelectItem
+import dev.tekofx.biblioteques.ui.components.PaginatedList
 import dev.tekofx.biblioteques.ui.components.TextIconButton
-import dev.tekofx.biblioteques.ui.components.book.BooksList
+import dev.tekofx.biblioteques.ui.components.book.BookCard
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
 import dev.tekofx.biblioteques.ui.viewModels.searchTypes
 
@@ -74,10 +76,38 @@ fun BooksScreen(
             }
         }
     ) {
-        BooksList(
-            books = books,
-            searchResults = searchResults, navHostController, bookViewModel
-        )
+
+        PaginatedList(
+            items = books,
+            isLoading = isLoading,
+            key = { book -> book.id },
+            onLoadMore = { bookViewModel.getNextResultsPage() }
+
+        ) { book -> BookCard(book, navHostController) }
+
+        PaginatedList(
+            items = searchResults,
+            isLoading = isLoading,
+            key = { searchResult: SearchResult -> searchResult.text },
+            onLoadMore = {}
+        ) { searchResult ->
+            Surface(
+                onClick = {
+                    bookViewModel.getBooksBySearchResult(searchResult.url)
+                }
+            )
+            {
+                Row {
+                    Text(
+                        text = searchResult.text
+                    )
+                    Text(
+                        text = searchResult.entries.toString()
+                    )
+                }
+            }
+        }
+
         BookSearch(
             books = books,
             searchResults = searchResults,

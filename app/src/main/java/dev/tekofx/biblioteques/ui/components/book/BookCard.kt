@@ -54,6 +54,10 @@ fun BookCard(book: Book, navHostController: NavHostController) {
                 verticalArrangement = Arrangement.Top
             ) {
                 Text(
+                    text = book.id.toString(),
+                    style = Typography.titleLarge
+                )
+                Text(
                     text = book.title,
                     style = Typography.titleLarge
                 )
