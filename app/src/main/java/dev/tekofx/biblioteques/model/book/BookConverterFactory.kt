@@ -41,6 +41,7 @@ class BookConverterFactory : Converter.Factory() {
                 Log.d("BookConverterFactory", "Result Search")
                 val searchResults = constructSearchResults(doc)
                 val pages = getPages(doc)
+                println(pages.toString())
                 BookResponse(
                     body = responseBodyString,
                     searchResults = searchResults,
@@ -72,6 +73,7 @@ class BookConverterFactory : Converter.Factory() {
                 val pages = getPages(doc)
 
                 Log.d("BookConverterFactory", "Search with multiple books")
+                Log.d("BookConverterFactory", "pages ${pages.size}")
                 BookResponse(
                     body = responseBodyString,
                     books = books,
@@ -85,7 +87,8 @@ class BookConverterFactory : Converter.Factory() {
 
 
     private fun getPages(doc: Document): List<String> {
-        val tdElement = doc.selectFirst("td.browsePager")!!
+        val tdElement = doc.selectFirst("td.browsePager") ?: return emptyList()
+        println(tdElement.text())
         val liElements = tdElement.select("li.wpPagerList")
         val list = arrayListOf<String>()
         for (liElement in liElements) {

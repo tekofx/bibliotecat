@@ -86,7 +86,7 @@ fun BooksScreen(
             queryText = bookViewModel.queryText,
             isLoading = isLoading,
             selectedSearchTpe = selectedSearchTpe,
-            onSearch = { bookViewModel.findBooks() },
+            onSearch = { bookViewModel.search() },
             onOptionSelected = { selectedSearchTpe = it }
         )
 

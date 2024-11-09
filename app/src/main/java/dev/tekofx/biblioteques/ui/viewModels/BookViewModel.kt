@@ -36,7 +36,6 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     var totalBooks = mutableIntStateOf(0)
     val pageIndex = mutableIntStateOf(0)
     val pages = mutableStateOf<List<String>>(emptyList())
-    val indexPage = mutableIntStateOf(1)
     val selectedSearchType = mutableStateOf(searchTypes.first())
 
     var queryText by mutableStateOf("")
@@ -53,13 +52,13 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
             ) {
                 val booksResponse = response.body() ?: throw Error()
                 searchResults.postValue(emptyList())
-                Log.d("BookViewModel", "findBooks BookResult")
+                Log.d("BookViewModel", "getBooksBySearchResult")
                 totalBooks.intValue = response.body()?.totalBooks ?: 0
                 updateThereAreMoreBooks()
-                indexPage.intValue += 1
+                pages.value = booksResponse.pages
+                pageIndex.intValue += 1
                 books.postValue(booksResponse.books)
                 isLoading.postValue(false)
-                Log.d("BookViewModel", "totalBooks ${response.body()?.totalBooks}")
             }
 
             override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
@@ -73,7 +72,8 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
 
 
     fun getNextResultsPage() {
-        Log.d("BookViewModel", "Get results page ${indexPage.intValue}/${pages.value.size}")
+        Log.d("BookViewModel", "Get results page ${pageIndex.intValue}/${pages.value.size}")
+        println(pages.value.size)
         val url = pages.value[pageIndex.intValue]
         val response = repository.getHtmlByUrl(url)
         isLoading.postValue(true)
@@ -88,7 +88,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                 updateThereAreMoreBooks()
                 books.postValue(bigList)
                 isLoading.postValue(false)
-                indexPage.intValue += 1
+                pageIndex.intValue += 1
             }
 
             override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
@@ -99,8 +99,11 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
         })
     }
 
-    fun findBooks() {
-        Log.d("BookViewModel", selectedSearchType.value.value)
+    fun search() {
+        Log.d(
+            "BookViewModel",
+            "search query:$queryText searchType:${selectedSearchType.value.value}"
+        )
         val response = repository.findBooks(queryText, selectedSearchType.value.value)
         isLoading.postValue(true)
 
@@ -111,17 +114,16 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                 val booksResponse = response.body() ?: throw Error()
 
                 if (booksResponse.books.isEmpty()) {
-                    Log.d("BookViewModel", "findBooks SearchResult ${booksResponse.searchResults}")
+                    Log.d("BookViewModel", "search Results ${booksResponse.searchResults}")
                     searchResults.postValue(booksResponse.searchResults)
 
                 } else {
-                    Log.d("BookViewModel", "findBooks BookResult")
+                    Log.d("BookViewModel", "search Books Found")
                     totalBooks.intValue = response.body()?.totalBooks ?: 0
                     pages.value = booksResponse.pages
                     updateThereAreMoreBooks()
-                    indexPage.intValue += 1
+                    pageIndex.intValue += 1
                     books.postValue(booksResponse.books)
-                    Log.d("BookViewModel", "totalBooks ${response.body()?.totalBooks}")
                 }
                 isLoading.postValue(false)
             }
@@ -177,8 +179,8 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     }
 
     fun updateThereAreMoreBooks() {
-        if (indexPage.intValue >= pages.value.size) {
-            Log.d("BookViewModel", "index ${indexPage.intValue}")
+        if (pageIndex.intValue >= pages.value.size) {
+            Log.d("BookViewModel", "index ${pageIndex.intValue}")
             thereAreMoreBooks.value = false
 
         } else {
