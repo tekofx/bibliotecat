@@ -54,7 +54,6 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                 Log.d("BookViewModel", "getBooksBySearchResult")
                 totalBooks.intValue = response.body()?.totalBooks ?: 0
                 pages.value = booksResponse.pages
-                pageIndex.intValue += 1
                 books.postValue(booksResponse.books)
                 isLoading.postValue(false)
             }
@@ -88,7 +87,6 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                 val bigList: List<Book> = books.value!!.plus(nextBooks)
                 books.postValue(bigList)
                 isLoading.postValue(false)
-                pageIndex.intValue += 1
             }
 
             override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
@@ -125,7 +123,6 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                     Log.d("BookViewModel", "search Books Found")
                     totalBooks.intValue = response.body()?.totalBooks ?: 0
                     pages.value = booksResponse.pages
-                    //pageIndex.intValue += 1
                     books.postValue(booksResponse.books)
                 }
                 isLoading.postValue(false)
