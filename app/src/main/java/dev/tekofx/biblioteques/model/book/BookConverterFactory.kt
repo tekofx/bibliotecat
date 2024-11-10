@@ -55,13 +55,15 @@ class BookConverterFactory : Converter.Factory() {
             } else if (bibInfoLabelElement != null) {
                 val bookDetails = constructBookDetails(doc)
                 val bookCopies = constructBookCopies(doc)
-                val bookResults = constructBookResults(doc)
+                val book = contructBookFromBookDetails(doc)
+                val bookResults = constructBookResultsFromBookDetails(doc)
 
                 Log.d("BookConverterFactory", "Book details")
                 BookResponse(
-                    results = bookResults,
+                    book = book,
                     bookDetails = bookDetails,
-                    bookCopies = bookCopies
+                    bookCopies = bookCopies,
+                    results = bookResults
                 )
             } else {
 

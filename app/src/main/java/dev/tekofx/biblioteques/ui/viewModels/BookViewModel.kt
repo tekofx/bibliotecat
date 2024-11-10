@@ -53,14 +53,16 @@ class BookViewModel(private val repository: BookRepository) :
             override fun onResponse(
                 call: Call<BookResponse>, response: Response<BookResponse>
             ) {
-                val bookResults =
-                    response.body()?.results as BookResults? ?: return onFailure(
-                        call,
-                        Throwable("Not Results")
-                    )
 
-                if (bookResults.numItems == 1) {
+                val responseBody =
+                    response.body() ?: return onFailure(call, Throwable("Not results"))
+
+                val bookResults = responseBody.results as BookResults
+                val book = responseBody.book
+
+                if (book != null) {
                     currentBookResult.postValue(bookResults.items.first())
+                    currentBook.postValue(book)
                 }
 
                 results.postValue(bookResults)

@@ -74,12 +74,12 @@ fun BookSearchScreen(
     LaunchedEffect(results) {
         // Navigate to book results
         if (!onResultsScreen && results.items.size == 1) {
-            Log.d("BookSearchScreen", "Found 1 book")
+            Log.d("BookSearchScreen", "Found 1 elements")
             navHostController.navigate("${NavScreen.BooksScreen.name}/${results.items.first().id}")
         }
 
         if (!onResultsScreen && results.items.size > 1) {
-            Log.d("BookSearchScreen", "Found ${results.items.size} books")
+            Log.d("BookSearchScreen", "Found ${results.items.size} elements")
             navHostController.navigate("${NavScreen.BooksScreen.name}/search?query=${bookViewModel.queryText}&searchtype=$selectedSearchTpe")
         }
     }
