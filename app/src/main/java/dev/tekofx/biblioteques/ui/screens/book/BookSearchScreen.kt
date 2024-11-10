@@ -1,6 +1,7 @@
 package dev.tekofx.biblioteques.ui.screens.book
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -49,7 +50,7 @@ import dev.tekofx.biblioteques.ui.viewModels.searchTypes
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun BooksScreen(
+fun BookSearchScreen(
     navHostController: NavHostController,
     bookViewModel: BookViewModel
 ) {
@@ -59,16 +60,28 @@ fun BooksScreen(
     )
 
     val isLoading by bookViewModel.isLoading.observeAsState(false)
+    val onResultsScreen by bookViewModel.onResultsScreen.observeAsState(false)
+
     val errorMessage by bookViewModel.errorMessage.observeAsState()
 
     var selectedSearchTpe by bookViewModel.selectedSearchType
 
+    LaunchedEffect(key1 = 1) {
+        Log.d("BookSearchScreen", "LaunchedEffect")
+        bookViewModel.setOnResultsScreen(false)
+    }
+
     LaunchedEffect(results) {
         // Navigate to book results
-        if (results.items.isNotEmpty()) {
-            navHostController.navigate("${NavScreen.BooksScreen.name}/search?query=${bookViewModel.queryText}&searchtype=$selectedSearchTpe")
+        if (!onResultsScreen && results.items.size == 1) {
+            Log.d("BookSearchScreen", "Found 1 book")
+            navHostController.navigate("${NavScreen.BooksScreen.name}/${results.items.first().id}")
         }
 
+        if (!onResultsScreen && results.items.size > 1) {
+            Log.d("BookSearchScreen", "Found ${results.items.size} books")
+            navHostController.navigate("${NavScreen.BooksScreen.name}/search?query=${bookViewModel.queryText}&searchtype=$selectedSearchTpe")
+        }
     }
 
     Scaffold(
@@ -84,7 +97,7 @@ fun BooksScreen(
         }
     ) {
         BookSearch(
-            visible = results.items.isEmpty(),
+            visible = !onResultsScreen,
             errorMessage = errorMessage,
             onSearchTextChanged = { bookViewModel.onSearchTextChanged(it) },
             queryText = bookViewModel.queryText,

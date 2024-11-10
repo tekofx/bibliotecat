@@ -8,7 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import dev.tekofx.biblioteques.ui.screens.book.BookResultsScreen
 import dev.tekofx.biblioteques.ui.screens.book.BookScreen
-import dev.tekofx.biblioteques.ui.screens.book.BooksScreen
+import dev.tekofx.biblioteques.ui.screens.book.BookSearchScreen
 import dev.tekofx.biblioteques.ui.screens.library.LibrariesScreen
 import dev.tekofx.biblioteques.ui.screens.library.LibraryScreen
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
@@ -45,7 +45,7 @@ fun Navigation(
         composable(
             route = NavScreen.BooksScreen.name
         ) {
-            BooksScreen(navController, bookViewModel)
+            BookSearchScreen(navController, bookViewModel)
         }
 
         composable(

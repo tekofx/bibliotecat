@@ -1,5 +1,6 @@
 package dev.tekofx.biblioteques.ui.screens.book
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -18,6 +20,7 @@ import dev.tekofx.biblioteques.model.EmptyResults
 import dev.tekofx.biblioteques.model.GeneralResult
 import dev.tekofx.biblioteques.model.GeneralResults
 import dev.tekofx.biblioteques.model.SearchResult
+import dev.tekofx.biblioteques.navigation.NavScreen
 import dev.tekofx.biblioteques.ui.components.PaginatedList
 import dev.tekofx.biblioteques.ui.components.book.BookCard
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
@@ -32,7 +35,14 @@ fun BookResultsScreen(
         EmptyResults()
     )
     val isLoading by bookViewModel.isLoading.observeAsState(false)
+    val onResultsScreen by bookViewModel.onResultsScreen.observeAsState(false)
+    val onBookScreen by bookViewModel.onBookScreen.observeAsState(false)
 
+
+    LaunchedEffect(key1 = 1) {
+        Log.d("BookResultsScreen", "LaunchedEffect")
+        bookViewModel.setOnResultsScreen(true)
+    }
 
     Column(
         modifier = Modifier.padding(10.dp)
@@ -46,7 +56,14 @@ fun BookResultsScreen(
                     key = { book -> book.id },
                     onLoadMore = { bookViewModel.getNextResultsPage() }
 
-                ) { book -> BookCard(book as BookResult, navHostController) }
+                ) { book ->
+                    BookCard(
+                        book = book as BookResult,
+                        onClick = {
+                            navHostController.navigate("${NavScreen.BooksScreen.name}/${book.id}")
+                        }
+                    )
+                }
 
             is GeneralResults ->
                 PaginatedList<GeneralResult>(

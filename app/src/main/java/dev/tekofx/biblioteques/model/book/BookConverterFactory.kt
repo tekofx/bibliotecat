@@ -55,18 +55,13 @@ class BookConverterFactory : Converter.Factory() {
             } else if (bibInfoLabelElement != null) {
                 val bookDetails = constructBookDetails(doc)
                 val bookCopies = constructBookCopies(doc)
+                val bookResults = constructBookResults(doc)
 
                 Log.d("BookConverterFactory", "Book details")
                 BookResponse(
+                    results = bookResults,
                     bookDetails = bookDetails,
                     bookCopies = bookCopies
-                )
-            } else if (bibPagerElement != null) {
-                Log.d("BookConverterFactory", "Search with only 1 book")
-                val bookResults = constructBookResultsFromBookDetails(doc)
-                BookResponse(
-                    body = responseBodyString,
-                    results = bookResults
                 )
             } else {
 
@@ -300,9 +295,7 @@ class BookConverterFactory : Converter.Factory() {
 
     }
 
-    fun constructBookResults(doc: Document): BookResults {
-
-        Log.d("BookConverterFactory", "ConstructBooks")
+    private fun constructBookResults(doc: Document): BookResults {
 
         val bookResultList = arrayListOf<BookResult>()
         val pages = getPages(doc)

@@ -29,10 +29,13 @@ val searchTypes = listOf(
     ButtonSelectItem("Signatura", "c"),
 )
 
-class BookViewModel(private val repository: BookRepository) : ViewModel() {
+class BookViewModel(private val repository: BookRepository) :
+    ViewModel() {
     val results = MutableLiveData<SearchResults<out SearchResult>>()
 
     val isLoading = MutableLiveData<Boolean>(false)
+    val onBookScreen = MutableLiveData<Boolean>(false)
+    val onResultsScreen = MutableLiveData<Boolean>(false)
     val currentBookResult = MutableLiveData<BookResult?>()
     val currentBook = MutableLiveData<Book?>()
     private val pageIndex = mutableIntStateOf(0)
@@ -50,10 +53,17 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
             override fun onResponse(
                 call: Call<BookResponse>, response: Response<BookResponse>
             ) {
-                val responseResults =
-                    response.body()?.results ?: return onFailure(call, Throwable("Not Results"))
+                val bookResults =
+                    response.body()?.results as BookResults? ?: return onFailure(
+                        call,
+                        Throwable("Not Results")
+                    )
 
-                results.postValue(responseResults)
+                if (bookResults.numItems == 1) {
+                    currentBookResult.postValue(bookResults.items.first())
+                }
+
+                results.postValue(bookResults)
                 Log.d("BookViewModel", "getBooksBySearchResult")
                 isLoading.postValue(false)
             }
@@ -144,7 +154,6 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
         val currentBookResultUrl = currentBookResult.value?.url ?: return
         println("y")
 
-        // TODO: Get all Book info from Book Details Page
         val response = repository.getBookDetails(currentBookResultUrl)
         isLoading.postValue(true)
         response.enqueue(object : Callback<BookResponse> {
@@ -202,6 +211,10 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
 
     fun onSearchTextChanged(text: String) {
         queryText = text
+    }
+
+    fun setOnResultsScreen(value: Boolean) {
+        onResultsScreen.postValue(value)
     }
 
 
