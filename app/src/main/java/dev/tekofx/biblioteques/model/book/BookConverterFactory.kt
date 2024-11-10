@@ -48,7 +48,6 @@ class BookConverterFactory : Converter.Factory() {
                 println(pages.toString())
                 BookResponse(
                     body = responseBodyString,
-                    generalResults = generalResults,
                     pages = pages,
                     results = generalResults
 
@@ -70,7 +69,6 @@ class BookConverterFactory : Converter.Factory() {
                 val bookResults = constructBookResultsFromBookDetails(doc)
                 BookResponse(
                     body = responseBodyString,
-                    bookResults = bookResults,
                     results = bookResults
                 )
             } else {
@@ -81,7 +79,6 @@ class BookConverterFactory : Converter.Factory() {
                 Log.d("BookConverterFactory", "Search with multiple books")
                 BookResponse(
                     body = responseBodyString,
-                    bookResults = bookResults,
                     totalBooks = totalBooks,
                     results = bookResults
                 )

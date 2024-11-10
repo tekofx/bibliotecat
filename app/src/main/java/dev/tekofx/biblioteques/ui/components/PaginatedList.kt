@@ -60,7 +60,7 @@ fun <T> PaginatedList(
             .distinctUntilChanged()
             .filter { it }  // Ensure that we load more items only when needed
             .collect {
-                Log.d("BooksList", "loading more books")
+                Log.d("PaginatedList", "Loading more results")
                 onLoadMore()
             }
     }

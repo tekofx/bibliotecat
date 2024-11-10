@@ -47,10 +47,10 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
             override fun onResponse(
                 call: Call<BookResponse>, response: Response<BookResponse>
             ) {
-                val booksResponse = response.body() ?: throw Error()
-                val bookResults = booksResponse.bookResults ?: throw Error()
+                val responseResults =
+                    response.body()?.results ?: return onFailure(call, Throwable("Not Results"))
 
-                results.postValue(bookResults)
+                results.postValue(responseResults)
                 Log.d("BookViewModel", "getBooksBySearchResult")
                 isLoading.postValue(false)
             }
@@ -78,14 +78,12 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
             override fun onResponse(
                 call: Call<BookResponse>, response: Response<BookResponse>
             ) {
-                val responseBody =
-                    response.body() ?: return onFailure(call, Throwable("Not response"))
                 val responseResults =
-                    responseBody.results ?: return onFailure(call, Throwable("Not Results"))
+                    response.body()?.results ?: return onFailure(call, Throwable("Not Results"))
                 val currentResults =
                     results.value as SearchResults<SearchResult>? ?: return onFailure(
                         call,
-                        Throwable("")
+                        Throwable("CurrentResults is null")
                     )
 
                 currentResults.addItems(responseResults.items)
@@ -117,21 +115,10 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
             override fun onResponse(
                 call: Call<BookResponse>, response: Response<BookResponse>
             ) {
-                val booksResponse = response.body() ?: throw Error()
-                val resultsResponse = booksResponse.results ?: throw Error()
+                val responseResults =
+                    response.body()?.results ?: return onFailure(call, Throwable("Not Results"))
 
-                if (booksResponse.generalResults != null) {
-                    Log.d("BookViewModel", "search Results ${booksResponse.generalResults}")
-                    val generalResults = booksResponse.generalResults ?: throw Error()
-                    results.postValue(generalResults)
-
-                } else if (booksResponse.bookResults != null) {
-                    Log.d("BookViewModel", "search Books Found")
-                    val bookResults = booksResponse.bookResults ?: throw Error()
-                    results.postValue(bookResults)
-                } else {
-                    throw Error()
-                }
+                results.postValue(responseResults)
                 isLoading.postValue(false)
             }
 

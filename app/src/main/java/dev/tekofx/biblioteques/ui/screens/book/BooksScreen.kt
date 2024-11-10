@@ -94,12 +94,11 @@ fun BooksScreen(
         }
         if (results is GeneralResults) {
 
-
             PaginatedList<GeneralResult>(
                 items = results.items,
                 isLoading = isLoading,
                 key = { searchResult: SearchResult -> searchResult.text },
-                onLoadMore = {}
+                onLoadMore = { bookViewModel.getNextResultsPage() }
             ) { searchResult ->
                 Surface(
                     onClick = {
@@ -107,7 +106,9 @@ fun BooksScreen(
                     }
                 )
                 {
-                    Row {
+                    Row(
+                        modifier = Modifier.padding(vertical = 50.dp)
+                    ) {
                         Text(
                             text = searchResult.text
                         )
