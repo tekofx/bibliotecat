@@ -32,46 +32,47 @@ fun BookCard(book: Book, navHostController: NavHostController) {
         shape = RoundedCornerShape(20.dp),
         onClick = { navHostController.navigate("${NavScreen.BooksScreen.name}/${book.id}") }
     ) {
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .padding(10.dp),
-            verticalAlignment = Alignment.Top,
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                .padding(10.dp)
         ) {
-            AsyncImage(
-                model = book.image, // Ajusta con tu imagen
-                contentDescription = null,
-                modifier = Modifier
-                    .height(200.dp)
-                    .aspectRatio(0.6f)
-                    .clip(RoundedCornerShape(10.dp)),
-                contentScale = ContentScale.Crop
-            )
-            Column(
-                modifier = Modifier.fillMaxHeight(),
-                verticalArrangement = Arrangement.Top
+
+            Row(
+                verticalAlignment = Alignment.Top,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                Text(
-                    text = book.id.toString(),
-                    style = Typography.titleLarge
+                AsyncImage(
+                    model = book.image, // Ajusta con tu imagen
+                    contentDescription = null,
+                    modifier = Modifier
+                        .height(200.dp)
+                        .aspectRatio(0.6f)
+                        .clip(RoundedCornerShape(10.dp)),
+                    contentScale = ContentScale.Crop
                 )
-                Text(
-                    text = book.title,
-                    style = Typography.titleLarge
-                )
-                Text(
-                    text = book.author,
-                    style = Typography.titleMedium
-                )
-                Text(
-                    text = book.publication,
-                    style = Typography.titleMedium
-                )
+                Column(
+                    modifier = Modifier.fillMaxHeight(),
+                    verticalArrangement = Arrangement.Top
+                ) {
+                    Text(
+                        text = book.title,
+                        style = Typography.titleLarge
+                    )
+                    Text(
+                        text = book.author,
+                        style = Typography.titleMedium
+                    )
+                    Text(
+                        text = book.publication,
+                        style = Typography.titleMedium
+                    )
+                }
             }
+
         }
     }
-
 }
+
 

@@ -3,6 +3,7 @@ package dev.tekofx.biblioteques.model.book
 import android.util.Log
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.nodes.Document
+import com.fleeksoft.ksoup.nodes.Element
 import com.fleeksoft.ksoup.select.Elements
 import dev.tekofx.biblioteques.dto.BookResponse
 import dev.tekofx.biblioteques.model.SearchResult
@@ -48,16 +49,10 @@ class BookConverterFactory : Converter.Factory() {
                     pages = pages
 
                 )
-            } else if (bibPagerElement != null) {
-                val book = constructBookFromBookDetails(doc)
-                Log.d("BookConverterFactory", "Search with only 1 book")
-                BookResponse(
-                    body = responseBodyString,
-                    books = listOf(book),
-                )
             } else if (bibInfoLabelElement != null) {
                 val bookCopies = constructBookCopies(doc)
                 val bookDetails = constructBookDetails(doc)
+                println("b $bookDetails")
 
                 Log.d("BookConverterFactory", "Book details")
                 BookResponse(
@@ -65,6 +60,13 @@ class BookConverterFactory : Converter.Factory() {
                     bookCopies = bookCopies,
                     totalBooks = 0,
                     bookDetails = bookDetails
+                )
+            } else if (bibPagerElement != null) {
+                Log.d("BookConverterFactory", "Search with only 1 book")
+                val book = constructBookFromBookDetails(doc)
+                BookResponse(
+                    body = responseBodyString,
+                    books = listOf(book),
                 )
             } else {
 
@@ -211,8 +213,8 @@ class BookConverterFactory : Converter.Factory() {
     }
 
 
-    private fun constructBookCopies(doc: Document): List<BookCopy> {
-        val trElements = doc.select("tr.bibItemsEntry")
+    private fun constructBookCopies(element: Element): List<BookCopy> {
+        val trElements = element.select("tr.bibItemsEntry")
         val bookCopies = arrayListOf<BookCopy>()
         for (x in trElements) {
             val tdElements = x.select("td")
@@ -265,6 +267,8 @@ class BookConverterFactory : Converter.Factory() {
                 val publication = descriptionFields[3].split("<!--")[0].trim()
 
                 val id = url.split("&").last().split("%")[0].toInt()
+                val bookCopies = constructBookCopies(bookElement)
+                println(bookCopies)
                 bookList.add(
                     Book(
                         id = id,
@@ -272,7 +276,7 @@ class BookConverterFactory : Converter.Factory() {
                         author = author,
                         image = imageElement.attr("src"),
                         publication = publication,
-                        bookCopies = arrayListOf(),
+                        bookCopies = bookCopies,
                         temporalUrl = url
                     )
                 )

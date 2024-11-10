@@ -151,24 +151,23 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                     call: Call<BookResponse>,
                     response: Response<BookResponse>
                 ) {
-                    val bookCopies = response.body()?.bookCopies
-                    val bookDetails = response.body()?.bookDetails
-                    println(bookDetails)
-                    bookCopies?.let { copies ->
-                        book.bookCopies = copies
-                        // Create a new book object with updated bookCopies
-                        val updatedBook = Book(
-                            id = book.id,
-                            title = book.title,
-                            author = book.author,
-                            temporalUrl = book.temporalUrl,
-                            bookCopies = bookCopies,
-                            image = book.image,
-                            publication = book.publication,
-                            bookDetails = bookDetails
-                        )
-                        currentBook.postValue(updatedBook)
-                    }
+                    val responseBody = response.body() ?: throw Error()
+
+                    val bookCopies = responseBody.bookCopies
+                    val bookDetails = responseBody.bookDetails
+                    // Create a new book object with updated bookCopies
+
+                    val updatedBook = Book(
+                        id = book.id,
+                        title = book.title,
+                        author = book.author,
+                        temporalUrl = book.temporalUrl,
+                        bookCopies = bookCopies,
+                        image = book.image,
+                        publication = book.publication,
+                        bookDetails = bookDetails
+                    )
+                    currentBook.postValue(updatedBook)
                     isLoading.postValue(false)
                 }
 

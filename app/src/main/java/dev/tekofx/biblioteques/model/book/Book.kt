@@ -19,6 +19,10 @@ class Book(
         }
         return output
     }
+
+    fun copy(): Book {
+        return this
+    }
 }
 
 class BookDetails(
