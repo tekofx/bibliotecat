@@ -8,6 +8,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dev.tekofx.biblioteques.dto.BookResponse
+import dev.tekofx.biblioteques.model.BookResult
+import dev.tekofx.biblioteques.model.BookResults
 import dev.tekofx.biblioteques.model.SearchResult
 import dev.tekofx.biblioteques.model.SearchResults
 import dev.tekofx.biblioteques.model.book.Book
@@ -31,6 +33,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     val results = MutableLiveData<SearchResults<out SearchResult>>()
 
     val isLoading = MutableLiveData<Boolean>(false)
+    val currentBookResult = MutableLiveData<BookResult?>()
     val currentBook = MutableLiveData<Book?>()
     val pageIndex = mutableIntStateOf(0)
     val selectedSearchType = mutableStateOf(searchTypes.first())
@@ -137,46 +140,64 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
      * Gets the books details of a book from the url of a book
      */
     fun getBookDetails() {
-        currentBook.value?.let { book ->
-            val response = repository.getBookDetails(book.temporalUrl)
-            isLoading.postValue(true)
-            response.enqueue(object : Callback<BookResponse> {
-                override fun onResponse(
-                    call: Call<BookResponse>,
-                    response: Response<BookResponse>
-                ) {
-                    val responseBody = response.body() ?: throw Error()
 
-                    val bookCopies = responseBody.bookCopies
-                    val bookDetails = responseBody.bookDetails
-                    // Create a new book object with updated bookCopies
+        val currentBookResultUrl = currentBookResult.value?.url ?: return
+        println("y")
 
-                    val updatedBook = Book(
-                        id = book.id,
-                        title = book.title,
-                        author = book.author,
-                        temporalUrl = book.temporalUrl,
-                        bookCopies = bookCopies,
-                        image = book.image,
-                        publication = book.publication,
-                        bookDetails = bookDetails
+        // TODO: Get all Book info from Book Details Page
+        val response = repository.getBookDetails(currentBookResultUrl)
+        isLoading.postValue(true)
+        response.enqueue(object : Callback<BookResponse> {
+            override fun onResponse(
+                call: Call<BookResponse>,
+                response: Response<BookResponse>
+            ) {
+
+
+                val bookDetails = response.body()?.bookDetails ?: return onFailure(
+                    call,
+                    Throwable("Book details details found")
+                )
+
+                val bookCopies =
+                    response.body()?.bookCopies ?: return onFailure(
+                        call,
+                        Throwable("Book copies not found")
                     )
-                    currentBook.postValue(updatedBook)
-                    isLoading.postValue(false)
-                }
+                val book = currentBook.value ?: return
+                book.bookDetails = bookDetails
+                book.bookCopies = bookCopies
+                currentBook.postValue(book)
+                isLoading.postValue(false)
+            }
 
-                override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
-                    Log.e("BookViewModel", t.message.toString())
-                    errorMessage.postValue(t.message)
-                    isLoading.postValue(false)
-                }
-            })
-        }
+            override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
+                Log.e("BookViewModel", t.message.toString())
+                errorMessage.postValue(t.message)
+                isLoading.postValue(false)
+            }
+        })
+
     }
 
 
     fun filterBook(id: Int) {
-        //currentBook.postValue(books.value?.find { book: Book -> book.id == id })
+        if (results.value is BookResults) {
+            println(1)
+            println("id $id")
+            val bookResults = (results.value as BookResults).items
+            println("bookresults ${bookResults.size}")
+            val bookResult = bookResults.find { book: BookResult -> book.id == id }
+            if (bookResult != null) {
+                println("bookResult ${bookResult.text}")
+            }
+
+            val currentBookResult2 =
+                bookResults.find { book: BookResult -> book.id == id } ?: return
+
+            currentBook.postValue(Book(currentBookResult2))
+            currentBookResult.postValue(bookResults.find { book: BookResult -> book.id == id })
+        }
     }
 
     fun onSearchTextChanged(text: String) {

@@ -1,5 +1,6 @@
 package dev.tekofx.biblioteques.model.book
 
+import dev.tekofx.biblioteques.model.BookResult
 import dev.tekofx.biblioteques.model.StatusColor
 
 class Book(
@@ -10,8 +11,21 @@ class Book(
     val publication: String,
     var bookCopies: List<BookCopy>,
     val temporalUrl: String,
-    val bookDetails: BookDetails? = null
+    var bookDetails: BookDetails? = null
 ) {
+
+
+    constructor(bookResult: BookResult) : this(
+        id = bookResult.id,
+        title = bookResult.title,
+        author = bookResult.author,
+        image = bookResult.image,
+        publication = bookResult.publication,
+        bookCopies = emptyList(),
+        temporalUrl = bookResult.url,
+        bookDetails = null
+    )
+
     override fun toString(): String {
         var output = "$id $author - $title"
         for (bookCopy in bookCopies) {
@@ -20,9 +34,6 @@ class Book(
         return output
     }
 
-    fun copy(): Book {
-        return this
-    }
 }
 
 class BookDetails(

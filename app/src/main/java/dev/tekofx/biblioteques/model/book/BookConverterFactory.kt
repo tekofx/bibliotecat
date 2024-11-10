@@ -53,16 +53,13 @@ class BookConverterFactory : Converter.Factory() {
 
                 )
             } else if (bibInfoLabelElement != null) {
-                val bookCopies = constructBookCopies(doc)
                 val bookDetails = constructBookDetails(doc)
-                println("b $bookDetails")
+                val bookCopies = constructBookCopies(doc)
 
                 Log.d("BookConverterFactory", "Book details")
                 BookResponse(
-                    body = responseBodyString,
-                    bookCopies = bookCopies,
-                    totalBooks = 0,
-                    bookDetails = bookDetails
+                    bookDetails = bookDetails,
+                    bookCopies = bookCopies
                 )
             } else if (bibPagerElement != null) {
                 Log.d("BookConverterFactory", "Search with only 1 book")
@@ -138,6 +135,44 @@ class BookConverterFactory : Converter.Factory() {
             pages = pages,
             numItems = numItems
 
+        )
+    }
+
+    private fun contructBookFromBookDetails(doc: Document): Book {
+        val titleElement =
+            doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Títol" }
+                ?.nextElementSibling()
+
+        val authorElement =
+            doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Autor/Artista" }
+                ?.nextElementSibling()
+
+        val imageElement = doc.selectFirst("div.fitxa_imatge")?.selectFirst("img")
+        val publicationElement =
+            doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Publicació" }
+                ?.nextElementSibling()
+
+        val permanentLinkElement = doc.selectFirst("a.recordnum")
+
+
+        val title = titleElement?.text()?.split("/")?.get(0) ?: ""
+        val author = authorElement?.text() ?: ""
+        val image = imageElement?.attr("src") ?: ""
+        val publication = publicationElement?.text() ?: ""
+        val permanentLink = permanentLinkElement?.attr("href") ?: ""
+        val bookDetails = constructBookDetails(doc)
+        val bookCopies = constructBookCopies(doc)
+
+
+        return Book(
+            id = 0,
+            title = title,
+            author = author,
+            image = image,
+            publication = publication,
+            temporalUrl = permanentLink,
+            bookDetails = bookDetails,
+            bookCopies = bookCopies
         )
     }
 

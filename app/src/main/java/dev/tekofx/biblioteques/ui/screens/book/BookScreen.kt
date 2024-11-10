@@ -50,6 +50,7 @@ fun BookScreen(
 ) {
 
     val currentBook by bookViewModel.currentBook.observeAsState(null)
+    val currentBookResult by bookViewModel.currentBookResult.observeAsState(null)
     val isLoading by bookViewModel.isLoading.observeAsState(false)
 
     // Get book info
@@ -59,13 +60,9 @@ fun BookScreen(
     }
 
     // Observe currentBook and trigger getBookCopies when it's not null
-    LaunchedEffect(currentBook) {
-        currentBook?.let {
-            if (currentBook!!.bookDetails == null) {
-
-                bookViewModel.getBookDetails()
-                Log.d("BookScreen", "Got bookdetails ${currentBook!!.bookCopies}")
-            }
+    LaunchedEffect(currentBookResult) {
+        if (currentBookResult != null) {
+            bookViewModel.getBookDetails()
         }
     }
 
