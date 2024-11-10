@@ -8,7 +8,7 @@ class Book(
     val title: String,
     val author: String,
     val image: String,
-    val publication: String,
+    val publication: String?,
     var bookCopies: List<BookCopy>,
     val temporalUrl: String,
     var bookDetails: BookDetails? = null

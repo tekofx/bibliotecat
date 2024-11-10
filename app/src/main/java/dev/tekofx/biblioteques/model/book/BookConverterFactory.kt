@@ -45,7 +45,6 @@ class BookConverterFactory : Converter.Factory() {
                 Log.d("BookConverterFactory", "Result Search")
                 val generalResults = constructGeneralResults(doc)
                 val pages = getPages(doc)
-                println(pages.toString())
                 BookResponse(
                     body = responseBodyString,
                     pages = pages,
@@ -155,7 +154,7 @@ class BookConverterFactory : Converter.Factory() {
         val title = titleElement?.text()?.split("/")?.get(0) ?: ""
         val author = authorElement?.text() ?: ""
         val image = imageElement?.attr("src") ?: ""
-        val publication = publicationElement?.text() ?: ""
+        val publication = publicationElement?.text()
         val permanentLink = permanentLinkElement?.attr("href") ?: ""
         val bookDetails = constructBookDetails(doc)
         val bookCopies = constructBookCopies(doc)
@@ -193,7 +192,7 @@ class BookConverterFactory : Converter.Factory() {
         val title = titleElement?.text()?.split("/")?.get(0) ?: ""
         val author = authorElement?.text() ?: ""
         val image = imageElement?.attr("src") ?: ""
-        val publication = publicationElement?.text() ?: ""
+        val publication = publicationElement?.text()
         val permanentLink = permanentLinkElement?.attr("href") ?: ""
 
         val bookResults = BookResults(

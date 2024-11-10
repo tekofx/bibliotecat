@@ -102,9 +102,11 @@ fun BookScreen(
 
                     Text(text = currentBook!!.title, style = Typography.titleLarge)
                     Text(text = currentBook!!.author, style = Typography.titleMedium)
-                    HorizontalDivider(thickness = 2.dp)
-                    Text(text = "Publicació")
-                    Text(text = currentBook!!.publication, style = Typography.titleMedium)
+                    currentBook!!.publication?.let {
+                        HorizontalDivider(thickness = 2.dp)
+                        Text(text = "Publicació")
+                        Text(text = it, style = Typography.titleMedium)
+                    }
                 }
             }
 

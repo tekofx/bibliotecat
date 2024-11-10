@@ -65,10 +65,12 @@ fun BookCard(
                         text = book.author,
                         style = Typography.titleMedium
                     )
-                    Text(
-                        text = book.publication,
-                        style = Typography.titleMedium
-                    )
+                    book.publication?.let {
+                        Text(
+                            text = it,
+                            style = Typography.titleMedium
+                        )
+                    }
                 }
             }
 

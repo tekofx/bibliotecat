@@ -154,7 +154,6 @@ class BookViewModel(private val repository: BookRepository) :
     fun getBookDetails() {
 
         val currentBookResultUrl = currentBookResult.value?.url ?: return
-        println("y")
 
         val response = repository.getBookDetails(currentBookResultUrl)
         isLoading.postValue(true)
@@ -165,10 +164,7 @@ class BookViewModel(private val repository: BookRepository) :
             ) {
 
 
-                val bookDetails = response.body()?.bookDetails ?: return onFailure(
-                    call,
-                    Throwable("Book details details found")
-                )
+                val bookDetails = response.body()?.bookDetails
 
                 val bookCopies =
                     response.body()?.bookCopies ?: return onFailure(
@@ -194,15 +190,7 @@ class BookViewModel(private val repository: BookRepository) :
 
     fun filterBook(id: Int) {
         if (results.value is BookResults) {
-            println(1)
-            println("id $id")
             val bookResults = (results.value as BookResults).items
-            println("bookresults ${bookResults.size}")
-            val bookResult = bookResults.find { book: BookResult -> book.id == id }
-            if (bookResult != null) {
-                println("bookResult ${bookResult.text}")
-            }
-
             val currentBookResult2 =
                 bookResults.find { book: BookResult -> book.id == id } ?: return
 
