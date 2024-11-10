@@ -22,11 +22,11 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.setValue
@@ -37,18 +37,12 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import dev.tekofx.biblioteques.model.BookResult
-import dev.tekofx.biblioteques.model.BookResults
 import dev.tekofx.biblioteques.model.EmptyResults
-import dev.tekofx.biblioteques.model.GeneralResult
-import dev.tekofx.biblioteques.model.GeneralResults
-import dev.tekofx.biblioteques.model.SearchResult
+import dev.tekofx.biblioteques.navigation.NavScreen
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.ButtonSelect
 import dev.tekofx.biblioteques.ui.components.ButtonSelectItem
-import dev.tekofx.biblioteques.ui.components.PaginatedList
 import dev.tekofx.biblioteques.ui.components.TextIconButton
-import dev.tekofx.biblioteques.ui.components.book.BookCard
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
 import dev.tekofx.biblioteques.ui.viewModels.searchTypes
 
@@ -69,6 +63,14 @@ fun BooksScreen(
 
     var selectedSearchTpe by bookViewModel.selectedSearchType
 
+    LaunchedEffect(results) {
+        // Navigate to book results
+        if (results.items.isNotEmpty()) {
+            navHostController.navigate("${NavScreen.BooksScreen.name}/search?query=${bookViewModel.queryText}&searchtype=$selectedSearchTpe")
+        }
+
+    }
+
     Scaffold(
         floatingActionButton = {
             if (results.items.isNotEmpty()) {
@@ -81,45 +83,6 @@ fun BooksScreen(
             }
         }
     ) {
-        if (results is BookResults) {
-
-
-            PaginatedList<BookResult>(
-                items = results.items,
-                isLoading = isLoading,
-                key = { book -> book.id },
-                onLoadMore = { bookViewModel.getNextResultsPage() }
-
-            ) { book -> BookCard(book as BookResult, navHostController) }
-        }
-        if (results is GeneralResults) {
-
-            PaginatedList<GeneralResult>(
-                items = results.items,
-                isLoading = isLoading,
-                key = { searchResult: SearchResult -> searchResult.text },
-                onLoadMore = { bookViewModel.getNextResultsPage() }
-            ) { searchResult ->
-                Surface(
-                    onClick = {
-                        bookViewModel.getBooksBySearchResult(searchResult.url)
-                    }
-                )
-                {
-                    Row(
-                        modifier = Modifier.padding(vertical = 50.dp)
-                    ) {
-                        Text(
-                            text = searchResult.text
-                        )
-                        Text(
-                            text = searchResult.numEntries.toString()
-                        )
-                    }
-                }
-            }
-
-        }
         BookSearch(
             visible = results.items.isEmpty(),
             errorMessage = errorMessage,

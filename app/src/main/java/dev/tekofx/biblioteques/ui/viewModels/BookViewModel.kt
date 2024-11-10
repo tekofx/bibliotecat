@@ -35,7 +35,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     val isLoading = MutableLiveData<Boolean>(false)
     val currentBookResult = MutableLiveData<BookResult?>()
     val currentBook = MutableLiveData<Book?>()
-    val pageIndex = mutableIntStateOf(0)
+    private val pageIndex = mutableIntStateOf(0)
     val selectedSearchType = mutableStateOf(searchTypes.first())
 
     var queryText by mutableStateOf("")

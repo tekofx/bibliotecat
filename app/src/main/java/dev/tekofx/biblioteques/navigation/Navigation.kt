@@ -6,6 +6,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import dev.tekofx.biblioteques.ui.screens.book.BookResultsScreen
 import dev.tekofx.biblioteques.ui.screens.book.BookScreen
 import dev.tekofx.biblioteques.ui.screens.book.BooksScreen
 import dev.tekofx.biblioteques.ui.screens.library.LibrariesScreen
@@ -23,6 +24,8 @@ fun Navigation(
 
 
     NavHost(navController = navController, startDestination = NavScreen.LibrariesScreen.name) {
+
+        // Libraries
         composable(
             route = NavScreen.LibrariesScreen.name,
         ) {
@@ -38,6 +41,7 @@ fun Navigation(
             LibraryScreen(libraryId, libraryViewModel)
         }
 
+        // Books
         composable(
             route = NavScreen.BooksScreen.name
         ) {
@@ -45,11 +49,22 @@ fun Navigation(
         }
 
         composable(
-            route = NavScreen.BooksScreen.name + "/{libraryUrl}",
-            arguments = listOf(navArgument("libraryUrl") { type = NavType.StringType })
+            route = NavScreen.BooksScreen.name + "/{bookUrl}",
+            arguments = listOf(navArgument("bookUrl") { type = NavType.StringType })
         ) { backStackEntry ->
-            val libraryUrl = backStackEntry.arguments!!.getString("libraryUrl")!!
-            BookScreen(libraryUrl, bookViewModel)
+            val bookUrl = backStackEntry.arguments!!.getString("bookUrl")!!
+            BookScreen(bookUrl, bookViewModel)
+        }
+
+        composable(
+            route = NavScreen.BooksScreen.name + "/search?query={query}&searchtype={searchtype}",
+            arguments = listOf(
+                navArgument("query") { type = NavType.StringType },
+                navArgument("searchtype") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val query = backStackEntry.arguments!!.getString("query")!!
+            val searchType = backStackEntry.arguments!!.getString("searchtype")!!
+            BookResultsScreen(navController, bookViewModel)
         }
 
     }
