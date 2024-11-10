@@ -20,12 +20,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
-import dev.tekofx.biblioteques.model.book.Book
+import dev.tekofx.biblioteques.model.BookResult
 import dev.tekofx.biblioteques.navigation.NavScreen
 import dev.tekofx.biblioteques.ui.theme.Typography
 
 @Composable
-fun BookCard(book: Book, navHostController: NavHostController) {
+fun BookCard(book: BookResult, navHostController: NavHostController) {
 
     Surface(
         tonalElevation = 40.dp,

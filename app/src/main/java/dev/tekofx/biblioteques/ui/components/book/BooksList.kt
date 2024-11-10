@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,15 +33,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import dev.tekofx.biblioteques.model.BookResult
 import dev.tekofx.biblioteques.model.SearchResult
-import dev.tekofx.biblioteques.model.book.Book
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 
 @Composable
 fun BooksList(
-    books: List<Book>,
+    books: List<BookResult>,
     searchResults: List<SearchResult>,
     navHostController: NavHostController,
     bookViewModel: BookViewModel
@@ -94,8 +95,9 @@ fun BooksList(
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                itemsIndexed(books, key = { _: Int, book: Book -> book.id }) { _: Int, book: Book ->
-                    BookCard(book, navHostController)
+
+                items(books, key = { it.id }) {
+                    BookCard(it, navHostController)
                 }
                 itemsIndexed(
                     searchResults,
@@ -112,7 +114,7 @@ fun BooksList(
                                 text = searchResult.text
                             )
                             Text(
-                                text = searchResult.entries.toString()
+                                text = searchResult.numEntries.toString()
                             )
                         }
                     }

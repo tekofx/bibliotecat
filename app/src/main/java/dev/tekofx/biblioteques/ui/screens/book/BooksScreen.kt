@@ -37,8 +37,12 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import dev.tekofx.biblioteques.model.BookResult
+import dev.tekofx.biblioteques.model.BookResults
+import dev.tekofx.biblioteques.model.EmptyResults
+import dev.tekofx.biblioteques.model.GeneralResult
+import dev.tekofx.biblioteques.model.GeneralResults
 import dev.tekofx.biblioteques.model.SearchResult
-import dev.tekofx.biblioteques.model.book.Book
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.ButtonSelect
 import dev.tekofx.biblioteques.ui.components.ButtonSelectItem
@@ -56,8 +60,9 @@ fun BooksScreen(
     bookViewModel: BookViewModel
 ) {
 
-    val books by bookViewModel.books.observeAsState(emptyList())
-    val searchResults by bookViewModel.searchResults.observeAsState(emptyList())
+    val results by bookViewModel.results.observeAsState(
+        EmptyResults()
+    )
 
     val isLoading by bookViewModel.isLoading.observeAsState(false)
     val errorMessage by bookViewModel.errorMessage.observeAsState()
@@ -66,7 +71,7 @@ fun BooksScreen(
 
     Scaffold(
         floatingActionButton = {
-            if (books.isNotEmpty()) {
+            if (results.items.isNotEmpty()) {
                 ExtendedFloatingActionButton(
                     text = { Text("Cercar") },
                     icon = { Icon(Icons.Filled.Search, contentDescription = "") },
@@ -76,41 +81,46 @@ fun BooksScreen(
             }
         }
     ) {
+        if (results is BookResults) {
 
-        PaginatedList(
-            items = books,
-            isLoading = isLoading,
-            key = { book -> book.id },
-            onLoadMore = { bookViewModel.getNextResultsPage() }
 
-        ) { book -> BookCard(book, navHostController) }
+            PaginatedList<BookResult>(
+                items = results.items,
+                isLoading = isLoading,
+                key = { book -> book.id },
+                onLoadMore = { bookViewModel.getNextResultsPage() }
 
-        PaginatedList(
-            items = searchResults,
-            isLoading = isLoading,
-            key = { searchResult: SearchResult -> searchResult.text },
-            onLoadMore = {}
-        ) { searchResult ->
-            Surface(
-                onClick = {
-                    bookViewModel.getBooksBySearchResult(searchResult.url)
-                }
-            )
-            {
-                Row {
-                    Text(
-                        text = searchResult.text
-                    )
-                    Text(
-                        text = searchResult.entries.toString()
-                    )
+            ) { book -> BookCard(book as BookResult, navHostController) }
+        }
+        if (results is GeneralResults) {
+
+
+            PaginatedList<GeneralResult>(
+                items = results.items,
+                isLoading = isLoading,
+                key = { searchResult: SearchResult -> searchResult.text },
+                onLoadMore = {}
+            ) { searchResult ->
+                Surface(
+                    onClick = {
+                        bookViewModel.getBooksBySearchResult(searchResult.url)
+                    }
+                )
+                {
+                    Row {
+                        Text(
+                            text = searchResult.text
+                        )
+                        Text(
+                            text = searchResult.numEntries.toString()
+                        )
+                    }
                 }
             }
-        }
 
+        }
         BookSearch(
-            books = books,
-            searchResults = searchResults,
+            visible = results.items.isEmpty(),
             errorMessage = errorMessage,
             onSearchTextChanged = { bookViewModel.onSearchTextChanged(it) },
             queryText = bookViewModel.queryText,
@@ -125,8 +135,7 @@ fun BooksScreen(
 
 @Composable
 fun BookSearch(
-    books: List<Book>,
-    searchResults: List<SearchResult>,
+    visible: Boolean,
     errorMessage: String?,
     onSearchTextChanged: (String) -> Unit,
     queryText: String,
@@ -139,7 +148,7 @@ fun BookSearch(
     val density = LocalDensity.current
 
     AnimatedVisibility(
-        visible = books.isEmpty() && searchResults.isEmpty(),
+        visible = visible,
         exit = slideOutVertically(targetOffsetY = { it })
                 + fadeOut()
     ) {
