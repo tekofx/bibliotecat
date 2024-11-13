@@ -45,7 +45,7 @@ fun BookCard(
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 AsyncImage(
-                    model = book.image, // Ajusta con tu imagen
+                    model = book.image,
                     contentDescription = null,
                     modifier = Modifier
                         .height(200.dp)

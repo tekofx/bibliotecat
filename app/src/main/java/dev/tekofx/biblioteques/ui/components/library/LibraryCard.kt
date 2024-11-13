@@ -3,13 +3,10 @@ package dev.tekofx.biblioteques.ui.components.library
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -39,35 +36,35 @@ fun LibraryCard(navHostController: NavHostController, library: Library) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(150.dp)
                 .padding(10.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             AsyncImage(
                 model = library.image, // Ajusta con tu imagen
                 contentDescription = null,
                 modifier = Modifier
-                    .size(130.dp)
-                    .clip(RoundedCornerShape(10.dp)),
+                    .weight(1f)
+                    .clip(RoundedCornerShape(10.dp))
+                    .aspectRatio(1f)
+                    .fillMaxHeight(),
                 contentScale = ContentScale.Crop
             )
-            Spacer(modifier = Modifier.width(10.dp))
             Column(
-                modifier = Modifier.fillMaxHeight(),
-                verticalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(2f),
+                verticalArrangement = Arrangement.Top
             ) {
-                Column {
 
-                    Text(
-                        text = library.adrecaNom,
-                        style = Typography.titleLarge
-                    )
-                    Text(
-                        text = library.municipality,
-                        style = Typography.titleMedium,
-                        modifier = Modifier.padding(top = 8.dp)
-                    )
-                }
+                Text(
+                    text = library.adrecaNom,
+                    style = Typography.titleLarge
+                )
+                Text(
+                    text = library.municipality,
+                    style = Typography.titleMedium,
+                )
                 StatusBadge(
                     library.getStatusColor(),
                     library.generateStateMessage(LocalDate.now(), LocalTime.now()),
@@ -79,10 +76,3 @@ fun LibraryCard(navHostController: NavHostController, library: Library) {
     }
 
 }
-
-
-//@Preview
-//@Composable
-//fun LibraryCardPreview() {
-//    LibraryItem(LibraryDummy)
-//}
