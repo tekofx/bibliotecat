@@ -253,7 +253,6 @@ class LibraryConverterFactory : Converter.Factory() {
 
             LocalTime.parse(output.replace(".", ":"), timeFormatter)
         } catch (e: DateTimeParseException) {
-            println("Error parsing time: $timeString")
             throw RuntimeException("Time parsing failed")
         }
     }

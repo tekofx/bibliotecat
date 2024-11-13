@@ -18,19 +18,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
-import dev.tekofx.biblioteques.model.book.Book
-import dev.tekofx.biblioteques.navigation.NavScreen
+import dev.tekofx.biblioteques.model.BookResult
 import dev.tekofx.biblioteques.ui.theme.Typography
 
 @Composable
-fun BookCard(book: Book, navHostController: NavHostController) {
+fun BookCard(
+    book: BookResult,
+    onClick: () -> Unit
+) {
 
     Surface(
         tonalElevation = 40.dp,
         shape = RoundedCornerShape(20.dp),
-        onClick = { navHostController.navigate("${NavScreen.BooksScreen.name}/${book.id}") }
+        onClick = { onClick() }
     ) {
         Column(
             modifier = Modifier
@@ -64,10 +65,12 @@ fun BookCard(book: Book, navHostController: NavHostController) {
                         text = book.author,
                         style = Typography.titleMedium
                     )
-                    Text(
-                        text = book.publication,
-                        style = Typography.titleMedium
-                    )
+                    book.publication?.let {
+                        Text(
+                            text = it,
+                            style = Typography.titleMedium
+                        )
+                    }
                 }
             }
 

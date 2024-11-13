@@ -6,7 +6,10 @@ import com.fleeksoft.ksoup.nodes.Document
 import com.fleeksoft.ksoup.nodes.Element
 import com.fleeksoft.ksoup.select.Elements
 import dev.tekofx.biblioteques.dto.BookResponse
-import dev.tekofx.biblioteques.model.SearchResult
+import dev.tekofx.biblioteques.model.BookResult
+import dev.tekofx.biblioteques.model.BookResults
+import dev.tekofx.biblioteques.model.GeneralResult
+import dev.tekofx.biblioteques.model.GeneralResults
 import dev.tekofx.biblioteques.model.StatusColor
 import okhttp3.ResponseBody
 import retrofit2.Converter
@@ -40,47 +43,37 @@ class BookConverterFactory : Converter.Factory() {
                 throw Error()
             } else if (browseHeaderEntriesElement != null) {
                 Log.d("BookConverterFactory", "Result Search")
-                val searchResults = constructSearchResults(doc)
+                val generalResults = constructGeneralResults(doc)
                 val pages = getPages(doc)
-                println(pages.toString())
                 BookResponse(
                     body = responseBodyString,
-                    searchResults = searchResults,
-                    pages = pages
+                    pages = pages,
+                    results = generalResults
 
                 )
             } else if (bibInfoLabelElement != null) {
-                val bookCopies = constructBookCopies(doc)
                 val bookDetails = constructBookDetails(doc)
-                println("b $bookDetails")
+                val bookCopies = constructBookCopies(doc)
+                val book = contructBookFromBookDetails(doc)
+                val bookResults = constructBookResultsFromBookDetails(doc)
 
                 Log.d("BookConverterFactory", "Book details")
                 BookResponse(
-                    body = responseBodyString,
+                    book = book,
+                    bookDetails = bookDetails,
                     bookCopies = bookCopies,
-                    totalBooks = 0,
-                    bookDetails = bookDetails
-                )
-            } else if (bibPagerElement != null) {
-                Log.d("BookConverterFactory", "Search with only 1 book")
-                val book = constructBookFromBookDetails(doc)
-                BookResponse(
-                    body = responseBodyString,
-                    books = listOf(book),
+                    results = bookResults
                 )
             } else {
 
-                val totalBooks = getTotalBooks(doc)
-                val books = constructBooks(doc)
-                val pages = getPages(doc)
+                val totalBooks = getTotalSearchResults(doc)
+                val bookResults = constructBookResults(doc)
 
                 Log.d("BookConverterFactory", "Search with multiple books")
-                Log.d("BookConverterFactory", "pages ${pages.size}")
                 BookResponse(
                     body = responseBodyString,
-                    books = books,
                     totalBooks = totalBooks,
-                    pages = pages
+                    results = bookResults
                 )
             }
 
@@ -90,7 +83,6 @@ class BookConverterFactory : Converter.Factory() {
 
     private fun getPages(doc: Document): List<String> {
         val tdElement = doc.selectFirst("td.browsePager") ?: return emptyList()
-        println(tdElement.text())
         val liElements = tdElement.select("li.wpPagerList")
         val list = arrayListOf<String>()
         for (liElement in liElements) {
@@ -105,9 +97,13 @@ class BookConverterFactory : Converter.Factory() {
 
     }
 
-    private fun constructSearchResults(doc: Document): List<SearchResult> {
+    private fun constructGeneralResults(doc: Document): GeneralResults {
         val browseEntryDataElements = doc.select("tr.browseEntry")
-        val searchResults = arrayListOf<SearchResult>()
+
+        val generalResultsList = arrayListOf<GeneralResult>()
+        val pages = getPages(doc)
+        val numItems = getTotalSearchResults(doc)
+
 
 
         for (browseEntrydataElement in browseEntryDataElements) {
@@ -118,18 +114,27 @@ class BookConverterFactory : Converter.Factory() {
             val entries =
                 browseEntrydataElement.selectFirst("td.browseEntryEntries")?.text()?.toInt()
                     ?: continue
-            searchResults.add(
-                SearchResult(
+
+            val id = browseEntrydataElement.selectFirst("td.browseEntryNum")?.text()?.toInt()
+                ?: continue
+            generalResultsList.add(
+                GeneralResult(
+                    id = id,
                     text = text,
                     url = url,
-                    entries = entries
+                    numEntries = entries,
                 )
             )
         }
-        return searchResults
+        return GeneralResults(
+            items = generalResultsList.toList(),
+            pages = pages,
+            numItems = numItems
+
+        )
     }
 
-    private fun constructBookFromBookDetails(doc: Document): Book {
+    private fun contructBookFromBookDetails(doc: Document): Book {
         val titleElement =
             doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Títol" }
                 ?.nextElementSibling()
@@ -143,30 +148,76 @@ class BookConverterFactory : Converter.Factory() {
             doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Publicació" }
                 ?.nextElementSibling()
 
-        val bookDetails = constructBookDetails(doc)
-        val bookCopies = constructBookCopies(doc)
+        val permanentLinkElement = doc.selectFirst("a.recordnum")
+
 
         val title = titleElement?.text()?.split("/")?.get(0) ?: ""
         val author = authorElement?.text() ?: ""
         val image = imageElement?.attr("src") ?: ""
-        val publication = publicationElement?.text() ?: ""
+        val publication = publicationElement?.text()
+        val permanentLink = permanentLinkElement?.attr("href") ?: ""
+        val bookDetails = constructBookDetails(doc)
+        val bookCopies = constructBookCopies(doc)
 
-        val book = Book(
+
+        return Book(
             id = 0,
             title = title,
             author = author,
             image = image,
             publication = publication,
-            temporalUrl = "",
-            bookCopies = bookCopies,
-            bookDetails = bookDetails
+            temporalUrl = permanentLink,
+            bookDetails = bookDetails,
+            bookCopies = bookCopies
         )
+    }
 
-        return book
+    private fun constructBookResultsFromBookDetails(doc: Document): BookResults {
+        val titleElement =
+            doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Títol" }
+                ?.nextElementSibling()
+
+        val authorElement =
+            doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Autor/Artista" }
+                ?.nextElementSibling()
+
+        val imageElement = doc.selectFirst("div.fitxa_imatge")?.selectFirst("img")
+        val publicationElement =
+            doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Publicació" }
+                ?.nextElementSibling()
+
+        val permanentLinkElement = doc.selectFirst("a.recordnum")
+
+
+        val title = titleElement?.text()?.split("/")?.get(0) ?: ""
+        val author = authorElement?.text() ?: ""
+        val image = imageElement?.attr("src") ?: ""
+        val publication = publicationElement?.text()
+        val permanentLink = permanentLinkElement?.attr("href") ?: ""
+
+        val bookResults = BookResults(
+            items = listOf(
+                BookResult(
+                    id = 0,
+                    title = title,
+                    url = permanentLink,
+                    publication = publication,
+                    author = author,
+                    image = image
+                )
+            ),
+            pages = emptyList(),
+            numItems = 1
+        )
+        return bookResults
 
     }
 
     private fun constructBookDetails(doc: Document): BookDetails {
+
+        val authorElement =
+            doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Autor/Artista" }
+                ?.nextElementSibling()
 
         val editionElement =
             doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Edició" }
@@ -182,6 +233,14 @@ class BookConverterFactory : Converter.Factory() {
         val isbnElement =
             doc.select("td.bibInfoLabel").firstOrNull { it.text() == "ISBN" }
                 ?.nextElementSibling()
+        val collectionElement =
+            doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Col·lecció" }
+                ?.nextElementSibling()
+
+        val topicElement =
+            doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Col·lecció" }
+                ?.nextElementSibling()
+
 
         val permanentUrlElement = doc.selectFirst("a#recordnum")
 
@@ -190,13 +249,19 @@ class BookConverterFactory : Converter.Factory() {
         val synopsis = synopsisElement?.text()
         val isbn = isbnElement?.text()
         val permanentUrl = permanentUrlElement?.attr("href")
+        val collection = collectionElement?.text()
+        val topic = topicElement?.text()
+        val authorUrl = authorElement?.attr("href")
 
         return BookDetails(
             edition = edition,
             description = description,
             synopsis = synopsis,
             isbn = isbn,
-            permanentUrl = permanentUrl
+            permanentUrl = permanentUrl,
+            collection = collection,
+            topic = topic,
+            authorUrl
         )
     }
 
@@ -206,9 +271,9 @@ class BookConverterFactory : Converter.Factory() {
      *
      * @return Number of results for a search
      */
-    private fun getTotalBooks(doc: Document): Int {
-        val divElement = doc.selectFirst("div.browseSearchtoolMessage")
-        val total = divElement?.text()?.split(" ")?.get(0)?.toInt() ?: 0
+    private fun getTotalSearchResults(doc: Document): Int {
+        val divElement = doc.selectFirst("td.browseHeaderData")
+        val total = divElement?.text()?.replace(")", "")?.split(" de ")?.last()?.toInt() ?: 0
         return total
     }
 
@@ -249,10 +314,11 @@ class BookConverterFactory : Converter.Factory() {
 
     }
 
-    fun constructBooks(doc: Document): List<Book> {
+    private fun constructBookResults(doc: Document): BookResults {
 
-        Log.d("BookConverterFactory", "ConstructBooks")
-        val bookList = arrayListOf<Book>()
+        val bookResultList = arrayListOf<BookResult>()
+        val pages = getPages(doc)
+        val numItems = getTotalSearchResults(doc)
 
         val bookElements: Elements = doc.select("td.briefCitRow")
         for (bookElement in bookElements) {
@@ -267,22 +333,28 @@ class BookConverterFactory : Converter.Factory() {
                 val publication = descriptionFields[3].split("<!--")[0].trim()
 
                 val id = url.split("&").last().split("%")[0].toInt()
-                val bookCopies = constructBookCopies(bookElement)
-                println(bookCopies)
-                bookList.add(
-                    Book(
+                val title = titleElement.text()
+                val image = imageElement.attr("src")
+
+
+                bookResultList.add(
+                    BookResult(
                         id = id,
-                        title = titleElement.text(),
+                        title = title,
                         author = author,
-                        image = imageElement.attr("src"),
                         publication = publication,
-                        bookCopies = bookCopies,
-                        temporalUrl = url
+                        url = url,
+                        image = image,
                     )
                 )
+
             }
         }
-        return bookList
+        return BookResults(
+            items = bookResultList.toList(),
+            pages = pages,
+            numItems = numItems
+        )
     }
 
     companion object {

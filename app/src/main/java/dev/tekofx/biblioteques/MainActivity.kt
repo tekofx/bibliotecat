@@ -18,7 +18,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dev.tekofx.biblioteques.call.BookService
 import dev.tekofx.biblioteques.call.LibraryService
-import dev.tekofx.biblioteques.navigation.NavScreen
+import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.navigation.Navigation
 import dev.tekofx.biblioteques.repository.BookRepository
 import dev.tekofx.biblioteques.repository.LibraryRepository
@@ -34,6 +34,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         val libraryViewModel = ViewModelProvider(
             this,
             LibraryViewModelFactory(LibraryRepository(LibraryService.getInstance()))
@@ -73,7 +74,7 @@ fun MainScreen(libraryViewModel: LibraryViewModel, bookViewModel: BookViewModel)
 
     Scaffold(
         bottomBar = {
-            if (currentRoute != "${NavScreen.LibrariesScreen.name}/{libraryId}" && currentRoute != "${NavScreen.BooksScreen.name}/{libraryUrl}") {
+            if (currentRoute != "${NavigateDestinations.LIBRARIES_ROUTE}/{libraryId}" && currentRoute != "${NavigateDestinations.BOOK_SEARCH_ROUTE}/{libraryUrl}") {
                 BottomNavigationBar(navHostController = navController)
             }
         }

@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import dev.tekofx.biblioteques.model.library.Library
-import dev.tekofx.biblioteques.navigation.NavScreen
+import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.components.StatusBadge
 import dev.tekofx.biblioteques.ui.theme.Typography
 import java.time.LocalDate
@@ -33,7 +33,7 @@ fun LibraryCard(navHostController: NavHostController, library: Library) {
     Surface(
         tonalElevation = 40.dp,
         shape = RoundedCornerShape(20.dp),
-        onClick = { navHostController.navigate("${NavScreen.LibrariesScreen.name}/${library.id}") }
+        onClick = { navHostController.navigate("${NavigateDestinations.LIBRARY_DETAILS_ROUTE}/${library.id}") }
     ) {
 
         Row(

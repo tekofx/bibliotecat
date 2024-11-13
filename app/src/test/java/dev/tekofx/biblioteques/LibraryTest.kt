@@ -236,7 +236,6 @@ class LibraryTest {
             ),
             season = Season.WINTER
         )
-        println(winterTimetable)
 
         summerTimetable = TimeTable(
             start = firstDayOfSummer,

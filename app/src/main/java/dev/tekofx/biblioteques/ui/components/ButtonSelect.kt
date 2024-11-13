@@ -21,16 +21,16 @@ import androidx.compose.ui.graphics.Color
 import dev.tekofx.biblioteques.ui.IconResource
 
 
-class ButtonSelectItem(
+class SearchType(
     val text: String,
     val value: String
 )
 
 @Composable
 fun ButtonSelect(
-    options: List<ButtonSelectItem>,
-    selectedOption: ButtonSelectItem,
-    onOptionSelected: (ButtonSelectItem) -> Unit
+    options: List<SearchType>,
+    selectedOption: SearchType,
+    onOptionSelected: (SearchType) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 

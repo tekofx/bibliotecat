@@ -28,16 +28,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import dev.tekofx.biblioteques.model.SearchResult
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 
 @Composable
 fun <T> PaginatedList(
-    items: List<T>,
-    key: ((item: T) -> Any)? = null,
+    items: List<SearchResult>,
+    key: ((item: SearchResult) -> Any)? = null,
     onLoadMore: () -> Unit,
     isLoading: Boolean,
-    content: @Composable (item: T) -> Unit,
+    content: @Composable (item: SearchResult) -> Unit,
 ) {
     val density = LocalDensity.current
     val listState = rememberLazyListState()
@@ -59,7 +60,7 @@ fun <T> PaginatedList(
             .distinctUntilChanged()
             .filter { it }  // Ensure that we load more items only when needed
             .collect {
-                Log.d("BooksList", "loading more books")
+                Log.d("PaginatedList", "Loading more results")
                 onLoadMore()
             }
     }

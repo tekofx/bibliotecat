@@ -6,8 +6,9 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import dev.tekofx.biblioteques.ui.screens.book.BookResultsScreen
 import dev.tekofx.biblioteques.ui.screens.book.BookScreen
-import dev.tekofx.biblioteques.ui.screens.book.BooksScreen
+import dev.tekofx.biblioteques.ui.screens.book.BookSearchScreen
 import dev.tekofx.biblioteques.ui.screens.library.LibrariesScreen
 import dev.tekofx.biblioteques.ui.screens.library.LibraryScreen
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
@@ -22,15 +23,20 @@ fun Navigation(
 ) {
 
 
-    NavHost(navController = navController, startDestination = NavScreen.LibrariesScreen.name) {
+    NavHost(
+        navController = navController,
+        startDestination = NavigateDestinations.LIBRARIES_ROUTE
+    ) {
+
+        // Libraries
         composable(
-            route = NavScreen.LibrariesScreen.name,
+            route = NavigateDestinations.LIBRARIES_ROUTE,
         ) {
             LibrariesScreen(navController, libraryViewModel)
         }
 
         composable(
-            route = NavScreen.LibrariesScreen.name + "/{libraryId}",
+            route = NavigateDestinations.LIBRARY_DETAILS_ROUTE + "/{libraryId}",
             arguments = listOf(navArgument("libraryId") { type = NavType.StringType }
             )
         ) { backStackEntry ->
@@ -38,18 +44,39 @@ fun Navigation(
             LibraryScreen(libraryId, libraryViewModel)
         }
 
+        // Books
         composable(
-            route = NavScreen.BooksScreen.name
+            route = NavigateDestinations.BOOK_SEARCH_ROUTE
         ) {
-            BooksScreen(navController, bookViewModel)
+            BookSearchScreen(navController, bookViewModel)
         }
 
         composable(
-            route = NavScreen.BooksScreen.name + "/{libraryUrl}",
-            arguments = listOf(navArgument("libraryUrl") { type = NavType.StringType })
+            route = NavigateDestinations.BOOK_DETAILS_ROUTE + "/{bookUrl}",
+            arguments = listOf(navArgument("bookUrl") { type = NavType.StringType })
         ) { backStackEntry ->
-            val libraryUrl = backStackEntry.arguments!!.getString("libraryUrl")!!
-            BookScreen(libraryUrl, bookViewModel)
+            val bookUrl = backStackEntry.arguments!!.getString("bookUrl")!!
+            BookScreen(bookUrl, bookViewModel)
+        }
+
+        composable(
+            route = NavigateDestinations.BOOK_SEARCH_ROUTE + "/search?query={query}&searchtype={searchtype}",
+            arguments = listOf(
+                navArgument("query") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                },
+                navArgument("searchtype") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                }
+            )
+        ) { backStackEntry ->
+            val query = backStackEntry.arguments?.getString("query")
+            val searchType = backStackEntry.arguments?.getString("searchtype")
+            BookResultsScreen(navController, bookViewModel, query, searchType)
         }
 
     }

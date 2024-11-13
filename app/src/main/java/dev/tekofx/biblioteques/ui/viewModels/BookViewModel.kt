@@ -8,39 +8,45 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dev.tekofx.biblioteques.dto.BookResponse
+import dev.tekofx.biblioteques.model.BookResult
+import dev.tekofx.biblioteques.model.BookResults
 import dev.tekofx.biblioteques.model.SearchResult
+import dev.tekofx.biblioteques.model.SearchResults
 import dev.tekofx.biblioteques.model.book.Book
 import dev.tekofx.biblioteques.repository.BookRepository
-import dev.tekofx.biblioteques.ui.components.ButtonSelectItem
+import dev.tekofx.biblioteques.ui.components.SearchType
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 val searchTypes = listOf(
-    ButtonSelectItem("Qualsevol paraula", "X"),
-    ButtonSelectItem("Títol", "t"),
-    ButtonSelectItem("Autor/Artista", "a"),
-    ButtonSelectItem("Tema", "d"),
-    ButtonSelectItem("ISBN/ISSN", "i"),
-    ButtonSelectItem("Lloc de publicació de revistas", "m"),
-    ButtonSelectItem("Signatura", "c"),
+    SearchType("Qualsevol paraula", "X"),
+    SearchType("Títol", "t"),
+    SearchType("Autor/Artista", "a"),
+    SearchType("Tema", "d"),
+    SearchType("ISBN/ISSN", "i"),
+    SearchType("Lloc de publicació de revistas", "m"),
+    SearchType("Signatura", "c"),
 )
 
-class BookViewModel(private val repository: BookRepository) : ViewModel() {
-    val books = MutableLiveData<List<Book>>()
-    val searchResults = MutableLiveData<List<SearchResult>>()
-    val pages = mutableStateOf<List<String>>(emptyList())
+
+class BookViewModel(private val repository: BookRepository) :
+    ViewModel() {
+    val results = MutableLiveData<SearchResults<out SearchResult>>()
 
     val isLoading = MutableLiveData<Boolean>(false)
+    val onBookScreen = MutableLiveData<Boolean>(false)
+    val onResultsScreen = MutableLiveData<Boolean>(false)
+    val currentBookResult = MutableLiveData<BookResult?>()
     val currentBook = MutableLiveData<Book?>()
-    var totalBooks = mutableIntStateOf(0)
-    val pageIndex = mutableIntStateOf(0)
+    private val pageIndex = mutableIntStateOf(0)
     val selectedSearchType = mutableStateOf(searchTypes.first())
 
     var queryText by mutableStateOf("")
         private set
     val errorMessage = MutableLiveData<String>()
 
+    
     fun getBooksBySearchResult(url: String) {
         Log.d("BookViewModel", "getBooksBySearchResult")
         val response = repository.getHtmlByUrl(url)
@@ -49,12 +55,10 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
             override fun onResponse(
                 call: Call<BookResponse>, response: Response<BookResponse>
             ) {
-                val booksResponse = response.body() ?: throw Error()
-                searchResults.postValue(emptyList())
-                Log.d("BookViewModel", "getBooksBySearchResult")
-                totalBooks.intValue = response.body()?.totalBooks ?: 0
-                pages.value = booksResponse.pages
-                books.postValue(booksResponse.books)
+                val resultsResponse =
+                    response.body()?.results ?: return onFailure(call, Throwable("Not Results"))
+
+                results.postValue(resultsResponse)
                 isLoading.postValue(false)
             }
 
@@ -72,20 +76,25 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
      * Get the next resultspage
      */
     fun getNextResultsPage() {
-        Log.d("BookViewModel", "Get results page ${pageIndex.intValue}/${pages.value.size}")
-        println(pages.value.size)
-        val url = pages.value[pageIndex.intValue]
+        val resultsValue = results.value ?: throw Error()
+        Log.d("BookViewModel", "Get results page ${pageIndex.intValue}/${resultsValue.numItems}")
+        val url = resultsValue.getNextPage()
         val response = repository.getHtmlByUrl(url)
         isLoading.postValue(true)
         response.enqueue(object : Callback<BookResponse> {
             override fun onResponse(
                 call: Call<BookResponse>, response: Response<BookResponse>
             ) {
+                val responseResults =
+                    response.body()?.results ?: return onFailure(call, Throwable("Not Results"))
+                val currentResults =
+                    results.value as SearchResults<SearchResult>? ?: return onFailure(
+                        call,
+                        Throwable("CurrentResults is null")
+                    )
 
-                val nextBooks = response.body()?.books!!
-
-                val bigList: List<Book> = books.value!!.plus(nextBooks)
-                books.postValue(bigList)
+                currentResults.addItems(responseResults.items)
+                results.postValue(currentResults)
                 isLoading.postValue(false)
             }
 
@@ -113,18 +122,10 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
             override fun onResponse(
                 call: Call<BookResponse>, response: Response<BookResponse>
             ) {
-                val booksResponse = response.body() ?: throw Error()
+                val responseResults =
+                    response.body()?.results ?: return onFailure(call, Throwable("Not Results"))
 
-                if (booksResponse.books.isEmpty()) {
-                    Log.d("BookViewModel", "search Results ${booksResponse.searchResults}")
-                    searchResults.postValue(booksResponse.searchResults)
-
-                } else {
-                    Log.d("BookViewModel", "search Books Found")
-                    totalBooks.intValue = response.body()?.totalBooks ?: 0
-                    pages.value = booksResponse.pages
-                    books.postValue(booksResponse.books)
-                }
+                results.postValue(responseResults)
                 isLoading.postValue(false)
             }
 
@@ -143,50 +144,59 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
      * Gets the books details of a book from the url of a book
      */
     fun getBookDetails() {
-        currentBook.value?.let { book ->
-            val response = repository.getBookDetails(book.temporalUrl)
-            isLoading.postValue(true)
-            response.enqueue(object : Callback<BookResponse> {
-                override fun onResponse(
-                    call: Call<BookResponse>,
-                    response: Response<BookResponse>
-                ) {
-                    val responseBody = response.body() ?: throw Error()
 
-                    val bookCopies = responseBody.bookCopies
-                    val bookDetails = responseBody.bookDetails
-                    // Create a new book object with updated bookCopies
+        val currentBookResultUrl = currentBookResult.value?.url ?: return
 
-                    val updatedBook = Book(
-                        id = book.id,
-                        title = book.title,
-                        author = book.author,
-                        temporalUrl = book.temporalUrl,
-                        bookCopies = bookCopies,
-                        image = book.image,
-                        publication = book.publication,
-                        bookDetails = bookDetails
+        val response = repository.getBookDetails(currentBookResultUrl)
+        isLoading.postValue(true)
+        response.enqueue(object : Callback<BookResponse> {
+            override fun onResponse(
+                call: Call<BookResponse>,
+                response: Response<BookResponse>
+            ) {
+
+
+                val bookDetails = response.body()?.bookDetails
+
+                val bookCopies =
+                    response.body()?.bookCopies ?: return onFailure(
+                        call,
+                        Throwable("Book copies not found")
                     )
-                    currentBook.postValue(updatedBook)
-                    isLoading.postValue(false)
-                }
+                val book = currentBook.value ?: return
+                book.bookDetails = bookDetails
+                book.bookCopies = bookCopies
+                currentBook.postValue(book)
+                isLoading.postValue(false)
+            }
 
-                override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
-                    Log.e("BookViewModel", t.message.toString())
-                    errorMessage.postValue(t.message)
-                    isLoading.postValue(false)
-                }
-            })
-        }
+            override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
+                Log.e("BookViewModel", t.message.toString())
+                errorMessage.postValue(t.message)
+                isLoading.postValue(false)
+            }
+        })
+
     }
 
 
     fun filterBook(id: Int) {
-        currentBook.postValue(books.value?.find { book: Book -> book.id == id })
+        if (results.value is BookResults) {
+            val bookResults = (results.value as BookResults).items
+            val currentBookResult2 =
+                bookResults.find { book: BookResult -> book.id == id } ?: return
+
+            currentBook.postValue(Book(currentBookResult2))
+            currentBookResult.postValue(bookResults.find { book: BookResult -> book.id == id })
+        }
     }
 
     fun onSearchTextChanged(text: String) {
         queryText = text
+    }
+
+    fun setOnResultsScreen(value: Boolean) {
+        onResultsScreen.postValue(value)
     }
 
 
