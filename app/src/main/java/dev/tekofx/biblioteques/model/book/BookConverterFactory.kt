@@ -47,25 +47,32 @@ class BookConverterFactory : Converter.Factory() {
                 val pages = getPages(doc)
                 BookResponse(
                     body = responseBodyString,
+                    pages = pages,
                     results = generalResults
 
                 )
             } else if (bibInfoLabelElement != null) {
+                val bookDetails = constructBookDetails(doc)
+                val bookCopies = constructBookCopies(doc)
                 val book = contructBookFromBookDetails(doc)
                 val bookResults = constructBookResultsFromBookDetails(doc)
 
                 Log.d("BookConverterFactory", "Book details")
                 BookResponse(
                     book = book,
+                    bookDetails = bookDetails,
+                    bookCopies = bookCopies,
                     results = bookResults
                 )
             } else {
 
+                val totalBooks = getTotalSearchResults(doc)
                 val bookResults = constructBookResults(doc)
 
                 Log.d("BookConverterFactory", "Search with multiple books")
                 BookResponse(
                     body = responseBodyString,
+                    totalBooks = totalBooks,
                     results = bookResults
                 )
             }
