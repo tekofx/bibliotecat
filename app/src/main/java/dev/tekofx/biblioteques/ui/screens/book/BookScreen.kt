@@ -28,25 +28,17 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
-import dev.tekofx.biblioteques.call.BookService
 import dev.tekofx.biblioteques.model.book.BookCopy
-import dev.tekofx.biblioteques.repository.BookRepository
 import dev.tekofx.biblioteques.ui.components.InfoCard
 import dev.tekofx.biblioteques.ui.components.book.BookCopyCard
 import dev.tekofx.biblioteques.ui.theme.Typography
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
-import dev.tekofx.biblioteques.ui.viewModels.BookViewModelFactory
 
 @Composable
 fun BookScreen(
     libraryUrl: String,
-    bookViewModel: BookViewModel = viewModel(
-        factory = BookViewModelFactory(
-            BookRepository(BookService.getInstance())
-        ),
-    )
+    bookViewModel: BookViewModel
 ) {
 
     val currentBook by bookViewModel.currentBook.observeAsState(null)
