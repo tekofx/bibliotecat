@@ -36,7 +36,7 @@ fun Navigation(
         }
 
         composable(
-            route = NavigateDestinations.LIBRARIES_ROUTE + "/{libraryId}",
+            route = NavigateDestinations.LIBRARY_DETAILS_ROUTE + "/{libraryId}",
             arguments = listOf(navArgument("libraryId") { type = NavType.StringType }
             )
         ) { backStackEntry ->
@@ -46,13 +46,13 @@ fun Navigation(
 
         // Books
         composable(
-            route = NavigateDestinations.BOOKS_ROUTE
+            route = NavigateDestinations.BOOK_SEARCH_ROUTE
         ) {
             BookSearchScreen(navController, bookViewModel)
         }
 
         composable(
-            route = NavigateDestinations.BOOKS_ROUTE + "/{bookUrl}",
+            route = NavigateDestinations.BOOK_DETAILS_ROUTE + "/{bookUrl}",
             arguments = listOf(navArgument("bookUrl") { type = NavType.StringType })
         ) { backStackEntry ->
             val bookUrl = backStackEntry.arguments!!.getString("bookUrl")!!
@@ -60,10 +60,19 @@ fun Navigation(
         }
 
         composable(
-            route = NavigateDestinations.BOOKS_ROUTE + "/search?query={query}&searchtype={searchtype}",
+            route = NavigateDestinations.BOOK_SEARCH_ROUTE + "/search?query={query}&searchtype={searchtype}",
             arguments = listOf(
-                navArgument("query") { type = NavType.StringType },
-                navArgument("searchtype") { type = NavType.StringType })
+                navArgument("query") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                },
+                navArgument("searchtype") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                }
+            )
         ) { backStackEntry ->
             val query = backStackEntry.arguments?.getString("query")
             val searchType = backStackEntry.arguments?.getString("searchtype")

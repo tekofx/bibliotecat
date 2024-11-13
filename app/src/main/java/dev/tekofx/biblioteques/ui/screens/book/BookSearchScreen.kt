@@ -74,9 +74,7 @@ fun BookSearchScreen(
     LaunchedEffect(results) {
         if (!onResultsScreen && results.items.isNotEmpty()) {
             Log.d("BookSearchScreen", "Found ${results.items.size} elements")
-            //navHostController.navigate("${NavScreen.BooksScreen.name}/search?query=${bookViewModel.queryText}&searchtype=${selectedSearchTpe.value}")
-            navHostController.navigate("${NavigateDestinations.BOOKS_ROUTE}/search")
-
+            navHostController.navigate(NavigateDestinations.BOOK_RESULTS_ROUTE)
         }
     }
 

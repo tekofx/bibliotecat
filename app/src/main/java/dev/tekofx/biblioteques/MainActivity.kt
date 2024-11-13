@@ -74,7 +74,7 @@ fun MainScreen(libraryViewModel: LibraryViewModel, bookViewModel: BookViewModel)
 
     Scaffold(
         bottomBar = {
-            if (currentRoute != "${NavigateDestinations.LIBRARIES_ROUTE}/{libraryId}" && currentRoute != "${NavigateDestinations.BOOKS_ROUTE}/{libraryUrl}") {
+            if (currentRoute != "${NavigateDestinations.LIBRARIES_ROUTE}/{libraryId}" && currentRoute != "${NavigateDestinations.BOOK_SEARCH_ROUTE}/{libraryUrl}") {
                 BottomNavigationBar(navHostController = navController)
             }
         }

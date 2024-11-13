@@ -19,7 +19,7 @@ sealed class BottomNavigationItems(
     object Item2 : BottomNavigationItems(
         IconResource.fromDrawableResource(R.drawable.book),
         "Llibres",
-        NavigateDestinations.BOOKS_ROUTE
+        NavigateDestinations.BOOK_SEARCH_ROUTE
     )
 
 

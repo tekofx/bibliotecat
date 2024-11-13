@@ -60,7 +60,7 @@ fun BookResultsScreen(
                     BookCard(
                         book = book as BookResult,
                         onClick = {
-                            navHostController.navigate("${NavigateDestinations.BOOKS_ROUTE}/${book.id}")
+                            navHostController.navigate("${NavigateDestinations.BOOK_DETAILS_ROUTE}/${book.id}")
                         }
                     )
                 }
