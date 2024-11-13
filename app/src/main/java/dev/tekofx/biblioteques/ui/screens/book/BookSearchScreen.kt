@@ -39,7 +39,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import dev.tekofx.biblioteques.model.EmptyResults
-import dev.tekofx.biblioteques.navigation.NavScreen
+import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.ButtonSelect
 import dev.tekofx.biblioteques.ui.components.SearchType
@@ -74,7 +74,9 @@ fun BookSearchScreen(
     LaunchedEffect(results) {
         if (!onResultsScreen && results.items.isNotEmpty()) {
             Log.d("BookSearchScreen", "Found ${results.items.size} elements")
-            navHostController.navigate("${NavScreen.BooksScreen.name}/search?query=${bookViewModel.queryText}&searchtype=${selectedSearchTpe.value}")
+            //navHostController.navigate("${NavScreen.BooksScreen.name}/search?query=${bookViewModel.queryText}&searchtype=${selectedSearchTpe.value}")
+            navHostController.navigate("${NavigateDestinations.BOOKS_ROUTE}/search")
+
         }
     }
 

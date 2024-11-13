@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import dev.tekofx.biblioteques.model.book.BookCopy
+import dev.tekofx.biblioteques.model.book.BookDetails
 import dev.tekofx.biblioteques.ui.components.InfoCard
 import dev.tekofx.biblioteques.ui.components.book.BookCopyCard
 import dev.tekofx.biblioteques.ui.theme.Typography
@@ -91,8 +92,6 @@ fun BookScreen(
                         .padding(10.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-
-
                     Text(text = currentBook!!.title, style = Typography.titleLarge)
                     Text(text = currentBook!!.author, style = Typography.titleMedium)
                     currentBook!!.publication?.let {
@@ -111,39 +110,66 @@ fun BookScreen(
                     CircularProgressIndicator(Modifier.align(Alignment.Center))
                 }
             } else {
-
-                if (currentBook!!.bookDetails != null) {
-
-                    currentBook!!.bookDetails!!.edition?.let {
-                        InfoCard("Edició", it)
-                    }
-                    currentBook!!.bookDetails!!.description?.let {
-                        InfoCard("Descripció", it)
-                    }
-                    currentBook!!.bookDetails!!.isbn?.let {
-                        InfoCard("ISBN", it)
-                    }
-                    currentBook!!.bookDetails!!.synopsis?.let {
-                        InfoCard("Sinopsi", it)
-                    }
-                }
-
-                if (currentBook!!.bookCopies.isNotEmpty()) {
-                    Text(text = "Exemplars", style = Typography.titleMedium)
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        currentBook!!.bookCopies.forEach { bookCopy: BookCopy ->
-                            Log.d("BookScreen", "Processing book copy: $bookCopy")
-                            BookCopyCard(bookCopy)
-                        }
-                    }
-                } else {
-                    Text(text = "No hi ha exemplars")
-                }
+                BookDetailsSegment(currentBook!!.bookDetails)
+                BookCopiesSegment(currentBook!!.bookCopies)
             }
 
         }
     }
 }
 
+
+@Composable
+fun BookDetailsSegment(
+    bookDetails: BookDetails?
+
+) {
+    if (bookDetails != null) {
+
+        bookDetails.edition?.let {
+            InfoCard("Edició", it)
+        }
+        bookDetails.description?.let {
+            InfoCard("Descripció", it)
+        }
+        bookDetails.collection?.let {
+            InfoCard("Col·lecció", it)
+        }
+        bookDetails.isbn?.let {
+            InfoCard("ISBN", it)
+        }
+        bookDetails.synopsis?.let {
+            InfoCard("Sinopsi", it)
+        }
+        bookDetails.topic?.let {
+            InfoCard("Tema", it)
+        }
+
+    }
+
+}
+
+
+@Composable
+fun BookCopiesSegment(
+    bookCopies: List<BookCopy>
+) {
+    if (bookCopies.isNotEmpty()) {
+        Text(
+            text = "Exemplars",
+            textAlign = TextAlign.Center,
+            style = Typography.titleMedium,
+        )
+        Column(
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            bookCopies.forEach { bookCopy: BookCopy ->
+                Log.d("BookScreen", "Processing book copy: $bookCopy")
+                BookCopyCard(bookCopy)
+            }
+        }
+    } else {
+        Text(text = "No hi ha exemplars")
+    }
+
+}

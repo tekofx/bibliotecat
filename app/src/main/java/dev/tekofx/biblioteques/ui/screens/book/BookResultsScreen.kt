@@ -20,7 +20,7 @@ import dev.tekofx.biblioteques.model.EmptyResults
 import dev.tekofx.biblioteques.model.GeneralResult
 import dev.tekofx.biblioteques.model.GeneralResults
 import dev.tekofx.biblioteques.model.SearchResult
-import dev.tekofx.biblioteques.navigation.NavScreen
+import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.components.PaginatedList
 import dev.tekofx.biblioteques.ui.components.book.BookCard
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
@@ -29,8 +29,8 @@ import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
 fun BookResultsScreen(
     navHostController: NavHostController,
     bookViewModel: BookViewModel,
-    query: String,
-    searchType: String
+    query: String?,
+    searchType: String?
 ) {
 
     val results by bookViewModel.results.observeAsState(
@@ -60,7 +60,7 @@ fun BookResultsScreen(
                     BookCard(
                         book = book as BookResult,
                         onClick = {
-                            navHostController.navigate("${NavScreen.BooksScreen.name}/${book.id}")
+                            navHostController.navigate("${NavigateDestinations.BOOKS_ROUTE}/${book.id}")
                         }
                     )
                 }

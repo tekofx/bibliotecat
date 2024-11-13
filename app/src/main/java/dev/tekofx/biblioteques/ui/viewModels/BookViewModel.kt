@@ -46,6 +46,7 @@ class BookViewModel(private val repository: BookRepository) :
         private set
     val errorMessage = MutableLiveData<String>()
 
+    
     fun getBooksBySearchResult(url: String) {
         Log.d("BookViewModel", "getBooksBySearchResult")
         val response = repository.getHtmlByUrl(url)
@@ -54,20 +55,10 @@ class BookViewModel(private val repository: BookRepository) :
             override fun onResponse(
                 call: Call<BookResponse>, response: Response<BookResponse>
             ) {
+                val resultsResponse =
+                    response.body()?.results ?: return onFailure(call, Throwable("Not Results"))
 
-                val responseBody =
-                    response.body() ?: return onFailure(call, Throwable("Not results"))
-
-                val bookResults = responseBody.results as BookResults
-                val book = responseBody.book
-
-                if (book != null) {
-                    currentBookResult.postValue(bookResults.items.first())
-                    currentBook.postValue(book)
-                }
-
-                results.postValue(bookResults)
-                Log.d("BookViewModel", "getBooksBySearchResult")
+                results.postValue(resultsResponse)
                 isLoading.postValue(false)
             }
 

@@ -23,17 +23,20 @@ fun Navigation(
 ) {
 
 
-    NavHost(navController = navController, startDestination = NavScreen.LibrariesScreen.name) {
+    NavHost(
+        navController = navController,
+        startDestination = NavigateDestinations.LIBRARIES_ROUTE
+    ) {
 
         // Libraries
         composable(
-            route = NavScreen.LibrariesScreen.name,
+            route = NavigateDestinations.LIBRARIES_ROUTE,
         ) {
             LibrariesScreen(navController, libraryViewModel)
         }
 
         composable(
-            route = NavScreen.LibrariesScreen.name + "/{libraryId}",
+            route = NavigateDestinations.LIBRARIES_ROUTE + "/{libraryId}",
             arguments = listOf(navArgument("libraryId") { type = NavType.StringType }
             )
         ) { backStackEntry ->
@@ -43,13 +46,13 @@ fun Navigation(
 
         // Books
         composable(
-            route = NavScreen.BooksScreen.name
+            route = NavigateDestinations.BOOKS_ROUTE
         ) {
             BookSearchScreen(navController, bookViewModel)
         }
 
         composable(
-            route = NavScreen.BooksScreen.name + "/{bookUrl}",
+            route = NavigateDestinations.BOOKS_ROUTE + "/{bookUrl}",
             arguments = listOf(navArgument("bookUrl") { type = NavType.StringType })
         ) { backStackEntry ->
             val bookUrl = backStackEntry.arguments!!.getString("bookUrl")!!
@@ -57,13 +60,13 @@ fun Navigation(
         }
 
         composable(
-            route = NavScreen.BooksScreen.name + "/search?query={query}&searchtype={searchtype}",
+            route = NavigateDestinations.BOOKS_ROUTE + "/search?query={query}&searchtype={searchtype}",
             arguments = listOf(
                 navArgument("query") { type = NavType.StringType },
                 navArgument("searchtype") { type = NavType.StringType })
         ) { backStackEntry ->
-            val query = backStackEntry.arguments!!.getString("query")!!
-            val searchType = backStackEntry.arguments!!.getString("searchtype")!!
+            val query = backStackEntry.arguments?.getString("query")
+            val searchType = backStackEntry.arguments?.getString("searchtype")
             BookResultsScreen(navController, bookViewModel, query, searchType)
         }
 

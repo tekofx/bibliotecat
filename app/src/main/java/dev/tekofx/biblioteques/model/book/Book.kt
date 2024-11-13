@@ -41,8 +41,13 @@ class BookDetails(
     val description: String?,
     val synopsis: String?,
     val isbn: String?,
-    val permanentUrl: String?
-)
+    val permanentUrl: String?,
+    val collection: String?,
+    val topic: String?,
+    val authorUrl: String?,
+
+
+    )
 
 class BookCopy(
     val location: String,

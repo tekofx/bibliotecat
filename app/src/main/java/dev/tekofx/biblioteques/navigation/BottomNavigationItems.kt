@@ -13,13 +13,13 @@ sealed class BottomNavigationItems(
     object Item1 : BottomNavigationItems(
         IconResource.fromImageVector(Icons.Filled.Home),
         "Biblioteques",
-        NavScreen.LibrariesScreen.name
+        NavigateDestinations.LIBRARIES_ROUTE
     )
 
     object Item2 : BottomNavigationItems(
         IconResource.fromDrawableResource(R.drawable.book),
         "Llibres",
-        NavScreen.BooksScreen.name
+        NavigateDestinations.BOOKS_ROUTE
     )
 
 
