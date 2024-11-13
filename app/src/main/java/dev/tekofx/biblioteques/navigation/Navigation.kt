@@ -64,7 +64,7 @@ fun Navigation(
         ) { backStackEntry ->
             val query = backStackEntry.arguments!!.getString("query")!!
             val searchType = backStackEntry.arguments!!.getString("searchtype")!!
-            BookResultsScreen(navController, bookViewModel)
+            BookResultsScreen(navController, bookViewModel, query, searchType)
         }
 
     }

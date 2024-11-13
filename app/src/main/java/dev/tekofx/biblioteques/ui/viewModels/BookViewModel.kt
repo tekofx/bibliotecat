@@ -14,20 +14,21 @@ import dev.tekofx.biblioteques.model.SearchResult
 import dev.tekofx.biblioteques.model.SearchResults
 import dev.tekofx.biblioteques.model.book.Book
 import dev.tekofx.biblioteques.repository.BookRepository
-import dev.tekofx.biblioteques.ui.components.ButtonSelectItem
+import dev.tekofx.biblioteques.ui.components.SearchType
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 val searchTypes = listOf(
-    ButtonSelectItem("Qualsevol paraula", "X"),
-    ButtonSelectItem("Títol", "t"),
-    ButtonSelectItem("Autor/Artista", "a"),
-    ButtonSelectItem("Tema", "d"),
-    ButtonSelectItem("ISBN/ISSN", "i"),
-    ButtonSelectItem("Lloc de publicació de revistas", "m"),
-    ButtonSelectItem("Signatura", "c"),
+    SearchType("Qualsevol paraula", "X"),
+    SearchType("Títol", "t"),
+    SearchType("Autor/Artista", "a"),
+    SearchType("Tema", "d"),
+    SearchType("ISBN/ISSN", "i"),
+    SearchType("Lloc de publicació de revistas", "m"),
+    SearchType("Signatura", "c"),
 )
+
 
 class BookViewModel(private val repository: BookRepository) :
     ViewModel() {

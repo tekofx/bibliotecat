@@ -42,7 +42,7 @@ import dev.tekofx.biblioteques.model.EmptyResults
 import dev.tekofx.biblioteques.navigation.NavScreen
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.ButtonSelect
-import dev.tekofx.biblioteques.ui.components.ButtonSelectItem
+import dev.tekofx.biblioteques.ui.components.SearchType
 import dev.tekofx.biblioteques.ui.components.TextIconButton
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
 import dev.tekofx.biblioteques.ui.viewModels.searchTypes
@@ -72,15 +72,9 @@ fun BookSearchScreen(
     }
 
     LaunchedEffect(results) {
-        // Navigate to book results
-        if (!onResultsScreen && results.items.size == 1) {
-            Log.d("BookSearchScreen", "Found 1 elements")
-            navHostController.navigate("${NavScreen.BooksScreen.name}/${results.items.first().id}")
-        }
-
-        if (!onResultsScreen && results.items.size > 1) {
+        if (!onResultsScreen && results.items.isNotEmpty()) {
             Log.d("BookSearchScreen", "Found ${results.items.size} elements")
-            navHostController.navigate("${NavScreen.BooksScreen.name}/search?query=${bookViewModel.queryText}&searchtype=$selectedSearchTpe")
+            navHostController.navigate("${NavScreen.BooksScreen.name}/search?query=${bookViewModel.queryText}&searchtype=${selectedSearchTpe.value}")
         }
     }
 
@@ -116,9 +110,9 @@ fun BookSearch(
     errorMessage: String?,
     onSearchTextChanged: (String) -> Unit,
     queryText: String,
-    selectedSearchTpe: ButtonSelectItem,
+    selectedSearchTpe: SearchType,
     isLoading: Boolean,
-    onOptionSelected: (ButtonSelectItem) -> Unit,
+    onOptionSelected: (SearchType) -> Unit,
     onSearch: () -> Unit
 ) {
     val focus = LocalFocusManager.current

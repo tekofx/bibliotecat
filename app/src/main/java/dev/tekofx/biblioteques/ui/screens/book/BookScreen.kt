@@ -62,6 +62,7 @@ fun BookScreen(
     // Observe currentBook and trigger getBookCopies when it's not null
     LaunchedEffect(currentBookResult) {
         if (currentBookResult != null) {
+            Log.d("BookScreen", "Get Book Details")
             bookViewModel.getBookDetails()
         }
     }

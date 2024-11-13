@@ -28,19 +28,19 @@ import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
 @Composable
 fun BookResultsScreen(
     navHostController: NavHostController,
-    bookViewModel: BookViewModel
+    bookViewModel: BookViewModel,
+    query: String,
+    searchType: String
 ) {
 
     val results by bookViewModel.results.observeAsState(
         EmptyResults()
     )
     val isLoading by bookViewModel.isLoading.observeAsState(false)
-    val onResultsScreen by bookViewModel.onResultsScreen.observeAsState(false)
-    val onBookScreen by bookViewModel.onBookScreen.observeAsState(false)
 
 
     LaunchedEffect(key1 = 1) {
-        Log.d("BookResultsScreen", "LaunchedEffect")
+        Log.d("BookResultsScreen", "LaunchedEffect. Query: $query searchType: $searchType")
         bookViewModel.setOnResultsScreen(true)
     }
 
@@ -94,7 +94,7 @@ fun GeneralSearchResultCard(
     )
     {
         Row(
-            modifier = Modifier.padding(vertical = 50.dp)
+            modifier = Modifier.padding(vertical = 50.dp),
         ) {
             Text(
                 text = searchResult.text
