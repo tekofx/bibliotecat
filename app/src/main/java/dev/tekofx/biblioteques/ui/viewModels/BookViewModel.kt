@@ -116,7 +116,7 @@ class BookViewModel(private val repository: BookRepository) :
     }
 
     /**
-     * Searchs a term in aladi. It uses a query and a [searchTypes]
+     * Searchs a term in aladi. It uses a query and a [SearchType]
      *
      */
     fun search() {
@@ -163,18 +163,7 @@ class BookViewModel(private val repository: BookRepository) :
                 call: Call<BookResponse>,
                 response: Response<BookResponse>
             ) {
-
-
-                val bookDetails = response.body()?.bookDetails
-
-                val bookCopies =
-                    response.body()?.bookCopies ?: return onFailure(
-                        call,
-                        Throwable("Book copies not found")
-                    )
-                val book = currentBook.value ?: return
-                book.bookDetails = bookDetails
-                book.bookCopies = bookCopies
+                val book = response.body()?.book
                 currentBook.postValue(book)
                 isLoading.postValue(false)
             }
