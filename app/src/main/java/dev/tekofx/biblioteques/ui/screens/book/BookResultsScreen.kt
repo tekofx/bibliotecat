@@ -45,7 +45,9 @@ fun BookResultsScreen(
     }
 
     Column(
-        modifier = Modifier.padding(10.dp)
+        modifier = Modifier
+            .padding(horizontal = 10.dp)
+            .padding(top = 10.dp)
     ) {
 
         when (results) {

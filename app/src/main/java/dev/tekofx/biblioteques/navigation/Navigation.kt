@@ -36,7 +36,7 @@ fun Navigation(
         }
 
         composable(
-            route = NavigateDestinations.LIBRARY_DETAILS_ROUTE + "/{libraryId}",
+            route = "${NavigateDestinations.LIBRARY_DETAILS_ROUTE}/{libraryId}",
             arguments = listOf(navArgument("libraryId") { type = NavType.StringType }
             )
         ) { backStackEntry ->
@@ -60,7 +60,7 @@ fun Navigation(
         }
 
         composable(
-            route = NavigateDestinations.BOOK_SEARCH_ROUTE + "/search?query={query}&searchtype={searchtype}",
+            route = NavigateDestinations.BOOK_RESULTS_ROUTE + "?query={query}&searchtype={searchtype}",
             arguments = listOf(
                 navArgument("query") {
                     type = NavType.StringType

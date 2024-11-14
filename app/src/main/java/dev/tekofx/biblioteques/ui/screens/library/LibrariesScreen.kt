@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import dev.tekofx.biblioteques.call.LibraryService
+import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.repository.LibraryRepository
 import dev.tekofx.biblioteques.ui.components.library.LibraryList
 import dev.tekofx.biblioteques.ui.theme.Typography
@@ -47,7 +48,6 @@ import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModel
 import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModelFactory
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun LibrariesScreen(
@@ -60,10 +60,7 @@ fun LibrariesScreen(
 ) {
     val libraries by libraryViewModel.libraries.observeAsState(emptyList())
     val isLoading by libraryViewModel.isLoading.observeAsState(false)
-    val sheetState = rememberModalBottomSheetState()
-    val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
-    var showOnlyOpen by remember { mutableStateOf(false) }
 
 
     Scaffold(
@@ -96,73 +93,97 @@ fun LibrariesScreen(
                     fontSize = 30.sp
                 )
             }
-            LibraryList(navHostController, libraries)
+            LibraryList(
+                libraries = libraries,
+                onLibraryCardClick = {
+                    navHostController.navigate("${NavigateDestinations.LIBRARY_DETAILS_ROUTE}/${it}")
+                }
+            )
         }
 
+        SearchBottomSheet(
+            textFieldValue = libraryViewModel.queryText,
+            onTextFieldChange = { text -> libraryViewModel.onSearchTextChanged(text) },
+            onFilterOpen = { libraryViewModel.filterOpen(it) },
+            show = showBottomSheet,
+            toggleShow = { showBottomSheet = !showBottomSheet }
+        )
+    }
+}
 
-        if (showBottomSheet) {
-            ModalBottomSheet(
-                onDismissRequest = {
-                    showBottomSheet = false
-                },
-                sheetState = sheetState
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchBottomSheet(
+    onTextFieldChange: (text: String) -> Unit,
+    textFieldValue: String,
+    onFilterOpen: (value: Boolean) -> Unit,
+    show: Boolean,
+    toggleShow: () -> Unit
+
+) {
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+    var showOnlyOpen by remember { mutableStateOf(false) }
+    if (show) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                toggleShow()
+            },
+            sheetState = sheetState
+        ) {
+            // Sheet content
+            Column(
+                modifier = Modifier.padding(10.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                // Sheet content
-                Column(
-                    modifier = Modifier.padding(10.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-
-
-                    TextField(
-                        colors = TextFieldDefaults.colors(
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                        ),
-                        value = libraryViewModel.queryText,
-                        onValueChange = { newText ->
-                            libraryViewModel.onSearchTextChanged(newText)
-                        },
-                        singleLine = true,
-                        trailingIcon = {
-                            Icon(
-                                imageVector = Icons.Outlined.Search,
-                                contentDescription = null
-                            )
-                        },
-                        shape = RoundedCornerShape(50.dp),
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        label = { Text("Nom Biblioteca") }
-                    )
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        Text(text = "Obert ara", style = Typography.bodyLarge)
-                        Switch(
-                            checked = showOnlyOpen,
-                            onCheckedChange = {
-                                showOnlyOpen = it
-                                libraryViewModel.filterOpen(it)
-                            }
+                TextField(
+                    colors = TextFieldDefaults.colors(
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                    ),
+                    value = textFieldValue,
+                    onValueChange = { newText ->
+                        onTextFieldChange(newText)
+                    },
+                    singleLine = true,
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Search,
+                            contentDescription = null
                         )
-                    }
-
-
-                    Button(
-                        onClick = {
-                            scope.launch { sheetState.hide() }.invokeOnCompletion {
-                                if (!sheetState.isVisible) {
-                                    showBottomSheet = false
-                                }
-                            }
-                        }) {
-                        Text("Tanca")
-                    }
+                    },
+                    shape = RoundedCornerShape(50.dp),
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    label = { Text("Nom Biblioteca") }
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Text(text = "Obert ara", style = Typography.bodyLarge)
+                    Switch(
+                        checked = showOnlyOpen,
+                        onCheckedChange = {
+                            showOnlyOpen = it
+                            onFilterOpen(it)
+                        }
+                    )
                 }
 
+
+                Button(
+                    onClick = {
+                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+                            if (!sheetState.isVisible) {
+                                toggleShow()
+                            }
+                        }
+                    }) {
+                    Text("Tanca")
+                }
             }
+
         }
     }
 }

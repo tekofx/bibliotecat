@@ -16,21 +16,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import dev.tekofx.biblioteques.model.library.Library
-import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.components.StatusBadge
 import dev.tekofx.biblioteques.ui.theme.Typography
 import java.time.LocalDate
 import java.time.LocalTime
 
 @Composable
-fun LibraryCard(navHostController: NavHostController, library: Library) {
+fun LibraryCard(
+    onClick: () -> Unit,
+    library: Library
+) {
     Surface(
         tonalElevation = 40.dp,
         shape = RoundedCornerShape(20.dp),
-        onClick = { navHostController.navigate("${NavigateDestinations.LIBRARY_DETAILS_ROUTE}/${library.id}") }
+        onClick = {
+            onClick()
+        }
     ) {
 
         Row(
@@ -41,7 +44,7 @@ fun LibraryCard(navHostController: NavHostController, library: Library) {
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             AsyncImage(
-                model = library.image, // Ajusta con tu imagen
+                model = library.image,
                 contentDescription = null,
                 modifier = Modifier
                     .weight(1f)

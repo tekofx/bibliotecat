@@ -8,10 +8,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -21,13 +19,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import dev.tekofx.biblioteques.model.library.Library
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun LibraryList(
-    navHostController: NavHostController,
+    onLibraryCardClick: (libraryId: String) -> Unit,
     libraries: List<Library>
 ) {
     val listState = rememberLazyListState()
@@ -49,14 +46,15 @@ fun LibraryList(
             state = listState,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 10.dp)
+                .padding(top = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             items(libraries) { library ->
-                LibraryCard(navHostController, library)
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(10.dp)
+                LibraryCard(
+                    library = library,
+                    onClick = {
+                        onLibraryCardClick(library.id)
+                    }
                 )
             }
         }

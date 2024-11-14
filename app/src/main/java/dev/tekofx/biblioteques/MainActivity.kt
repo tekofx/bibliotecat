@@ -18,8 +18,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dev.tekofx.biblioteques.call.BookService
 import dev.tekofx.biblioteques.call.LibraryService
-import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.navigation.Navigation
+import dev.tekofx.biblioteques.navigation.showBottomAppBar
 import dev.tekofx.biblioteques.repository.BookRepository
 import dev.tekofx.biblioteques.repository.LibraryRepository
 import dev.tekofx.biblioteques.ui.components.BottomNavigationBar
@@ -74,7 +74,9 @@ fun MainScreen(libraryViewModel: LibraryViewModel, bookViewModel: BookViewModel)
 
     Scaffold(
         bottomBar = {
-            if (currentRoute != "${NavigateDestinations.LIBRARIES_ROUTE}/{libraryId}" && currentRoute != "${NavigateDestinations.BOOK_SEARCH_ROUTE}/{libraryUrl}") {
+            if (
+                showBottomAppBar(currentRoute)
+            ) {
                 BottomNavigationBar(navHostController = navController)
             }
         }
