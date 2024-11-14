@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,11 +17,15 @@ import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,8 +35,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import dev.tekofx.biblioteques.model.book.BookCopy
+import dev.tekofx.biblioteques.model.book.BookCopyAvailability
 import dev.tekofx.biblioteques.model.book.BookDetails
 import dev.tekofx.biblioteques.ui.components.InfoCard
+import dev.tekofx.biblioteques.ui.components.animations.SlideDirection
+import dev.tekofx.biblioteques.ui.components.animations.SlideVertically
 import dev.tekofx.biblioteques.ui.components.book.BookCopyCard
 import dev.tekofx.biblioteques.ui.theme.Typography
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
@@ -106,18 +114,15 @@ fun BookScreen(
                     }
                 }
             }
-
-
             if (isLoading) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                 ) {
                     CircularProgressIndicator(Modifier.align(Alignment.Center))
                 }
-            } else {
-                BookDetailsSegment(currentBook!!.bookDetails)
-                BookCopiesSegment(currentBook!!.bookCopies)
             }
+            BookDetailsSegment(currentBook!!.bookDetails)
+            BookCopiesSegment(currentBook!!.bookCopies, isLoading)
 
         }
     }
@@ -129,53 +134,86 @@ fun BookDetailsSegment(
     bookDetails: BookDetails?
 
 ) {
-    if (bookDetails != null) {
-
-
-        bookDetails.edition?.let {
-            InfoCard("Edició", it)
+    SlideVertically(
+        visible = bookDetails != null,
+        SlideDirection.UP
+    ) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            if (bookDetails != null) {
+                bookDetails.edition?.let {
+                    InfoCard("Edició", it)
+                }
+                bookDetails.description?.let {
+                    InfoCard("Descripció", it)
+                }
+                bookDetails.collection?.let {
+                    InfoCard("Col·lecció", it)
+                }
+                bookDetails.isbn?.let {
+                    InfoCard("ISBN", it)
+                }
+                bookDetails.synopsis?.let {
+                    InfoCard("Sinopsi", it)
+                }
+                bookDetails.topic?.let {
+                    InfoCard("Tema", it)
+                }
+            }
         }
-        bookDetails.description?.let {
-            InfoCard("Descripció", it)
-        }
-        bookDetails.collection?.let {
-            InfoCard("Col·lecció", it)
-        }
-        bookDetails.isbn?.let {
-            InfoCard("ISBN", it)
-        }
-        bookDetails.synopsis?.let {
-            InfoCard("Sinopsi", it)
-        }
-        bookDetails.topic?.let {
-            InfoCard("Tema", it)
-        }
-
     }
-
 }
 
 
 @Composable
 fun BookCopiesSegment(
-    bookCopies: List<BookCopy>
+    bookCopies: List<BookCopy>,
+    isLoading: Boolean
 ) {
-    if (bookCopies.isNotEmpty()) {
-        Text(
-            text = "Exemplars",
-            textAlign = TextAlign.Center,
-            style = Typography.titleMedium,
-        )
+    var showOnlyAvailable by remember { mutableStateOf(false) }
+    SlideVertically(
+        visible = !isLoading,
+        SlideDirection.UP
+    ) {
         Column(
+            modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            bookCopies.forEach { bookCopy: BookCopy ->
-                Log.d("BookScreen", "Processing book copy: $bookCopy")
-                BookCopyCard(bookCopy)
+            Text(
+                text = "Exemplars",
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                style = Typography.titleLarge,
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Text(text = "Obert ara", style = Typography.bodyLarge)
+                Switch(
+                    checked = showOnlyAvailable,
+                    onCheckedChange = {
+                        showOnlyAvailable = it
+                    }
+                )
+            }
+            if (bookCopies.isEmpty()) {
+                Text("No hi ha exemplars")
+            } else {
+                val filteredBookCopies = if (showOnlyAvailable) {
+                    bookCopies.filter { it.availability == BookCopyAvailability.AVAILABLE || it.availability == BookCopyAvailability.CAN_RESERVE }
+                } else {
+                    bookCopies
+                }
+
+                filteredBookCopies.forEach { bookCopy: BookCopy ->
+                    BookCopyCard(bookCopy)
+                }
             }
         }
-    } else {
-        Text(text = "No hi ha exemplars")
     }
 
 }

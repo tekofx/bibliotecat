@@ -292,12 +292,35 @@ class BookConverterFactory : Converter.Factory() {
                     notes = null
                 }
 
-                val statusColor: StatusColor = when {
-                    status.contains("Disponible", ignoreCase = true) -> StatusColor.GREEN
-                    status.contains("Venç", ignoreCase = true) -> StatusColor.YELLOW
-                    else -> StatusColor.RED
-                }
 
+                val (bookCopyAvailability, statusColor) = when {
+                    status.contains(
+                        "Disponible",
+                        ignoreCase = true
+                    ) -> BookCopyAvailability.AVAILABLE to StatusColor.GREEN
+
+                    status.contains(
+                        "Prestatge reserva",
+                        ignoreCase = true
+                    ) -> BookCopyAvailability.CAN_RESERVE to StatusColor.YELLOW
+
+                    status.contains(
+                        "Venç el",
+                        ignoreCase = true
+                    ) -> BookCopyAvailability.CAN_RESERVE to StatusColor.YELLOW
+
+                    status.contains(
+                        "En trànsit",
+                        ignoreCase = true
+                    ) -> BookCopyAvailability.CAN_RESERVE to StatusColor.YELLOW
+
+                    status.contains(
+                        "IR PENDENT",
+                        ignoreCase = true
+                    ) -> BookCopyAvailability.CAN_RESERVE to StatusColor.YELLOW
+
+                    else -> BookCopyAvailability.NOT_AVAILABLE to StatusColor.RED
+                }
 
                 bookCopies.add(
                     BookCopy(
@@ -305,6 +328,7 @@ class BookConverterFactory : Converter.Factory() {
                         signature = signature,
                         status = status,
                         notes = notes,
+                        availability = bookCopyAvailability,
                         statusColor = statusColor
                     )
                 )

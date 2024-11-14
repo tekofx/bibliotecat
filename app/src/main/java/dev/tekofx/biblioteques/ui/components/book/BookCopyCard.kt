@@ -19,7 +19,7 @@ import dev.tekofx.biblioteques.ui.theme.Typography
 fun BookCopyCard(bookCopy: BookCopy) {
     Surface(
         tonalElevation = 20.dp,
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(10.dp),
     ) {
         Column(
             modifier = Modifier
@@ -37,11 +37,6 @@ fun BookCopyCard(bookCopy: BookCopy) {
                 Text(text = bookCopy.signature)
 
             }
-            StatusBadge(
-                bookCopy.statusColor,
-                text = bookCopy.status,
-                textStyle = Typography.bodyMedium
-            )
             bookCopy.notes?.let {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -50,6 +45,12 @@ fun BookCopyCard(bookCopy: BookCopy) {
                     Text(text = it)
                 }
             }
+            StatusBadge(
+                bookCopy.statusColor,
+                text = bookCopy.status,
+                textStyle = Typography.bodyMedium
+            )
+
         }
     }
 }

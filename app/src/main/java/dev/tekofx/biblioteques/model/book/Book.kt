@@ -53,11 +53,19 @@ class BookCopy(
     val location: String,
     val signature: String,
     val status: String,
+    val availability: BookCopyAvailability,
     val notes: String?,
-    val statusColor: StatusColor = StatusColor.RED
+    val statusColor: StatusColor
 ) {
     override fun toString(): String {
         return "$location $signature $status $notes"
     }
 }
 
+
+enum class BookCopyAvailability {
+    AVAILABLE,
+    CAN_RESERVE,
+    NOT_AVAILABLE
+
+}
