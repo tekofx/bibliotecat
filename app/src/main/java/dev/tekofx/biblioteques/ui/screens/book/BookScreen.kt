@@ -59,14 +59,16 @@ fun BookScreen(
             bookViewModel.getBookDetails()
         }
     }
-
     if (currentBook == null) {
         Text(text = "No es puc trobar el llibre", textAlign = TextAlign.Justify)
 
+
     } else {
+
         Column(
             modifier = Modifier
                 .padding(horizontal = 10.dp)
+                .fillMaxWidth()
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
@@ -92,7 +94,10 @@ fun BookScreen(
                         .padding(10.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    Text(text = currentBook!!.title, style = Typography.titleLarge)
+                    Text(
+                        text = currentBook!!.title,
+                        style = Typography.titleLarge,
+                    )
                     Text(text = currentBook!!.author, style = Typography.titleMedium)
                     currentBook!!.publication?.let {
                         HorizontalDivider(thickness = 2.dp)
@@ -125,6 +130,7 @@ fun BookDetailsSegment(
 
 ) {
     if (bookDetails != null) {
+
 
         bookDetails.edition?.let {
             InfoCard("Edició", it)
