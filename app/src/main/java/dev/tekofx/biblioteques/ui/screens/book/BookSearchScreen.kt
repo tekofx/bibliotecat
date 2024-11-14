@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Search
@@ -36,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import dev.tekofx.biblioteques.model.EmptyResults
@@ -118,6 +121,11 @@ fun BookSearch(
     val focus = LocalFocusManager.current
     val density = LocalDensity.current
 
+    fun search() {
+        onSearch()
+        focus.clearFocus()
+    }
+
     AnimatedVisibility(
         visible = visible,
         exit = slideOutVertically(targetOffsetY = { it })
@@ -140,6 +148,12 @@ fun BookSearch(
                 ),
                 value = queryText,
                 onValueChange = { onSearchTextChanged(it) },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        search()
+                    }
+                ),
                 singleLine = true,
                 trailingIcon = {
                     Icon(
@@ -167,8 +181,7 @@ fun BookSearch(
                     icon = IconResource.fromImageVector(Icons.Outlined.Search),
                     enabled = queryText.isNotEmpty() && !isLoading,
                     onClick = {
-                        onSearch()
-                        focus.clearFocus()
+                        search()
                     }
                 )
             }
