@@ -38,7 +38,7 @@ import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
 
 @Composable
 fun BookScreen(
-    libraryUrl: String,
+    bookUrl: String,
     bookViewModel: BookViewModel
 ) {
 
@@ -48,7 +48,7 @@ fun BookScreen(
 
     // Get book info
     LaunchedEffect(key1 = null) {
-        bookViewModel.filterBook(libraryUrl.toInt())
+        bookViewModel.filterBook(bookUrl.toInt())
         Log.d("BookScreen", "Retrived book")
     }
 
