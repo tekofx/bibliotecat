@@ -8,7 +8,14 @@ abstract class SearchResults<SearchResult>(
 ) {
     var currentPage: Int = 0
 
-    fun getNextPage(): String {
+    fun areMorePages(): Boolean {
+        return pages.isNotEmpty()
+    }
+
+    fun getNextPage(): String? {
+        if (pages.isEmpty()) {
+            return null
+        }
         val page = pages[currentPage]
         currentPage++
         return page

@@ -83,7 +83,7 @@ class BookViewModel(private val repository: BookRepository) :
     fun getNextResultsPage() {
         val resultsValue = results.value ?: throw Error()
         Log.d("BookViewModel", "Get results page ${pageIndex.intValue}/${resultsValue.numItems}")
-        val url = resultsValue.getNextPage()
+        val url = resultsValue.getNextPage() ?: return
         val response = repository.getHtmlByUrl(url)
         isLoadingResults.postValue(true)
         response.enqueue(object : Callback<BookResponse> {

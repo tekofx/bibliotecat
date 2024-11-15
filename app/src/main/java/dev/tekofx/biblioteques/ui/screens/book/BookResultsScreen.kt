@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,7 +18,6 @@ import androidx.navigation.NavHostController
 import dev.tekofx.biblioteques.model.BookResult
 import dev.tekofx.biblioteques.model.BookResults
 import dev.tekofx.biblioteques.model.EmptyResults
-import dev.tekofx.biblioteques.model.GeneralResult
 import dev.tekofx.biblioteques.model.GeneralResults
 import dev.tekofx.biblioteques.model.SearchResult
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
@@ -52,13 +52,13 @@ fun BookResultsScreen(
 
         when (results) {
             is BookResults ->
-                PaginatedList<BookResult>(
-                    items = results.items,
+                PaginatedList(
+                    searchResults = results as BookResults,
                     isLoading = isLoading,
                     key = { book -> book.id },
-                    onLoadMore = { bookViewModel.getNextResultsPage() }
+                    onLoadMore = { bookViewModel.getNextResultsPage() },
 
-                ) { book ->
+                    ) { book ->
                     BookCard(
                         book = book as BookResult,
                         onClick = {
@@ -68,11 +68,11 @@ fun BookResultsScreen(
                 }
 
             is GeneralResults ->
-                PaginatedList<GeneralResult>(
-                    items = results.items,
+                PaginatedList(
+                    searchResults = results as GeneralResults,
                     isLoading = isLoading,
                     key = { searchResult: SearchResult -> searchResult.text },
-                    onLoadMore = { bookViewModel.getNextResultsPage() }
+                    onLoadMore = { bookViewModel.getNextResultsPage() },
                 ) { searchResult ->
                     GeneralSearchResultCard(
                         onClick = { bookViewModel.getBooksBySearchResult(searchResult.url) },
@@ -92,13 +92,17 @@ fun GeneralSearchResultCard(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         tonalElevation = 20.dp,
+        shape = RoundedCornerShape(10.dp),
         onClick = { onClick() }
     )
     {
         Row(
-            modifier = Modifier.padding(vertical = 50.dp),
+            modifier = Modifier
+                .padding(10.dp)
+                .padding(vertical = 20.dp),
         ) {
             Text(
+                modifier = Modifier.weight(2f),
                 text = searchResult.text
             )
             Text(
