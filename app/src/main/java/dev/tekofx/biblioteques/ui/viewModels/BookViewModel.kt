@@ -13,6 +13,8 @@ import dev.tekofx.biblioteques.model.BookResults
 import dev.tekofx.biblioteques.model.SearchResult
 import dev.tekofx.biblioteques.model.SearchResults
 import dev.tekofx.biblioteques.model.book.Book
+import dev.tekofx.biblioteques.model.book.BookCopy
+import dev.tekofx.biblioteques.model.book.BookDetails
 import dev.tekofx.biblioteques.repository.BookRepository
 import dev.tekofx.biblioteques.ui.components.SearchType
 import retrofit2.Call
@@ -46,7 +48,10 @@ class BookViewModel(private val repository: BookRepository) :
         private set
     val errorMessage = MutableLiveData<String>()
 
-    
+
+    /**
+     * Gets the book from the list of results
+     */
     fun getBooksBySearchResult(url: String) {
         Log.d("BookViewModel", "getBooksBySearchResult")
         val response = repository.getHtmlByUrl(url)
@@ -73,7 +78,7 @@ class BookViewModel(private val repository: BookRepository) :
 
 
     /**
-     * Get the next resultspage
+     * Get the next resultspage. It gets [SearchResults], can be [BookResults] or [SearchResults]
      */
     fun getNextResultsPage() {
         val resultsValue = results.value ?: throw Error()
@@ -133,21 +138,33 @@ class BookViewModel(private val repository: BookRepository) :
                 Log.e("BookViewModel", "Error finding books: ${t.message.toString()}")
                 errorMessage.postValue("Error getting books")
                 isLoading.postValue(false)
-
             }
-
         })
-
     }
 
+
     /**
-     * Gets the books details of a book from the url of a book
+     * Gets the [BookCopies][BookCopy] of the full Book copies page
      */
-    fun getBookDetails() {
+    fun getBookCopies(book: Book) {
+        Log.d("BookViewModel", "getBookCopies")
 
-        val currentBookResultUrl = currentBookResult.value?.url ?: return
+        val permanentUrl = book.bookDetails?.permanentUrl
+        if (permanentUrl == null) {
+            Log.d("BookViewModel", "getBookCopies permanenturl null")
+            return
+        }
 
-        val response = repository.getBookDetails(currentBookResultUrl)
+
+        val regex = Regex("record=([^~]+)")
+        val matchResult = regex.find(permanentUrl)
+        val bvalue = matchResult?.groupValues?.get(1)
+        val value = bvalue?.replace("b", "")
+        val bookCopiesUrl =
+            "search~S171*cat?/.b$value/.b$value/1,1,1,B/holdings~$value&FF=&1,0,"
+
+        val response = repository.getHtmlByUrl(bookCopiesUrl)
+
         isLoading.postValue(true)
         response.enqueue(object : Callback<BookResponse> {
             override fun onResponse(
@@ -156,15 +173,14 @@ class BookViewModel(private val repository: BookRepository) :
             ) {
 
 
-                val bookDetails = response.body()?.bookDetails
-
-                val bookCopies =
-                    response.body()?.bookCopies ?: return onFailure(
+                val responseBody =
+                    response.body() ?: return onFailure(
                         call,
-                        Throwable("Book copies not found")
+                        Throwable("No response ${response.code()}")
                     )
-                val book = currentBook.value ?: return
-                book.bookDetails = bookDetails
+
+                val bookCopies = responseBody.bookCopies
+                Log.d("BookViewModel", bookCopies.size.toString())
                 book.bookCopies = bookCopies
                 currentBook.postValue(book)
                 isLoading.postValue(false)
@@ -180,15 +196,54 @@ class BookViewModel(private val repository: BookRepository) :
     }
 
 
-    fun filterBook(id: Int) {
+    /**
+     * Gets the [BookDetails] of a book from the url of a book.
+     * It also gets the [BookCopies][BookCopy] showed in the page of Book details
+     */
+    fun getBookDetails(bookId: Int) {
+        Log.d("BookViewModel", "getBookDetails")
+        isLoading.postValue(true)
+        val book = filterBook(bookId) ?: return
+        currentBook.postValue(book)
+        val currentBookResultUrl = book.temporalUrl
+        val response = repository.getBookDetails(currentBookResultUrl)
+        response.enqueue(object : Callback<BookResponse> {
+            override fun onResponse(
+                call: Call<BookResponse>,
+                response: Response<BookResponse>
+            ) {
+                val responseBody =
+                    response.body() ?: return onFailure(call, Throwable("Not Response"))
+
+                val responseBook =
+                    responseBody.book ?: return onFailure(call, Throwable("Book not found"))
+
+                currentBook.postValue(responseBook)
+                isLoading.postValue(false)
+                getBookCopies(responseBook)
+
+            }
+
+            override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
+                Log.e("BookViewModel", t.message.toString())
+                errorMessage.postValue(t.message)
+                isLoading.postValue(false)
+            }
+        })
+
+    }
+
+
+    fun filterBook(id: Int): Book? {
         if (results.value is BookResults) {
             val bookResults = (results.value as BookResults).items
             val currentBookResult2 =
-                bookResults.find { book: BookResult -> book.id == id } ?: return
+                bookResults.find { book: BookResult -> book.id == id } ?: return null
 
-            currentBook.postValue(Book(currentBookResult2))
-            currentBookResult.postValue(bookResults.find { book: BookResult -> book.id == id })
+            return Book(currentBookResult2)
+
         }
+        return null
     }
 
     fun onSearchTextChanged(text: String) {

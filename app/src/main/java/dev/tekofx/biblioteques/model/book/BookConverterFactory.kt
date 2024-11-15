@@ -25,17 +25,15 @@ class BookConverterFactory : Converter.Factory() {
         return Converter { responseBody ->
 
             val responseBodyString = responseBody.string()
-            val doc: Document = Ksoup.parse(responseBodyString)
 
+            val doc: Document = Ksoup.parse(responseBodyString)
 
             val notResultsH2Element =
                 doc.select("h2")
                     .firstOrNull() { it.text().contains("no hi ha resultats", ignoreCase = true) }
 
             val bibInfoLabelElement = doc.select("td.bibInfoLabel").firstOrNull()
-
-            val bibPagerElement = doc.select("div.bibPager").firstOrNull()
-
+            val additionalCopiesElement = doc.select("div.additionalCopies").firstOrNull()
             val browseHeaderEntriesElement = doc.select("td.browseHeaderEntries").firstOrNull()
 
             if (notResultsH2Element != null) {
@@ -51,18 +49,25 @@ class BookConverterFactory : Converter.Factory() {
                     results = generalResults
 
                 )
-            } else if (bibInfoLabelElement != null) {
-                val bookDetails = constructBookDetails(doc)
+            } else if (additionalCopiesElement != null) {
+                Log.d("BookConverterFactory", "Additional Book Copies")
                 val bookCopies = constructBookCopies(doc)
+                BookResponse(
+                    bookCopies = bookCopies
+                )
+            } else if (bibInfoLabelElement != null) {
+                Log.d("BookConverterFactory", "Book details")
+                val bookDetails = constructBookDetails(doc)
                 val book = contructBookFromBookDetails(doc)
+                val bookCopies = constructBookCopies(doc)
                 val bookResults = constructBookResultsFromBookDetails(doc)
 
-                Log.d("BookConverterFactory", "Book details")
+
                 BookResponse(
                     book = book,
                     bookDetails = bookDetails,
-                    bookCopies = bookCopies,
-                    results = bookResults
+                    results = bookResults,
+                    bookCopies = bookCopies
                 )
             } else {
 
@@ -261,7 +266,7 @@ class BookConverterFactory : Converter.Factory() {
             permanentUrl = permanentUrl,
             collection = collection,
             topic = topic,
-            authorUrl
+            authorUrl = authorUrl,
         )
     }
 
@@ -277,8 +282,8 @@ class BookConverterFactory : Converter.Factory() {
         return total
     }
 
-
     private fun constructBookCopies(element: Element): List<BookCopy> {
+        Log.d("BookConverterFactory", "constructBookCopies")
         val trElements = element.select("tr.bibItemsEntry")
         val bookCopies = arrayListOf<BookCopy>()
         for (x in trElements) {

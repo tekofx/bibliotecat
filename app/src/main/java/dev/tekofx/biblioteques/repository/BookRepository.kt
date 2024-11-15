@@ -24,6 +24,7 @@ class BookRepository(private val bookService: BookService) {
     }
 
     fun getHtmlByUrl(url: String): Call<BookResponse> {
+        Log.d("BookRepository", "getHtmlByUrl $url")
         return bookService.getHtmlByUrl(url)
     }
 }

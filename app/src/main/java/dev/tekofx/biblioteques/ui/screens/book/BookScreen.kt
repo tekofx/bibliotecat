@@ -51,22 +51,17 @@ fun BookScreen(
 ) {
 
     val currentBook by bookViewModel.currentBook.observeAsState(null)
-    val currentBookResult by bookViewModel.currentBookResult.observeAsState(null)
     val isLoading by bookViewModel.isLoading.observeAsState(false)
 
     // Get book info
     LaunchedEffect(key1 = null) {
-        bookViewModel.filterBook(bookUrl.toInt())
-        Log.d("BookScreen", "Retrived book")
-    }
-
-    // Observe currentBook and trigger getBookCopies when it's not null
-    LaunchedEffect(currentBookResult) {
-        if (currentBookResult != null) {
-            Log.d("BookScreen", "Get Book Details")
-            bookViewModel.getBookDetails()
+        if (currentBook == null || currentBook!!.id != bookUrl.toInt()) {
+            bookViewModel.getBookDetails(bookUrl.toInt())
+            Log.d("BookScreen", "Retrived book")
         }
     }
+
+
     if (currentBook == null) {
         Text(text = "No es puc trobar el llibre", textAlign = TextAlign.Justify)
 
@@ -123,6 +118,7 @@ fun BookScreen(
             }
             BookDetailsSegment(currentBook!!.bookDetails)
             BookCopiesSegment(currentBook!!.bookCopies, isLoading)
+
 
         }
     }
