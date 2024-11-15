@@ -45,7 +45,7 @@ class BookDetails(
     val collection: String?,
     val topic: String?,
     val authorUrl: String?,
-
+    val bookCopiesUrl: String?,
 
     )
 

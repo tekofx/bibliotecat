@@ -62,7 +62,7 @@ fun BookSearchScreen(
         EmptyResults()
     )
 
-    val isLoading by bookViewModel.isLoading.observeAsState(false)
+    val isLoading by bookViewModel.isLoadingResults.observeAsState(false)
     val onResultsScreen by bookViewModel.onResultsScreen.observeAsState(false)
 
     val errorMessage by bookViewModel.errorMessage.observeAsState()

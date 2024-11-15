@@ -9,18 +9,23 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -51,7 +56,9 @@ fun BookScreen(
 ) {
 
     val currentBook by bookViewModel.currentBook.observeAsState(null)
-    val isLoading by bookViewModel.isLoading.observeAsState(false)
+    val isLoadingBookCopies by bookViewModel.isLoadingBookCopies.observeAsState(false)
+    val isLoadingBookDetails by bookViewModel.isLoadingBookDetails.observeAsState(false)
+
 
     // Get book info
     LaunchedEffect(key1 = null) {
@@ -109,17 +116,12 @@ fun BookScreen(
                     }
                 }
             }
-            if (isLoading) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                ) {
-                    CircularProgressIndicator(Modifier.align(Alignment.Center))
-                }
-            }
-            BookDetailsSegment(currentBook!!.bookDetails)
-            BookCopiesSegment(currentBook!!.bookCopies, isLoading)
-
-
+            BookDetailsSegment(currentBook!!.bookDetails, isLoadingBookDetails)
+            BookCopiesSegment(
+                bookCopies = currentBook!!.bookCopies,
+                showLoading = isLoadingBookCopies,
+                show = !(isLoadingBookCopies || isLoadingBookDetails),
+            )
         }
     }
 }
@@ -127,9 +129,17 @@ fun BookScreen(
 
 @Composable
 fun BookDetailsSegment(
-    bookDetails: BookDetails?
+    bookDetails: BookDetails?,
+    isLoading: Boolean
 
 ) {
+    if (isLoading) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            CircularProgressIndicator(Modifier.align(Alignment.Center))
+        }
+    }
     SlideVertically(
         visible = bookDetails != null,
         SlideDirection.UP
@@ -165,16 +175,28 @@ fun BookDetailsSegment(
 @Composable
 fun BookCopiesSegment(
     bookCopies: List<BookCopy>,
-    isLoading: Boolean
+    showLoading: Boolean,
+    show: Boolean
 ) {
     var showOnlyAvailable by remember { mutableStateOf(false) }
+    val availableNowChipState = remember { mutableStateOf(false) }
+    val availableSoonChipState = remember { mutableStateOf(false) }
+    if (showLoading) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            CircularProgressIndicator(Modifier.align(Alignment.Center))
+        }
+    }
     SlideVertically(
-        visible = !isLoading,
+        visible = show,
         SlideDirection.UP
     ) {
+
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = "Exemplars",
@@ -182,34 +204,48 @@ fun BookCopiesSegment(
                 textAlign = TextAlign.Center,
                 style = Typography.titleLarge,
             )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Text(text = "Obert ara", style = Typography.bodyLarge)
-                Switch(
-                    checked = showOnlyAvailable,
-                    onCheckedChange = {
-                        showOnlyAvailable = it
-                    }
-                )
-            }
             if (bookCopies.isEmpty()) {
                 Text("No hi ha exemplars")
             } else {
-                val filteredBookCopies = if (showOnlyAvailable) {
-                    bookCopies.filter { it.availability == BookCopyAvailability.AVAILABLE || it.availability == BookCopyAvailability.CAN_RESERVE }
-                } else {
-                    bookCopies
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    FilterChipComponent("Disponible Ara", availableNowChipState)
+                    FilterChipComponent("Disponible pronto", availableSoonChipState)
                 }
-
-                filteredBookCopies.forEach { bookCopy: BookCopy ->
-                    BookCopyCard(bookCopy)
+                val filteredBookCopies = bookCopies.filter { bookCopy ->
+                    (!availableNowChipState.value || bookCopy.availability == BookCopyAvailability.AVAILABLE) && (!availableSoonChipState.value || bookCopy.availability == BookCopyAvailability.CAN_RESERVE)
                 }
+                filteredBookCopies.forEach { bookCopy: BookCopy -> BookCopyCard(bookCopy) }
             }
         }
     }
 
+
+}
+
+@Composable
+fun FilterChipComponent(
+    text: String,
+    selected: MutableState<Boolean>,
+) {
+    FilterChip(
+        onClick = { selected.value = !selected.value },
+        label = {
+            Text(text)
+        },
+        selected = selected.value,
+        leadingIcon = if (selected.value) {
+            {
+                Icon(
+                    imageVector = Icons.Filled.Done,
+                    contentDescription = "Done icon",
+                    modifier = Modifier.size(FilterChipDefaults.IconSize)
+                )
+            }
+        } else {
+            null
+        },
+    )
 }

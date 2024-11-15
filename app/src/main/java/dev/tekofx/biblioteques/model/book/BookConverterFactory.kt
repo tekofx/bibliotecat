@@ -59,15 +59,11 @@ class BookConverterFactory : Converter.Factory() {
                 Log.d("BookConverterFactory", "Book details")
                 val bookDetails = constructBookDetails(doc)
                 val book = contructBookFromBookDetails(doc)
-                val bookCopies = constructBookCopies(doc)
                 val bookResults = constructBookResultsFromBookDetails(doc)
-
-
                 BookResponse(
                     book = book,
                     bookDetails = bookDetails,
                     results = bookResults,
-                    bookCopies = bookCopies
                 )
             } else {
 
@@ -258,6 +254,17 @@ class BookConverterFactory : Converter.Factory() {
         val topic = topicElement?.text()
         val authorUrl = authorElement?.attr("href")
 
+
+        var bookCopiesUrl: String? = null
+        if (permanentUrl != null) {
+            val regex = Regex("record=([^~]+)")
+            val matchResult = regex.find(permanentUrl)
+            val bvalue = matchResult?.groupValues?.get(1)
+            val value = bvalue?.replace("b", "")
+            bookCopiesUrl =
+                "search~S171*cat?/.b$value/.b$value/1,1,1,B/holdings~$value&FF=&1,0,"
+        }
+
         return BookDetails(
             edition = edition,
             description = description,
@@ -267,6 +274,7 @@ class BookConverterFactory : Converter.Factory() {
             collection = collection,
             topic = topic,
             authorUrl = authorUrl,
+            bookCopiesUrl = bookCopiesUrl
         )
     }
 

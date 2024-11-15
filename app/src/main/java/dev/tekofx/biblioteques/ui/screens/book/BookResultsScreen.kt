@@ -36,7 +36,7 @@ fun BookResultsScreen(
     val results by bookViewModel.results.observeAsState(
         EmptyResults()
     )
-    val isLoading by bookViewModel.isLoading.observeAsState(false)
+    val isLoading by bookViewModel.isLoadingResults.observeAsState(false)
 
 
     LaunchedEffect(key1 = 1) {
