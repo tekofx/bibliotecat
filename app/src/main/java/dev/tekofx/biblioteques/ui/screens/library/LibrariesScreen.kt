@@ -65,13 +65,15 @@ fun LibrariesScreen(
 
     Scaffold(
         floatingActionButton = {
-            ExtendedFloatingActionButton(
-                text = { Text("Cercar") },
-                icon = { Icon(Icons.Filled.Search, contentDescription = "") },
-                onClick = {
-                    showBottomSheet = true
-                }
-            )
+            if (libraries.isNotEmpty()) {
+                ExtendedFloatingActionButton(
+                    text = { Text("Cercar") },
+                    icon = { Icon(Icons.Filled.Search, contentDescription = "") },
+                    onClick = {
+                        showBottomSheet = true
+                    }
+                )
+            }
         }
     ) {
 
