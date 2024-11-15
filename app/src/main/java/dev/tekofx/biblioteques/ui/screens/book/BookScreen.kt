@@ -30,7 +30,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,10 +38,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import dev.tekofx.biblioteques.model.StatusColor
 import dev.tekofx.biblioteques.model.book.BookCopy
 import dev.tekofx.biblioteques.model.book.BookCopyAvailability
 import dev.tekofx.biblioteques.model.book.BookDetails
 import dev.tekofx.biblioteques.ui.components.InfoCard
+import dev.tekofx.biblioteques.ui.components.StatusBadge
 import dev.tekofx.biblioteques.ui.components.animations.SlideDirection
 import dev.tekofx.biblioteques.ui.components.animations.SlideVertically
 import dev.tekofx.biblioteques.ui.components.book.BookCopyCard
@@ -178,7 +179,6 @@ fun BookCopiesSegment(
     showLoading: Boolean,
     show: Boolean
 ) {
-    var showOnlyAvailable by remember { mutableStateOf(false) }
     val availableNowChipState = remember { mutableStateOf(false) }
     val availableSoonChipState = remember { mutableStateOf(false) }
     if (showLoading) {
@@ -211,13 +211,25 @@ fun BookCopiesSegment(
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    FilterChipComponent("Disponible Ara", availableNowChipState)
-                    FilterChipComponent("Disponible pronto", availableSoonChipState)
+                    FilterChipComponent(
+                        text = "Disponible Ara",
+                        selected = availableNowChipState,
+                        statusColor = StatusColor.GREEN
+                    )
+                    FilterChipComponent(
+                        text = "Es pot reservar",
+                        selected = availableSoonChipState,
+                        statusColor = StatusColor.YELLOW
+                    )
                 }
                 val filteredBookCopies = bookCopies.filter { bookCopy ->
-                    (!availableNowChipState.value || bookCopy.availability == BookCopyAvailability.AVAILABLE) && (!availableSoonChipState.value || bookCopy.availability == BookCopyAvailability.CAN_RESERVE)
+                    (!availableNowChipState.value || bookCopy.availability == BookCopyAvailability.AVAILABLE)
+                            && (!availableSoonChipState.value || bookCopy.availability == BookCopyAvailability.CAN_RESERVE)
                 }
                 filteredBookCopies.forEach { bookCopy: BookCopy -> BookCopyCard(bookCopy) }
+                if (filteredBookCopies.isEmpty()) {
+                    Text(text = "No hi ha exemplars amb aquests filtres")
+                }
             }
         }
     }
@@ -229,11 +241,15 @@ fun BookCopiesSegment(
 fun FilterChipComponent(
     text: String,
     selected: MutableState<Boolean>,
+    statusColor: StatusColor
 ) {
     FilterChip(
         onClick = { selected.value = !selected.value },
         label = {
-            Text(text)
+            StatusBadge(
+                text = text,
+                statusColor = statusColor
+            )
         },
         selected = selected.value,
         leadingIcon = if (selected.value) {

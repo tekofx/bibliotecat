@@ -17,7 +17,11 @@ import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.model.StatusColor
 
 @Composable
-fun StatusBadge(statusColor: StatusColor, text: String, textStyle: TextStyle) {
+fun StatusBadge(
+    statusColor: StatusColor,
+    text: String,
+    textStyle: TextStyle = TextStyle.Default
+) {
     val color = when (statusColor) {
         StatusColor.GREEN -> R.color.green_open
         StatusColor.YELLOW -> R.color.yellow_soon
@@ -26,7 +30,6 @@ fun StatusBadge(statusColor: StatusColor, text: String, textStyle: TextStyle) {
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(top = 8.dp)
     ) {
         Image(
             painter = painterResource(id = R.drawable.circle),
