@@ -116,14 +116,6 @@ fun slideInToBottom(scope: AnimatedContentTransitionScope<NavBackStackEntry>): E
     )
 }
 
-fun slideOutToTop(scope: AnimatedContentTransitionScope<NavBackStackEntry>): ExitTransition {
-    return scope.slideOutOfContainer(
-        AnimatedContentTransitionScope.SlideDirection.Up,
-        animationSpec = tween(300)
-    )
-}
-
-
 fun slideOutToBottom(scope: AnimatedContentTransitionScope<NavBackStackEntry>): ExitTransition {
     return scope.slideOutOfContainer(
         AnimatedContentTransitionScope.SlideDirection.Down,

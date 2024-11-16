@@ -40,7 +40,6 @@ class BookViewModel(private val repository: BookRepository) :
     val canNavigateToResults = MutableLiveData(false)
     val isLoadingBookDetails = MutableLiveData(false)
     val isLoadingBookCopies = MutableLiveData(false)
-    val onResultsScreen = MutableLiveData(false)
     val currentBook = MutableLiveData<Book?>()
     private val pageIndex = mutableIntStateOf(0)
     val selectedSearchType = mutableStateOf(searchTypes.first())
