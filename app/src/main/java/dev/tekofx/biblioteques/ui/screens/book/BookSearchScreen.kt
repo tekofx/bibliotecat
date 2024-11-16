@@ -61,28 +61,20 @@ fun BookSearchScreen(
     )
 
     val isLoading by bookViewModel.isLoadingResults.observeAsState(false)
-    val onResultsScreen by bookViewModel.onResultsScreen.observeAsState(false)
-
+    val search by bookViewModel.canNavigateToResults.observeAsState(false)
     val errorMessage by bookViewModel.errorMessage.observeAsState()
-
     var selectedSearchTpe by bookViewModel.selectedSearchType
 
-    LaunchedEffect(key1 = 1) {
-        Log.d("BookSearchScreen", "LaunchedEffect")
-        bookViewModel.setOnResultsScreen(false)
-        bookViewModel.emptyResults()
-    }
-
-    LaunchedEffect(results) {
-        if (!onResultsScreen && results.items.isNotEmpty()) {
+    LaunchedEffect(search) {
+        if (search) {
             Log.d("BookSearchScreen", "Found ${results.items.size} elements")
             navHostController.navigate(NavigateDestinations.BOOK_RESULTS_ROUTE)
         }
     }
 
+
     Scaffold() {
         BookSearch(
-            visible = !onResultsScreen,
             errorMessage = errorMessage,
             onSearchTextChanged = { bookViewModel.onSearchTextChanged(it) },
             queryText = bookViewModel.queryText,
@@ -97,7 +89,6 @@ fun BookSearchScreen(
 
 @Composable
 fun BookSearch(
-    visible: Boolean,
     errorMessage: String?,
     onSearchTextChanged: (String) -> Unit,
     queryText: String,

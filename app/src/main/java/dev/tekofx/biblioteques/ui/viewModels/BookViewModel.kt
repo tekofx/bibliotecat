@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModel
 import dev.tekofx.biblioteques.dto.BookResponse
 import dev.tekofx.biblioteques.model.BookResult
 import dev.tekofx.biblioteques.model.BookResults
-import dev.tekofx.biblioteques.model.EmptyResults
 import dev.tekofx.biblioteques.model.SearchResult
 import dev.tekofx.biblioteques.model.SearchResults
 import dev.tekofx.biblioteques.model.book.Book
@@ -37,10 +36,11 @@ class BookViewModel(private val repository: BookRepository) :
     ViewModel() {
     val results = MutableLiveData<SearchResults<out SearchResult>>()
 
-    val isLoadingResults = MutableLiveData<Boolean>(false)
-    val isLoadingBookDetails = MutableLiveData<Boolean>(false)
-    val isLoadingBookCopies = MutableLiveData<Boolean>(false)
-    val onResultsScreen = MutableLiveData<Boolean>(false)
+    val isLoadingResults = MutableLiveData(false)
+    val canNavigateToResults = MutableLiveData(false)
+    val isLoadingBookDetails = MutableLiveData(false)
+    val isLoadingBookCopies = MutableLiveData(false)
+    val onResultsScreen = MutableLiveData(false)
     val currentBook = MutableLiveData<Book?>()
     private val pageIndex = mutableIntStateOf(0)
     val selectedSearchType = mutableStateOf(searchTypes.first())
@@ -51,9 +51,9 @@ class BookViewModel(private val repository: BookRepository) :
 
 
     /**
-     * Gets books from the list of results
+     * Gets [SearchResults] from the page of results
      */
-    fun getBooksBySearchResult(url: String) {
+    fun getResults(url: String) {
         Log.d("BookViewModel", "getBooksBySearchResult")
         val response = repository.getHtmlByUrl(url)
         isLoadingResults.postValue(true)
@@ -132,6 +132,7 @@ class BookViewModel(private val repository: BookRepository) :
                     response.body()?.results ?: return onFailure(call, Throwable("Not Results"))
 
                 results.postValue(responseResults)
+                canNavigateToResults.postValue(true)
                 isLoadingResults.postValue(false)
             }
 
@@ -186,7 +187,6 @@ class BookViewModel(private val repository: BookRepository) :
 
     /**
      * Gets the [BookDetails] of a book from the url of a book.
-     * It also gets the [BookCopies][BookCopy] showed in the page of Book details
      */
     fun getBookDetails(bookId: Int) {
         Log.d("BookViewModel", "getBookDetails")
@@ -221,12 +221,12 @@ class BookViewModel(private val repository: BookRepository) :
 
     }
 
-    fun emptyResults() {
-        results.postValue(EmptyResults())
-    }
-
-
-    fun filterBook(id: Int): Book? {
+    /**
+     * Gets a [BookResult] from [results] and converts it to [Book]
+     * @param id: Id of the book
+     * @return [Book] or null if not found
+     */
+    private fun filterBook(id: Int): Book? {
         if (results.value is BookResults) {
             val bookResults = (results.value as BookResults).items
             val currentBookResult2 =
@@ -238,13 +238,12 @@ class BookViewModel(private val repository: BookRepository) :
         return null
     }
 
+    fun setCanNavigateToResults(value: Boolean) {
+        canNavigateToResults.postValue(value)
+    }
+
     fun onSearchTextChanged(text: String) {
         queryText = text
     }
-
-    fun setOnResultsScreen(value: Boolean) {
-        onResultsScreen.postValue(value)
-    }
-
 
 }

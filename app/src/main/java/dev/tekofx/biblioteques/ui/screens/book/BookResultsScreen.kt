@@ -1,11 +1,16 @@
 package dev.tekofx.biblioteques.ui.screens.book
 
+import android.annotation.SuppressLint
 import android.util.Log
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +30,7 @@ import dev.tekofx.biblioteques.ui.components.PaginatedList
 import dev.tekofx.biblioteques.ui.components.book.BookCard
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun BookResultsScreen(
     navHostController: NavHostController,
@@ -41,14 +47,23 @@ fun BookResultsScreen(
 
     LaunchedEffect(key1 = 1) {
         Log.d("BookResultsScreen", "LaunchedEffect. Query: $query searchType: $searchType")
-        bookViewModel.setOnResultsScreen(true)
+        bookViewModel.setCanNavigateToResults(false)
     }
-
-    Column(
+    Scaffold(
         modifier = Modifier
             .padding(horizontal = 10.dp)
-            .padding(top = 10.dp)
+            .padding(top = 10.dp),
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                text = { Text("Cercar") },
+                icon = { Icon(Icons.Filled.Search, contentDescription = "") },
+                onClick = {
+                    navHostController.navigate(NavigateDestinations.BOOK_SEARCH_ROUTE)
+                }
+            )
+        }
     ) {
+
 
         when (results) {
             is BookResults ->
@@ -75,7 +90,7 @@ fun BookResultsScreen(
                     onLoadMore = { bookViewModel.getNextResultsPage() },
                 ) { searchResult ->
                     GeneralSearchResultCard(
-                        onClick = { bookViewModel.getBooksBySearchResult(searchResult.url) },
+                        onClick = { bookViewModel.getResults(searchResult.url) },
                         searchResult = searchResult
                     )
                 }
