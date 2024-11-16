@@ -1,6 +1,11 @@
 package dev.tekofx.biblioteques.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -46,21 +51,17 @@ fun Navigation(
 
         // Books
         composable(
-            route = NavigateDestinations.BOOK_SEARCH_ROUTE
+            route = NavigateDestinations.BOOK_SEARCH_ROUTE,
+            popEnterTransition = ::slideInToBottom,
+            exitTransition = ::slideOutToTop
         ) {
             BookSearchScreen(navController, bookViewModel)
         }
 
         composable(
-            route = NavigateDestinations.BOOK_DETAILS_ROUTE + "/{bookUrl}",
-            arguments = listOf(navArgument("bookUrl") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val bookUrl = backStackEntry.arguments!!.getString("bookUrl")!!
-            BookScreen(bookUrl, bookViewModel)
-        }
-
-        composable(
             route = NavigateDestinations.BOOK_RESULTS_ROUTE + "?query={query}&searchtype={searchtype}",
+            enterTransition = ::slideInToTop,
+            popExitTransition = ::slideOutToBottom,
             arguments = listOf(
                 navArgument("query") {
                     type = NavType.StringType
@@ -79,5 +80,43 @@ fun Navigation(
             BookResultsScreen(navController, bookViewModel, query, searchType)
         }
 
+        composable(
+            route = NavigateDestinations.BOOK_DETAILS_ROUTE + "/{bookUrl}",
+            enterTransition = ::slideInToTop,
+            exitTransition = ::slideOutToBottom,
+            arguments = listOf(navArgument("bookUrl") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val bookUrl = backStackEntry.arguments!!.getString("bookUrl")!!
+            BookScreen(bookUrl, bookViewModel)
+        }
+
     }
+}
+
+fun slideInToTop(scope: AnimatedContentTransitionScope<NavBackStackEntry>): EnterTransition {
+    return scope.slideIntoContainer(
+        AnimatedContentTransitionScope.SlideDirection.Up,
+        animationSpec = tween(300)
+    )
+}
+
+fun slideInToBottom(scope: AnimatedContentTransitionScope<NavBackStackEntry>): EnterTransition {
+    return scope.slideIntoContainer(
+        AnimatedContentTransitionScope.SlideDirection.Down,
+        animationSpec = tween(300)
+    )
+}
+
+fun slideOutToTop(scope: AnimatedContentTransitionScope<NavBackStackEntry>): ExitTransition {
+    return scope.slideOutOfContainer(
+        AnimatedContentTransitionScope.SlideDirection.Up,
+        animationSpec = tween(300)
+    )
+}
+
+fun slideOutToBottom(scope: AnimatedContentTransitionScope<NavBackStackEntry>): ExitTransition {
+    return scope.slideOutOfContainer(
+        AnimatedContentTransitionScope.SlideDirection.Down,
+        animationSpec = tween(300)
+    )
 }

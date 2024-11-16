@@ -19,10 +19,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -72,6 +70,7 @@ fun BookSearchScreen(
     LaunchedEffect(key1 = 1) {
         Log.d("BookSearchScreen", "LaunchedEffect")
         bookViewModel.setOnResultsScreen(false)
+        bookViewModel.emptyResults()
     }
 
     LaunchedEffect(results) {
@@ -81,18 +80,7 @@ fun BookSearchScreen(
         }
     }
 
-    Scaffold(
-        floatingActionButton = {
-            if (results.items.isNotEmpty()) {
-                ExtendedFloatingActionButton(
-                    text = { Text("Cercar") },
-                    icon = { Icon(Icons.Filled.Search, contentDescription = "") },
-                    onClick = {
-                    }
-                )
-            }
-        }
-    ) {
+    Scaffold() {
         BookSearch(
             visible = !onResultsScreen,
             errorMessage = errorMessage,
@@ -126,83 +114,77 @@ fun BookSearch(
         focus.clearFocus()
     }
 
-    AnimatedVisibility(
-        visible = visible,
-        exit = slideOutVertically(targetOffsetY = { it })
-                + fadeOut()
+    Column(
+        modifier = Modifier
+            .padding(horizontal = 10.dp)
+            .fillMaxHeight(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically)
     ) {
-        Column(
+        if (!errorMessage.isNullOrEmpty()) {
+            Text(text = "Llibre no trobat :(")
+        }
+        TextField(
+            colors = TextFieldDefaults.colors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+            ),
+            value = queryText,
+            onValueChange = { onSearchTextChanged(it) },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    search()
+                }
+            ),
+            singleLine = true,
+            trailingIcon = {
+                Icon(
+                    imageVector = Icons.Outlined.Search,
+                    contentDescription = null
+                )
+            },
+            shape = RoundedCornerShape(50.dp),
             modifier = Modifier
-                .padding(horizontal = 10.dp)
-                .fillMaxHeight(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically)
+                .fillMaxWidth(),
+            label = { Text("Cerca ${selectedSearchTpe.text.lowercase()}") }
+        )
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            if (!errorMessage.isNullOrEmpty()) {
-                Text(text = "Llibre no trobat :(")
-            }
-            TextField(
-                colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                ),
-                value = queryText,
-                onValueChange = { onSearchTextChanged(it) },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        search()
-                    }
-                ),
-                singleLine = true,
-                trailingIcon = {
-                    Icon(
-                        imageVector = Icons.Outlined.Search,
-                        contentDescription = null
-                    )
-                },
-                shape = RoundedCornerShape(50.dp),
-                modifier = Modifier
-                    .fillMaxWidth(),
-                label = { Text("Cerca ${selectedSearchTpe.text.lowercase()}") }
+            ButtonSelect(
+                selectedOption = selectedSearchTpe,
+                options = searchTypes,
+                onOptionSelected = {
+                    onOptionSelected(it)
+                }
             )
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                ButtonSelect(
-                    selectedOption = selectedSearchTpe,
-                    options = searchTypes,
-                    onOptionSelected = {
-                        onOptionSelected(it)
-                    }
-                )
-                TextIconButton(
-                    text = "Cerca",
-                    icon = IconResource.fromImageVector(Icons.Outlined.Search),
-                    enabled = queryText.isNotEmpty() && !isLoading,
-                    onClick = {
-                        search()
-                    }
-                )
-            }
-            AnimatedVisibility(
-                visible = isLoading,
-                enter = slideInVertically {
-                    // Slide in from 40 dp from the top.
-                    with(density) { -40.dp.roundToPx() }
-                } + expandVertically(
-                    // Expand from the top.
-                    expandFrom = Alignment.Top
-                ) + fadeIn(
-                    // Fade in with the initial alpha of 0.3f.
-                    initialAlpha = 0.3f
-                ),
-                exit = slideOutVertically() + shrinkVertically(
-                    shrinkTowards = Alignment.Bottom
-                ) + fadeOut()
-            ) {
-                CircularProgressIndicator()
-            }
+            TextIconButton(
+                text = "Cerca",
+                icon = IconResource.fromImageVector(Icons.Outlined.Search),
+                enabled = queryText.isNotEmpty() && !isLoading,
+                onClick = {
+                    search()
+                }
+            )
+        }
+        AnimatedVisibility(
+            visible = isLoading,
+            enter = slideInVertically {
+                // Slide in from 40 dp from the top.
+                with(density) { -40.dp.roundToPx() }
+            } + expandVertically(
+                // Expand from the top.
+                expandFrom = Alignment.Top
+            ) + fadeIn(
+                // Fade in with the initial alpha of 0.3f.
+                initialAlpha = 0.3f
+            ),
+            exit = slideOutVertically() + shrinkVertically(
+                shrinkTowards = Alignment.Bottom
+            ) + fadeOut()
+        ) {
+            CircularProgressIndicator()
         }
     }
 }

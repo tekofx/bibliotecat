@@ -65,6 +65,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
 
+
     implementation(libs.picasso)
     implementation(libs.coil3.coil.compose)
     implementation(libs.coil.network.okhttp)
@@ -72,6 +73,7 @@ dependencies {
     implementation(libs.converter.gson)
 
     implementation(libs.ksoup)
+    implementation(libs.androidx.navigation.compose)
 
     implementation(libs.ksoup.network)
 

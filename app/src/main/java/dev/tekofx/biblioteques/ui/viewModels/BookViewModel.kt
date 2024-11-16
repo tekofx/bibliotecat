@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import dev.tekofx.biblioteques.dto.BookResponse
 import dev.tekofx.biblioteques.model.BookResult
 import dev.tekofx.biblioteques.model.BookResults
+import dev.tekofx.biblioteques.model.EmptyResults
 import dev.tekofx.biblioteques.model.SearchResult
 import dev.tekofx.biblioteques.model.SearchResults
 import dev.tekofx.biblioteques.model.book.Book
@@ -218,6 +219,10 @@ class BookViewModel(private val repository: BookRepository) :
             }
         })
 
+    }
+
+    fun emptyResults() {
+        results.postValue(EmptyResults())
     }
 
 
