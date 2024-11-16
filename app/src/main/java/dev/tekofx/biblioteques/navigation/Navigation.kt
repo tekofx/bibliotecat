@@ -26,8 +26,6 @@ fun Navigation(
     libraryViewModel: LibraryViewModel,
     bookViewModel: BookViewModel
 ) {
-
-
     NavHost(
         navController = navController,
         startDestination = NavigateDestinations.LIBRARIES_ROUTE
@@ -48,12 +46,21 @@ fun Navigation(
             val libraryId = backStackEntry.arguments!!.getString("libraryId")!!
             LibraryScreen(libraryId, libraryViewModel)
         }
-
         // Books
         composable(
             route = NavigateDestinations.BOOK_SEARCH_ROUTE,
             popEnterTransition = ::slideInToBottom,
-            exitTransition = ::slideOutToTop
+            exitTransition = {
+                if (targetState.destination.route != NavigateDestinations.LIBRARIES_ROUTE) {
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Up,
+                        animationSpec = tween(300)
+                    )
+
+                } else {
+                    null
+                }
+            }
         ) {
             BookSearchScreen(navController, bookViewModel)
         }
@@ -61,6 +68,7 @@ fun Navigation(
         composable(
             route = NavigateDestinations.BOOK_RESULTS_ROUTE + "?query={query}&searchtype={searchtype}",
             enterTransition = ::slideInToTop,
+            popEnterTransition = ::slideInToBottom,
             popExitTransition = ::slideOutToBottom,
             arguments = listOf(
                 navArgument("query") {
@@ -84,6 +92,7 @@ fun Navigation(
             route = NavigateDestinations.BOOK_DETAILS_ROUTE + "/{bookUrl}",
             enterTransition = ::slideInToTop,
             exitTransition = ::slideOutToBottom,
+            popEnterTransition = ::slideInToTop,
             arguments = listOf(navArgument("bookUrl") { type = NavType.StringType })
         ) { backStackEntry ->
             val bookUrl = backStackEntry.arguments!!.getString("bookUrl")!!
@@ -113,6 +122,7 @@ fun slideOutToTop(scope: AnimatedContentTransitionScope<NavBackStackEntry>): Exi
         animationSpec = tween(300)
     )
 }
+
 
 fun slideOutToBottom(scope: AnimatedContentTransitionScope<NavBackStackEntry>): ExitTransition {
     return scope.slideOutOfContainer(
