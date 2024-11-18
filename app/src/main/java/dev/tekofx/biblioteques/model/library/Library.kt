@@ -381,7 +381,16 @@ class Library(
 
     override fun toString(): String {
         var output = "------------------------------------------------------\n"
-        output += "$adrecaNom - ${municipality}\nWinterTimetable: ${winterTimetable}\nSummerTimetable ${summerTimeTable}"
+        output += "ID: $id"
+        output += "$adrecaNom - ${municipality}\n"
+        output += "Address $address"
+        output += "Description: $description"
+        output += "BibliotecaVirtualUrl $bibliotecaVirtualUrl"
+        output += "Emails $emails"
+        output += "Phones $phones"
+        output += "WebUrl $webUrl"
+        output += "Image $image"
+        output += "WinterTimetable: ${winterTimetable}\nSummerTimetable $summerTimeTable"
         output += "------------------------------------------------------"
         return output
     }
@@ -393,40 +402,17 @@ class Library(
         other as Library
 
         if (id != other.id) return false
-        println(1)
         if (adrecaNom != other.adrecaNom) return false
-        println(1)
-
         if (description != other.description) return false
-        println(1)
-
         if (municipality != other.municipality) return false
-        println(1)
-
         if (address != other.address) return false
-        println(1)
-
         if (bibliotecaVirtualUrl != other.bibliotecaVirtualUrl) return false
-        println(1)
-
         if (emails != other.emails) return false
-        println(1)
-
         if (phones != other.phones) return false
-        println(1)
-
         if (webUrl != other.webUrl) return false
-        println(1)
-
         if (image != other.image) return false
-        println(1)
-
         if (summerTimeTable != other.summerTimeTable) return false
-        println(1)
-
         if (winterTimetable != other.winterTimetable) return false
-        println(1)
-
 
         return true
     }
