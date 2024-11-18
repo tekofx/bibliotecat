@@ -48,7 +48,6 @@ import dev.tekofx.biblioteques.ui.components.InfoCard
 import dev.tekofx.biblioteques.ui.components.StatusBadge
 import dev.tekofx.biblioteques.ui.components.animations.SlideDirection
 import dev.tekofx.biblioteques.ui.components.animations.SlideVertically
-import dev.tekofx.biblioteques.ui.components.book.BookCopyCard
 import dev.tekofx.biblioteques.ui.theme.Typography
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
 
@@ -248,6 +247,56 @@ fun BookCopiesSegment(
 
 
 }
+
+
+@Composable
+fun BookCopyCard(
+    bookCopy: BookCopy,
+    onClick: (String) -> Unit,
+) {
+    Surface(
+        tonalElevation = 20.dp,
+        shape = RoundedCornerShape(10.dp),
+        onClick = {
+            if (bookCopy.bibliotecaVirtualUrl != null) {
+                onClick(bookCopy.bibliotecaVirtualUrl)
+            }
+        }
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(10.dp)
+                .fillMaxWidth()
+        ) {
+            Text(
+                text = bookCopy.location,
+                style = Typography.titleMedium
+            )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Text(text = "Signatura")
+                Text(text = bookCopy.signature)
+
+            }
+            bookCopy.notes?.let {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Text(text = "Notes")
+                    Text(text = it)
+                }
+            }
+            StatusBadge(
+                bookCopy.statusColor,
+                text = bookCopy.status,
+                textStyle = Typography.bodyMedium
+            )
+
+        }
+    }
+}
+
 
 @Composable
 fun FilterChipComponent(
