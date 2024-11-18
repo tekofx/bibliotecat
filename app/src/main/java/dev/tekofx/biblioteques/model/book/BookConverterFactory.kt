@@ -303,7 +303,6 @@ class BookConverterFactory : Converter.Factory() {
             val location = tdElements[0].text()
             val bibliotecaVirtualUrl = tdElements[0].selectFirst("a")?.attr("href")
                 ?.replace("http://bibliotecavirtual.diba.cat/", "")
-            println("bib $bibliotecaVirtualUrl")
             if (location.isNotEmpty()) {
                 val signature = tdElements[1].text()
                 val status = tdElements[2].text()

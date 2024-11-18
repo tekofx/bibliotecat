@@ -53,9 +53,6 @@ fun <T> PaginatedList(
             val lastVisibleItemIndex =
                 listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
 
-            println(lastVisibleItemIndex)
-            println(listState.layoutInfo.totalItemsCount)
-
             // Check if we have scrolled near the end of the list and more items should be loaded
             lastVisibleItemIndex == listState.layoutInfo.totalItemsCount - 1 && searchResults.areMorePages() && listState.layoutInfo.totalItemsCount != 0 && lastVisibleItemIndex != 0 && (lastVisibleItemIndex + 1) % 12 == 0
         }
