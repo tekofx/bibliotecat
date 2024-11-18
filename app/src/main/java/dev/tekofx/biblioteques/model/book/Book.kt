@@ -51,6 +51,7 @@ class BookDetails(
 
 class BookCopy(
     val location: String,
+    val bibliotecaVirtualUrl: String?,
     val signature: String,
     val status: String,
     val availability: BookCopyAvailability,

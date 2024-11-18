@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import dev.tekofx.biblioteques.model.StatusColor
 import dev.tekofx.biblioteques.model.book.BookCopy
@@ -53,6 +54,7 @@ import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
 @Composable
 fun BookScreen(
     bookUrl: String,
+    navController: NavHostController,
     bookViewModel: BookViewModel
 ) {
 
@@ -122,6 +124,7 @@ fun BookScreen(
                 bookCopies = currentBook!!.bookCopies,
                 showLoading = isLoadingBookCopies,
                 show = !(isLoadingBookCopies || isLoadingBookDetails),
+                navHostController = navController
             )
         }
     }
@@ -177,7 +180,8 @@ fun BookDetailsSegment(
 fun BookCopiesSegment(
     bookCopies: List<BookCopy>,
     showLoading: Boolean,
-    show: Boolean
+    show: Boolean,
+    navHostController: NavHostController
 ) {
     val availableNowChipState = remember { mutableStateOf(false) }
     val availableSoonChipState = remember { mutableStateOf(false) }
@@ -226,7 +230,12 @@ fun BookCopiesSegment(
                     (!availableNowChipState.value || bookCopy.availability == BookCopyAvailability.AVAILABLE)
                             && (!availableSoonChipState.value || bookCopy.availability == BookCopyAvailability.CAN_RESERVE)
                 }
-                filteredBookCopies.forEach { bookCopy: BookCopy -> BookCopyCard(bookCopy) }
+                filteredBookCopies.forEach { bookCopy: BookCopy ->
+                    BookCopyCard(
+                        bookCopy,
+                        navHostController
+                    )
+                }
                 if (filteredBookCopies.isEmpty()) {
                     Text(text = "No hi ha exemplars amb aquests filtres")
                 }

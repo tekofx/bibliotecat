@@ -32,12 +32,20 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
         getLibraries()
     }
 
-    fun getLibrary(pointId: String) {
+    fun getLibrary(pointId: String?, libraryUrl: String?) {
         Log.d(
             "HomeViewModel",
             "getLibrary called with pointId: $pointId"
         )
-        _currentLibrary.postValue(_libraries.value?.find { library: Library -> library.id == pointId })
+
+        when {
+            pointId != null -> _currentLibrary.postValue(_libraries.value?.find { library: Library -> library.id == pointId })
+            libraryUrl != null -> _currentLibrary.postValue(_libraries.value?.find { library: Library ->
+                library.bibliotecaVirtualUrl?.contains(
+                    libraryUrl
+                ) ?: false
+            })
+        }
     }
 
     fun getLibraries() {

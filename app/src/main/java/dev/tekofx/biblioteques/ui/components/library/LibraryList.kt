@@ -1,6 +1,7 @@
 package dev.tekofx.biblioteques.ui.components.library
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -40,6 +41,7 @@ fun LibraryList(
                 LibraryCard(
                     library = library,
                     onClick = {
+                        Log.d("LibraryList", "libraryId " + library.id)
                         onLibraryCardClick(library.id)
                     }
                 )

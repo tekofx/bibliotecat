@@ -98,7 +98,7 @@ fun LibrariesScreen(
             LibraryList(
                 libraries = libraries,
                 onLibraryCardClick = {
-                    navHostController.navigate("${NavigateDestinations.LIBRARY_DETAILS_ROUTE}/${it}")
+                    navHostController.navigate("${NavigateDestinations.LIBRARY_DETAILS_ROUTE}?pointId=${it}")
                 }
             )
         }

@@ -16,7 +16,8 @@ val bookDummy = Book(
             status = "VENÇ EL 28-11-24",
             notes = "V. 2",
             statusColor = StatusColor.YELLOW,
-            availability = BookCopyAvailability.CAN_RESERVE
+            availability = BookCopyAvailability.CAN_RESERVE,
+            bibliotecaVirtualUrl = ""
         ),
         BookCopy(
             location = " BCN CV.Francesca Bonnemaison",
@@ -24,7 +25,8 @@ val bookDummy = Book(
             status = "Disponible",
             notes = "V. 3",
             statusColor = StatusColor.GREEN,
-            availability = BookCopyAvailability.AVAILABLE
+            availability = BookCopyAvailability.AVAILABLE,
+            bibliotecaVirtualUrl = ""
         ),
         BookCopy(
             location = " BCN CV.Francesca Bonnemaison",
@@ -32,7 +34,8 @@ val bookDummy = Book(
             status = "Reserva a sala",
             notes = "V. 3",
             statusColor = StatusColor.RED,
-            availability = BookCopyAvailability.NOT_AVAILABLE
+            availability = BookCopyAvailability.NOT_AVAILABLE,
+            bibliotecaVirtualUrl = ""
         )
     )
 )

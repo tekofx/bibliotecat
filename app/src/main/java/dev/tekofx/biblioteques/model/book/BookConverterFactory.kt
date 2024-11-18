@@ -297,6 +297,9 @@ class BookConverterFactory : Converter.Factory() {
         for (x in trElements) {
             val tdElements = x.select("td")
             val location = tdElements[0].text()
+            val bibliotecaVirtualUrl = tdElements[0].selectFirst("a")?.attr("href")
+                ?.replace("http://bibliotecavirtual.diba.cat/", "")
+            println("bib $bibliotecaVirtualUrl")
             if (location.isNotEmpty()) {
                 val signature = tdElements[1].text()
                 val status = tdElements[2].text()
@@ -304,7 +307,6 @@ class BookConverterFactory : Converter.Factory() {
                 if (notes!!.isEmpty()) {
                     notes = null
                 }
-
 
                 val (bookCopyAvailability, statusColor) = when {
                     status.contains(
@@ -342,7 +344,8 @@ class BookConverterFactory : Converter.Factory() {
                         status = status,
                         notes = notes,
                         availability = bookCopyAvailability,
-                        statusColor = statusColor
+                        statusColor = statusColor,
+                        bibliotecaVirtualUrl = bibliotecaVirtualUrl,
                     )
                 )
             }

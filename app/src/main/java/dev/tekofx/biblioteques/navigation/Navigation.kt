@@ -39,12 +39,22 @@ fun Navigation(
         }
 
         composable(
-            route = "${NavigateDestinations.LIBRARY_DETAILS_ROUTE}/{libraryId}",
-            arguments = listOf(navArgument("libraryId") { type = NavType.StringType }
+            route = "${NavigateDestinations.LIBRARY_DETAILS_ROUTE}?pointId={pointId}&libraryUrl={libraryUrl}",
+            arguments = listOf(
+                navArgument("pointId") {
+                    type = NavType.StringType
+                    nullable = true
+                },
+                navArgument("libraryUrl") {
+                    type = NavType.StringType
+                    nullable = true
+                }
             )
         ) { backStackEntry ->
-            val libraryId = backStackEntry.arguments!!.getString("libraryId")!!
-            LibraryScreen(libraryId, libraryViewModel)
+            val pointId = backStackEntry.arguments!!.getString("pointId")
+            val libraryUrl = backStackEntry.arguments!!.getString("libraryUrl")
+
+            LibraryScreen(pointID = pointId, libraryUrl, libraryViewModel)
         }
         // Books
         composable(
@@ -96,7 +106,7 @@ fun Navigation(
             arguments = listOf(navArgument("bookUrl") { type = NavType.StringType })
         ) { backStackEntry ->
             val bookUrl = backStackEntry.arguments!!.getString("bookUrl")!!
-            BookScreen(bookUrl, bookViewModel)
+            BookScreen(bookUrl, navController, bookViewModel)
         }
 
     }

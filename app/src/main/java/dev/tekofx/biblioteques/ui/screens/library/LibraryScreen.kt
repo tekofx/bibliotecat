@@ -66,7 +66,9 @@ val tabEntries = listOf(
 
 @Composable
 fun LibraryScreen(
-    pointID: String, libraryViewModel: LibraryViewModel = viewModel(
+    pointID: String?,
+    libraryUrl: String?,
+    libraryViewModel: LibraryViewModel = viewModel(
         factory = LibraryViewModelFactory(
             LibraryRepository(LibraryService.getInstance())
         )
@@ -76,7 +78,8 @@ fun LibraryScreen(
     val currentLibrary by libraryViewModel.currentLibrary.observeAsState(null)
     val isLoading by libraryViewModel.isLoading.observeAsState(false)
     LaunchedEffect(key1 = Unit) {
-        libraryViewModel.getLibrary(pointID)
+        Log.d("LibraryScreen", "pointId $pointID libraryUrl $libraryUrl")
+        libraryViewModel.getLibrary(pointID, libraryUrl)
     }
 
     currentLibrary?.let { library ->
@@ -149,6 +152,8 @@ fun LibraryInfo(library: Library) {
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
+
+        library.bibliotecaVirtualUrl?.let { Text(text = it) }
 
         SegmentedButtons {
             SegmentedButtonItem(
