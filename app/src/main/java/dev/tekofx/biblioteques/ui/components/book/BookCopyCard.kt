@@ -11,22 +11,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import dev.tekofx.biblioteques.model.book.BookCopy
-import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.components.StatusBadge
 import dev.tekofx.biblioteques.ui.theme.Typography
 
 @Composable
 fun BookCopyCard(
     bookCopy: BookCopy,
-    navHostController: NavHostController
+    onClick: (String) -> Unit,
 ) {
     Surface(
         tonalElevation = 20.dp,
         shape = RoundedCornerShape(10.dp),
         onClick = {
-            navHostController.navigate(NavigateDestinations.LIBRARY_DETAILS_ROUTE + "?libraryUrl=${bookCopy.bibliotecaVirtualUrl}")
+            if (bookCopy.bibliotecaVirtualUrl != null) {
+                onClick(bookCopy.bibliotecaVirtualUrl)
+            }
         }
     ) {
         Column(

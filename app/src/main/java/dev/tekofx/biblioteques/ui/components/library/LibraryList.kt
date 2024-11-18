@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import dev.tekofx.biblioteques.model.library.Library
 import dev.tekofx.biblioteques.ui.components.animations.SlideDirection
@@ -23,7 +22,6 @@ fun LibraryList(
     libraries: List<Library>
 ) {
     val listState = rememberLazyListState()
-    val density = LocalDensity.current
 
 
     SlideVertically(

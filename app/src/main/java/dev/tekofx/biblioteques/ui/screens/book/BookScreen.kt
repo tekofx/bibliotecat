@@ -43,6 +43,7 @@ import dev.tekofx.biblioteques.model.StatusColor
 import dev.tekofx.biblioteques.model.book.BookCopy
 import dev.tekofx.biblioteques.model.book.BookCopyAvailability
 import dev.tekofx.biblioteques.model.book.BookDetails
+import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.components.InfoCard
 import dev.tekofx.biblioteques.ui.components.StatusBadge
 import dev.tekofx.biblioteques.ui.components.animations.SlideDirection
@@ -124,7 +125,9 @@ fun BookScreen(
                 bookCopies = currentBook!!.bookCopies,
                 showLoading = isLoadingBookCopies,
                 show = !(isLoadingBookCopies || isLoadingBookDetails),
-                navHostController = navController
+                onBookCopyClick = {
+                    navController.navigate(NavigateDestinations.LIBRARY_DETAILS_ROUTE + "?libraryUrl=${it}")
+                }
             )
         }
     }
@@ -181,7 +184,7 @@ fun BookCopiesSegment(
     bookCopies: List<BookCopy>,
     showLoading: Boolean,
     show: Boolean,
-    navHostController: NavHostController
+    onBookCopyClick: (libraryUrl: String) -> Unit,
 ) {
     val availableNowChipState = remember { mutableStateOf(false) }
     val availableSoonChipState = remember { mutableStateOf(false) }
@@ -233,7 +236,7 @@ fun BookCopiesSegment(
                 filteredBookCopies.forEach { bookCopy: BookCopy ->
                     BookCopyCard(
                         bookCopy,
-                        navHostController
+                        onBookCopyClick
                     )
                 }
                 if (filteredBookCopies.isEmpty()) {
