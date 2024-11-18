@@ -33,6 +33,25 @@ data class Interval(val from: LocalTime?, val to: LocalTime?, val observation: S
 
         return output
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Interval
+        if (from != other.from) return false
+        if (to != other.to) return false
+        if (observation != other.observation) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = from?.hashCode() ?: 0
+        result = 31 * result + (to?.hashCode() ?: 0)
+        result = 31 * result + (observation?.hashCode() ?: 0)
+        return result
+    }
 }
 
 /**
@@ -63,6 +82,25 @@ data class DayTimeTable(val intervals: List<Interval>) {
         }
         return output
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as DayTimeTable
+
+        if (intervals != other.intervals) return false
+        if (open != other.open) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = intervals.hashCode()
+        result = 31 * result + open.hashCode()
+        return result
+    }
+
 }
 
 enum class Season {
@@ -107,6 +145,31 @@ data class TimeTable(
         }
         return output
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as TimeTable
+
+        if (start != other.start) return false
+        if (end != other.end) return false
+        if (dayTimetables != other.dayTimetables) return false
+        if (season != other.season) return false
+        if (open != other.open) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = start.hashCode()
+        result = 31 * result + end.hashCode()
+        result = 31 * result + dayTimetables.hashCode()
+        result = 31 * result + season.hashCode()
+        result = 31 * result + open.hashCode()
+        return result
+    }
+
 }
 
 
@@ -323,9 +386,88 @@ class Library(
         return output
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Library
+
+        if (id != other.id) return false
+        println(1)
+        if (adrecaNom != other.adrecaNom) return false
+        println(1)
+
+        if (description != other.description) return false
+        println(1)
+
+        if (municipality != other.municipality) return false
+        println(1)
+
+        if (address != other.address) return false
+        println(1)
+
+        if (bibliotecaVirtualUrl != other.bibliotecaVirtualUrl) return false
+        println(1)
+
+        if (emails != other.emails) return false
+        println(1)
+
+        if (phones != other.phones) return false
+        println(1)
+
+        if (webUrl != other.webUrl) return false
+        println(1)
+
+        if (image != other.image) return false
+        println(1)
+
+        if (summerTimeTable != other.summerTimeTable) return false
+        println(1)
+
+        if (winterTimetable != other.winterTimetable) return false
+        println(1)
+
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + adrecaNom.hashCode()
+        result = 31 * result + description.hashCode()
+        result = 31 * result + municipality.hashCode()
+        result = 31 * result + address.hashCode()
+        result = 31 * result + (bibliotecaVirtualUrl?.hashCode() ?: 0)
+        result = 31 * result + emails.hashCode()
+        result = 31 * result + phones.hashCode()
+        result = 31 * result + webUrl.hashCode()
+        result = 31 * result + image.hashCode()
+        result = 31 * result + summerTimeTable.hashCode()
+        result = 31 * result + winterTimetable.hashCode()
+        return result
+    }
+
 
 }
 
 data class DateInterval(
     val from: LocalDate, val to: LocalDate
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as DateInterval
+
+        if (from != other.from) return false
+        if (to != other.to) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = from.hashCode()
+        result = 31 * result + to.hashCode()
+        return result
+    }
+}

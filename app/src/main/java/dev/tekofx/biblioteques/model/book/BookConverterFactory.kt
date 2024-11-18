@@ -82,6 +82,10 @@ class BookConverterFactory : Converter.Factory() {
     }
 
 
+    /**
+     * Gets a List containing the URLs of other ResultsPages
+     * @return List with urls
+     */
     private fun getPages(doc: Document): List<String> {
         val tdElement = doc.selectFirst("td.browsePager") ?: return emptyList()
         val liElements = tdElement.select("li.wpPagerList")
