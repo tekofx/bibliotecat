@@ -156,7 +156,7 @@ class BookConverterFactory : Converter.Factory() {
         val permanentLinkElement = doc.selectFirst("a.recordnum")
 
 
-        val title = titleElement?.text()?.split("/")?.get(0) ?: ""
+        val title = titleElement?.text()?.split("/")?.get(0)?.trim() ?: ""
         val author = authorElement?.text() ?: ""
         val image = imageElement?.attr("src") ?: ""
         val publication = publicationElement?.text()
@@ -194,7 +194,7 @@ class BookConverterFactory : Converter.Factory() {
         val permanentLinkElement = doc.selectFirst("a.recordnum")
 
 
-        val title = titleElement?.text()?.split("/")?.get(0) ?: ""
+        val title = titleElement?.text()?.split("/")?.get(0)?.trim() ?: ""
         val author = authorElement?.text() ?: ""
         val image = imageElement?.attr("src") ?: ""
         val publication = publicationElement?.text()
