@@ -13,6 +13,7 @@ import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -81,10 +82,12 @@ class BookConverterFactoryTest {
 
         runBlocking {
             val response = sut.getHtmlByUrl("").execute()
-            assert(response.body()?.results is BookResults)
-            assert((response.body()!!.results!!.items.size) == 12)
-            assert((response.body()!!.results!!.pages.size) == 2)
-            assert((response.body()!!.totalBooks) == 28)
+            val results = response.body()!!.results!!
+            val totalBooks = response.body()!!.totalBooks
+            assert(results is BookResults)
+            assertEquals(results.items.size, 12)
+            assertEquals(results.pages.size, 2)
+            assertEquals(totalBooks, 28)
 
         }
     }
@@ -104,22 +107,28 @@ class BookConverterFactoryTest {
             val results = response.body()!!.results!!
             val bookDetails = response.body()!!.bookDetails!!
             assert(results is BookResults)
-            assert((results.items.size) == 1)
-            assert((results.pages.size) == 0)
-            assert((bookDetails.isbn) == "9788419260284")
-            assert((bookDetails.topic) == "Novel·les fantàstiques")
-            assert((bookDetails.edition) == "Primera edición")
-            assert((bookDetails.collection) == "Waw & Wayne ; 1")
-            assert((bookDetails.synopsis) == "Han transcurrido trescientos años desde los acontecimientos de la Triología Original Mistborn. Kelsier y Vin han pasado a formar parte de la historia y la mitología, y el mundo de Scadrial se halla a las puertas de la modernidad. Sin embargo, en las tierras fronterizas conocidas como los Áridos, las antiguas magias todavía son una herramienta crucial para quienes defienden el orden y la justicia.")
-            assert((bookDetails.description) == "347 pàgines ; 23 cm")
-            assert((bookDetails.bookCopiesUrl) == "search~S171*cat?/.b2084010/.b2084010/1,1,1,B/holdings~2084010&FF=&1,0,")
+            assertEquals(results.items.size, 1)
+            assertEquals(results.pages.size, 0)
+            assertEquals(bookDetails.isbn, "9788419260284")
+            assertEquals(bookDetails.topic, "Novel·les fantàstiques")
+            assertEquals(bookDetails.edition, "Primera edición")
+            assertEquals(bookDetails.collection, "Waw & Wayne ; 1")
+            assertEquals(
+                bookDetails.synopsis,
+                "Han transcurrido trescientos años desde los acontecimientos de la Triología Original Mistborn. Kelsier y Vin han pasado a formar parte de la historia y la mitología, y el mundo de Scadrial se halla a las puertas de la modernidad. Sin embargo, en las tierras fronterizas conocidas como los Áridos, las antiguas magias todavía son una herramienta crucial para quienes defienden el orden y la justicia."
+            )
+            assertEquals(bookDetails.description, "347 pàgines ; 23 cm")
+            assertEquals(
+                bookDetails.bookCopiesUrl,
+                "search~S171*cat?/.b2084010/.b2084010/1,1,1,B/holdings~2084010&FF=&1,0,"
+            )
         }
     }
 
     @Test
-    fun `search by any title and get multiple results`() {
+    fun `search by title and get multiple general results`() {
         val htmlResponse =
-            readContentFromFilePath("src/test/resources/book/search_by_title_get_multiple_results.html")
+            readContentFromFilePath("src/test/resources/book/search_by_title_get_multiple_general_results.html")
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(200)
@@ -130,17 +139,54 @@ class BookConverterFactoryTest {
             val response = sut.getHtmlByUrl("").execute()
             val results = response.body()!!.results!!
             assert(results is GeneralResults)
-            assert(results.items.size == 8)
+            assertEquals(results.items.size, 8)
             assert(results.pages.isEmpty())
-            assert(results.numItems == 8)
+            assertEquals(results.numItems, 8)
         }
     }
 
     @Test
-    fun `search by titol`() {
+    fun `search by title and get multiple book results`() {
+        val htmlResponse =
+            readContentFromFilePath("src/test/resources/book/search_by_title_get_multiple_book_results.html")
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .setBody(htmlResponse)
+        )
+
         runBlocking {
-            val response = realBookRepository.findBooks("mistborn", "t").execute()
-            assert(response.body()?.results is SearchResults)
+            val response = sut.getHtmlByUrl("").execute()
+            val results = response.body()!!.results!!
+            assert(results is BookResults)
+            assertEquals(results.items.size, 6)
+            assert(results.pages.isEmpty())
+            assertEquals(results.numItems, 6)
+        }
+    }
+
+    @Test
+    fun `search by title and get one book result`() {
+        val htmlResponse =
+            readContentFromFilePath("src/test/resources/book/search_by_title_get_one_book_result.html")
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .setBody(htmlResponse)
+        )
+
+        runBlocking {
+            val response = sut.getHtmlByUrl("").execute()
+            val results = response.body()!!.results!!
+            val book = response.body()!!.book!!
+
+            assert(results is BookResults)
+            assertEquals(results.items.size, 1)
+            assert(results.pages.isEmpty())
+            assertEquals(results.numItems, 1)
+            println(book.title)
+            assertEquals(book.title, "Aleación de ley : una novela de Mistborn")
+            assertEquals(book.author, "Sanderson, Brandon")
         }
     }
 
@@ -164,8 +210,9 @@ class BookConverterFactoryTest {
     fun `search by issn and get list of issns`() {
         runBlocking {
             val response = realBookRepository.findBooks("978", "i").execute()
+            val results = response.body()?.results!!
             assert(response.body()?.results is SearchResults)
-            assert((response.body()?.results?.items?.size ?: 0) > 0)
+            assert(results.items.isNotEmpty())
 
         }
     }
@@ -183,9 +230,9 @@ class BookConverterFactoryTest {
     fun `search by signature and get list`() {
         runBlocking {
             val response = realBookRepository.findBooks("N San", "c").execute()
+            val results = response.body()?.results!!
             assert(response.body()?.results is SearchResults)
-            assert((response.body()?.results?.items?.size)!! > 0)
-
+            assert(results.items.isNotEmpty())
         }
     }
 
@@ -193,8 +240,9 @@ class BookConverterFactoryTest {
     fun `search by signature and not found`() {
         runBlocking {
             val response = realBookRepository.findBooks("san", "c").execute()
+            val results = response.body()?.results!!
             assert(response.body()?.results is SearchResults)
-            assert((response.body()?.results?.items?.size) == 0)
+            assert(results.items.isNotEmpty())
 
         }
     }
