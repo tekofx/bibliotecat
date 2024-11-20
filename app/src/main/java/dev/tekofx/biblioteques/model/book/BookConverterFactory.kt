@@ -243,7 +243,7 @@ class BookConverterFactory : Converter.Factory() {
                 ?.nextElementSibling()
 
         val topicElement =
-            doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Col·lecció" }
+            doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Tema" }
                 ?.nextElementSibling()
 
 
