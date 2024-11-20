@@ -4,12 +4,12 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
 
-var firstDayOfWinter = LocalDate.of(2024, 9, 23)// Monday
-var lastDayOfWinter = LocalDate.of(2025, 6, 20) // Friday
-var firstDayOfSummer = LocalDate.of(2025, 6, 21) // Saturday
-var lastDayOfSummer = LocalDate.of(2025, 9, 22) // Monday
+var firstDayOfWinterDummy = LocalDate.of(2024, 9, 23)// Monday
+var lastDayOfWinterDummy = LocalDate.of(2025, 6, 20) // Friday
+var firstDayOfSummerDummy = LocalDate.of(2025, 6, 21) // Saturday
+var lastDayOfSummerDummy = LocalDate.of(2025, 9, 22) // Monday
 
-var mondayWinterTimetable = DayTimeTable(
+var mondayWinterTimetableDummy = DayTimeTable(
     intervals = listOf(
 
 
@@ -25,7 +25,7 @@ var mondayWinterTimetable = DayTimeTable(
     )
 )
 
-var tuesdayWinterTimetable = DayTimeTable(
+var tuesdayWinterTimetableDummy = DayTimeTable(
     intervals = listOf(
         Interval(
             from = LocalTime.of(10, 0),
@@ -36,7 +36,7 @@ var tuesdayWinterTimetable = DayTimeTable(
 
 )
 
-var wednesdayWinterTimetable = DayTimeTable(
+var wednesdayWinterTimetableDummy = DayTimeTable(
     listOf(
         Interval(
             from = LocalTime.of(11, 20),
@@ -51,7 +51,7 @@ var wednesdayWinterTimetable = DayTimeTable(
 
 )
 
-var thursdayWinterTimetable = DayTimeTable(
+var thursdayWinterTimetableDummy = DayTimeTable(
     listOf(
 
         Interval(
@@ -62,7 +62,7 @@ var thursdayWinterTimetable = DayTimeTable(
 
 )
 
-var fridayWinterTimetable = DayTimeTable(
+var fridayWinterTimetableDummy = DayTimeTable(
     listOf(
 
         Interval(
@@ -72,7 +72,7 @@ var fridayWinterTimetable = DayTimeTable(
     )
 )
 
-var saturdayWinterTimetable = DayTimeTable(
+var saturdayWinterTimetableDummy = DayTimeTable(
     listOf(
 
         Interval(
@@ -83,12 +83,12 @@ var saturdayWinterTimetable = DayTimeTable(
     )
 )
 
-var sundayWinterTimetable = DayTimeTable(
+var sundayWinterTimetableDummy = DayTimeTable(
     listOf()
 )
 
 
-var mondaySummerTimetable = DayTimeTable(
+var mondaySummerTimetableDummy = DayTimeTable(
     intervals = listOf(
 
 
@@ -104,7 +104,7 @@ var mondaySummerTimetable = DayTimeTable(
     )
 )
 
-var tuesdaySummerTimetable = DayTimeTable(
+var tuesdaySummerTimetableDummy = DayTimeTable(
     intervals = listOf(
         Interval(
             from = LocalTime.of(17, 0),
@@ -115,7 +115,7 @@ var tuesdaySummerTimetable = DayTimeTable(
 
 )
 
-var wednesdaySummerTimetable = DayTimeTable(
+var wednesdaySummerTimetableDummy = DayTimeTable(
     listOf(
         Interval(
             from = LocalTime.of(9, 20),
@@ -130,7 +130,7 @@ var wednesdaySummerTimetable = DayTimeTable(
 
 )
 
-var thursdaySummerTimetable = DayTimeTable(
+var thursdaySummerTimetableDummy = DayTimeTable(
     listOf(
 
         Interval(
@@ -141,7 +141,7 @@ var thursdaySummerTimetable = DayTimeTable(
 
 )
 
-var fridaySummerTimetable = DayTimeTable(
+var fridaySummerTimetableDummy = DayTimeTable(
     listOf(
 
         Interval(
@@ -151,7 +151,7 @@ var fridaySummerTimetable = DayTimeTable(
     )
 )
 
-var saturdaySummerTimetable = DayTimeTable(
+var saturdaySummerTimetableDummy = DayTimeTable(
     listOf(
 
         Interval(
@@ -162,36 +162,36 @@ var saturdaySummerTimetable = DayTimeTable(
     )
 )
 
-var sundaySummerTimetable = DayTimeTable(
+var sundaySummerTimetableDummy = DayTimeTable(
     listOf()
 )
 
-var winterTimetable = TimeTable(
-    start = firstDayOfWinter,
-    end = lastDayOfWinter,
+var winterTimetableDummy = TimeTable(
+    start = firstDayOfWinterDummy,
+    end = lastDayOfWinterDummy,
     dayTimetables = mapOf(
-        DayOfWeek.MONDAY to mondayWinterTimetable,
-        DayOfWeek.TUESDAY to tuesdayWinterTimetable,
-        DayOfWeek.WEDNESDAY to wednesdayWinterTimetable,
-        DayOfWeek.THURSDAY to thursdayWinterTimetable,
-        DayOfWeek.FRIDAY to fridayWinterTimetable,
-        DayOfWeek.SATURDAY to saturdayWinterTimetable,
-        DayOfWeek.SUNDAY to sundayWinterTimetable
+        DayOfWeek.MONDAY to mondayWinterTimetableDummy,
+        DayOfWeek.TUESDAY to tuesdayWinterTimetableDummy,
+        DayOfWeek.WEDNESDAY to wednesdayWinterTimetableDummy,
+        DayOfWeek.THURSDAY to thursdayWinterTimetableDummy,
+        DayOfWeek.FRIDAY to fridayWinterTimetableDummy,
+        DayOfWeek.SATURDAY to saturdayWinterTimetableDummy,
+        DayOfWeek.SUNDAY to sundayWinterTimetableDummy
     ),
     season = Season.WINTER
 )
 
-var summerTimetable = TimeTable(
-    start = firstDayOfSummer,
-    end = lastDayOfSummer,
+var dummySummerTimetableDummy = TimeTable(
+    start = firstDayOfSummerDummy,
+    end = lastDayOfSummerDummy,
     dayTimetables = mapOf(
-        DayOfWeek.MONDAY to mondaySummerTimetable,
-        DayOfWeek.TUESDAY to tuesdaySummerTimetable,
-        DayOfWeek.WEDNESDAY to wednesdaySummerTimetable,
-        DayOfWeek.THURSDAY to thursdaySummerTimetable,
-        DayOfWeek.FRIDAY to fridaySummerTimetable,
-        DayOfWeek.SATURDAY to saturdaySummerTimetable,
-        DayOfWeek.SUNDAY to sundaySummerTimetable
+        DayOfWeek.MONDAY to mondaySummerTimetableDummy,
+        DayOfWeek.TUESDAY to tuesdaySummerTimetableDummy,
+        DayOfWeek.WEDNESDAY to wednesdaySummerTimetableDummy,
+        DayOfWeek.THURSDAY to thursdaySummerTimetableDummy,
+        DayOfWeek.FRIDAY to fridaySummerTimetableDummy,
+        DayOfWeek.SATURDAY to saturdaySummerTimetableDummy,
+        DayOfWeek.SUNDAY to sundaySummerTimetableDummy
     ),
     season = Season.SUMMER
 )
@@ -209,6 +209,6 @@ var LibraryDummy = Library(
     phones = listOf("123456789"),
     webUrl = "https://test.com",
     image = "https://bibliotecavirtual.diba.cat/documents/350986/0/P1120129.JPGfoto+portada.jpg/9ff2c56c-7424-4d95-b734-0ef67225a281?t=1364040065786",
-    summerTimeTable = summerTimetable,
-    winterTimetable = winterTimetable,
+    summerTimeTable = dummySummerTimetableDummy,
+    winterTimetable = winterTimetableDummy,
 )

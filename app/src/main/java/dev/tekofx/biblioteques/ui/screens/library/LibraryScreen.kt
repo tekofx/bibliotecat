@@ -33,14 +33,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
-import dev.tekofx.biblioteques.call.LibraryService
 import dev.tekofx.biblioteques.model.library.Library
 import dev.tekofx.biblioteques.model.library.LibraryDummy
 import dev.tekofx.biblioteques.model.library.TimeTable
 import dev.tekofx.biblioteques.model.library.seasonTranslation
-import dev.tekofx.biblioteques.repository.LibraryRepository
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.ContactType
 import dev.tekofx.biblioteques.ui.components.InfoIntentCard
@@ -51,7 +48,6 @@ import dev.tekofx.biblioteques.ui.components.TabEntry
 import dev.tekofx.biblioteques.ui.components.TabRowComponent
 import dev.tekofx.biblioteques.ui.theme.Typography
 import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModel
-import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModelFactory
 import dev.tekofx.biblioteques.utils.formatDate
 import dev.tekofx.biblioteques.utils.formatDayOfWeek
 import java.time.LocalDate
@@ -68,11 +64,7 @@ val tabEntries = listOf(
 fun LibraryScreen(
     pointID: String?,
     libraryUrl: String?,
-    libraryViewModel: LibraryViewModel = viewModel(
-        factory = LibraryViewModelFactory(
-            LibraryRepository(LibraryService.getInstance())
-        )
-    )
+    libraryViewModel: LibraryViewModel,
 ) {
     Log.d("LibraryScreen", "Navigated to $pointID")
     val currentLibrary by libraryViewModel.currentLibrary.observeAsState(null)
@@ -117,7 +109,11 @@ fun LibraryScreen(
                 TabRowComponent(
                     tabEntries = tabEntries,
                     contentScreens = listOf(
-                        { LibraryInfo(library) },
+                        {
+                            LibraryInfo(
+                                library
+                            )
+                        },
                         { LibraryLocation(library) },
                         { LibraryContact(library) },
                     ),
@@ -144,43 +140,42 @@ fun LibraryScreen(
 }
 
 @Composable
-fun LibraryInfo(library: Library) {
+fun LibraryInfo(
+    library: Library
 
+) {
+    println("--------------\nLibraryInfo ${library} ----------------------\n")
     var selectedTabIndex by remember { mutableIntStateOf(0) }
-    val currentSeasonTimetable = remember { library.getCurrentSeasonTimetable(LocalDate.now()) }
-    val nextSeasonTimetable = remember { library.getNextSeasonTimetable(LocalDate.now()) }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
 
-        library.bibliotecaVirtualUrl?.let { Text(text = it) }
 
         SegmentedButtons {
             SegmentedButtonItem(
                 selected = selectedTabIndex == 0,
                 onClick = { selectedTabIndex = 0 },
-                label = { Text(text = "Horari Actual (${seasonTranslation[currentSeasonTimetable.season]})") },
+                label = { Text(text = "Horari Actual (${seasonTranslation[library.currentSeasonTimetable.season]})") },
             )
             SegmentedButtonItem(
                 selected = selectedTabIndex == 1,
                 onClick = { selectedTabIndex = 1 },
-                label = { Text(text = "Horari ${seasonTranslation[nextSeasonTimetable.season]}") },
+                label = { Text(text = "Horari ${seasonTranslation[library.nextSeasonTimeTables.season]}") },
             )
 
         }
         when (selectedTabIndex) {
-            0 -> LibraryTimeTable(currentSeasonTimetable)
-            1 -> LibraryTimeTable(nextSeasonTimetable)
+            0 -> LibraryTimeTable(library.currentSeasonTimetable)
+            1 -> {
+                LibraryTimeTable(library.nextSeasonTimeTables)
+            }
         }
-
     }
-
 }
 
 @Composable
 fun LibraryTimeTable(timeTable: TimeTable) {
-
-
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally

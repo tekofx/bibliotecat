@@ -203,6 +203,15 @@ class Library(
     val winterTimetable: TimeTable,
 ) {
 
+    val currentSeasonTimetable: TimeTable
+    val nextSeasonTimeTables: TimeTable
+
+    init {
+        val currentDate = LocalDate.now()
+        currentSeasonTimetable = getCurrentSeasonTimetable(currentDate)
+        nextSeasonTimeTables = getNextSeasonTimetable()
+    }
+
 
     /**
      * Checks if the library is open at a given date and time.
@@ -250,7 +259,7 @@ class Library(
      * @param date The date to check.
      * @return The current timetable.
      */
-    fun getCurrentSeasonTimetable(date: LocalDate): TimeTable {
+    private fun getCurrentSeasonTimetable(date: LocalDate): TimeTable {
         return if (date == summerTimeTable.start || date == summerTimeTable.end) {
             summerTimeTable
         } else if (date.isAfter(summerTimeTable.start) && date.isBefore(summerTimeTable.end)) {
@@ -266,11 +275,12 @@ class Library(
      * @param date The date to check.
      * @return The next season timetable.
      */
-    fun getNextSeasonTimetable(date: LocalDate): TimeTable {
-        if (getCurrentSeasonTimetable(date) == summerTimetable) {
+    private fun getNextSeasonTimetable(): TimeTable {
+        if (currentSeasonTimetable == summerTimeTable) {
             return winterTimetable
         }
-        return summerTimetable
+
+        return summerTimeTable
     }
 
     /**
@@ -380,18 +390,17 @@ class Library(
 
 
     override fun toString(): String {
-        var output = "------------------------------------------------------\n"
+        var output = ""
         output += "ID: $id"
         output += "$adrecaNom - ${municipality}\n"
-        output += "Address $address"
-        output += "Description: $description"
-        output += "BibliotecaVirtualUrl $bibliotecaVirtualUrl"
-        output += "Emails $emails"
-        output += "Phones $phones"
-        output += "WebUrl $webUrl"
-        output += "Image $image"
-        output += "WinterTimetable: ${winterTimetable}\nSummerTimetable $summerTimeTable"
-        output += "------------------------------------------------------"
+        output += "Address $address\n"
+        output += "Description: $description\n"
+        output += "BibliotecaVirtualUrl $bibliotecaVirtualUrl\n"
+        output += "Emails $emails\n"
+        output += "Phones $phones\n"
+        output += "WebUrl $webUrl\n"
+        output += "Image $image\n"
+        output += "WinterTimetable: ${winterTimetable}\nSummerTimetable $summerTimeTable\nNextSeasonTimetable $nextSeasonTimeTables"
         return output
     }
 
