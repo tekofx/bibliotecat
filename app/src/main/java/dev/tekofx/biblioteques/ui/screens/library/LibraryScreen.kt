@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -174,47 +175,38 @@ fun LibraryTimeTable(timeTable: TimeTable) {
 
         timeTable.dayTimetables.forEach {
             Surface(
-                tonalElevation = if (it.value.open) 100.dp else 5.dp,
+                tonalElevation = if (it.value.open || it.value.observation.isNotEmpty()) 100.dp else 5.dp,
                 shape = RoundedCornerShape(10.dp),
             ) {
 
-                Row(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-
                     Text(
                         text = formatDayOfWeek(it.key),
-                        style = Typography.bodyLarge
+                        style = Typography.bodyLarge,
+                        fontWeight = FontWeight.Bold
                     )
-                    if (it.value.intervals.size > 1) {
-                        Column {
-                            Text(
-                                text = it.value.intervals[0].toString(),
-                                style = Typography.bodyMedium
-                            )
-                            Text(
-                                text = it.value.intervals[1].toString(),
-                                style = Typography.bodyMedium
-                            )
-                        }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceAround,
 
-                    } else {
-
+                        ) {
                         Text(
                             text = it.value.toString(),
                             style = Typography.bodyLarge
                         )
                     }
                 }
+
+
             }
         }
     }
-
-
 }
 
 

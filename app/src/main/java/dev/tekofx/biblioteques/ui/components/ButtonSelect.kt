@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
-import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -18,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.ui.IconResource
 
 
@@ -39,8 +39,8 @@ fun ButtonSelect(
         contentAlignment = Alignment.Center
     ) {
         TextIconButton(
-            text = "Filters",
-            icon = IconResource.fromImageVector(Icons.Outlined.MoreVert),
+            text = "Filtres",
+            icon = IconResource.fromDrawableResource(R.drawable.filter_list),
             onClick = { expanded = true }
         )
 

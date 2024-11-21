@@ -24,8 +24,10 @@ data class Interval(val from: LocalTime?, val to: LocalTime?, val observation: S
         if (this.from == null && observation == null) {
             return "Tancat"
         }
-
-        var output = "$from - $to"
+        var output = ""
+        if (from != null && to != null) {
+            output = "$from - $to"
+        }
 
         if (observation != null) {
             output += " ($observation)"
@@ -62,12 +64,16 @@ data class Interval(val from: LocalTime?, val to: LocalTime?, val observation: S
 data class DayTimeTable(val intervals: List<Interval>) {
 
     var open = false
-
+    var observation = ""
 
     init {
         for (interval in intervals) {
             if (!interval.isNull()) {
                 open = true
+
+            }
+            if (!interval.observation.isNullOrEmpty()) {
+                observation = interval.observation
             }
         }
     }
