@@ -20,6 +20,8 @@ import java.time.LocalTime
 class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() {
 
     val isLoading = MutableLiveData<Boolean>(false)
+    val showOnlyOpen = MutableLiveData<Boolean>(false)
+
     val libraries = MutableLiveData<List<Library>>()
     private val _currentLibrary = MutableLiveData<Library?>()
     val currentLibrary: LiveData<Library?> = _currentLibrary
@@ -94,10 +96,16 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
         })
     }
 
-    fun filterOpen(open: Boolean) {
+    fun filterByOpenStatus(open: Boolean) {
         libraries.postValue(_libraries.value?.filter {
             it.isOpen(LocalDate.now(), LocalTime.now()) == open
         })
+
+        if (open) {
+            showOnlyOpen.postValue(true)
+        } else {
+            showOnlyOpen.postValue(false)
+        }
     }
 
 }
