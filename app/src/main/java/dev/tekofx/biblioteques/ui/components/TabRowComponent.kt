@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -41,13 +42,21 @@ fun TabRowComponent(
     val pagerState = rememberPagerState {
         tabEntries.size
     }
+    var isTabClick by remember { mutableStateOf(false) }
 
+    // Set content when clicking tab
     LaunchedEffect(selectedTabIndex) {
-        pagerState.animateScrollToPage(selectedTabIndex)
+        if (isTabClick) {
+            pagerState.animateScrollToPage(selectedTabIndex)
+            isTabClick = false
+        }
     }
 
+    // Set selected tab when scrolling
     LaunchedEffect(pagerState.currentPage) {
-        selectedTabIndex = pagerState.currentPage
+        if (!isTabClick) {
+            selectedTabIndex = pagerState.currentPage
+        }
     }
 
     // Column layout to arrange tabs vertically and display content screens
@@ -61,7 +70,10 @@ fun TabRowComponent(
             tabEntries.forEachIndexed { index, tabEntry ->
                 Tab(
                     selected = selectedTabIndex == index,
-                    onClick = { selectedTabIndex = index },
+                    onClick = {
+                        selectedTabIndex = index
+                        isTabClick = true
+                    },
                     text = {
                         Text(
                             text = tabEntry.name,
