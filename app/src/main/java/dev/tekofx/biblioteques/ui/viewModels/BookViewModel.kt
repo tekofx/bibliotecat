@@ -65,11 +65,12 @@ class BookViewModel(private val repository: BookRepository) :
 
                 results.postValue(resultsResponse)
                 isLoadingResults.postValue(false)
+                errorMessage.postValue("")
             }
 
             override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
                 Log.e("BookViewModel", "Error getting results page: ${t.message.toString()}")
-                errorMessage.postValue("Book not found")
+                errorMessage.postValue("no hi ha resultats")
                 isLoadingResults.postValue(false)
             }
 
@@ -235,6 +236,10 @@ class BookViewModel(private val repository: BookRepository) :
 
         }
         return null
+    }
+
+    fun removeCurrentBook() {
+        currentBook.postValue(null)
     }
 
     fun setCanNavigateToResults(value: Boolean) {
