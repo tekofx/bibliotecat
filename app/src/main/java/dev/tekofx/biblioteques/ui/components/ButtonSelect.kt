@@ -49,7 +49,10 @@ fun ButtonSelect(
                 DropdownMenuItem(
                     modifier = Modifier.background(if (selectedOption == option) MaterialTheme.colorScheme.inverseOnSurface else Color.Transparent),
                     text = { Text(option.text) },
-                    onClick = { onOptionSelected(option) },
+                    onClick = {
+                        onOptionSelected(option)
+                        expanded = false
+                    },
                     trailingIcon = {
                         if (selectedOption == option) {
                             Icon(Icons.Outlined.Check, contentDescription = "")
