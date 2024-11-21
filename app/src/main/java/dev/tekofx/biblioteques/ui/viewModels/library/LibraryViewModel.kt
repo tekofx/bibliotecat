@@ -105,14 +105,14 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
         }
     }
 
-    fun filterByOpenStatus(open: Boolean) {
-        libraries.postValue(_libraries.value?.filter {
-            it.isOpen(LocalDate.now(), LocalTime.now()) == open
-        })
-
-        if (open) {
+    fun filterByOpenStatus(switchActive: Boolean) {
+        if (switchActive) {
             showOnlyOpen.postValue(true)
+            libraries.postValue(_libraries.value?.filter {
+                it.isOpen(LocalDate.now(), LocalTime.now())
+            })
         } else {
+            libraries.postValue(_libraries.value)
             showOnlyOpen.postValue(false)
         }
     }
