@@ -62,6 +62,7 @@ fun LibrariesScreen(
 
 
     Scaffold(
+        modifier = Modifier.padding(horizontal = 5.dp),
         floatingActionButton = {
             if (!isLoading) {
                 ExtendedFloatingActionButton(
