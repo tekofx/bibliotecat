@@ -207,15 +207,29 @@ class Library(
     var image: String,
     val summerTimeTable: TimeTable,
     val winterTimetable: TimeTable,
+    private var currentDate: LocalDate? = null
 ) {
 
-    val currentSeasonTimetable: TimeTable
-    val nextSeasonTimeTables: TimeTable
+    var currentSeasonTimetable: TimeTable
+    var nextSeasonTimeTables: TimeTable
 
     init {
-        val currentDate = LocalDate.now()
-        currentSeasonTimetable = getCurrentSeasonTimetable(currentDate)
+        if (currentDate == null) {
+            currentDate = LocalDate.now()
+
+        }
+        currentSeasonTimetable = getCurrentSeasonTimetable(currentDate!!)
         nextSeasonTimeTables = getNextSeasonTimetable()
+    }
+
+    private fun initilializeLibrary() {
+        currentSeasonTimetable = getCurrentSeasonTimetable(currentDate!!)
+        nextSeasonTimeTables = getNextSeasonTimetable()
+    }
+
+    fun setCurrentDate(date: LocalDate) {
+        currentDate = date
+        initilializeLibrary()
     }
 
 

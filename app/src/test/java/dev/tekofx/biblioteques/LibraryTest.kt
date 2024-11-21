@@ -331,11 +331,16 @@ class LibraryTest {
     @Test
     fun getCurrentSeasonTimetableTest() {
         val day = LocalDate.of(2024, 10, 21)
-        assert(libraryTest.getCurrentSeasonTimetable(day) == winterTimetable)
-        assert(libraryTest.getCurrentSeasonTimetable(lastDayOfWinter) == winterTimetable)
-        assert(libraryTest.getCurrentSeasonTimetable(lastDayOfSummer) == summerTimetable)
-        assert(libraryTest.getCurrentSeasonTimetable(firstDayOfSummer) == summerTimetable)
-        assert(libraryTest.getCurrentSeasonTimetable(firstDayOfWinter) == winterTimetable)
+        libraryTest.setCurrentDate(day)
+        assert(libraryTest.currentSeasonTimetable == winterTimetable)
+        libraryTest.setCurrentDate(lastDayOfWinter)
+        assert(libraryTest.currentSeasonTimetable == winterTimetable)
+        libraryTest.setCurrentDate(lastDayOfSummer)
+        assert(libraryTest.currentSeasonTimetable == summerTimetable)
+        libraryTest.setCurrentDate(firstDayOfSummer)
+        assert(libraryTest.currentSeasonTimetable == summerTimetable)
+        libraryTest.setCurrentDate(firstDayOfWinter)
+        assert(libraryTest.currentSeasonTimetable == winterTimetable)
     }
 
 
