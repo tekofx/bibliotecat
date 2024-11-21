@@ -184,12 +184,12 @@ class BookConverterFactoryTest {
             assertEquals(results.items.size, 1)
             assert(results.pages.isEmpty())
             assertEquals(results.numItems, 1)
-            println(book.title)
             assertEquals(book.title, "Aleación de ley : una novela de Mistborn")
             assertEquals(book.author, "Sanderson, Brandon")
         }
     }
 
+    // Test real connections
     @Test
     fun `search by author`() {
         runBlocking {
@@ -243,7 +243,6 @@ class BookConverterFactoryTest {
             val results = response.body()?.results!!
             assert(response.body()?.results is SearchResults)
             assert(results.items.isNotEmpty())
-
         }
     }
 

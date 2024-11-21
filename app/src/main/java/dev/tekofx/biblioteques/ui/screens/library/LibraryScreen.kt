@@ -109,11 +109,7 @@ fun LibraryScreen(
                 TabRowComponent(
                     tabEntries = tabEntries,
                     contentScreens = listOf(
-                        {
-                            LibraryInfo(
-                                library
-                            )
-                        },
+                        { LibraryInfo(library) },
                         { LibraryLocation(library) },
                         { LibraryContact(library) },
                     ),
@@ -144,7 +140,6 @@ fun LibraryInfo(
     library: Library
 
 ) {
-    println("--------------\nLibraryInfo ${library} ----------------------\n")
     var selectedTabIndex by remember { mutableIntStateOf(0) }
 
     Column(
