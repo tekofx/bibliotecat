@@ -142,7 +142,7 @@ fun SearchBottomSheet(
                     shape = RoundedCornerShape(50.dp),
                     modifier = Modifier
                         .fillMaxWidth(),
-                    label = { Text("Nom Biblioteca") }
+                    label = { Text("Nom Biblioteca o municipi") }
                 )
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
