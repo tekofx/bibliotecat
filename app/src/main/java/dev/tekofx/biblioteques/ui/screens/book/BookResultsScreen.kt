@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -37,6 +38,7 @@ import dev.tekofx.biblioteques.model.GeneralResults
 import dev.tekofx.biblioteques.model.SearchResult
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.components.PaginatedList
+import dev.tekofx.biblioteques.ui.components.SearchType
 import dev.tekofx.biblioteques.ui.theme.Typography
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
 
@@ -53,6 +55,8 @@ fun BookResultsScreen(
         EmptyResults()
     )
     val isLoading by bookViewModel.isLoadingResults.observeAsState(false)
+    val selectedSearchType by bookViewModel.selectedSearchType
+
 
 
     LaunchedEffect(key1 = 1) {
@@ -102,7 +106,8 @@ fun BookResultsScreen(
                 ) { searchResult ->
                     GeneralSearchResultCard(
                         onClick = { bookViewModel.getResults(searchResult.url) },
-                        searchResult = searchResult
+                        searchResult = searchResult,
+                        selectedSearchType = selectedSearchType
                     )
                 }
         }
@@ -170,7 +175,8 @@ fun BookCard(
 @Composable
 fun GeneralSearchResultCard(
     onClick: () -> Unit,
-    searchResult: SearchResult
+    searchResult: SearchResult,
+    selectedSearchType: SearchType
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -183,11 +189,25 @@ fun GeneralSearchResultCard(
             modifier = Modifier
                 .padding(10.dp)
                 .padding(vertical = 20.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
+            Row(
                 modifier = Modifier.weight(2f),
-                text = searchResult.text
-            )
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Icon(
+                    painter = selectedSearchType.icon.asPainterResource(),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .height(30.dp)
+                        .width(30.dp)
+                )
+                Text(
+                    text = searchResult.text
+                )
+            }
             Text(
                 text = searchResult.numEntries.toString()
             )

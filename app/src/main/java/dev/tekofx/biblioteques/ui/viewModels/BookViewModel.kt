@@ -1,12 +1,16 @@
 package dev.tekofx.biblioteques.ui.viewModels
 
 import android.util.Log
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.dto.BookResponse
 import dev.tekofx.biblioteques.model.BookResult
 import dev.tekofx.biblioteques.model.BookResults
@@ -16,21 +20,25 @@ import dev.tekofx.biblioteques.model.book.Book
 import dev.tekofx.biblioteques.model.book.BookCopy
 import dev.tekofx.biblioteques.model.book.BookDetails
 import dev.tekofx.biblioteques.repository.BookRepository
+import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.SearchType
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 val searchTypes = listOf(
-    SearchType("Qualsevol paraula", "X"),
-    SearchType("Títol", "t"),
-    SearchType("Autor/Artista", "a"),
-    SearchType("Tema", "d"),
-    SearchType("ISBN/ISSN", "i"),
-    SearchType("Lloc de publicació de revistas", "m"),
-    SearchType("Signatura", "c"),
+    SearchType("Qualsevol paraula", "X", IconResource.fromImageVector(Icons.Filled.AddCircle)),
+    SearchType("Títol", "t", IconResource.fromDrawableResource(R.drawable.title)),
+    SearchType("Autor/Artista", "a", IconResource.fromImageVector(Icons.Filled.Person)),
+    SearchType("Tema", "d", IconResource.fromDrawableResource(R.drawable.topic)),
+    SearchType("ISBN/ISSN", "i", IconResource.fromDrawableResource(R.drawable.numbers)),
+    SearchType(
+        "Lloc de publicació de revistas",
+        "m",
+        IconResource.fromDrawableResource(R.drawable.location_city)
+    ),
+    SearchType("Signatura", "c", IconResource.fromDrawableResource(R.drawable.assignment)),
 )
-
 
 class BookViewModel(private val repository: BookRepository) :
     ViewModel() {

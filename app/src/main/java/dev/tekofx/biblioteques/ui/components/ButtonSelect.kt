@@ -23,7 +23,8 @@ import dev.tekofx.biblioteques.ui.IconResource
 
 class SearchType(
     val text: String,
-    val value: String
+    val value: String,
+    val icon: IconResource
 )
 
 @Composable
