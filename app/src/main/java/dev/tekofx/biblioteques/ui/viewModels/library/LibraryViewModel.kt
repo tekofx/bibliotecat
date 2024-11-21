@@ -38,17 +38,30 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
             "getLibrary called with pointId: $pointId"
         )
 
-        when {
-            pointId != null -> _currentLibrary.postValue(_libraries.value?.find { library: Library -> library.id == pointId })
-            libraryUrl != null -> _currentLibrary.postValue(_libraries.value?.find { library: Library ->
+        val library: Library? = when {
+            pointId != null -> _libraries.value?.find { library: Library -> library.id == pointId }
+            libraryUrl != null -> _libraries.value?.find { library: Library ->
                 library.bibliotecaVirtualUrl?.contains(
                     libraryUrl
-                ) ?: false
-            })
+                ) == true
+            }
+
+            else -> {
+                null
+            }
         }
+
+        if (library == null) {
+            errorMessage.postValue("Error: No s'ha pogut obtenir la biblioteca")
+        } else {
+            errorMessage.postValue("")
+        }
+        _currentLibrary.postValue(library)
+
+
     }
 
-    fun getLibraries() {
+    private fun getLibraries() {
         Log.d("HomeViewModel", "getLibraries called")
         isLoading.postValue(true)
         val response = repository.getLibraries()
@@ -57,14 +70,14 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
                 call: Call<LibraryResponse>,
                 response: Response<LibraryResponse>
             ) {
-
                 libraries.postValue(response.body()?.elements)
                 _libraries.postValue(response.body()?.elements)
                 isLoading.postValue(false)
+                errorMessage.postValue("")
             }
 
             override fun onFailure(call: Call<LibraryResponse>, t: Throwable) {
-                errorMessage.postValue(t.message)
+                errorMessage.postValue("Error: No s'han pogut carregar les biblioteques")
                 isLoading.postValue(false)
             }
         })

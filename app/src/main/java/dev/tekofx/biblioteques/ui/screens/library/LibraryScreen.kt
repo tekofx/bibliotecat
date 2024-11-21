@@ -3,7 +3,6 @@ package dev.tekofx.biblioteques.ui.screens.library
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
@@ -17,7 +16,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.MailOutline
 import androidx.compose.material.icons.outlined.Menu
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,6 +39,7 @@ import dev.tekofx.biblioteques.model.library.seasonTranslation
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.ContactType
 import dev.tekofx.biblioteques.ui.components.InfoIntentCard
+import dev.tekofx.biblioteques.ui.components.Loader
 import dev.tekofx.biblioteques.ui.components.SegmentedButtonItem
 import dev.tekofx.biblioteques.ui.components.SegmentedButtons
 import dev.tekofx.biblioteques.ui.components.StatusBadge
@@ -69,6 +68,8 @@ fun LibraryScreen(
     Log.d("LibraryScreen", "Navigated to $pointID")
     val currentLibrary by libraryViewModel.currentLibrary.observeAsState(null)
     val isLoading by libraryViewModel.isLoading.observeAsState(false)
+    val errorMessage by libraryViewModel.errorMessage.observeAsState("")
+
     LaunchedEffect(key1 = Unit) {
         Log.d("LibraryScreen", "pointId $pointID libraryUrl $libraryUrl")
         libraryViewModel.getLibrary(pointID, libraryUrl)
@@ -95,10 +96,7 @@ fun LibraryScreen(
                     .padding(horizontal = 20.dp)
                     .padding(top = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(5.dp)
-
-
             ) {
-
                 Text(text = library.adrecaNom, style = Typography.headlineMedium)
                 Text(text = library.municipality, style = Typography.headlineSmall)
                 StatusBadge(
@@ -118,20 +116,7 @@ fun LibraryScreen(
             }
         }
     } ?: run {
-        if (isLoading) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-
-                ) {
-
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            }
-        } else {
-
-            Text(text = "No library selected")
-        }
+        Loader(isLoading, errorMessage)
     }
 }
 

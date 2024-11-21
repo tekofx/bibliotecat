@@ -2,10 +2,8 @@ package dev.tekofx.biblioteques.ui.screens.library
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,7 +11,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -34,14 +31,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import dev.tekofx.biblioteques.call.LibraryService
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.repository.LibraryRepository
+import dev.tekofx.biblioteques.ui.components.Loader
 import dev.tekofx.biblioteques.ui.components.library.LibraryList
 import dev.tekofx.biblioteques.ui.theme.Typography
 import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModel
@@ -61,6 +57,8 @@ fun LibrariesScreen(
     val libraries by libraryViewModel.libraries.observeAsState(emptyList())
     val isLoading by libraryViewModel.isLoading.observeAsState(false)
     var showBottomSheet by remember { mutableStateOf(false) }
+    val errorMessage by libraryViewModel.errorMessage.observeAsState("")
+
 
 
     Scaffold(
@@ -77,31 +75,16 @@ fun LibrariesScreen(
         }
     ) {
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 10.dp)
-        ) {
-            if (isLoading) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            } else if (libraries.isEmpty()) {
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .padding(20.dp),
-                    text = "No hi ha llibreries que coincideixin amb els filtres :(",
-                    lineHeight = 40.sp,
-                    textAlign = TextAlign.Center,
-                    fontSize = 30.sp
-                )
+        Loader(
+            isLoading, errorMessage
+        )
+
+        LibraryList(
+            libraries = libraries,
+            onLibraryCardClick = {
+                navHostController.navigate("${NavigateDestinations.LIBRARY_DETAILS_ROUTE}?pointId=${it}")
             }
-            LibraryList(
-                libraries = libraries,
-                onLibraryCardClick = {
-                    navHostController.navigate("${NavigateDestinations.LIBRARY_DETAILS_ROUTE}?pointId=${it}")
-                }
-            )
-        }
+        )
 
         SearchBottomSheet(
             textFieldValue = libraryViewModel.queryText,
