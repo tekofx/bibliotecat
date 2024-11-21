@@ -63,7 +63,7 @@ fun LibrariesScreen(
 
     Scaffold(
         floatingActionButton = {
-            if (libraries.isNotEmpty()) {
+            if (!isLoading) {
                 ExtendedFloatingActionButton(
                     text = { Text("Cercar") },
                     icon = { Icon(Icons.Filled.Search, contentDescription = "") },

@@ -88,12 +88,21 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
 
     fun onSearchTextChanged(text: String) {
         queryText = text
-        libraries.postValue(_libraries.value?.filter {
+
+        val filteresLibraries = _libraries.value?.filter {
             it.adrecaNom.contains(
                 text,
                 ignoreCase = true
             ) || it.municipality.contains(text, ignoreCase = true)
-        })
+        } ?: emptyList()
+
+        libraries.postValue(filteresLibraries)
+
+        if (filteresLibraries.isEmpty()) {
+            errorMessage.postValue("No s'han trobat biblioteques amb aquests filtres")
+        } else {
+            errorMessage.postValue("")
+        }
     }
 
     fun filterByOpenStatus(open: Boolean) {
