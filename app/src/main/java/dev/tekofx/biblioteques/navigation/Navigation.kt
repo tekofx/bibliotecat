@@ -12,7 +12,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import dev.tekofx.biblioteques.ui.screens.SplashScreen
+import dev.tekofx.biblioteques.ui.screens.WelcomeScreen
 import dev.tekofx.biblioteques.ui.screens.book.BookResultsScreen
 import dev.tekofx.biblioteques.ui.screens.book.BookScreen
 import dev.tekofx.biblioteques.ui.screens.book.BookSearchScreen
@@ -30,14 +30,14 @@ fun Navigation(
 ) {
     NavHost(
         navController = navController,
-        startDestination = NavigateDestinations.SPLASH_SCREEN
+        startDestination = NavigateDestinations.WELCOME_SCREEN
     ) {
 
         composable(
-            route = NavigateDestinations.SPLASH_SCREEN,
+            route = NavigateDestinations.WELCOME_SCREEN,
             exitTransition = { fadeOut() }
         ) {
-            SplashScreen(navController, libraryViewModel)
+            WelcomeScreen(navController, libraryViewModel)
         }
 
         // Libraries

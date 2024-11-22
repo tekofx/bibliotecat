@@ -19,7 +19,7 @@ import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModel
 
 @Composable
-fun SplashScreen(
+fun WelcomeScreen(
     navHostController: NavHostController,
     libraryViewModel: LibraryViewModel
 ) {
@@ -34,11 +34,11 @@ fun SplashScreen(
 
         //delay(1500)
     }
-    Splash()
+    Welcome()
 }
 
 @Composable
-fun Splash() {
+fun Welcome() {
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -60,6 +60,6 @@ fun Splash() {
 
 @Preview
 @Composable
-fun SplashScreenPreview() {
-    Splash()
+fun WelcomePreview() {
+    Welcome()
 }
