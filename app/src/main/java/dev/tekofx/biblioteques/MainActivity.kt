@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -13,6 +15,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -44,6 +47,7 @@ class MainActivity : ComponentActivity() {
             this,
             BookViewModelFactory(BookRepository(BookService.getInstance()))
         )[BookViewModel::class.java]
+        installSplashScreen()
         enableEdgeToEdge()
         setContent {
             MyApplicationTheme {
@@ -74,8 +78,9 @@ fun MainScreen(libraryViewModel: LibraryViewModel, bookViewModel: BookViewModel)
 
     Scaffold(
         bottomBar = {
-            if (
-                showBottomAppBar(currentRoute)
+            AnimatedVisibility(
+                enter = slideInVertically(),
+                visible = showBottomAppBar(currentRoute)
             ) {
                 BottomNavigationBar(navHostController = navController)
             }

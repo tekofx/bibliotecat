@@ -61,7 +61,7 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.activity)
 
-
+    implementation(libs.androidx.core.splashscreen)
     testImplementation(libs.robolectric)
     testImplementation(libs.converter.scalars)
     testImplementation(libs.junit)

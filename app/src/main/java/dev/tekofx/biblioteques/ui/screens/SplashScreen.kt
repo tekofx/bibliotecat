@@ -47,12 +47,12 @@ fun Splash() {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CircularProgressIndicator()
             Icon(
                 painter = IconResource.fromDrawableResource(R.drawable.ic_launcher_foreground)
                     .asPainterResource(),
                 contentDescription = ""
             )
+            CircularProgressIndicator()
         }
     }
 }
