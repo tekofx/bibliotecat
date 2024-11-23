@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -79,7 +80,8 @@ fun MainScreen(libraryViewModel: LibraryViewModel, bookViewModel: BookViewModel)
     Scaffold(
         bottomBar = {
             AnimatedVisibility(
-                enter = slideInVertically(),
+                enter = slideInVertically(initialOffsetY = { it }),
+                exit = slideOutVertically(targetOffsetY = { it }),
                 visible = showBottomAppBar(currentRoute)
             ) {
                 BottomNavigationBar(navHostController = navController)
