@@ -1,10 +1,10 @@
 package dev.tekofx.biblioteques.ui.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Icon
@@ -60,9 +60,14 @@ fun TabRowComponent(
     }
 
     // Column layout to arrange tabs vertically and display content screens
-    Column(modifier = modifier.fillMaxSize()) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(5.dp)
+
+    ) {
         // TabRow composable to display tabs
         TabRow(
+            modifier = Modifier.padding(vertical = 0.dp),
             selectedTabIndex = selectedTabIndex,
 
             ) {
@@ -93,7 +98,6 @@ fun TabRowComponent(
             }
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.fillMaxWidth(),

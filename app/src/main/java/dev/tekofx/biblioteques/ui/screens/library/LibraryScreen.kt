@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -78,7 +79,6 @@ fun LibraryScreen(
     currentLibrary?.let { library ->
         Column(
             modifier = Modifier
-                .verticalScroll(rememberScrollState())
                 .padding(bottom = 10.dp)
         ) {
 
@@ -107,7 +107,7 @@ fun LibraryScreen(
                 TabRowComponent(
                     tabEntries = tabEntries,
                     contentScreens = listOf(
-                        { LibraryInfo(library) },
+                        { LibraryTimetable(library) },
                         { LibraryLocation(library) },
                         { LibraryContact(library) },
                     ),
@@ -121,15 +121,20 @@ fun LibraryScreen(
 }
 
 @Composable
-fun LibraryInfo(
+fun LibraryTimetable(
     library: Library
 
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
+    val scrollState = rememberScrollState()
 
     Column(
-        verticalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
+        modifier = Modifier
+            .fillMaxHeight()
+            .verticalScroll(scrollState),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+
+        ) {
 
 
         SegmentedButtons {
@@ -263,5 +268,5 @@ fun LibraryContactPreview() {
 @Preview
 @Composable
 fun LibraryInfoPreview() {
-    LibraryInfo(LibraryDummy)
+    LibraryTimetable(LibraryDummy)
 }
