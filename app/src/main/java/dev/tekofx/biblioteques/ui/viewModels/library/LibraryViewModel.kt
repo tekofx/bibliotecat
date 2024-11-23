@@ -20,7 +20,8 @@ import java.time.LocalTime
 class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() {
 
     val isLoading = MutableLiveData<Boolean>(false)
-    val showOnlyOpen = MutableLiveData<Boolean>(false)
+    var showOnlyOpen by mutableStateOf(false)
+        private set
 
     val libraries = MutableLiveData<List<Library>>()
     private val _currentLibrary = MutableLiveData<Library?>()
@@ -88,33 +89,33 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
 
     fun onSearchTextChanged(text: String) {
         queryText = text
+        applyFilters()
+    }
 
-        val filteresLibraries = _libraries.value?.filter {
-            it.adrecaNom.contains(
-                text,
+    fun onOpenStatusSwitchChanged(switchValue: Boolean) {
+        showOnlyOpen = switchValue
+        applyFilters()
+    }
+
+    // Combine both filters and update the library list private
+    private fun applyFilters() {
+        val filteredLibraries = _libraries.value?.filter { library ->
+            val matchesSearchText = library.adrecaNom.contains(
+                queryText,
                 ignoreCase = true
-            ) || it.municipality.contains(text, ignoreCase = true)
+            ) || library.municipality.contains(queryText, ignoreCase = true)
+            val matchesOpenStatus = if (showOnlyOpen) {
+                library.isOpen(LocalDate.now(), LocalTime.now())
+            } else {
+                true
+            }
+            matchesSearchText && matchesOpenStatus
         } ?: emptyList()
-
-        libraries.postValue(filteresLibraries)
-
-        if (filteresLibraries.isEmpty()) {
+        libraries.postValue(filteredLibraries.sortedBy { it.municipality })
+        if (filteredLibraries.isEmpty()) {
             errorMessage.postValue("No s'han trobat biblioteques amb aquests filtres")
         } else {
             errorMessage.postValue("")
         }
     }
-
-    fun filterByOpenStatus(switchActive: Boolean) {
-        if (switchActive) {
-            showOnlyOpen.postValue(true)
-            libraries.postValue(_libraries.value?.filter {
-                it.isOpen(LocalDate.now(), LocalTime.now())
-            })
-        } else {
-            libraries.postValue(_libraries.value)
-            showOnlyOpen.postValue(false)
-        }
-    }
-
 }

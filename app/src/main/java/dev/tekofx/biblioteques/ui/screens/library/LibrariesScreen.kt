@@ -58,7 +58,6 @@ fun LibrariesScreen(
     val isLoading by libraryViewModel.isLoading.observeAsState(false)
     var showBottomSheet by remember { mutableStateOf(false) }
     val errorMessage by libraryViewModel.errorMessage.observeAsState("")
-    val showOnlyOpen by libraryViewModel.showOnlyOpen.observeAsState(false)
 
 
     Scaffold(
@@ -90,9 +89,9 @@ fun LibrariesScreen(
         SearchBottomSheet(
             textFieldValue = libraryViewModel.queryText,
             onTextFieldChange = { text -> libraryViewModel.onSearchTextChanged(text) },
-            onFilterOpen = { libraryViewModel.filterByOpenStatus(it) },
+            onFilterOpen = { libraryViewModel.onOpenStatusSwitchChanged(it) },
             show = showBottomSheet,
-            showOnlyOpen = showOnlyOpen,
+            showOnlyOpen = libraryViewModel.showOnlyOpen,
             toggleShow = { showBottomSheet = !showBottomSheet }
         )
     }
