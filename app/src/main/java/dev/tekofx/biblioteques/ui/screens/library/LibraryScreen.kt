@@ -53,10 +53,9 @@ import dev.tekofx.biblioteques.utils.formatDayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
 
-
 val tabEntries = listOf(
-    TabEntry("Info", IconResource.fromImageVector(Icons.Outlined.Menu)),
-    TabEntry("Com Arribar", IconResource.fromImageVector(Icons.Outlined.LocationOn)),
+    TabEntry("Horaris", IconResource.fromImageVector(Icons.Outlined.Menu)),
+    TabEntry("Ubicació", IconResource.fromImageVector(Icons.Outlined.LocationOn)),
     TabEntry("Contacta", IconResource.fromImageVector(Icons.Outlined.MailOutline)),
 )
 
