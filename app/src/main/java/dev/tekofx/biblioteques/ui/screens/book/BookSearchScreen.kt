@@ -23,7 +23,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -221,13 +220,16 @@ fun BookSearchBottomsheet(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 10.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                TextField(
-                    modifier = Modifier.fillMaxWidth(),
+                SearchBar(
                     value = "",
                     onValueChange = {},
-                    placeholder = { Text("Cerca") }
+                    label = "Search Scope",
+                    trailingIcon = {
+                        Icon(Icons.Outlined.Search, contentDescription = "")
+                    }
                 )
                 Button(
                     onToggleShow

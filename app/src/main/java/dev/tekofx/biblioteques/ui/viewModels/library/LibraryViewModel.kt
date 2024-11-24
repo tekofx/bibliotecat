@@ -122,13 +122,14 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
             val matchesSearchText = library.adrecaNom.contains(
                 queryText,
                 ignoreCase = true
-            ) || library.municipality.contains(queryText, ignoreCase = true)
+            )
             val matchesOpenStatus = if (showOnlyOpen) {
                 library.isOpen(LocalDate.now(), LocalTime.now())
             } else {
                 true
             }
-            val matchesMunicipality = library.municipality.contains(selectedMunicipality)
+            val matchesMunicipality =
+                library.municipality.contains(selectedMunicipality, ignoreCase = true)
 
             matchesSearchText && matchesOpenStatus && matchesMunicipality
         } ?: emptyList()

@@ -21,7 +21,7 @@ fun SearchBar(
     value: String,
     onValueChange: (String) -> Unit,
     onDone: (KeyboardActionScope.() -> Unit)? = null,
-    label: String,
+    label: String = "",
     interactionSource: MutableInteractionSource? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
 ) {
