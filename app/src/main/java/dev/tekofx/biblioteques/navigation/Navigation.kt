@@ -1,5 +1,6 @@
 package dev.tekofx.biblioteques.navigation
 
+import android.util.Log
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -30,7 +31,7 @@ fun Navigation(
 ) {
     NavHost(
         navController = navController,
-        startDestination = NavigateDestinations.WELCOME_SCREEN
+        startDestination = NavigateDestinations.LIBRARIES_ROUTE
     ) {
 
         composable(
@@ -139,6 +140,8 @@ fun slideInToBottom(scope: AnimatedContentTransitionScope<NavBackStackEntry>): E
 }
 
 fun slideOutToBottom(scope: AnimatedContentTransitionScope<NavBackStackEntry>): ExitTransition {
+    Log.d("Navigation", "slideOutToBottom")
+
     return scope.slideOutOfContainer(
         AnimatedContentTransitionScope.SlideDirection.Down,
         animationSpec = tween(300)
