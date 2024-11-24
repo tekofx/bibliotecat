@@ -47,56 +47,6 @@ fun AutoCompleteSelectBar(
     val interactionSource = remember { MutableInteractionSource() }
 
     Column(modifier = Modifier.fillMaxWidth()) {
-//        TextField(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .height(heightTextFields)
-//                .clickable(
-//                    interactionSource = interactionSource,
-//                    indication = null,
-//                    onClick = {
-//                        expanded = false
-//                    }
-//                )
-//                .onGloballyPositioned { coordinates ->
-//                    textFieldSize = coordinates.size.toSize()
-//                },
-//            value = selectedEntry,
-//            onValueChange = {
-//                onSelectedEntry(it)
-//                expanded = true
-//            },
-//            // Perform action when the TextField is clicked
-//            interactionSource = remember { MutableInteractionSource() }
-//                .also { interactionSource ->
-//                    LaunchedEffect(interactionSource) {
-//                        interactionSource.interactions.collect { interaction ->
-//                            if (interaction is PressInteraction.Release) {
-//                                expanded = !expanded
-//                            }
-//                        }
-//                    }
-//                },
-//            placeholder = { Text(placeholder) },
-//            colors = TextFieldDefaults.colors(
-//                focusedIndicatorColor = Color.Transparent,
-//                unfocusedIndicatorColor = Color.Transparent,
-//            ),
-//            keyboardOptions = KeyboardOptions(
-//                keyboardType = KeyboardType.Text,
-//                imeAction = ImeAction.Done
-//            ),
-//            shape = if (expanded) TextFieldDefaults.shape else RoundedCornerShape(50.dp),
-//            singleLine = true,
-//            trailingIcon = {
-//                Icon(
-//                    modifier = Modifier.size(24.dp),
-//                    imageVector = Icons.Rounded.KeyboardArrowDown,
-//                    contentDescription = "arrow",
-//                )
-//            }
-        //)
-
         SearchBar(
             modifier = Modifier
                 .fillMaxWidth()
