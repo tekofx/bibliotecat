@@ -18,6 +18,7 @@ import dev.tekofx.biblioteques.model.SearchResult
 import dev.tekofx.biblioteques.model.SearchResults
 import dev.tekofx.biblioteques.model.book.Book
 import dev.tekofx.biblioteques.model.book.BookCopy
+import dev.tekofx.biblioteques.model.book.BookCopyAvailability
 import dev.tekofx.biblioteques.model.book.BookDetails
 import dev.tekofx.biblioteques.repository.BookRepository
 import dev.tekofx.biblioteques.ui.IconResource
@@ -52,9 +53,16 @@ class BookViewModel(private val repository: BookRepository) :
     private val pageIndex = mutableIntStateOf(0)
     val selectedSearchType = mutableStateOf(searchTypes.first())
 
+    // Inputs
     var queryText by mutableStateOf("")
         private set
+    var availableNowChip by mutableStateOf(false)
+        private set
+    var canReserveChip by mutableStateOf(false)
+        private set
+
     val errorMessage = MutableLiveData<String>()
+    val bookCopies = MutableLiveData<List<BookCopy>>(emptyList())
 
 
     /**
@@ -87,7 +95,7 @@ class BookViewModel(private val repository: BookRepository) :
 
 
     /**
-     * Get the next resultspage. It gets [SearchResults], can be [BookResults] or [SearchResults]
+     * Get the next [SearchResults] page. It gets [SearchResults], can be [BookResults] or [SearchResults]
      */
     fun getNextResultsPage() {
         val resultsValue = results.value ?: throw Error()
@@ -121,7 +129,7 @@ class BookViewModel(private val repository: BookRepository) :
     }
 
     /**
-     * Searchs a term in aladi. It uses a query and a [searchTypes]
+     * Searchs a term in aladi.cat. It uses a [queryText] and a [searchTypes]
      *
      */
     fun search() {
@@ -154,7 +162,7 @@ class BookViewModel(private val repository: BookRepository) :
 
 
     /**
-     * Gets the [BookCopies][BookCopy] of the full Book copies page
+     * Gets the [BookCopies][BookCopy] of the full book copies page
      */
     fun getBookCopies(book: Book) {
         Log.d("BookViewModel", "getBookCopies")
@@ -194,7 +202,7 @@ class BookViewModel(private val repository: BookRepository) :
 
 
     /**
-     * Gets the [BookDetails] of a book from the url of a book.
+     * Gets the [BookDetails] of a [Book] from the url of a book.
      */
     fun getBookDetails(bookId: Int) {
         Log.d("BookViewModel", "getBookDetails")
@@ -215,6 +223,7 @@ class BookViewModel(private val repository: BookRepository) :
                     responseBody.book ?: return onFailure(call, Throwable("Book not found"))
 
                 currentBook.postValue(responseBook)
+                bookCopies.postValue(responseBook.bookCopies)
                 isLoadingBookDetails.postValue(false)
                 getBookCopies(responseBook)
 
@@ -246,6 +255,35 @@ class BookViewModel(private val repository: BookRepository) :
         return null
     }
 
+    /**
+     * Filters [bookCopies] depending on the states of [availableNowChip] and [canReserveChip].
+     * If [availableNowChip] is true it will show only the ones with [BookCopyAvailability.AVAILABLE].
+     * If [canReserveChip] is true it will show only the ones with [BookCopyAvailability.CAN_RESERVE].
+     * If both are true, it will show all with both states
+     */
+    private fun filterBookCopies() {
+        val filteredBookCopies = if (!availableNowChip && !canReserveChip) {
+            // Both chips are off, return all book copies
+            currentBook.value?.bookCopies ?: emptyList()
+        } else {
+            currentBook.value?.bookCopies?.filter { bookCopy ->
+                val matchesAvailableNow = if (availableNowChip) {
+                    bookCopy.availability == BookCopyAvailability.AVAILABLE
+                } else {
+                    false
+                }
+                val matchesCanReserve = if (canReserveChip) {
+                    bookCopy.availability == BookCopyAvailability.CAN_RESERVE
+                } else {
+                    false
+                }
+                matchesAvailableNow || matchesCanReserve
+            } ?: emptyList()
+        }
+
+        bookCopies.postValue(filteredBookCopies)
+    }
+
     fun removeCurrentBook() {
         currentBook.postValue(null)
     }
@@ -254,6 +292,25 @@ class BookViewModel(private val repository: BookRepository) :
         canNavigateToResults.postValue(value)
     }
 
+    /**
+     * Callback when Available Now Chip is clicked
+     */
+    fun onAvailableNowChipClick() {
+        availableNowChip = !availableNowChip
+        filterBookCopies()
+    }
+
+    /**
+     * Callback when Can Reseve Chip is clicked
+     */
+    fun onCanReserveChipClick() {
+        canReserveChip = !canReserveChip
+        filterBookCopies()
+    }
+
+    /**
+     * Callback when Book Search Textfield text is changed
+     */
     fun onSearchTextChanged(text: String) {
         queryText = text
     }

@@ -25,11 +25,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,7 +38,6 @@ import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import dev.tekofx.biblioteques.model.StatusColor
 import dev.tekofx.biblioteques.model.book.BookCopy
-import dev.tekofx.biblioteques.model.book.BookCopyAvailability
 import dev.tekofx.biblioteques.model.book.BookDetails
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.components.InfoCard
@@ -61,6 +57,7 @@ fun BookScreen(
     val currentBook by bookViewModel.currentBook.observeAsState(null)
     val isLoadingBookCopies by bookViewModel.isLoadingBookCopies.observeAsState(false)
     val isLoadingBookDetails by bookViewModel.isLoadingBookDetails.observeAsState(false)
+    val bookCopies by bookViewModel.bookCopies.observeAsState(emptyList())
 
 
     // Get book info
@@ -123,12 +120,17 @@ fun BookScreen(
             }
             BookDetailsSegment(currentBook!!.bookDetails, isLoadingBookDetails)
             BookCopiesSegment(
-                bookCopies = currentBook!!.bookCopies,
+                noBookCopies = currentBook!!.bookCopies.isEmpty(),
+                bookCopies = bookCopies,
                 showLoading = isLoadingBookCopies,
                 show = !(isLoadingBookCopies || isLoadingBookDetails),
                 onBookCopyClick = {
                     navController.navigate(NavigateDestinations.LIBRARY_DETAILS_ROUTE + "?libraryUrl=${it}")
-                }
+                },
+                showAvailableNow = bookViewModel.availableNowChip,
+                showCanReserve = bookViewModel.canReserveChip,
+                onAvailableNowChipClick = { bookViewModel.onAvailableNowChipClick() },
+                onCanReserveChipClick = { bookViewModel.onCanReserveChipClick() }
             )
         }
     }
@@ -182,13 +184,16 @@ fun BookDetailsSegment(
 
 @Composable
 fun BookCopiesSegment(
+    noBookCopies: Boolean,
     bookCopies: List<BookCopy>,
     showLoading: Boolean,
     show: Boolean,
+    showAvailableNow: Boolean,
+    showCanReserve: Boolean,
+    onCanReserveChipClick: () -> Unit,
+    onAvailableNowChipClick: () -> Unit,
     onBookCopyClick: (libraryUrl: String) -> Unit,
 ) {
-    val availableNowChipState = remember { mutableStateOf(false) }
-    val availableSoonChipState = remember { mutableStateOf(false) }
     if (showLoading) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -212,7 +217,7 @@ fun BookCopiesSegment(
                 textAlign = TextAlign.Center,
                 style = Typography.titleLarge,
             )
-            if (bookCopies.isEmpty()) {
+            if (noBookCopies) {
                 Text("No hi ha exemplars")
             } else {
                 Row(
@@ -221,26 +226,25 @@ fun BookCopiesSegment(
                 ) {
                     FilterChipComponent(
                         text = "Disponible Ara",
-                        selected = availableNowChipState,
-                        statusColor = StatusColor.GREEN
+                        selected = showAvailableNow,
+                        statusColor = StatusColor.GREEN,
+                        onClick = { onAvailableNowChipClick() }
                     )
                     FilterChipComponent(
                         text = "Es pot reservar",
-                        selected = availableSoonChipState,
-                        statusColor = StatusColor.YELLOW
+                        selected = showCanReserve,
+                        statusColor = StatusColor.YELLOW,
+                        onClick = { onCanReserveChipClick() }
                     )
                 }
-                val filteredBookCopies = bookCopies.filter { bookCopy ->
-                    (!availableNowChipState.value || bookCopy.availability == BookCopyAvailability.AVAILABLE)
-                            && (!availableSoonChipState.value || bookCopy.availability == BookCopyAvailability.CAN_RESERVE)
-                }
-                filteredBookCopies.forEach { bookCopy: BookCopy ->
+
+                bookCopies.forEach { bookCopy: BookCopy ->
                     BookCopyCard(
                         bookCopy,
                         onBookCopyClick
                     )
                 }
-                if (filteredBookCopies.isEmpty()) {
+                if (bookCopies.isEmpty()) {
                     Text(text = "No hi ha exemplars amb aquests filtres")
                 }
             }
@@ -303,19 +307,20 @@ fun BookCopyCard(
 @Composable
 fun FilterChipComponent(
     text: String,
-    selected: MutableState<Boolean>,
-    statusColor: StatusColor
+    selected: Boolean,
+    statusColor: StatusColor,
+    onClick: () -> Unit
 ) {
     FilterChip(
-        onClick = { selected.value = !selected.value },
+        onClick = { onClick() },
         label = {
             StatusBadge(
                 text = text,
                 statusColor = statusColor
             )
         },
-        selected = selected.value,
-        leadingIcon = if (selected.value) {
+        selected = selected,
+        leadingIcon = if (selected) {
             {
                 Icon(
                     imageVector = Icons.Filled.Done,
