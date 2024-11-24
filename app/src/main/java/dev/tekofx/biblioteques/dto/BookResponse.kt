@@ -6,6 +6,7 @@ import dev.tekofx.biblioteques.model.SearchResults
 import dev.tekofx.biblioteques.model.book.Book
 import dev.tekofx.biblioteques.model.book.BookCopy
 import dev.tekofx.biblioteques.model.book.BookDetails
+import dev.tekofx.biblioteques.ui.components.input.ButtonSelectItem
 
 data class BookResponse(
     @SerializedName("body") var body: String = "",
@@ -14,6 +15,7 @@ data class BookResponse(
     @SerializedName("totalBooks") var totalBooks: Int = 0,
     @SerializedName("bookDetails") var bookDetails: BookDetails? = null,
     @SerializedName("pages") var pages: List<String> = emptyList(),
-    @SerializedName("results") var results: SearchResults<out SearchResult>? = null
+    @SerializedName("results") var results: SearchResults<out SearchResult>? = null,
+    @SerializedName("searchScopes") var searchScopes: List<ButtonSelectItem> = emptyList()
 )
 

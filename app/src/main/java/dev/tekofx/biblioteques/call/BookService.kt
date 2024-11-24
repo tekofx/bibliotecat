@@ -7,7 +7,6 @@ import retrofit2.Retrofit
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
-import retrofit2.http.Url
 
 
 interface BookService {
@@ -17,11 +16,8 @@ interface BookService {
         @Query("searchtype") searchType: String
     ): Call<BookResponse>
 
-
-    @GET
-    fun getResultPage(
-        @Url url: String
-    ): Call<BookResponse>
+    @GET(value = "/search*cat/X")
+    fun getSearchScope(): Call<BookResponse>
 
     @GET(value = "{url}")
     fun getHtmlByUrl(@Path("url") url: String): Call<BookResponse>

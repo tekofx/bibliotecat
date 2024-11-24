@@ -21,7 +21,7 @@ import dev.tekofx.biblioteques.ui.IconResource
 import androidx.compose.material3.DropdownMenuItem as DropdownMenuItem1
 
 
-class SearchType(
+class ButtonSelectItem(
     val text: String,
     val value: String,
     val icon: IconResource

@@ -45,7 +45,7 @@ import dev.tekofx.biblioteques.model.EmptyResults
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.input.ButtonSelect
-import dev.tekofx.biblioteques.ui.components.input.SearchType
+import dev.tekofx.biblioteques.ui.components.input.ButtonSelectItem
 import dev.tekofx.biblioteques.ui.components.input.TextIconButton
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
 import dev.tekofx.biblioteques.ui.viewModels.searchTypes
@@ -94,6 +94,8 @@ fun BookSearchScreen(
         EmptyResults()
     )
 
+    val searchScopes by bookViewModel.searchScopes.observeAsState(emptyList())
+
     val isLoadingSearch by bookViewModel.isLoadingSearch.observeAsState(false)
     val search by bookViewModel.canNavigateToResults.observeAsState(false)
     val errorMessage by bookViewModel.errorMessage.observeAsState()
@@ -115,7 +117,8 @@ fun BookSearchScreen(
             isLoading = isLoadingSearch,
             selectedSearchTpe = selectedSearchTpe,
             onSearch = { bookViewModel.search() },
-            onOptionSelected = { selectedSearchTpe = it }
+            onOptionSelected = { selectedSearchTpe = it },
+            searchScopes = searchScopes
         )
 
     }
@@ -124,11 +127,12 @@ fun BookSearchScreen(
 @Composable
 fun BookSearch(
     errorMessage: String?,
+    searchScopes: List<ButtonSelectItem>,
     onSearchTextChanged: (String) -> Unit,
     queryText: String,
-    selectedSearchTpe: SearchType,
+    selectedSearchTpe: ButtonSelectItem,
     isLoading: Boolean,
-    onOptionSelected: (SearchType) -> Unit,
+    onOptionSelected: (ButtonSelectItem) -> Unit,
     onSearch: () -> Unit
 ) {
     val focus = LocalFocusManager.current
@@ -192,12 +196,12 @@ fun BookSearch(
             ButtonSelect(
                 buttonText = "Donde buscar",
                 buttonIcon = IconResource.fromImageVector(Icons.Outlined.Info),
-                selectedOption = dondes[0],
-                options = dondes,
+                selectedOption = searchScopes[0],
+                options = searchScopes,
                 onOptionSelected = {
 
                 },
-                getText = { it.name },
+                getText = { it.text },
                 getIcon = { null }
             )
 

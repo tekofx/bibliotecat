@@ -21,27 +21,28 @@ import dev.tekofx.biblioteques.model.book.BookCopyAvailability
 import dev.tekofx.biblioteques.model.book.BookDetails
 import dev.tekofx.biblioteques.repository.BookRepository
 import dev.tekofx.biblioteques.ui.IconResource
-import dev.tekofx.biblioteques.ui.components.input.SearchType
+import dev.tekofx.biblioteques.ui.components.input.ButtonSelectItem
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 val searchTypes = listOf(
-    SearchType("Qualsevol paraula", "X", IconResource.fromDrawableResource(R.drawable.abc)),
-    SearchType("Títol", "t", IconResource.fromDrawableResource(R.drawable.title)),
-    SearchType("Autor/Artista", "a", IconResource.fromImageVector(Icons.Filled.Person)),
-    SearchType("Tema", "d", IconResource.fromDrawableResource(R.drawable.topic)),
-    SearchType("ISBN/ISSN", "i", IconResource.fromDrawableResource(R.drawable.numbers)),
-    SearchType(
+    ButtonSelectItem("Qualsevol paraula", "X", IconResource.fromDrawableResource(R.drawable.abc)),
+    ButtonSelectItem("Títol", "t", IconResource.fromDrawableResource(R.drawable.title)),
+    ButtonSelectItem("Autor/Artista", "a", IconResource.fromImageVector(Icons.Filled.Person)),
+    ButtonSelectItem("Tema", "d", IconResource.fromDrawableResource(R.drawable.topic)),
+    ButtonSelectItem("ISBN/ISSN", "i", IconResource.fromDrawableResource(R.drawable.numbers)),
+    ButtonSelectItem(
         "Lloc de publicació de revistas",
         "m",
         IconResource.fromDrawableResource(R.drawable.location_city)
     ),
-    SearchType("Signatura", "c", IconResource.fromDrawableResource(R.drawable.assignment)),
+    ButtonSelectItem("Signatura", "c", IconResource.fromDrawableResource(R.drawable.assignment)),
 )
 
 class BookViewModel(private val repository: BookRepository) : ViewModel() {
     // Data
+    val searchScopes = MutableLiveData<List<ButtonSelectItem>>()
     val results = MutableLiveData<SearchResults<out SearchResult>>()
     val currentBook = MutableLiveData<Book?>()
     val bookCopies = MutableLiveData<List<BookCopy>>(emptyList())
@@ -68,6 +69,33 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
 
     // Errors
     val errorMessage = MutableLiveData<String>()
+
+    init {
+        getSearchScope()
+    }
+
+    private fun getSearchScope() {
+        val response = repository.getSearchScope()
+        response.enqueue(object : Callback<BookResponse> {
+            override fun onResponse(
+                call: Call<BookResponse>, response: Response<BookResponse>
+            ) {
+                val searchScopesResponse =
+                    response.body()?.searchScopes ?: return onFailure(
+                        call,
+                        Throwable("Not searchScopes")
+                    )
+
+                searchScopes.postValue(searchScopesResponse)
+                errorMessage.postValue("")
+            }
+
+            override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
+                Log.e("BookViewModel", "Error getting search Scope: ${t.message.toString()}")
+            }
+
+        })
+    }
 
 
     /**

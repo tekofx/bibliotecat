@@ -5,12 +5,15 @@ import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.nodes.Document
 import com.fleeksoft.ksoup.nodes.Element
 import com.fleeksoft.ksoup.select.Elements
+import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.dto.BookResponse
 import dev.tekofx.biblioteques.model.BookResult
 import dev.tekofx.biblioteques.model.BookResults
 import dev.tekofx.biblioteques.model.GeneralResult
 import dev.tekofx.biblioteques.model.GeneralResults
 import dev.tekofx.biblioteques.model.StatusColor
+import dev.tekofx.biblioteques.ui.IconResource
+import dev.tekofx.biblioteques.ui.components.input.ButtonSelectItem
 import okhttp3.ResponseBody
 import retrofit2.Converter
 import retrofit2.Retrofit
@@ -32,11 +35,19 @@ class BookConverterFactory : Converter.Factory() {
                 doc.select("h2")
                     .firstOrNull() { it.text().contains("no hi ha resultats", ignoreCase = true) }
 
+            val advancedSearchElement =
+                doc.select("h2")
+                    .firstOrNull() { it.text().contains("Cerca avançada", ignoreCase = true) }
             val bibInfoLabelElement = doc.select("td.bibInfoLabel").firstOrNull()
             val additionalCopiesElement = doc.select("div.additionalCopies").firstOrNull()
             val browseHeaderEntriesElement = doc.select("td.browseHeaderEntries").firstOrNull()
 
-            if (notResultsH2Element != null) {
+            if (advancedSearchElement != null) {
+                Log.d("BookConverterFactory", "Get Search Scope")
+                val searchScopes = getSearchScope(doc)
+                println(searchScopes)
+                BookResponse(body = responseBodyString, searchScopes = searchScopes)
+            } else if (notResultsH2Element != null) {
                 Log.d("BookConverterFactory", "Not book found")
                 throw Error()
             } else if (browseHeaderEntriesElement != null) {
@@ -81,6 +92,26 @@ class BookConverterFactory : Converter.Factory() {
         }
     }
 
+
+    private fun getSearchScope(doc: Document): List<ButtonSelectItem> {
+        println(doc.selectFirst("select#searchscope")?.text())
+        val searchScopes = mutableListOf<ButtonSelectItem>()
+        val searchScopeElement =
+            doc.selectFirst("select#searchscope")?.getElementsByTag("option")
+                ?: return emptyList()
+        for (searchVal in searchScopeElement) {
+            val value = searchVal.attr("value")
+            val text = searchVal.text()
+            searchScopes.add(
+                ButtonSelectItem(
+                    text,
+                    value,
+                    IconResource.fromDrawableResource(R.drawable.ic_notifications_black_24dp)
+                )
+            )
+        }
+        return searchScopes
+    }
 
     /**
      * Gets a List containing the URLs of other ResultsPages
