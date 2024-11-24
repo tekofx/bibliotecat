@@ -42,9 +42,9 @@ import androidx.navigation.NavHostController
 import dev.tekofx.biblioteques.model.EmptyResults
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.IconResource
-import dev.tekofx.biblioteques.ui.components.ButtonSelect
-import dev.tekofx.biblioteques.ui.components.SearchType
-import dev.tekofx.biblioteques.ui.components.TextIconButton
+import dev.tekofx.biblioteques.ui.components.input.ButtonSelect
+import dev.tekofx.biblioteques.ui.components.input.SearchType
+import dev.tekofx.biblioteques.ui.components.input.TextIconButton
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
 import dev.tekofx.biblioteques.ui.viewModels.searchTypes
 

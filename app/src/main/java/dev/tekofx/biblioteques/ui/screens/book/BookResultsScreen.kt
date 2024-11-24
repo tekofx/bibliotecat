@@ -38,7 +38,7 @@ import dev.tekofx.biblioteques.model.GeneralResults
 import dev.tekofx.biblioteques.model.SearchResult
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.components.PaginatedList
-import dev.tekofx.biblioteques.ui.components.SearchType
+import dev.tekofx.biblioteques.ui.components.input.SearchType
 import dev.tekofx.biblioteques.ui.theme.Typography
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
 

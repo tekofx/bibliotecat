@@ -1,4 +1,4 @@
-package dev.tekofx.biblioteques.ui.components
+package dev.tekofx.biblioteques.ui.components.input
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -14,7 +14,7 @@ fun TextIconButton(
     text: String,
     icon: IconResource,
     onClick: () -> Unit,
-    enabled: Boolean = true
+    enabled: Boolean = true,
 ) {
     Button(
         onClick = onClick,

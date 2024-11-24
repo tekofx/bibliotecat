@@ -42,11 +42,11 @@ import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.ContactType
 import dev.tekofx.biblioteques.ui.components.InfoIntentCard
 import dev.tekofx.biblioteques.ui.components.Loader
-import dev.tekofx.biblioteques.ui.components.SegmentedButtonItem
-import dev.tekofx.biblioteques.ui.components.SegmentedButtons
 import dev.tekofx.biblioteques.ui.components.StatusBadge
 import dev.tekofx.biblioteques.ui.components.TabEntry
 import dev.tekofx.biblioteques.ui.components.TabRowComponent
+import dev.tekofx.biblioteques.ui.components.input.SegmentedButtonItem
+import dev.tekofx.biblioteques.ui.components.input.SegmentedButtons
 import dev.tekofx.biblioteques.ui.theme.Typography
 import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModel
 import dev.tekofx.biblioteques.utils.formatDate

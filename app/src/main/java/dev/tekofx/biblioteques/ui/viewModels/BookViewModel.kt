@@ -21,7 +21,7 @@ import dev.tekofx.biblioteques.model.book.BookCopy
 import dev.tekofx.biblioteques.model.book.BookDetails
 import dev.tekofx.biblioteques.repository.BookRepository
 import dev.tekofx.biblioteques.ui.IconResource
-import dev.tekofx.biblioteques.ui.components.SearchType
+import dev.tekofx.biblioteques.ui.components.input.SearchType
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
