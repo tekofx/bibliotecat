@@ -51,38 +51,6 @@ import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
 import dev.tekofx.biblioteques.ui.viewModels.searchTypes
 
 
-data class DondeBuscar(
-    val name: String,
-    val value: String,
-)
-
-
-val dondes = listOf<DondeBuscar>(
-    DondeBuscar("Comics", "c"),
-    DondeBuscar("Comics", "c"),
-    DondeBuscar("Comics", "c"),
-    DondeBuscar("Comics", "c"),
-    DondeBuscar("Comics", "c"),
-    DondeBuscar("Comics", "c"),
-    DondeBuscar("Comics", "c"),
-    DondeBuscar("Comics", "c"),
-    DondeBuscar("Comics", "c"),
-    DondeBuscar("Comics", "c"),
-    DondeBuscar("Comics", "c"),
-    DondeBuscar("Comics", "c"),
-    DondeBuscar("Comics", "c"),
-    DondeBuscar("Comics", "c"),
-    DondeBuscar("Comics", "c"),
-    DondeBuscar("Comics", "c"),
-    DondeBuscar("Comics", "c"),
-    DondeBuscar("Comics", "c"),
-    DondeBuscar("Comics", "c"),
-    DondeBuscar("Comics", "c"),
-    DondeBuscar("Comics", "c"),
-    DondeBuscar("Comics", "c"),
-
-    )
-
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun BookSearchScreen(
