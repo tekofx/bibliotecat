@@ -31,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -87,10 +86,6 @@ fun AutoCompleteSelectBar(
             colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
-            ),
-            textStyle = TextStyle(
-                color = Color.Black,
-                fontSize = 16.sp
             ),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
