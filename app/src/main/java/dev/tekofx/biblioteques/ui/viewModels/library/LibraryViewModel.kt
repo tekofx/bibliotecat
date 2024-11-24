@@ -24,6 +24,9 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
         private set
 
     val libraries = MutableLiveData<List<Library>>()
+    var selectedMunicipality by mutableStateOf<String>("")
+        private set
+    val municipalities = MutableLiveData<List<String>>()
     private val _currentLibrary = MutableLiveData<Library?>()
     val currentLibrary: LiveData<Library?> = _currentLibrary
     val errorMessage = MutableLiveData<String>()
@@ -74,6 +77,7 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
                 response: Response<LibraryResponse>
             ) {
                 libraries.postValue(response.body()?.elements)
+                municipalities.postValue(response.body()?.municipalities)
                 _libraries.postValue(response.body()?.elements)
                 isLoading.postValue(false)
                 errorMessage.postValue("")
@@ -97,6 +101,11 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
         applyFilters()
     }
 
+    fun onMunicipalityChanged(municipality: String) {
+        selectedMunicipality = municipality
+        applyFilters()
+    }
+
     // Combine both filters and update the library list private
     private fun applyFilters() {
         val filteredLibraries = _libraries.value?.filter { library ->
@@ -109,7 +118,9 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
             } else {
                 true
             }
-            matchesSearchText && matchesOpenStatus
+            val matchesMunicipality = library.municipality.contains(selectedMunicipality)
+
+            matchesSearchText && matchesOpenStatus && matchesMunicipality
         } ?: emptyList()
         libraries.postValue(filteredLibraries.sortedBy { it.municipality })
         if (filteredLibraries.isEmpty()) {

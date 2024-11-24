@@ -30,6 +30,9 @@ class LibraryConverterFactory : Converter.Factory() {
             val jsonResponse = responseBody.string()
             val jsonObject = JSONObject(jsonResponse)
 
+            // Used in the Municipality filter
+            val uniqueMunicipiNomValues = mutableSetOf<String>()
+
             val elementsArray = jsonObject.getJSONArray("elements")
             val libraryList = ArrayList<Library>()
 
@@ -48,12 +51,15 @@ class LibraryConverterFactory : Converter.Factory() {
             for (i in 0 until elementsArray.length()) {
 
                 val libraryElement = elementsArray.getJSONObject(i)
+
+
                 val imatgeArray = libraryElement.getJSONArray("imatge")
                 val puntId = libraryElement.getString("punt_id")
                 val adrecaNom = libraryElement.getString("adreca_nom")
                 val descripcio = libraryElement.getString("descripcio")
                 val municipiNom =
                     libraryElement.getJSONObject("grup_adreca").getString("municipi_nom")
+                uniqueMunicipiNomValues.add(municipiNom)
                 val adrecaCompleta =
                     libraryElement.getJSONObject("grup_adreca").getString("adreca_completa")
                 val imatge = if (imatgeArray.length() > 0) imatgeArray.getString(0) else ""
@@ -93,7 +99,7 @@ class LibraryConverterFactory : Converter.Factory() {
                 libraryList.add(library)
             }
 
-            val response = LibraryResponse(libraryList)
+            val response = LibraryResponse(libraryList, uniqueMunicipiNomValues.toList())
             response
         }
     }

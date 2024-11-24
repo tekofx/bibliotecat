@@ -1,5 +1,6 @@
 package dev.tekofx.biblioteques.ui.screens.library
 
+import AutoCompleteSelectBar
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -55,6 +56,8 @@ fun LibrariesScreen(
     )
 ) {
     val libraries by libraryViewModel.libraries.observeAsState(emptyList())
+    val municipalities by libraryViewModel.municipalities.observeAsState(emptyList())
+
     val isLoading by libraryViewModel.isLoading.observeAsState(false)
     var showBottomSheet by remember { mutableStateOf(false) }
     val errorMessage by libraryViewModel.errorMessage.observeAsState("")
@@ -87,12 +90,15 @@ fun LibrariesScreen(
         )
 
         SearchBottomSheet(
+            municipalities = municipalities,
             textFieldValue = libraryViewModel.queryText,
             onTextFieldChange = { text -> libraryViewModel.onSearchTextChanged(text) },
             onFilterOpen = { libraryViewModel.onOpenStatusSwitchChanged(it) },
             show = showBottomSheet,
             showOnlyOpen = libraryViewModel.showOnlyOpen,
-            toggleShow = { showBottomSheet = !showBottomSheet }
+            toggleShow = { showBottomSheet = !showBottomSheet },
+            onSelectedMunicipality = { libraryViewModel.onMunicipalityChanged(it) },
+            selectedMunicipality = libraryViewModel.selectedMunicipality
         )
     }
 }
@@ -100,12 +106,15 @@ fun LibrariesScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBottomSheet(
+    municipalities: List<String>,
     onTextFieldChange: (text: String) -> Unit,
     textFieldValue: String,
     onFilterOpen: (value: Boolean) -> Unit,
     show: Boolean,
     showOnlyOpen: Boolean,
-    toggleShow: () -> Unit
+    toggleShow: () -> Unit,
+    onSelectedMunicipality: (String) -> Unit,
+    selectedMunicipality: String
 
 ) {
     val sheetState = rememberModalBottomSheetState()
@@ -141,7 +150,13 @@ fun SearchBottomSheet(
                     shape = RoundedCornerShape(50.dp),
                     modifier = Modifier
                         .fillMaxWidth(),
-                    label = { Text("Nom Biblioteca o municipi") }
+                    label = { Text("Nom Biblioteca") }
+                )
+                AutoCompleteSelectBar(
+                    entries = municipalities,
+                    onSelectedEntry = onSelectedMunicipality,
+                    selectedEntry = selectedMunicipality,
+                    placeholder = "Municipi"
                 )
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
