@@ -2,6 +2,12 @@ package dev.tekofx.biblioteques.ui.screens.library
 
 import AutoCompleteSelectBar
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,12 +16,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -32,13 +39,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.call.LibraryService
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.repository.LibraryRepository
+import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.Loader
+import dev.tekofx.biblioteques.ui.components.input.TextIconButton
 import dev.tekofx.biblioteques.ui.components.library.LibraryList
 import dev.tekofx.biblioteques.ui.theme.Typography
 import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModel
@@ -92,13 +103,15 @@ fun LibrariesScreen(
         SearchBottomSheet(
             municipalities = municipalities,
             textFieldValue = libraryViewModel.queryText,
-            onTextFieldChange = { text -> libraryViewModel.onSearchTextChanged(text) },
-            onFilterOpen = { libraryViewModel.onOpenStatusSwitchChanged(it) },
             show = showBottomSheet,
             showOnlyOpen = libraryViewModel.showOnlyOpen,
-            toggleShow = { showBottomSheet = !showBottomSheet },
+            filtersApplied = libraryViewModel.filtersApplied,
+            selectedMunicipality = libraryViewModel.selectedMunicipality,
+            onShowOnlyOpen = { libraryViewModel.onShowOnlyOpen(it) },
             onSelectedMunicipality = { libraryViewModel.onMunicipalityChanged(it) },
-            selectedMunicipality = libraryViewModel.selectedMunicipality
+            onToggleShow = { showBottomSheet = !showBottomSheet },
+            onTextFieldChange = { text -> libraryViewModel.onSearchTextChanged(text) },
+            onClearFilters = { libraryViewModel.clearFilters() }
         )
     }
 }
@@ -107,22 +120,26 @@ fun LibrariesScreen(
 @Composable
 fun SearchBottomSheet(
     municipalities: List<String>,
-    onTextFieldChange: (text: String) -> Unit,
     textFieldValue: String,
-    onFilterOpen: (value: Boolean) -> Unit,
-    show: Boolean,
     showOnlyOpen: Boolean,
-    toggleShow: () -> Unit,
+    selectedMunicipality: String,
+    show: Boolean,
+    filtersApplied: Boolean,
+    onToggleShow: () -> Unit,
+    onShowOnlyOpen: (value: Boolean) -> Unit,
     onSelectedMunicipality: (String) -> Unit,
-    selectedMunicipality: String
+    onTextFieldChange: (text: String) -> Unit,
+    onClearFilters: () -> Unit
 
 ) {
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
+    val focusManager = LocalFocusManager.current
+
     if (show) {
         ModalBottomSheet(
             onDismissRequest = {
-                toggleShow()
+                onToggleShow()
             },
             sheetState = sheetState
         ) {
@@ -166,21 +183,56 @@ fun SearchBottomSheet(
                     Switch(
                         checked = showOnlyOpen,
                         onCheckedChange = {
-                            onFilterOpen(it)
+                            onShowOnlyOpen(it)
                         }
                     )
                 }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .animateContentSize(),
+                    horizontalArrangement = Arrangement.spacedBy(
+                        space = 10.dp,
+                        alignment = Alignment.CenterHorizontally
+                    )
+                ) {
 
-
-                Button(
-                    onClick = {
-                        scope.launch { sheetState.hide() }.invokeOnCompletion {
-                            if (!sheetState.isVisible) {
-                                toggleShow()
+                    TextIconButton(
+                        text = "Tanca",
+                        icon = IconResource.fromImageVector(Icons.Outlined.Close),
+                        onClick = {
+                            scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                if (!sheetState.isVisible) {
+                                    onToggleShow()
+                                }
                             }
                         }
-                    }) {
-                    Text("Tanca")
+                    )
+                    AnimatedVisibility(
+                        visible = filtersApplied,
+                        enter = scaleIn() + expandHorizontally(),
+                        exit = scaleOut() + shrinkHorizontally()
+                    ) {
+                        OutlinedButton(
+                            onClick = {
+                                focusManager.clearFocus()
+                                onClearFilters()
+                            },
+
+                            ) {
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    IconResource.fromDrawableResource(R.drawable.filter_list_off)
+                                        .asPainterResource(),
+                                    contentDescription = ""
+                                )
+                                Text(text = "Eliminar filtres")
+                            }
+                        }
+                    }
                 }
             }
 

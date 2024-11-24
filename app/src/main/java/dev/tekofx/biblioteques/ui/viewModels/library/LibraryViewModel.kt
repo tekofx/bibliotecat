@@ -23,6 +23,9 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
     var showOnlyOpen by mutableStateOf(false)
         private set
 
+    var filtersApplied by mutableStateOf(false)
+        private set
+
     val libraries = MutableLiveData<List<Library>>()
     var selectedMunicipality by mutableStateOf<String>("")
         private set
@@ -96,13 +99,20 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
         applyFilters()
     }
 
-    fun onOpenStatusSwitchChanged(switchValue: Boolean) {
+    fun onShowOnlyOpen(switchValue: Boolean) {
         showOnlyOpen = switchValue
         applyFilters()
     }
 
     fun onMunicipalityChanged(municipality: String) {
         selectedMunicipality = municipality
+        applyFilters()
+    }
+
+    fun clearFilters() {
+        queryText = ""
+        showOnlyOpen = false
+        selectedMunicipality = ""
         applyFilters()
     }
 
@@ -128,5 +138,7 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
         } else {
             errorMessage.postValue("")
         }
+
+        filtersApplied = !(queryText == "" && !showOnlyOpen && selectedMunicipality == "")
     }
 }
