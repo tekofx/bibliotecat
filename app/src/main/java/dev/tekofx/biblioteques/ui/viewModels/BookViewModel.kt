@@ -134,7 +134,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     }
 
     /**
-     * Searchs a term in aladi.cat. It uses a [queryText] and a [searchTypes]
+     * Searchs a term in aladi.diba.cat. It uses a [queryText] and a [searchTypes]
      *
      */
     fun search() {

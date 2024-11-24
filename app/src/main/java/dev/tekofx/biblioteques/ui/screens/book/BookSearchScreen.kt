@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -39,6 +40,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.model.EmptyResults
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.IconResource
@@ -48,6 +50,38 @@ import dev.tekofx.biblioteques.ui.components.input.TextIconButton
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
 import dev.tekofx.biblioteques.ui.viewModels.searchTypes
 
+
+data class DondeBuscar(
+    val name: String,
+    val value: String,
+)
+
+
+val dondes = listOf<DondeBuscar>(
+    DondeBuscar("Comics", "c"),
+    DondeBuscar("Comics", "c"),
+    DondeBuscar("Comics", "c"),
+    DondeBuscar("Comics", "c"),
+    DondeBuscar("Comics", "c"),
+    DondeBuscar("Comics", "c"),
+    DondeBuscar("Comics", "c"),
+    DondeBuscar("Comics", "c"),
+    DondeBuscar("Comics", "c"),
+    DondeBuscar("Comics", "c"),
+    DondeBuscar("Comics", "c"),
+    DondeBuscar("Comics", "c"),
+    DondeBuscar("Comics", "c"),
+    DondeBuscar("Comics", "c"),
+    DondeBuscar("Comics", "c"),
+    DondeBuscar("Comics", "c"),
+    DondeBuscar("Comics", "c"),
+    DondeBuscar("Comics", "c"),
+    DondeBuscar("Comics", "c"),
+    DondeBuscar("Comics", "c"),
+    DondeBuscar("Comics", "c"),
+    DondeBuscar("Comics", "c"),
+
+    )
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -144,21 +178,38 @@ fun BookSearch(
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             ButtonSelect(
+                buttonText = "Filtres",
+                buttonIcon = IconResource.fromDrawableResource(R.drawable.filter_list),
                 selectedOption = selectedSearchTpe,
                 options = searchTypes,
                 onOptionSelected = {
                     onOptionSelected(it)
-                }
+                },
+                getText = { it.text },
+                getIcon = { it.icon }
             )
-            TextIconButton(
-                text = "Cerca",
-                icon = IconResource.fromImageVector(Icons.Outlined.Search),
-                enabled = queryText.isNotEmpty() && !isLoading,
-                onClick = {
-                    search()
-                }
+
+            ButtonSelect(
+                buttonText = "Donde buscar",
+                buttonIcon = IconResource.fromImageVector(Icons.Outlined.Info),
+                selectedOption = dondes[0],
+                options = dondes,
+                onOptionSelected = {
+
+                },
+                getText = { it.name },
+                getIcon = { null }
             )
+
         }
+        TextIconButton(
+            text = "Cerca",
+            icon = IconResource.fromImageVector(Icons.Outlined.Search),
+            enabled = queryText.isNotEmpty() && !isLoading,
+            onClick = {
+                search()
+            }
+        )
         AnimatedVisibility(
             visible = isLoading,
             enter = slideInVertically {
