@@ -13,7 +13,8 @@ interface BookService {
     @GET(value = "search*cat/?searchscope=171&submit=Cercar")
     fun findBooks(
         @Query("searcharg") searchArg: String,
-        @Query("searchtype") searchType: String
+        @Query("searchtype") searchType: String,
+        @Query("searchscope") searchScope: String,
     ): Call<BookResponse>
 
     @GET(value = "/search*cat/X")

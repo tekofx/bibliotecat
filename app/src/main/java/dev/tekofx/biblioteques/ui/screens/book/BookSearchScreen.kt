@@ -93,13 +93,14 @@ fun BookSearchScreen(
     val results by bookViewModel.results.observeAsState(
         EmptyResults()
     )
-
     val searchScopes by bookViewModel.searchScopes.observeAsState(emptyList())
+
+    var selectedSearchScope by bookViewModel.selectedSearchScope
+    var selectedSearchTpe by bookViewModel.selectedSearchType
 
     val isLoadingSearch by bookViewModel.isLoadingSearch.observeAsState(false)
     val search by bookViewModel.canNavigateToResults.observeAsState(false)
     val errorMessage by bookViewModel.errorMessage.observeAsState()
-    var selectedSearchTpe by bookViewModel.selectedSearchType
 
     LaunchedEffect(search) {
         if (search) {
@@ -118,7 +119,10 @@ fun BookSearchScreen(
             selectedSearchTpe = selectedSearchTpe,
             onSearch = { bookViewModel.search() },
             onOptionSelected = { selectedSearchTpe = it },
-            searchScopes = searchScopes
+
+            searchScopes = searchScopes,
+            selectedSearchScope = selectedSearchScope,
+            onSeachScopeSelected = { selectedSearchScope = it }
         )
 
     }
@@ -128,11 +132,13 @@ fun BookSearchScreen(
 fun BookSearch(
     errorMessage: String?,
     searchScopes: List<ButtonSelectItem>,
+    selectedSearchScope: ButtonSelectItem,
     onSearchTextChanged: (String) -> Unit,
     queryText: String,
     selectedSearchTpe: ButtonSelectItem,
     isLoading: Boolean,
     onOptionSelected: (ButtonSelectItem) -> Unit,
+    onSeachScopeSelected: (ButtonSelectItem) -> Unit,
     onSearch: () -> Unit
 ) {
     val focus = LocalFocusManager.current
@@ -194,12 +200,12 @@ fun BookSearch(
             )
 
             ButtonSelect(
-                buttonText = "Donde buscar",
+                buttonText = "On buscar",
                 buttonIcon = IconResource.fromImageVector(Icons.Outlined.Info),
-                selectedOption = searchScopes[0],
+                selectedOption = selectedSearchScope,
                 options = searchScopes,
                 onOptionSelected = {
-
+                    onSeachScopeSelected(it)
                 },
                 getText = { it.text },
                 getIcon = { null }

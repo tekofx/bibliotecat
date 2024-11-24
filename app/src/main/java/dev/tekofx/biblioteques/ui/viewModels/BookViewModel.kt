@@ -3,6 +3,7 @@ package dev.tekofx.biblioteques.ui.viewModels
 import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -47,6 +48,17 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     val currentBook = MutableLiveData<Book?>()
     val bookCopies = MutableLiveData<List<BookCopy>>(emptyList())
 
+    // Search data
+    val selectedSearchType = mutableStateOf(searchTypes.first())
+    val selectedSearchScope = mutableStateOf(
+        ButtonSelectItem(
+            "Tot el catalog", "171", icon = IconResource.fromImageVector(
+                Icons.Filled.Search
+            )
+        )
+    )
+
+
     // Loaders
     val isLoadingSearch = MutableLiveData(false) // Navigating to BookResultsScreen
     val isLoadingResults = MutableLiveData(false) // Loading results in BookResultsScreen
@@ -57,7 +69,6 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     // Helpers
     val canNavigateToResults = MutableLiveData(false)
     private val pageIndex = mutableIntStateOf(0)
-    val selectedSearchType = mutableStateOf(searchTypes.first())
 
     // Inputs
     var queryText by mutableStateOf("")
@@ -170,7 +181,11 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
             "BookViewModel",
             "search query:$queryText searchType:${selectedSearchType.value.value}"
         )
-        val response = repository.findBooks(queryText, selectedSearchType.value.value)
+        val response = repository.findBooks(
+            queryText,
+            selectedSearchType.value.value,
+            selectedSearchScope.value.value
+        )
         isLoadingSearch.postValue(true)
 
         response.enqueue(object : Callback<BookResponse> {
