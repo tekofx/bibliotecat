@@ -2,7 +2,6 @@ package dev.tekofx.biblioteques.ui.viewModels
 
 import android.util.Log
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -28,7 +27,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 val searchTypes = listOf(
-    SearchType("Qualsevol paraula", "X", IconResource.fromImageVector(Icons.Filled.AddCircle)),
+    SearchType("Qualsevol paraula", "X", IconResource.fromDrawableResource(R.drawable.abc)),
     SearchType("Títol", "t", IconResource.fromDrawableResource(R.drawable.title)),
     SearchType("Autor/Artista", "a", IconResource.fromImageVector(Icons.Filled.Person)),
     SearchType("Tema", "d", IconResource.fromDrawableResource(R.drawable.topic)),

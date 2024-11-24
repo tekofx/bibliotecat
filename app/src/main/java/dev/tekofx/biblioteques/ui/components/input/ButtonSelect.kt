@@ -53,6 +53,12 @@ fun ButtonSelect(
                         onOptionSelected(option)
                         expanded = false
                     },
+                    leadingIcon = {
+                        Icon(
+                            painter = option.icon.asPainterResource(),
+                            contentDescription = ""
+                        )
+                    },
                     trailingIcon = {
                         if (selectedOption == option) {
                             Icon(Icons.Outlined.Check, contentDescription = "")
