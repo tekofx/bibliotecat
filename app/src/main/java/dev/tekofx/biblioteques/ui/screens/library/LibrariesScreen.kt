@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -79,8 +78,14 @@ fun LibrariesScreen(
         floatingActionButton = {
             if (!isLoading) {
                 ExtendedFloatingActionButton(
-                    text = { Text("Cercar") },
-                    icon = { Icon(Icons.Filled.Search, contentDescription = "") },
+                    text = { Text("Filtrar") },
+                    icon = {
+                        Icon(
+                            IconResource.fromDrawableResource(R.drawable.filter_list)
+                                .asPainterResource(),
+                            contentDescription = ""
+                        )
+                    },
                     onClick = {
                         showBottomSheet = true
                     }
