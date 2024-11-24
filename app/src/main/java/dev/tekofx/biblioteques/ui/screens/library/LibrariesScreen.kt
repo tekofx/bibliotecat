@@ -90,7 +90,7 @@ fun LibrariesScreen(
     ) {
 
         Loader(
-            isLoading, errorMessage
+            isLoading, "Obtenint Biblioteques", errorMessage
         )
 
         LibraryList(

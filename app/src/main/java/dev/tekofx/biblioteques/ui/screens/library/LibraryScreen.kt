@@ -116,7 +116,7 @@ fun LibraryScreen(
             }
         }
     } ?: run {
-        Loader(isLoading, errorMessage)
+        Loader(isLoading, "Obtenint Data", errorMessage)
     }
 }
 

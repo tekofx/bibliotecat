@@ -60,7 +60,7 @@ fun BookSearchScreen(
         EmptyResults()
     )
 
-    val isLoading by bookViewModel.isLoadingResults.observeAsState(false)
+    val isLoadingSearch by bookViewModel.isLoadingSearch.observeAsState(false)
     val search by bookViewModel.canNavigateToResults.observeAsState(false)
     val errorMessage by bookViewModel.errorMessage.observeAsState()
     var selectedSearchTpe by bookViewModel.selectedSearchType
@@ -78,7 +78,7 @@ fun BookSearchScreen(
             errorMessage = errorMessage,
             onSearchTextChanged = { bookViewModel.onSearchTextChanged(it) },
             queryText = bookViewModel.queryText,
-            isLoading = isLoading,
+            isLoading = isLoadingSearch,
             selectedSearchTpe = selectedSearchTpe,
             onSearch = { bookViewModel.search() },
             onOptionSelected = { selectedSearchTpe = it }

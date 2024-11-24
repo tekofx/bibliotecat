@@ -37,6 +37,7 @@ import dev.tekofx.biblioteques.model.EmptyResults
 import dev.tekofx.biblioteques.model.GeneralResults
 import dev.tekofx.biblioteques.model.SearchResult
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
+import dev.tekofx.biblioteques.ui.components.Loader
 import dev.tekofx.biblioteques.ui.components.PaginatedList
 import dev.tekofx.biblioteques.ui.components.input.SearchType
 import dev.tekofx.biblioteques.ui.theme.Typography
@@ -54,10 +55,12 @@ fun BookResultsScreen(
     val results by bookViewModel.results.observeAsState(
         EmptyResults()
     )
-    val isLoading by bookViewModel.isLoadingResults.observeAsState(false)
+    val isLoadingNextPageResults by bookViewModel.isLoadingNextPageResults.observeAsState(false)
+    val isLoadingResults by bookViewModel.isLoadingResults.observeAsState(false)
+    val errorMessage by bookViewModel.errorMessage.observeAsState("")
+
+
     val selectedSearchType by bookViewModel.selectedSearchType
-
-
 
     LaunchedEffect(key1 = 1) {
         Log.d("BookResultsScreen", "LaunchedEffect. Query: $query searchType: $searchType")
@@ -79,12 +82,17 @@ fun BookResultsScreen(
         }
     ) {
 
+        Loader(
+            isLoading = isLoadingResults,
+            text = "Loading results",
+            errorText = errorMessage
+        )
 
         when (results) {
             is BookResults ->
                 PaginatedList(
                     searchResults = results as BookResults,
-                    isLoading = isLoading,
+                    isLoading = isLoadingNextPageResults,
                     key = { book -> book.id },
                     onLoadMore = { bookViewModel.getNextResultsPage() },
 
@@ -100,7 +108,7 @@ fun BookResultsScreen(
             is GeneralResults ->
                 PaginatedList(
                     searchResults = results as GeneralResults,
-                    isLoading = isLoading,
+                    isLoading = isLoadingNextPageResults,
                     key = { searchResult: SearchResult -> searchResult.text },
                     onLoadMore = { bookViewModel.getNextResultsPage() },
                 ) { searchResult ->

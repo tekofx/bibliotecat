@@ -41,15 +41,21 @@ val searchTypes = listOf(
     SearchType("Signatura", "c", IconResource.fromDrawableResource(R.drawable.assignment)),
 )
 
-class BookViewModel(private val repository: BookRepository) :
-    ViewModel() {
+class BookViewModel(private val repository: BookRepository) : ViewModel() {
+    // Data
     val results = MutableLiveData<SearchResults<out SearchResult>>()
+    val currentBook = MutableLiveData<Book?>()
+    val bookCopies = MutableLiveData<List<BookCopy>>(emptyList())
 
-    val isLoadingResults = MutableLiveData(false)
-    val canNavigateToResults = MutableLiveData(false)
+    // Loaders
+    val isLoadingSearch = MutableLiveData(false) // Navigating to BookResultsScreen
+    val isLoadingResults = MutableLiveData(false) // Loading results in BookResultsScreen
+    val isLoadingNextPageResults = MutableLiveData(false) // Loading next page of results
     val isLoadingBookDetails = MutableLiveData(false)
     val isLoadingBookCopies = MutableLiveData(false)
-    val currentBook = MutableLiveData<Book?>()
+
+    // Helpers
+    val canNavigateToResults = MutableLiveData(false)
     private val pageIndex = mutableIntStateOf(0)
     val selectedSearchType = mutableStateOf(searchTypes.first())
 
@@ -61,8 +67,8 @@ class BookViewModel(private val repository: BookRepository) :
     var canReserveChip by mutableStateOf(false)
         private set
 
+    // Errors
     val errorMessage = MutableLiveData<String>()
-    val bookCopies = MutableLiveData<List<BookCopy>>(emptyList())
 
 
     /**
@@ -117,13 +123,13 @@ class BookViewModel(private val repository: BookRepository) :
 
                 currentResults.addItems(responseResults.items)
                 results.postValue(currentResults)
-                isLoadingResults.postValue(false)
+                isLoadingNextPageResults.postValue(false)
             }
 
             override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
                 Log.e("BookViewModel", "Error getting results page: ${t.message.toString()}")
                 errorMessage.postValue("Book not found")
-                isLoadingResults.postValue(false)
+                isLoadingNextPageResults.postValue(false)
             }
         })
     }
@@ -138,7 +144,7 @@ class BookViewModel(private val repository: BookRepository) :
             "search query:$queryText searchType:${selectedSearchType.value.value}"
         )
         val response = repository.findBooks(queryText, selectedSearchType.value.value)
-        isLoadingResults.postValue(true)
+        isLoadingSearch.postValue(true)
 
         response.enqueue(object : Callback<BookResponse> {
             override fun onResponse(
@@ -149,13 +155,13 @@ class BookViewModel(private val repository: BookRepository) :
 
                 results.postValue(responseResults)
                 canNavigateToResults.postValue(true)
-                isLoadingResults.postValue(false)
+                isLoadingSearch.postValue(false)
             }
 
             override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
                 Log.e("BookViewModel", "Error finding books: ${t.message.toString()}")
                 errorMessage.postValue("Error getting books")
-                isLoadingResults.postValue(false)
+                isLoadingSearch.postValue(false)
             }
         })
     }

@@ -12,15 +12,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 
 @Composable
 fun Loader(
     isLoading: Boolean,
-    text: String
+    text: String,
+    errorText: String
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .zIndex(100f)
             .padding(horizontal = 10.dp)
     ) {
         if (isLoading) {
@@ -29,14 +32,14 @@ fun Loader(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 CircularProgressIndicator()
-                Text(text = "Obtenint biblioteques")
+                Text(text = text)
             }
-        } else if (text.isNotEmpty()) {
+        } else if (errorText.isNotEmpty()) {
             Text(
                 modifier = Modifier
                     .align(Alignment.Center)
                     .padding(20.dp),
-                text = text,
+                text = errorText,
                 lineHeight = 40.sp,
                 textAlign = TextAlign.Center,
                 fontSize = 30.sp
