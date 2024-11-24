@@ -11,7 +11,6 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -40,12 +39,11 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.model.EmptyResults
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.IconResource
-import dev.tekofx.biblioteques.ui.components.input.ButtonSelect
 import dev.tekofx.biblioteques.ui.components.input.ButtonSelectItem
+import dev.tekofx.biblioteques.ui.components.input.ComboBox
 import dev.tekofx.biblioteques.ui.components.input.TextIconButton
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
 import dev.tekofx.biblioteques.ui.viewModels.searchTypes
@@ -152,34 +150,31 @@ fun BookSearch(
                 .fillMaxWidth(),
             label = { Text("Cerca ${selectedSearchTpe.text.lowercase()}") }
         )
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            ButtonSelect(
-                buttonText = "Filtres",
-                buttonIcon = IconResource.fromDrawableResource(R.drawable.filter_list),
-                selectedOption = selectedSearchTpe,
-                options = searchTypes,
-                onOptionSelected = {
-                    onOptionSelected(it)
-                },
-                getText = { it.text },
-                getIcon = { it.icon }
-            )
+        
+        ComboBox(
+            buttonText = selectedSearchTpe.text,
+            buttonIcon = selectedSearchTpe.icon,
+            selectedOption = selectedSearchTpe,
+            options = searchTypes,
+            onOptionSelected = {
+                onOptionSelected(it)
+            },
+            getText = { it.text },
+            getIcon = { it.icon }
+        )
 
-            ButtonSelect(
-                buttonText = "On buscar",
-                buttonIcon = IconResource.fromImageVector(Icons.Outlined.Info),
-                selectedOption = selectedSearchScope,
-                options = searchScopes,
-                onOptionSelected = {
-                    onSeachScopeSelected(it)
-                },
-                getText = { it.text },
-                getIcon = { null }
-            )
+        ComboBox(
+            buttonText = "On buscar",
+            buttonIcon = IconResource.fromImageVector(Icons.Outlined.Info),
+            selectedOption = selectedSearchScope,
+            options = searchScopes,
+            onOptionSelected = {
+                onSeachScopeSelected(it)
+            },
+            getText = { it.text },
+            getIcon = { null }
+        )
 
-        }
         TextIconButton(
             text = "Cerca",
             icon = IconResource.fromImageVector(Icons.Outlined.Search),

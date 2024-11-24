@@ -23,6 +23,7 @@ fun TextIconButton(
     Button(
         onClick = onClick,
         enabled = enabled,
+        modifier = modifier
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,

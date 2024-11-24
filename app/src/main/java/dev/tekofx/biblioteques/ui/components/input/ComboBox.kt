@@ -2,6 +2,7 @@ package dev.tekofx.biblioteques.ui.components.input
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
@@ -28,7 +29,7 @@ class ButtonSelectItem(
 )
 
 @Composable
-fun <T> ButtonSelect(
+fun <T> ComboBox(
     buttonText: String,
     buttonIcon: IconResource,
     options: List<T>,
@@ -39,15 +40,19 @@ fun <T> ButtonSelect(
 ) {
     var expanded by remember { mutableStateOf(false) }
     Column(
+        modifier = Modifier.fillMaxWidth()
     ) {
         TextIconButton(
+            modifier = Modifier.fillMaxWidth(),
             text = buttonText,
             icon = buttonIcon,
             onClick = { expanded = true }
         )
 
         DropdownMenu(
-            modifier = Modifier.height(200.dp),
+            modifier = Modifier
+                .height(300.dp)
+                .fillMaxWidth(),
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
