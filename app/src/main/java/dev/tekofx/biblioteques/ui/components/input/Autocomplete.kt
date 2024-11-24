@@ -13,14 +13,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -29,13 +26,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import dev.tekofx.biblioteques.ui.components.input.SearchBar
 
 
 @Composable
@@ -52,7 +47,57 @@ fun AutoCompleteSelectBar(
     val interactionSource = remember { MutableInteractionSource() }
 
     Column(modifier = Modifier.fillMaxWidth()) {
-        TextField(
+//        TextField(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .height(heightTextFields)
+//                .clickable(
+//                    interactionSource = interactionSource,
+//                    indication = null,
+//                    onClick = {
+//                        expanded = false
+//                    }
+//                )
+//                .onGloballyPositioned { coordinates ->
+//                    textFieldSize = coordinates.size.toSize()
+//                },
+//            value = selectedEntry,
+//            onValueChange = {
+//                onSelectedEntry(it)
+//                expanded = true
+//            },
+//            // Perform action when the TextField is clicked
+//            interactionSource = remember { MutableInteractionSource() }
+//                .also { interactionSource ->
+//                    LaunchedEffect(interactionSource) {
+//                        interactionSource.interactions.collect { interaction ->
+//                            if (interaction is PressInteraction.Release) {
+//                                expanded = !expanded
+//                            }
+//                        }
+//                    }
+//                },
+//            placeholder = { Text(placeholder) },
+//            colors = TextFieldDefaults.colors(
+//                focusedIndicatorColor = Color.Transparent,
+//                unfocusedIndicatorColor = Color.Transparent,
+//            ),
+//            keyboardOptions = KeyboardOptions(
+//                keyboardType = KeyboardType.Text,
+//                imeAction = ImeAction.Done
+//            ),
+//            shape = if (expanded) TextFieldDefaults.shape else RoundedCornerShape(50.dp),
+//            singleLine = true,
+//            trailingIcon = {
+//                Icon(
+//                    modifier = Modifier.size(24.dp),
+//                    imageVector = Icons.Rounded.KeyboardArrowDown,
+//                    contentDescription = "arrow",
+//                )
+//            }
+        //)
+
+        SearchBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(heightTextFields)
@@ -82,23 +127,12 @@ fun AutoCompleteSelectBar(
                         }
                     }
                 },
-            placeholder = { Text(placeholder) },
-            colors = TextFieldDefaults.colors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-            ),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Done
-            ),
-            shape = if (expanded) TextFieldDefaults.shape else RoundedCornerShape(50.dp),
-            singleLine = true,
+            label = "Municipi",
             trailingIcon = {
                 Icon(
                     modifier = Modifier.size(24.dp),
                     imageVector = Icons.Rounded.KeyboardArrowDown,
                     contentDescription = "arrow",
-                    tint = Color.Black
                 )
             }
         )

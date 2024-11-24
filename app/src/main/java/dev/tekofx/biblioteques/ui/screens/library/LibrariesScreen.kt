@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Search
@@ -24,8 +23,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,7 +33,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -47,6 +43,7 @@ import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.repository.LibraryRepository
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.Loader
+import dev.tekofx.biblioteques.ui.components.input.SearchBar
 import dev.tekofx.biblioteques.ui.components.input.TextIconButton
 import dev.tekofx.biblioteques.ui.components.input.TextIconButtonOutlined
 import dev.tekofx.biblioteques.ui.components.library.LibraryList
@@ -153,26 +150,18 @@ fun SearchBottomSheet(
                 modifier = Modifier.padding(10.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                TextField(
-                    colors = TextFieldDefaults.colors(
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                    ),
+
+                SearchBar(
                     value = textFieldValue,
-                    onValueChange = { newText ->
-                        onTextFieldChange(newText)
-                    },
-                    singleLine = true,
+                    onValueChange = onTextFieldChange,
+                    label = "Nom Biblioteca",
+                    onDone = {},
                     trailingIcon = {
                         Icon(
                             imageVector = Icons.Outlined.Search,
                             contentDescription = null
                         )
                     },
-                    shape = RoundedCornerShape(50.dp),
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    label = { Text("Nom Biblioteca") }
                 )
                 AutoCompleteSelectBar(
                     entries = municipalities,

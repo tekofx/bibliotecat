@@ -14,28 +14,28 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import dev.tekofx.biblioteques.model.EmptyResults
@@ -43,6 +43,7 @@ import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.input.ButtonSelectItem
 import dev.tekofx.biblioteques.ui.components.input.ComboBox
+import dev.tekofx.biblioteques.ui.components.input.SearchBar
 import dev.tekofx.biblioteques.ui.components.input.TextIconButton
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
 import dev.tekofx.biblioteques.ui.viewModels.searchTypes
@@ -109,6 +110,8 @@ fun BookSearch(
     val focus = LocalFocusManager.current
     val density = LocalDensity.current
 
+    var showBottomSheet by remember { mutableStateOf(false) }
+
     fun search() {
         onSearch()
         focus.clearFocus()
@@ -124,30 +127,14 @@ fun BookSearch(
         if (!errorMessage.isNullOrEmpty()) {
             Text(text = "Llibre no trobat :(")
         }
-        TextField(
-            colors = TextFieldDefaults.colors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-            ),
+        SearchBar(
             value = queryText,
             onValueChange = { onSearchTextChanged(it) },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    search()
-                }
-            ),
-            singleLine = true,
+            onDone = { search() },
             trailingIcon = {
-                Icon(
-                    imageVector = Icons.Outlined.Search,
-                    contentDescription = null
-                )
+                Icon(Icons.Outlined.Search, contentDescription = "")
             },
-            shape = RoundedCornerShape(50.dp),
-            modifier = Modifier
-                .fillMaxWidth(),
-            label = { Text("Cerca ${selectedSearchTpe.text.lowercase()}") }
+            label = "Cerca ${selectedSearchTpe.text.lowercase()}"
         )
 
         ComboBox(
@@ -173,6 +160,11 @@ fun BookSearch(
             getText = { it.text },
             getIcon = { null }
         )
+        Button(
+            onClick = { showBottomSheet = !showBottomSheet }
+        ) {
+            Text("show")
+        }
 
         TextIconButton(
             text = "Cerca",
@@ -199,6 +191,50 @@ fun BookSearch(
             ) + fadeOut()
         ) {
             CircularProgressIndicator()
+        }
+        BookSearchBottomsheet(
+            show = showBottomSheet,
+            onToggleShow = { showBottomSheet = !showBottomSheet },
+        )
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BookSearchBottomsheet(
+    show: Boolean,
+    onToggleShow: () -> Unit,
+
+    ) {
+    val sheetState = rememberModalBottomSheetState()
+
+    if (show) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                onToggleShow()
+            },
+            sheetState = sheetState
+        ) {
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                TextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = "",
+                    onValueChange = {},
+                    placeholder = { Text("Cerca") }
+                )
+                Button(
+                    onToggleShow
+                ) {
+                    Text("Tanca")
+                }
+            }
         }
     }
 }
