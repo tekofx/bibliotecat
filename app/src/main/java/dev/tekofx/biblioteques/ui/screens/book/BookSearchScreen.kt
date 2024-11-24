@@ -18,7 +18,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -150,7 +149,7 @@ fun BookSearch(
                 .fillMaxWidth(),
             label = { Text("Cerca ${selectedSearchTpe.text.lowercase()}") }
         )
-        
+
         ComboBox(
             buttonText = selectedSearchTpe.text,
             buttonIcon = selectedSearchTpe.icon,
@@ -164,8 +163,8 @@ fun BookSearch(
         )
 
         ComboBox(
-            buttonText = "On buscar",
-            buttonIcon = IconResource.fromImageVector(Icons.Outlined.Info),
+            buttonText = selectedSearchScope.text,
+            buttonIcon = selectedSearchScope.icon,
             selectedOption = selectedSearchScope,
             options = searchScopes,
             onOptionSelected = {

@@ -204,14 +204,15 @@ fun GeneralSearchResultCard(
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
-                Icon(
-                    painter = selectedSearchType.icon.asPainterResource(),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .height(30.dp)
-                        .width(30.dp)
-                )
+                if (selectedSearchType.icon != null) {
+                    Icon(
+                        painter = selectedSearchType.icon.asPainterResource(),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .height(30.dp)
+                            .width(30.dp)
+                    )
+                }
                 Text(
                     text = searchResult.text
                 )

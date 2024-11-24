@@ -3,7 +3,6 @@ package dev.tekofx.biblioteques.ui.viewModels
 import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -52,9 +51,9 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     val selectedSearchType = mutableStateOf(searchTypes.first())
     val selectedSearchScope = mutableStateOf(
         ButtonSelectItem(
-            "Tot el catalog", "171", icon = IconResource.fromImageVector(
-                Icons.Filled.Search
-            )
+            "Tot el catàleg",
+            "171",
+            icon = IconResource.fromDrawableResource(R.drawable.manage_search)
         )
     )
 

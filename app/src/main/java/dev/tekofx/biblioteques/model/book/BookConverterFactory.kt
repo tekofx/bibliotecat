@@ -45,7 +45,6 @@ class BookConverterFactory : Converter.Factory() {
             if (advancedSearchElement != null) {
                 Log.d("BookConverterFactory", "Get Search Scope")
                 val searchScopes = getSearchScope(doc)
-                println(searchScopes)
                 BookResponse(body = responseBodyString, searchScopes = searchScopes)
             } else if (notResultsH2Element != null) {
                 Log.d("BookConverterFactory", "Not book found")
@@ -106,7 +105,7 @@ class BookConverterFactory : Converter.Factory() {
                 ButtonSelectItem(
                     text,
                     value,
-                    IconResource.fromDrawableResource(R.drawable.ic_notifications_black_24dp)
+                    IconResource.fromDrawableResource(R.drawable.manage_search)
                 )
             )
         }
