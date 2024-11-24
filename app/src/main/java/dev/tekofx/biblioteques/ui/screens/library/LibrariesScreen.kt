@@ -22,7 +22,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -50,6 +49,7 @@ import dev.tekofx.biblioteques.repository.LibraryRepository
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.Loader
 import dev.tekofx.biblioteques.ui.components.input.TextIconButton
+import dev.tekofx.biblioteques.ui.components.input.TextIconButtonOutlined
 import dev.tekofx.biblioteques.ui.components.library.LibraryList
 import dev.tekofx.biblioteques.ui.theme.Typography
 import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModel
@@ -213,25 +213,14 @@ fun SearchBottomSheet(
                         enter = scaleIn() + expandHorizontally(),
                         exit = scaleOut() + shrinkHorizontally()
                     ) {
-                        OutlinedButton(
+                        TextIconButtonOutlined(
+                            text = "Eliminar filtres",
+                            icon = IconResource.fromDrawableResource(R.drawable.filter_list_off),
                             onClick = {
                                 focusManager.clearFocus()
                                 onClearFilters()
-                            },
-
-                            ) {
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    IconResource.fromDrawableResource(R.drawable.filter_list_off)
-                                        .asPainterResource(),
-                                    contentDescription = ""
-                                )
-                                Text(text = "Eliminar filtres")
                             }
-                        }
+                        )
                     }
                 }
             }
