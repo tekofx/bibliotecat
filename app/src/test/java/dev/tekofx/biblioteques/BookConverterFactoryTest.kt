@@ -193,7 +193,7 @@ class BookConverterFactoryTest {
     @Test
     fun `search by author`() {
         runBlocking {
-            val response = realBookRepository.findBooks("sanderson", "a").execute()
+            val response = realBookRepository.findBooks("sanderson", "a", "171").execute()
             assert(response.body()?.results is SearchResults)
         }
     }
@@ -201,7 +201,7 @@ class BookConverterFactoryTest {
     @Test
     fun `search by topic`() {
         runBlocking {
-            val response = realBookRepository.findBooks("plantes", "d").execute()
+            val response = realBookRepository.findBooks("plantes", "d", "171").execute()
             assert(response.body()?.results is SearchResults)
         }
     }
@@ -209,7 +209,7 @@ class BookConverterFactoryTest {
     @Test
     fun `search by issn and get list of issns`() {
         runBlocking {
-            val response = realBookRepository.findBooks("978", "i").execute()
+            val response = realBookRepository.findBooks("978", "i", "171").execute()
             val results = response.body()?.results!!
             assert(response.body()?.results is SearchResults)
             assert(results.items.isNotEmpty())
@@ -220,7 +220,7 @@ class BookConverterFactoryTest {
     @Test
     fun `search by issn and get a book`() {
         runBlocking {
-            val response = realBookRepository.findBooks("9788419260260", "i").execute()
+            val response = realBookRepository.findBooks("9788419260260", "i", "171").execute()
             assert(response.body()?.results is BookResults)
 
         }
@@ -229,7 +229,7 @@ class BookConverterFactoryTest {
     @Test
     fun `search by signature and get list`() {
         runBlocking {
-            val response = realBookRepository.findBooks("N San", "c").execute()
+            val response = realBookRepository.findBooks("N San", "c", "171").execute()
             val results = response.body()?.results!!
             assert(response.body()?.results is SearchResults)
             assert(results.items.isNotEmpty())
@@ -239,7 +239,7 @@ class BookConverterFactoryTest {
     @Test
     fun `search by signature and not found`() {
         runBlocking {
-            val response = realBookRepository.findBooks("san", "c").execute()
+            val response = realBookRepository.findBooks("san", "c", "171").execute()
             val results = response.body()?.results!!
             assert(response.body()?.results is SearchResults)
             assert(results.items.isNotEmpty())
