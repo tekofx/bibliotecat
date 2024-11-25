@@ -85,6 +85,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     }
 
     private fun getSearchScope() {
+        errorMessage.postValue("")
         val response = repository.getSearchScope()
         response.enqueue(object : Callback<BookResponse> {
             override fun onResponse(
@@ -112,6 +113,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
      * Gets [SearchResults] from the page of results
      */
     fun getResults(url: String) {
+        errorMessage.postValue("")
         Log.d("BookViewModel", "getBooksBySearchResult")
         val response = repository.getHtmlByUrl(url)
         isLoadingResults.postValue(true)
@@ -141,6 +143,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
      * Get the next [SearchResults] page. It gets [SearchResults], can be [BookResults] or [SearchResults]
      */
     fun getNextResultsPage() {
+        errorMessage.postValue("")
         val resultsValue = results.value ?: throw Error()
         Log.d("BookViewModel", "Get results page ${pageIndex.intValue}/${resultsValue.numItems}")
         val url = resultsValue.getNextPage() ?: return
@@ -176,6 +179,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
      *
      */
     fun search() {
+        errorMessage.postValue("")
         Log.d(
             "BookViewModel",
             "search query:$queryText searchType:${selectedSearchType.value.value}"
@@ -212,8 +216,8 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
      * Gets the [BookCopies][BookCopy] of the full book copies page
      */
     fun getBookCopies(book: Book) {
+        errorMessage.postValue("")
         Log.d("BookViewModel", "getBookCopies")
-
         val bookCopiesUrl = book.bookDetails?.bookCopiesUrl ?: return
         Log.d("BookViewModel", "getBookCopies Foung BookCopiesUrl")
         val response = repository.getHtmlByUrl(bookCopiesUrl)
@@ -252,6 +256,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
      * Gets the [BookDetails] of a [Book] from the url of a book.
      */
     fun getBookDetails(bookId: Int) {
+        errorMessage.postValue("")
         Log.d("BookViewModel", "getBookDetails")
         isLoadingBookDetails.postValue(true)
         val book = filterBook(bookId) ?: return
