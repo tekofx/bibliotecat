@@ -134,7 +134,9 @@ fun SearchBottomSheet(
     onClearFilters: () -> Unit
 
 ) {
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
 
