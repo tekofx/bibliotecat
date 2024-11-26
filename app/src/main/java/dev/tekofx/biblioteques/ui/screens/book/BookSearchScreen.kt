@@ -187,7 +187,7 @@ fun BookSearch(
             selectedItem = selectedSearchScope,
             onItemSelected = onSeachScopeSelected,
             showSearchBar = true,
-            maxHeight = 200.dp
+            maxHeight = 300.dp
         )
 
 
