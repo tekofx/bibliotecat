@@ -41,14 +41,14 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FilterBottomSheet(
+fun SelectBottomSheet(
     show: Boolean,
     onToggleShow: () -> Unit,
     selectItems: List<SelectItem>,
     selectedItem: SelectItem,
     onItemSelected: (SelectItem) -> Unit,
     showSearchBar: Boolean = false,
-    maxHeight: Dp = Dp.Unspecified
+    maxHeight: Dp = Dp.Unspecified,
 ) {
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true

@@ -47,8 +47,10 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     val currentBook = MutableLiveData<Book?>()
     val bookCopies = MutableLiveData<List<BookCopy>>(emptyList())
 
-    // Search data
+    // Any word, title, author...
     val selectedSearchType = mutableStateOf(searchTypes.first())
+
+    // In all catalog, music, Martorell...
     val selectedSearchScope = mutableStateOf(
         SelectItem(
             "Tot el catàleg",
