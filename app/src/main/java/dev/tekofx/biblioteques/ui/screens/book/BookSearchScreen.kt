@@ -52,7 +52,6 @@ import dev.tekofx.biblioteques.model.EmptyResults
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.input.ButtonSelectItem
-import dev.tekofx.biblioteques.ui.components.input.ComboBox
 import dev.tekofx.biblioteques.ui.components.input.SearchBar
 import dev.tekofx.biblioteques.ui.components.input.TextIconButton
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
@@ -117,7 +116,8 @@ fun BookSearch(
     val focus = LocalFocusManager.current
     val density = LocalDensity.current
 
-    var showBottomSheet by remember { mutableStateOf(false) }
+    var showSearchTypeButtomSheet by remember { mutableStateOf(false) }
+    var showWhereSearchButtomSheet by remember { mutableStateOf(false) }
 
     fun search() {
         onSearch()
@@ -144,24 +144,31 @@ fun BookSearch(
             label = "Cerca ${selectedSearchTpe.text.lowercase()}"
         )
 
-        ComboBox(buttonText = selectedSearchTpe.text,
-            buttonIcon = selectedSearchTpe.icon,
-            selectedOption = selectedSearchTpe,
-            options = searchTypes,
-            onOptionSelected = {
-                onOptionSelected(it)
-            },
-            getText = { it.text },
-            getIcon = { it.icon })
-
-
+//        ComboBox(buttonText = selectedSearchTpe.text,
+//            buttonIcon = selectedSearchTpe.icon,
+//            selectedOption = selectedSearchTpe,
+//            options = searchTypes,
+//            onOptionSelected = {
+//                onOptionSelected(it)
+//            },
+//            getText = { it.text },
+//            getIcon = { it.icon }
+//        )
+        TextIconButton(
+            modifier = Modifier.fillMaxWidth(),
+            text = selectedSearchTpe.text,
+            icon = selectedSearchTpe.icon,
+            onClick = {
+                showWhereSearchButtomSheet = !showWhereSearchButtomSheet
+            }
+        )
 
         TextIconButton(
             modifier = Modifier.fillMaxWidth(),
             text = selectedSearchScope.text,
             icon = selectedSearchScope.icon,
             onClick = {
-                showBottomSheet = !showBottomSheet
+                showSearchTypeButtomSheet = !showSearchTypeButtomSheet
             }
         )
 
@@ -186,12 +193,20 @@ fun BookSearch(
         ) + fadeOut()) {
             CircularProgressIndicator()
         }
-        BookSearchBottomsheet(
-            show = showBottomSheet,
-            onToggleShow = { showBottomSheet = !showBottomSheet },
+        SearchTypeBottomSheet(
+            show = showSearchTypeButtomSheet,
+            onToggleShow = { showSearchTypeButtomSheet = !showSearchTypeButtomSheet },
             searchScopes = searchScopes,
             selectedSearchScope = selectedSearchScope,
             onSeachScopeSelected = onSeachScopeSelected
+        )
+
+        WhereSearchBottomSheet(
+            show = showWhereSearchButtomSheet,
+            onToggleShow = { showWhereSearchButtomSheet = !showWhereSearchButtomSheet },
+            searchTypes = searchTypes,
+            selectedSearchType = selectedSearchTpe,
+            onSearchTypeSelected = onOptionSelected
         )
     }
 }
@@ -199,7 +214,7 @@ fun BookSearch(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BookSearchBottomsheet(
+fun SearchTypeBottomSheet(
     show: Boolean,
     onToggleShow: () -> Unit,
     searchScopes: List<ButtonSelectItem>,
@@ -272,6 +287,88 @@ fun BookSearchBottomsheet(
                         Icon(Icons.Outlined.Search, contentDescription = "")
                     },
                 )
+                TextIconButton(
+                    text = "Tanca",
+                    icon = IconResource.fromImageVector(Icons.Outlined.Close),
+
+                    onClick = {
+                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+                            if (!sheetState.isVisible) {
+                                onToggleShow()
+                            }
+                        }
+                    }
+                )
+
+            }
+        }
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun WhereSearchBottomSheet(
+    show: Boolean,
+    onToggleShow: () -> Unit,
+    searchTypes: List<ButtonSelectItem>,
+    selectedSearchType: ButtonSelectItem,
+    onSearchTypeSelected: (ButtonSelectItem) -> Unit,
+) {
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
+    val scope = rememberCoroutineScope()
+    if (show) {
+
+        ModalBottomSheet(
+            onDismissRequest = {
+                onToggleShow()
+            },
+            sheetState = sheetState,
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Text(text = "Cerca on ${selectedSearchType.text}")
+
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp),
+                    verticalArrangement = Arrangement.spacedBy(5.dp)
+                ) {
+                    items(
+                        searchTypes
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(30.dp)
+                                .background(if (selectedSearchType == it) MaterialTheme.colorScheme.surfaceBright else Color.Transparent)
+                                .clickable { onSearchTypeSelected(it) },
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = it.text,
+                                style = MaterialTheme.typography.titleMedium
+                            )
+
+                            if (selectedSearchType == it) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Check,
+                                    contentDescription = ""
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(5.dp))
+                    }
+                }
+
                 TextIconButton(
                     text = "Tanca",
                     icon = IconResource.fromImageVector(Icons.Outlined.Close),
