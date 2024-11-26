@@ -21,28 +21,28 @@ import dev.tekofx.biblioteques.model.book.BookCopyAvailability
 import dev.tekofx.biblioteques.model.book.BookDetails
 import dev.tekofx.biblioteques.repository.BookRepository
 import dev.tekofx.biblioteques.ui.IconResource
-import dev.tekofx.biblioteques.ui.components.input.ButtonSelectItem
+import dev.tekofx.biblioteques.ui.components.input.SelectItem
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 val searchTypes = listOf(
-    ButtonSelectItem("Qualsevol paraula", "X", IconResource.fromDrawableResource(R.drawable.abc)),
-    ButtonSelectItem("Títol", "t", IconResource.fromDrawableResource(R.drawable.title)),
-    ButtonSelectItem("Autor/Artista", "a", IconResource.fromImageVector(Icons.Filled.Person)),
-    ButtonSelectItem("Tema", "d", IconResource.fromDrawableResource(R.drawable.topic)),
-    ButtonSelectItem("ISBN/ISSN", "i", IconResource.fromDrawableResource(R.drawable.numbers)),
-    ButtonSelectItem(
+    SelectItem("Qualsevol paraula", "X", IconResource.fromDrawableResource(R.drawable.abc)),
+    SelectItem("Títol", "t", IconResource.fromDrawableResource(R.drawable.title)),
+    SelectItem("Autor/Artista", "a", IconResource.fromImageVector(Icons.Filled.Person)),
+    SelectItem("Tema", "d", IconResource.fromDrawableResource(R.drawable.topic)),
+    SelectItem("ISBN/ISSN", "i", IconResource.fromDrawableResource(R.drawable.numbers)),
+    SelectItem(
         "Lloc de publicació de revistas",
         "m",
         IconResource.fromDrawableResource(R.drawable.location_city)
     ),
-    ButtonSelectItem("Signatura", "c", IconResource.fromDrawableResource(R.drawable.assignment)),
+    SelectItem("Signatura", "c", IconResource.fromDrawableResource(R.drawable.assignment)),
 )
 
 class BookViewModel(private val repository: BookRepository) : ViewModel() {
     // Data
-    val searchScopes = MutableLiveData<List<ButtonSelectItem>>()
+    val searchScopes = MutableLiveData<List<SelectItem>>()
     val results = MutableLiveData<SearchResults<out SearchResult>>()
     val currentBook = MutableLiveData<Book?>()
     val bookCopies = MutableLiveData<List<BookCopy>>(emptyList())
@@ -50,7 +50,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     // Search data
     val selectedSearchType = mutableStateOf(searchTypes.first())
     val selectedSearchScope = mutableStateOf(
-        ButtonSelectItem(
+        SelectItem(
             "Tot el catàleg",
             "171",
             icon = IconResource.fromDrawableResource(R.drawable.manage_search)

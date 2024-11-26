@@ -21,8 +21,7 @@ import androidx.compose.ui.unit.dp
 import dev.tekofx.biblioteques.ui.IconResource
 import androidx.compose.material3.DropdownMenuItem as DropdownMenuItem1
 
-
-class ButtonSelectItem(
+class SelectItem(
     val text: String,
     val value: String,
     val icon: IconResource
@@ -31,7 +30,7 @@ class ButtonSelectItem(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as ButtonSelectItem
+        other as SelectItem
 
         if (text != other.text) return false
         if (value != other.value) return false

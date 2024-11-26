@@ -9,41 +9,26 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Check
-import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
@@ -51,12 +36,12 @@ import androidx.navigation.NavHostController
 import dev.tekofx.biblioteques.model.EmptyResults
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.IconResource
-import dev.tekofx.biblioteques.ui.components.input.ButtonSelectItem
+import dev.tekofx.biblioteques.ui.components.FilterBottomSheet
 import dev.tekofx.biblioteques.ui.components.input.SearchBar
+import dev.tekofx.biblioteques.ui.components.input.SelectItem
 import dev.tekofx.biblioteques.ui.components.input.TextIconButton
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
 import dev.tekofx.biblioteques.ui.viewModels.searchTypes
-import kotlinx.coroutines.launch
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -103,14 +88,14 @@ fun BookSearchScreen(
 @Composable
 fun BookSearch(
     errorMessage: String?,
-    searchScopes: List<ButtonSelectItem>,
-    selectedSearchScope: ButtonSelectItem,
+    searchScopes: List<SelectItem>,
+    selectedSearchScope: SelectItem,
     onSearchTextChanged: (String) -> Unit,
     queryText: String,
-    selectedSearchTpe: ButtonSelectItem,
+    selectedSearchTpe: SelectItem,
     isLoading: Boolean,
-    onOptionSelected: (ButtonSelectItem) -> Unit,
-    onSeachScopeSelected: (ButtonSelectItem) -> Unit,
+    onOptionSelected: (SelectItem) -> Unit,
+    onSeachScopeSelected: (SelectItem) -> Unit,
     onSearch: () -> Unit
 ) {
     val focus = LocalFocusManager.current
@@ -144,22 +129,12 @@ fun BookSearch(
             label = "Cerca ${selectedSearchTpe.text.lowercase()}"
         )
 
-//        ComboBox(buttonText = selectedSearchTpe.text,
-//            buttonIcon = selectedSearchTpe.icon,
-//            selectedOption = selectedSearchTpe,
-//            options = searchTypes,
-//            onOptionSelected = {
-//                onOptionSelected(it)
-//            },
-//            getText = { it.text },
-//            getIcon = { it.icon }
-//        )
         TextIconButton(
             modifier = Modifier.fillMaxWidth(),
             text = selectedSearchTpe.text,
             icon = selectedSearchTpe.icon,
             onClick = {
-                showWhereSearchButtomSheet = !showWhereSearchButtomSheet
+                showSearchTypeButtomSheet = !showSearchTypeButtomSheet
             }
         )
 
@@ -168,7 +143,7 @@ fun BookSearch(
             text = selectedSearchScope.text,
             icon = selectedSearchScope.icon,
             onClick = {
-                showSearchTypeButtomSheet = !showSearchTypeButtomSheet
+                showWhereSearchButtomSheet = !showWhereSearchButtomSheet
             }
         )
 
@@ -177,7 +152,8 @@ fun BookSearch(
             enabled = queryText.isNotEmpty() && !isLoading,
             onClick = {
                 search()
-            })
+            }
+        )
 
         AnimatedVisibility(visible = isLoading, enter = slideInVertically {
             // Slide in from 40 dp from the top.
@@ -193,196 +169,28 @@ fun BookSearch(
         ) + fadeOut()) {
             CircularProgressIndicator()
         }
-        SearchTypeBottomSheet(
+
+        // Any word, title
+        FilterBottomSheet(
             show = showSearchTypeButtomSheet,
             onToggleShow = { showSearchTypeButtomSheet = !showSearchTypeButtomSheet },
-            searchScopes = searchScopes,
-            selectedSearchScope = selectedSearchScope,
-            onSeachScopeSelected = onSeachScopeSelected
+            selectItems = searchTypes,
+            selectedItem = selectedSearchTpe,
+            onItemSelected = onOptionSelected,
         )
 
-        WhereSearchBottomSheet(
+        // Where to search
+        FilterBottomSheet(
             show = showWhereSearchButtomSheet,
             onToggleShow = { showWhereSearchButtomSheet = !showWhereSearchButtomSheet },
-            searchTypes = searchTypes,
-            selectedSearchType = selectedSearchTpe,
-            onSearchTypeSelected = onOptionSelected
+            selectItems = searchScopes,
+            selectedItem = selectedSearchScope,
+            onItemSelected = onSeachScopeSelected,
+            showSearchBar = true,
+            maxHeight = 200.dp
         )
+
+
     }
 }
 
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SearchTypeBottomSheet(
-    show: Boolean,
-    onToggleShow: () -> Unit,
-    searchScopes: List<ButtonSelectItem>,
-    selectedSearchScope: ButtonSelectItem,
-    onSeachScopeSelected: (ButtonSelectItem) -> Unit,
-) {
-    val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
-    var textfieldValue by remember { mutableStateOf("") }
-    val scope = rememberCoroutineScope()
-    if (show) {
-
-        ModalBottomSheet(
-            onDismissRequest = {
-                onToggleShow()
-            },
-            sheetState = sheetState,
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 10.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                Text(text = "Cerca on ${selectedSearchScope.text}")
-
-
-                LazyColumn(
-                    modifier = Modifier
-                        .height(200.dp)
-                        .padding(horizontal = 10.dp),
-                    verticalArrangement = Arrangement.spacedBy(5.dp)
-                ) {
-                    items(
-                        searchScopes.filter {
-                            it.text.lowercase().contains(textfieldValue.lowercase())
-                        }
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(30.dp)
-                                .background(if (selectedSearchScope == it) MaterialTheme.colorScheme.surfaceBright else Color.Transparent)
-                                .clickable { onSeachScopeSelected(it) },
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = it.text,
-                                style = MaterialTheme.typography.titleMedium
-                            )
-
-                            if (selectedSearchScope == it) {
-                                Icon(
-                                    imageVector = Icons.Outlined.Check,
-                                    contentDescription = ""
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(5.dp))
-                    }
-                }
-                SearchBar(
-                    value = textfieldValue,
-                    onValueChange = { textfieldValue = it },
-                    label = "Filtrar Llocs",
-                    trailingIcon = {
-                        Icon(Icons.Outlined.Search, contentDescription = "")
-                    },
-                )
-                TextIconButton(
-                    text = "Tanca",
-                    icon = IconResource.fromImageVector(Icons.Outlined.Close),
-
-                    onClick = {
-                        scope.launch { sheetState.hide() }.invokeOnCompletion {
-                            if (!sheetState.isVisible) {
-                                onToggleShow()
-                            }
-                        }
-                    }
-                )
-
-            }
-        }
-    }
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun WhereSearchBottomSheet(
-    show: Boolean,
-    onToggleShow: () -> Unit,
-    searchTypes: List<ButtonSelectItem>,
-    selectedSearchType: ButtonSelectItem,
-    onSearchTypeSelected: (ButtonSelectItem) -> Unit,
-) {
-    val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
-    val scope = rememberCoroutineScope()
-    if (show) {
-
-        ModalBottomSheet(
-            onDismissRequest = {
-                onToggleShow()
-            },
-            sheetState = sheetState,
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 10.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                Text(text = "Cerca on ${selectedSearchType.text}")
-
-                LazyColumn(
-                    modifier = Modifier
-                        .padding(horizontal = 10.dp),
-                    verticalArrangement = Arrangement.spacedBy(5.dp)
-                ) {
-                    items(
-                        searchTypes
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(30.dp)
-                                .background(if (selectedSearchType == it) MaterialTheme.colorScheme.surfaceBright else Color.Transparent)
-                                .clickable { onSearchTypeSelected(it) },
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = it.text,
-                                style = MaterialTheme.typography.titleMedium
-                            )
-
-                            if (selectedSearchType == it) {
-                                Icon(
-                                    imageVector = Icons.Outlined.Check,
-                                    contentDescription = ""
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(5.dp))
-                    }
-                }
-
-                TextIconButton(
-                    text = "Tanca",
-                    icon = IconResource.fromImageVector(Icons.Outlined.Close),
-
-                    onClick = {
-                        scope.launch { sheetState.hide() }.invokeOnCompletion {
-                            if (!sheetState.isVisible) {
-                                onToggleShow()
-                            }
-                        }
-                    }
-                )
-
-            }
-        }
-    }
-}

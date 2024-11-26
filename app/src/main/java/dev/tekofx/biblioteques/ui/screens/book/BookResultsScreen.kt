@@ -39,7 +39,7 @@ import dev.tekofx.biblioteques.model.SearchResult
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.components.Loader
 import dev.tekofx.biblioteques.ui.components.PaginatedList
-import dev.tekofx.biblioteques.ui.components.input.ButtonSelectItem
+import dev.tekofx.biblioteques.ui.components.input.SelectItem
 import dev.tekofx.biblioteques.ui.theme.Typography
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
 
@@ -184,7 +184,7 @@ fun BookCard(
 fun GeneralSearchResultCard(
     onClick: () -> Unit,
     searchResult: SearchResult,
-    selectedSearchType: ButtonSelectItem
+    selectedSearchType: SelectItem
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),

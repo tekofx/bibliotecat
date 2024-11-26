@@ -13,7 +13,7 @@ import dev.tekofx.biblioteques.model.GeneralResult
 import dev.tekofx.biblioteques.model.GeneralResults
 import dev.tekofx.biblioteques.model.StatusColor
 import dev.tekofx.biblioteques.ui.IconResource
-import dev.tekofx.biblioteques.ui.components.input.ButtonSelectItem
+import dev.tekofx.biblioteques.ui.components.input.SelectItem
 import okhttp3.ResponseBody
 import retrofit2.Converter
 import retrofit2.Retrofit
@@ -92,9 +92,9 @@ class BookConverterFactory : Converter.Factory() {
     }
 
 
-    private fun getSearchScope(doc: Document): List<ButtonSelectItem> {
+    private fun getSearchScope(doc: Document): List<SelectItem> {
         println(doc.selectFirst("select#searchscope")?.text())
-        val searchScopes = mutableListOf<ButtonSelectItem>()
+        val searchScopes = mutableListOf<SelectItem>()
         val searchScopeElement =
             doc.selectFirst("select#searchscope")?.getElementsByTag("option")
                 ?: return emptyList()
@@ -102,7 +102,7 @@ class BookConverterFactory : Converter.Factory() {
             val value = searchVal.attr("value")
             val text = searchVal.text()
             searchScopes.add(
-                ButtonSelectItem(
+                SelectItem(
                     text,
                     value,
                     IconResource.fromDrawableResource(R.drawable.manage_search)
