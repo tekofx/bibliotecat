@@ -246,7 +246,7 @@ class BookConverterFactory : Converter.Factory() {
             doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Publicació" }
                 ?.nextElementSibling()
 
-        val permanentLinkElement = doc.selectFirst("a.recordnum")
+        val permanentLinkElement = doc.selectFirst("a#recordnum")
 
 
         val title = titleElement?.text()?.split("/")?.get(0)?.trim() ?: ""
