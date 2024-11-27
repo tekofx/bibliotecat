@@ -30,9 +30,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import dev.tekofx.biblioteques.model.SelectItem
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.input.SearchBar
-import dev.tekofx.biblioteques.ui.components.input.SelectItem
 import dev.tekofx.biblioteques.ui.components.input.TextIconButton
 import kotlinx.coroutines.launch
 

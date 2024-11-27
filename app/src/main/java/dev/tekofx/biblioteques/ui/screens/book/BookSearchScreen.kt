@@ -34,11 +34,11 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import dev.tekofx.biblioteques.model.EmptyResults
+import dev.tekofx.biblioteques.model.SelectItem
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.SelectBottomSheet
 import dev.tekofx.biblioteques.ui.components.input.SearchBar
-import dev.tekofx.biblioteques.ui.components.input.SelectItem
 import dev.tekofx.biblioteques.ui.components.input.TextIconButton
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
 import dev.tekofx.biblioteques.ui.viewModels.searchTypes

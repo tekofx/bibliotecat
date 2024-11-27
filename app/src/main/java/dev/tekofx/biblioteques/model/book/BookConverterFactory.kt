@@ -11,9 +11,9 @@ import dev.tekofx.biblioteques.model.BookResult
 import dev.tekofx.biblioteques.model.BookResults
 import dev.tekofx.biblioteques.model.GeneralResult
 import dev.tekofx.biblioteques.model.GeneralResults
+import dev.tekofx.biblioteques.model.SelectItem
 import dev.tekofx.biblioteques.model.StatusColor
 import dev.tekofx.biblioteques.ui.IconResource
-import dev.tekofx.biblioteques.ui.components.input.SelectItem
 import okhttp3.ResponseBody
 import retrofit2.Converter
 import retrofit2.Retrofit

@@ -3,10 +3,10 @@ package dev.tekofx.biblioteques.dto
 import com.google.gson.annotations.SerializedName
 import dev.tekofx.biblioteques.model.SearchResult
 import dev.tekofx.biblioteques.model.SearchResults
+import dev.tekofx.biblioteques.model.SelectItem
 import dev.tekofx.biblioteques.model.book.Book
 import dev.tekofx.biblioteques.model.book.BookCopy
 import dev.tekofx.biblioteques.model.book.BookDetails
-import dev.tekofx.biblioteques.ui.components.input.SelectItem
 
 data class BookResponse(
     @SerializedName("body") var body: String = "",
