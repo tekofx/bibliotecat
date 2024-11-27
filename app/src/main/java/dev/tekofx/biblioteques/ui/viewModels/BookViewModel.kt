@@ -264,6 +264,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
         val book = filterBook(bookId) ?: return
         currentBook.postValue(book)
         val currentBookResultUrl = book.temporalUrl
+        println("book.temporalUrl ${book.temporalUrl}")
         val response = repository.getBookDetails(currentBookResultUrl)
         response.enqueue(object : Callback<BookResponse> {
             override fun onResponse(

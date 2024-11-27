@@ -243,9 +243,7 @@ class Library(
     fun isOpen(date: LocalDate, hora: LocalTime): Boolean {
         val currentTimetable = getCurrentSeasonTimetable(date)
         val dayTimetable = currentTimetable.dayTimetables[date.dayOfWeek]
-        println()
         return dayTimetable?.intervals?.any { interval ->
-            println(interval)
             if (interval.from != null && interval.to != null) {
                 hora.isAfter(interval.from) && hora.isBefore(interval.to)
             } else {
