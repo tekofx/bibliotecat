@@ -3,6 +3,7 @@ package dev.tekofx.biblioteques.ui.components.library
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -39,13 +40,16 @@ fun LibraryList(
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             items(libraries, key = { it.id }) { library ->
-                LibraryCard(
-                    library = library,
-                    onClick = {
-                        Log.d("LibraryList", "libraryId " + library.id)
-                        onLibraryCardClick(library.id)
-                    }
-                )
+                Row(modifier = Modifier.animateItem()) {
+
+                    LibraryCard(
+                        library = library,
+                        onClick = {
+                            Log.d("LibraryList", "libraryId " + library.id)
+                            onLibraryCardClick(library.id)
+                        }
+                    )
+                }
             }
         }
     }
