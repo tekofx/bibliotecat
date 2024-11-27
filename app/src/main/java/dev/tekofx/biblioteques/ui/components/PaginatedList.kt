@@ -94,7 +94,7 @@ fun <T> PaginatedList(
                 ) {
                     Text(
                         modifier = Modifier.padding(10.dp),
-                        text = "Numero de resultats ${searchResults.numItems}"
+                        text = "Mostrant ${searchResults.items.size} de ${searchResults.numItems}"
                     )
                 }
                 LazyColumn(
