@@ -179,7 +179,7 @@ fun LibraryTimeTable(timeTable: TimeTable) {
 
         timeTable.dayTimetables.forEach {
             Surface(
-                tonalElevation = if (it.value.open || it.value.observation.isNotEmpty()) 100.dp else 5.dp,
+                tonalElevation = if (it.key == LocalDate.now().dayOfWeek) 100.dp else if (it.value.open) 5.dp else 1.dp,
                 shape = RoundedCornerShape(10.dp),
             ) {
 
