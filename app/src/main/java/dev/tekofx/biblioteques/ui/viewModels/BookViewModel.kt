@@ -150,7 +150,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
         Log.d("BookViewModel", "Get results page ${pageIndex.intValue}/${resultsValue.numItems}")
         val url = resultsValue.getNextPage() ?: return
         val response = repository.getHtmlByUrl(url)
-        isLoadingResults.postValue(true)
+        isLoadingNextPageResults.postValue(true)
         response.enqueue(object : Callback<BookResponse> {
             override fun onResponse(
                 call: Call<BookResponse>, response: Response<BookResponse>
