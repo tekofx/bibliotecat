@@ -128,8 +128,11 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
             } else {
                 true
             }
-            val matchesMunicipality =
-                library.municipality.contains(selectedMunicipality, ignoreCase = true)
+            val matchesMunicipality = if (selectedMunicipality.isNotEmpty()) {
+                selectedMunicipality == library.municipality
+            } else {
+                true
+            }
 
             matchesSearchText && matchesOpenStatus && matchesMunicipality
         } ?: emptyList()
