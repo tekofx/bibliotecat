@@ -25,6 +25,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -62,16 +63,6 @@ dependencies {
     implementation(libs.androidx.activity)
 
     implementation(libs.androidx.core.splashscreen)
-    testImplementation(libs.robolectric)
-    testImplementation(libs.converter.scalars)
-    testImplementation(libs.junit)
-    testImplementation(libs.mockito.core)
-    testImplementation(libs.mockwebserver)
-    testImplementation(libs.converter.scalars)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-
-
 
     implementation(libs.picasso)
     implementation(libs.coil3.coil.compose)
@@ -93,6 +84,18 @@ dependencies {
     implementation(libs.material3)
 
     implementation(libs.androidx.hilt.navigation.compose)
+
+    // Android Testing
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+
+    // Testing
+    testImplementation(libs.robolectric)
+    testImplementation(libs.converter.scalars)
+    testImplementation(libs.junit)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockwebserver)
+    testImplementation(libs.converter.scalars)
     debugImplementation(libs.androidx.ui.tooling)
 
 
