@@ -13,6 +13,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import dev.tekofx.biblioteques.ui.screens.TutorialScreen
 import dev.tekofx.biblioteques.ui.screens.WelcomeScreen
 import dev.tekofx.biblioteques.ui.screens.book.BookResultsScreen
 import dev.tekofx.biblioteques.ui.screens.book.BookScreen
@@ -25,20 +26,29 @@ import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModel
 
 @Composable
 fun Navigation(
-    navController: NavHostController,
+    navHostController: NavHostController,
     libraryViewModel: LibraryViewModel,
     bookViewModel: BookViewModel
 ) {
     NavHost(
-        navController = navController,
+        navController = navHostController,
         startDestination = NavigateDestinations.LIBRARIES_ROUTE
     ) {
 
+        // Tutorial
+        composable(
+            route = NavigateDestinations.TUTORIAL_SCREEN,
+            exitTransition = { fadeOut() }
+        ) {
+            TutorialScreen(navHostController)
+        }
+
+        // Welcome
         composable(
             route = NavigateDestinations.WELCOME_SCREEN,
             exitTransition = { fadeOut() }
         ) {
-            WelcomeScreen(navController, libraryViewModel)
+            WelcomeScreen(navHostController, libraryViewModel)
         }
 
         // Libraries
@@ -46,7 +56,7 @@ fun Navigation(
             route = NavigateDestinations.LIBRARIES_ROUTE,
             exitTransition = { fadeOut() }
         ) {
-            LibrariesScreen(navController, libraryViewModel)
+            LibrariesScreen(navHostController, libraryViewModel)
         }
 
         composable(
@@ -85,7 +95,7 @@ fun Navigation(
                 }
             }
         ) {
-            BookSearchScreen(navController, bookViewModel)
+            BookSearchScreen(navHostController, bookViewModel)
         }
 
         composable(
@@ -108,7 +118,7 @@ fun Navigation(
         ) { backStackEntry ->
             val query = backStackEntry.arguments?.getString("query")
             val searchType = backStackEntry.arguments?.getString("searchtype")
-            BookResultsScreen(navController, bookViewModel, query, searchType)
+            BookResultsScreen(navHostController, bookViewModel, query, searchType)
         }
 
         composable(
@@ -119,7 +129,7 @@ fun Navigation(
             arguments = listOf(navArgument("bookUrl") { type = NavType.StringType })
         ) { backStackEntry ->
             val bookUrl = backStackEntry.arguments!!.getString("bookUrl")!!
-            BookScreen(bookUrl, navController, bookViewModel)
+            BookScreen(bookUrl, navHostController, bookViewModel)
         }
 
     }

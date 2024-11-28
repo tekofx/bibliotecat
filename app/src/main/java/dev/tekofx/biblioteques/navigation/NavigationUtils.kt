@@ -19,6 +19,7 @@ fun showBottomAppBar(currentRoute: String?): Boolean {
         currentRoute.contains(NavigateDestinations.BOOK_RESULTS_ROUTE) -> false
         currentRoute.contains(NavigateDestinations.BOOK_DETAILS_ROUTE) -> false
         currentRoute == NavigateDestinations.WELCOME_SCREEN -> false
+        currentRoute == NavigateDestinations.TUTORIAL_SCREEN -> false
         else -> true
     }
 
