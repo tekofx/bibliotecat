@@ -178,7 +178,8 @@ var winterTimetableDummy = TimeTable(
         DayOfWeek.SATURDAY to saturdayWinterTimetableDummy,
         DayOfWeek.SUNDAY to sundayWinterTimetableDummy
     ),
-    season = Season.WINTER
+    season = Season.WINTER,
+    observation = ""
 )
 
 var dummySummerTimetableDummy = TimeTable(
@@ -193,7 +194,8 @@ var dummySummerTimetableDummy = TimeTable(
         DayOfWeek.SATURDAY to saturdaySummerTimetableDummy,
         DayOfWeek.SUNDAY to sundaySummerTimetableDummy
     ),
-    season = Season.SUMMER
+    season = Season.SUMMER,
+    observation = ""
 )
 
 

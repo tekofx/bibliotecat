@@ -140,6 +140,9 @@ class LibraryConverterFactory : Converter.Factory() {
         val timeIntervalsDissabte = getTimeIntervals(jsonObject, estacio, "dissabte")
         val timeIntervalsDiumenge = getTimeIntervals(jsonObject, estacio, "diumenge")
 
+        val observacionsHtml = jsonObject.getString("observacions_$estacio")
+        val observation = Ksoup.parse(observacionsHtml).text()
+
 
         val weekTimetableDeProva = TimeTable(
             start = dateInterval.from,
@@ -153,7 +156,8 @@ class LibraryConverterFactory : Converter.Factory() {
                 DayOfWeek.SATURDAY to DayTimeTable(timeIntervalsDissabte ?: listOf()),
                 DayOfWeek.SUNDAY to DayTimeTable(timeIntervalsDiumenge ?: listOf())
             ),
-            season = season
+            season = season,
+            observation = observation
         )
 
         return weekTimetableDeProva

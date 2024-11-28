@@ -14,6 +14,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.MailOutline
 import androidx.compose.material.icons.outlined.Menu
@@ -39,6 +40,7 @@ import dev.tekofx.biblioteques.model.library.LibraryDummy
 import dev.tekofx.biblioteques.model.library.TimeTable
 import dev.tekofx.biblioteques.model.library.seasonTranslation
 import dev.tekofx.biblioteques.ui.IconResource
+import dev.tekofx.biblioteques.ui.components.Accordion
 import dev.tekofx.biblioteques.ui.components.ContactType
 import dev.tekofx.biblioteques.ui.components.InfoIntentCard
 import dev.tekofx.biblioteques.ui.components.Loader
@@ -176,6 +178,12 @@ fun LibraryTimeTable(timeTable: TimeTable) {
                 style = Typography.bodyLarge
             )
         }
+
+        Accordion(
+            title = "Observacions",
+            description = timeTable.observation,
+            icon = IconResource.fromImageVector(Icons.Outlined.Info)
+        )
 
         timeTable.dayTimetables.forEach {
             Surface(
