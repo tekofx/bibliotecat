@@ -99,9 +99,10 @@ fun TutorialScreen(
 fun Screen1() {
     ColumnContainer {
         Text(
+            text = "Welcome to ${stringResource(R.string.app_name)}",
+            modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
-            style = Typography.displaySmall,
-            text = "Welcome to ${stringResource(R.string.app_name)}"
+            style = Typography.headlineLarge,
         )
     }
 }
@@ -111,8 +112,10 @@ fun Screen1() {
 fun Screen2() {
     ColumnContainer {
         Text(
-            style = Typography.displaySmall,
-            text = "Features"
+            text = "Features",
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center,
+            style = Typography.headlineLarge,
         )
 
         val bullet = "\u2022"
@@ -143,7 +146,12 @@ fun Screen2() {
 @Composable
 fun Screen3() {
     ColumnContainer {
-        Text(text = "About this app", style = Typography.displaySmall)
+        Text(
+            text = "About this app",
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center,
+            style = Typography.headlineLarge
+        )
         Text("This app is not official")
         Text("This app is Open Source, check out the code here")
     }
@@ -152,7 +160,12 @@ fun Screen3() {
 @Composable
 fun Screen4() {
     ColumnContainer {
-        Text(text = "Permissions", style = Typography.displaySmall)
+        Text(
+            text = "Permissions",
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center,
+            style = Typography.headlineLarge,
+        )
 
         Text("This app will need location access if you want to find libraries near you")
     }
