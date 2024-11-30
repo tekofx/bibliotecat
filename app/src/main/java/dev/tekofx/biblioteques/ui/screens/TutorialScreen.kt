@@ -5,8 +5,6 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
@@ -40,16 +38,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.ParagraphStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextIndent
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.RequestLocationPermissionUsingRememberLauncherForActivityResult
@@ -95,11 +87,11 @@ fun TutorialScreen(
             }
         ) { targetPage ->
             when (targetPage) {
-                0 -> Screen1()
-                1 -> Screen2()
-                2 -> Screen3()
-                3 -> Screen4()
-                else -> Screen1() // Default fallback
+                0 -> Page1()
+                1 -> Page2()
+                2 -> Page3()
+                3 -> Page4()
+                else -> Page1() // Default fallback
 
             }
         }
@@ -107,7 +99,7 @@ fun TutorialScreen(
         // Spacer with weight to push the next elements to the bottom
         Spacer(modifier = Modifier.weight(1f))
 
-        Guide(page, 4)
+        Stepper(page, 4)
 
         Buttons(
             page = page,
@@ -132,7 +124,7 @@ fun TutorialScreen(
 }
 
 @Composable
-fun Guide(actualPage: Int, totalPages: Int) {
+fun Stepper(actualPage: Int, totalPages: Int) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -141,31 +133,32 @@ fun Guide(actualPage: Int, totalPages: Int) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         for (page in 0 until totalPages) {
-            val size by animateDpAsState(
-                targetValue = if (page == actualPage) 30.dp else 20.dp,
-                animationSpec = tween(
-                    durationMillis = 500,
-                    easing = LinearOutSlowInEasing
-                ),
-                label = ""
-            )
-            val color: Color =
-                if (page == actualPage) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer
-
-            Icon(
-                modifier = Modifier.size(size),
-                painter = IconResource.fromDrawableResource(R.drawable.circle)
-                    .asPainterResource(),
-                tint = color,
-                contentDescription = ""
-            )
-
+            AnimatedContent(
+                label = "stepper",
+                targetState = page == actualPage,
+                transitionSpec = {
+                    fadeIn(animationSpec = tween(300)) togetherWith fadeOut(
+                        animationSpec = tween(300)
+                    )
+                }) { isSelected ->
+                val size = if (isSelected) 30.dp else 20.dp
+                val color =
+                    if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer
+                Icon(
+                    modifier =
+                    Modifier.size(size),
+                    painter = IconResource.fromDrawableResource(R.drawable.circle)
+                        .asPainterResource(),
+                    tint = color,
+                    contentDescription = null
+                )
+            }
         }
     }
 }
 
 @Composable
-fun Screen1() {
+fun Page1() {
     ColumnContainer {
         Text(
             text = "Welcome to ${stringResource(R.string.app_name)}",
@@ -184,7 +177,7 @@ fun Screen1() {
 
 
 @Composable
-fun Screen2() {
+fun Page2() {
     ColumnContainer {
         Text(
             text = "Característiques",
@@ -200,33 +193,37 @@ fun Screen2() {
             "Consulta informació sobre una biblioteca, com ara horari o ubicació",
             "Cerca llibres a Aladí amb una interfície d'usuari bonica",
         )
-        val paragraphStyle = ParagraphStyle(textIndent = TextIndent(restLine = 12.sp))
-        Text(
-            style = Typography.bodyLarge,
-            text = buildAnnotatedString {
-                messages.forEach {
-                    withStyle(style = paragraphStyle) {
-                        append(bullet)
-                        append("\t\t")
-                        append(it)
-                    }
-                }
-            }
-        )
+
+
+        messages.forEach {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = "$bullet\t $it",
+                textAlign = TextAlign.Justify,
+            )
+        }
+
+
     }
 }
 
 @Composable
-fun Screen3() {
+fun Page3() {
     ColumnContainer {
         Text(
-            text = "Sobre aquesta aplicació",
             modifier = Modifier.fillMaxWidth(),
+            text = "Sobre aquesta aplicació",
             textAlign = TextAlign.Center,
             style = Typography.headlineLarge
         )
-        Text("Aquesta app no és oficial de la Diputació de Barcelona")
-        Text("Aquesta aplicació és de codi obert, podeu consultar el codi aquí")
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = "Aquesta app no és oficial de la Diputació de Barcelona"
+        )
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = "Aquesta aplicació és de codi obert, podeu consultar el codi aquí"
+        )
 
         TextIconButton(
             text = "Github",
@@ -238,7 +235,7 @@ fun Screen3() {
 }
 
 @Composable
-fun Screen4() {
+fun Page4() {
     var show by remember { mutableStateOf(false) }
     ColumnContainer {
         Text(

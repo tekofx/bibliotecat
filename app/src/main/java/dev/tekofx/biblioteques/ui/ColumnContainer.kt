@@ -13,13 +13,12 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ColumnContainer(
-
     content: @Composable() (ColumnScope.() -> Unit)
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp),
+            .padding(horizontal = 20.dp, vertical = 50.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
