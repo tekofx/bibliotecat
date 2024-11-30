@@ -26,9 +26,7 @@ class BookConverterFactory : Converter.Factory() {
         type: Type, annotations: Array<Annotation>, retrofit: Retrofit
     ): Converter<ResponseBody, BookResponse> {
         return Converter { responseBody ->
-
             val responseBodyString = responseBody.string()
-
             val doc: Document = Ksoup.parse(responseBodyString)
 
             val notResultsH2Element =
@@ -45,10 +43,10 @@ class BookConverterFactory : Converter.Factory() {
 
 
             val bibInfoLabelElement = doc.select("td.bibInfoLabel").firstOrNull()
+            val tdbriefCitRowElement = doc.select("td.briefCitRow").firstOrNull()
 
             val additionalCopiesElement = doc.select("div.additionalCopies").firstOrNull()
             val browseHeaderEntriesElement = doc.select("td.browseHeaderEntries").firstOrNull()
-
 
             when {
                 advancedSearchElement != null -> {
@@ -106,7 +104,20 @@ class BookConverterFactory : Converter.Factory() {
                     )
                 }
 
+                tdbriefCitRowElement != null -> {
+                    val totalBooks = getTotalSearchResults(doc)
+                    val bookResults = constructBookResults(doc)
+
+                    Log.d("BookConverterFactory", "Search by Signature with Book Results")
+                    BookResponse(
+                        body = responseBodyString,
+                        totalBooks = totalBooks,
+                        results = bookResults
+                    )
+                }
+
                 else -> {
+                    Log.d("BookConverterFactory", "Else case")
                     BookResponse()
                 }
             }
@@ -116,7 +127,6 @@ class BookConverterFactory : Converter.Factory() {
 
 
     private fun getSearchScope(doc: Document): List<SelectItem> {
-        println(doc.selectFirst("select#searchscope")?.text())
         val searchScopes = mutableListOf<SelectItem>()
         val searchScopeElement =
             doc.selectFirst("select#searchscope")?.getElementsByTag("option")
@@ -160,9 +170,8 @@ class BookConverterFactory : Converter.Factory() {
 
         val generalResultsList = arrayListOf<GeneralResult>()
         val pages = getPages(doc)
-        val numItems = getTotalSearchResults(doc)
-
-
+        var numItems = getTotalSearchResults(doc)
+        var index = 0
 
         for (browseEntrydataElement in browseEntryDataElements) {
             val text = browseEntrydataElement.select("td.browseEntryData").text()
@@ -173,8 +182,9 @@ class BookConverterFactory : Converter.Factory() {
                 browseEntrydataElement.selectFirst("td.browseEntryEntries")?.text()?.toInt()
                     ?: continue
 
+
             val id = browseEntrydataElement.selectFirst("td.browseEntryNum")?.text()?.toInt()
-                ?: continue
+                ?: index++
             generalResultsList.add(
                 GeneralResult(
                     id = id,
@@ -183,6 +193,10 @@ class BookConverterFactory : Converter.Factory() {
                     numEntries = entries,
                 )
             )
+        }
+
+        if (numItems == -1) {
+            numItems = generalResultsList.size
         }
         return GeneralResults(
             items = generalResultsList.toList(),
@@ -346,8 +360,15 @@ class BookConverterFactory : Converter.Factory() {
      * @return Number of results for a search
      */
     private fun getTotalSearchResults(doc: Document): Int {
-        val divElement = doc.selectFirst("td.browseHeaderData")
-        val total = divElement?.text()?.replace(")", "")?.split(" de ")?.last()?.toInt() ?: 0
+        val divElement = doc.selectFirst("td.browseHeaderData") ?: return -1
+
+        val text = divElement.text().replace(")", "")
+
+        if (!text.contains(" de ")) {
+            return -1
+        }
+        val total = text.split(" de ").last().toInt()
+
         return total
     }
 

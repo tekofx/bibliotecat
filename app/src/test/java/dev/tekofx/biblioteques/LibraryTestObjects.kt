@@ -163,7 +163,8 @@ var winterTimetable = SeasonTimeTable(
         DayOfWeek.SATURDAY to saturdayWinterTimetable,
         DayOfWeek.SUNDAY to sundayWinterTimetable
     ),
-    season = Season.WINTER
+    season = Season.WINTER,
+    observation = ""
 )
 
 var summerTimetable = SeasonTimeTable(
@@ -178,7 +179,8 @@ var summerTimetable = SeasonTimeTable(
         DayOfWeek.SATURDAY to saturdaySummerTimetable,
         DayOfWeek.SUNDAY to sundaySummerTimetable
     ),
-    season = Season.SUMMER
+    season = Season.SUMMER,
+    observation = ""
 )
 
 

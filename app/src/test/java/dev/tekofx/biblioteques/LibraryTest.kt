@@ -234,7 +234,8 @@ class LibraryTest {
                 DayOfWeek.SATURDAY to saturdayWinterTimetable,
                 DayOfWeek.SUNDAY to sundayWinterTimetable
             ),
-            season = Season.WINTER
+            season = Season.WINTER,
+            observation = ""
         )
 
         summerTimetable = SeasonTimeTable(
@@ -249,7 +250,8 @@ class LibraryTest {
                 DayOfWeek.SATURDAY to saturdaySummerTimetable,
                 DayOfWeek.SUNDAY to sundaySummerTimetable
             ),
-            season = Season.SUMMER
+            season = Season.SUMMER,
+            observation = ""
         )
 
 
