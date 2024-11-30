@@ -6,5 +6,4 @@ class LibraryRepository(
     private val libraryService: LibraryService
 ) {
     fun getLibraries() = libraryService.getLibraries()
-    fun getLibrary(pointId: String) = libraryService.getLibrary(pointId)
 }

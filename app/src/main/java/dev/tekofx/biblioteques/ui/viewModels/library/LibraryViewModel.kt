@@ -87,6 +87,7 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
             }
 
             override fun onFailure(call: Call<LibraryResponse>, t: Throwable) {
+                Log.d("LibraryViewModel", "getLibraries error ${t.message}")
                 errorMessage.postValue("Error: No s'han pogut carregar les biblioteques")
                 isLoading.postValue(false)
             }
