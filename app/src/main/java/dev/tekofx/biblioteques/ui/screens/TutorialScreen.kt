@@ -191,7 +191,7 @@ fun Buttons(
             exit = scaleOut() + shrinkHorizontally()
         ) {
             TextIconButton(
-                text = "Previous",
+                text = "Enrere",
                 icon = IconResource.fromImageVector(Icons.AutoMirrored.Outlined.KeyboardArrowLeft),
                 enabled = page > 0,
                 onClick = decreasePage
@@ -219,13 +219,13 @@ fun Buttons(
         ) { targetState ->
             if (targetState == lastPage) {
                 TextIconButton(
-                    text = "Finish",
+                    text = "Acabar",
                     icon = IconResource.fromImageVector(Icons.Outlined.Check),
                     onClick = onFinishClicked
                 )
             } else {
                 TextIconButton(
-                    text = "Next",
+                    text = "Endavant",
                     icon = IconResource.fromImageVector(Icons.AutoMirrored.Outlined.KeyboardArrowRight),
                     onClick = increasePage
                 )
