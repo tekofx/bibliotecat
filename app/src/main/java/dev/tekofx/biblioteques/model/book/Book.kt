@@ -1,7 +1,6 @@
 package dev.tekofx.biblioteques.model.book
 
 import dev.tekofx.biblioteques.model.BookResult
-import dev.tekofx.biblioteques.model.StatusColor
 
 class Book(
     val id: Int,
@@ -36,37 +35,5 @@ class Book(
 
 }
 
-class BookDetails(
-    val edition: String?,
-    val description: String?,
-    val synopsis: String?,
-    val isbn: String?,
-    val permanentUrl: String?,
-    val collection: String?,
-    val topic: String?,
-    val authorUrl: String?,
-    val bookCopiesUrl: String?,
-
-    )
-
-class BookCopy(
-    val location: String,
-    val bibliotecaVirtualUrl: String?,
-    val signature: String,
-    val status: String,
-    val availability: BookCopyAvailability,
-    val notes: String?,
-    val statusColor: StatusColor
-) {
-    override fun toString(): String {
-        return "$location $signature $status $notes"
-    }
-}
 
 
-enum class BookCopyAvailability {
-    AVAILABLE,
-    CAN_RESERVE,
-    NOT_AVAILABLE
-
-}
