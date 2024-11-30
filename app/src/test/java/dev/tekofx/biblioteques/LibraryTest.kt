@@ -1,10 +1,10 @@
 package dev.tekofx.biblioteques
 
 import dev.tekofx.biblioteques.model.library.DayTimeTable
-import dev.tekofx.biblioteques.model.library.Interval
 import dev.tekofx.biblioteques.model.library.Library
 import dev.tekofx.biblioteques.model.library.Season
 import dev.tekofx.biblioteques.model.library.SeasonTimeTable
+import dev.tekofx.biblioteques.model.library.TimeInterval
 import org.junit.Before
 import org.junit.Test
 import java.time.DayOfWeek
@@ -66,15 +66,15 @@ class LibraryTest {
         lastDayOfSummer = LocalDate.of(2025, 9, 22) // Monday
 
         mondayWinterTimetable = DayTimeTable(
-            intervals = listOf(
+            timeIntervals = listOf(
 
 
-                Interval(
+                TimeInterval(
                     from = LocalTime.of(9, 30),
                     to = LocalTime.of(14, 0)
                 ),
 
-                Interval(
+                TimeInterval(
                     from = LocalTime.of(15, 0),
                     to = LocalTime.of(20, 0),
                 ),
@@ -82,8 +82,8 @@ class LibraryTest {
         )
 
         tuesdayWinterTimetable = DayTimeTable(
-            intervals = listOf(
-                Interval(
+            timeIntervals = listOf(
+                TimeInterval(
                     from = LocalTime.of(10, 0),
                     to = LocalTime.of(14, 0),
 
@@ -94,12 +94,12 @@ class LibraryTest {
 
         wednesdayWinterTimetable = DayTimeTable(
             listOf(
-                Interval(
+                TimeInterval(
                     from = LocalTime.of(11, 20),
                     to = LocalTime.of(13, 0),
                 ),
 
-                Interval(
+                TimeInterval(
                     from = LocalTime.of(17, 15),
                     to = LocalTime.of(20, 0),
                 ),
@@ -110,7 +110,7 @@ class LibraryTest {
         thursdayWinterTimetable = DayTimeTable(
             listOf(
 
-                Interval(
+                TimeInterval(
                     from = LocalTime.of(16, 15),
                     to = LocalTime.of(21, 0),
                 ),
@@ -121,7 +121,7 @@ class LibraryTest {
         fridayWinterTimetable = DayTimeTable(
             listOf(
 
-                Interval(
+                TimeInterval(
                     from = LocalTime.of(18, 0),
                     to = LocalTime.of(20, 30),
                 ),
@@ -131,7 +131,7 @@ class LibraryTest {
         saturdayWinterTimetable = DayTimeTable(
             listOf(
 
-                Interval(
+                TimeInterval(
                     from = LocalTime.of(9, 0),
                     to = LocalTime.of(13, 30),
 
@@ -145,15 +145,15 @@ class LibraryTest {
 
 
         mondaySummerTimetable = DayTimeTable(
-            intervals = listOf(
+            timeIntervals = listOf(
 
 
-                Interval(
+                TimeInterval(
                     from = LocalTime.of(11, 30),
                     to = LocalTime.of(14, 0)
                 ),
 
-                Interval(
+                TimeInterval(
                     from = LocalTime.of(17, 0),
                     to = LocalTime.of(22, 0),
                 ),
@@ -161,8 +161,8 @@ class LibraryTest {
         )
 
         tuesdaySummerTimetable = DayTimeTable(
-            intervals = listOf(
-                Interval(
+            timeIntervals = listOf(
+                TimeInterval(
                     from = LocalTime.of(17, 0),
                     to = LocalTime.of(22, 0),
 
@@ -173,12 +173,12 @@ class LibraryTest {
 
         wednesdaySummerTimetable = DayTimeTable(
             listOf(
-                Interval(
+                TimeInterval(
                     from = LocalTime.of(9, 20),
                     to = LocalTime.of(11, 0),
                 ),
 
-                Interval(
+                TimeInterval(
                     from = LocalTime.of(17, 15),
                     to = LocalTime.of(18, 0),
                 ),
@@ -189,7 +189,7 @@ class LibraryTest {
         thursdaySummerTimetable = DayTimeTable(
             listOf(
 
-                Interval(
+                TimeInterval(
                     from = LocalTime.of(15, 0),
                     to = LocalTime.of(21, 40),
                 ),
@@ -200,7 +200,7 @@ class LibraryTest {
         fridaySummerTimetable = DayTimeTable(
             listOf(
 
-                Interval(
+                TimeInterval(
                     from = LocalTime.of(14, 0),
                     to = LocalTime.of(19, 30),
                 ),
@@ -210,7 +210,7 @@ class LibraryTest {
         saturdaySummerTimetable = DayTimeTable(
             listOf(
 
-                Interval(
+                TimeInterval(
                     from = LocalTime.of(9, 0),
                     to = LocalTime.of(22, 30),
 
@@ -360,13 +360,13 @@ class LibraryTest {
         val time17 = LocalTime.of(17, 0)
 
         assert(
-            libraryTest.getCurrentInterval(monday, time) == Interval(
+            libraryTest.getCurrentInterval(monday, time) == TimeInterval(
                 from = LocalTime.of(9, 30),
                 to = LocalTime.of(14, 0)
             )
         )
         assert(
-            libraryTest.getCurrentInterval(lastDayOfSummer, time17) == Interval(
+            libraryTest.getCurrentInterval(lastDayOfSummer, time17) == TimeInterval(
                 from = LocalTime.of(17, 0),
                 to = LocalTime.of(22, 0),
             )
@@ -379,7 +379,7 @@ class LibraryTest {
         val time = LocalTime.of(10, 0)
 
         assert(
-            libraryTest.getNextIntervalOfDay(monday, time) == Interval(
+            libraryTest.getNextIntervalOfDay(monday, time) == TimeInterval(
                 from = LocalTime.of(15, 0),
                 to = LocalTime.of(20, 0),
             )

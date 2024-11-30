@@ -3,14 +3,14 @@ package dev.tekofx.biblioteques.model.library
 /**
  * Represents a timetable for a specific day, containing multiple intervals.
  *
- * @property intervals A list of time intervals for the day.
+ * @property timeIntervals A list of time intervals for the day.
  */
-data class DayTimeTable(val intervals: List<Interval>) {
+data class DayTimeTable(val timeIntervals: List<TimeInterval>) {
 
     var open = false
 
     init {
-        for (interval in intervals) {
+        for (interval in timeIntervals) {
             if (!interval.isNull()) {
                 open = true
 
@@ -20,11 +20,11 @@ data class DayTimeTable(val intervals: List<Interval>) {
 
     override fun toString(): String {
         var output = ""
-        if (intervals.isEmpty()) {
+        if (timeIntervals.isEmpty()) {
             output += "Tancat"
         } else {
 
-            output += intervals.joinToString(", ")
+            output += timeIntervals.joinToString(", ")
         }
         return output
     }
@@ -35,14 +35,14 @@ data class DayTimeTable(val intervals: List<Interval>) {
 
         other as DayTimeTable
 
-        if (intervals != other.intervals) return false
+        if (timeIntervals != other.timeIntervals) return false
         if (open != other.open) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = intervals.hashCode()
+        var result = timeIntervals.hashCode()
         result = 31 * result + open.hashCode()
         return result
     }

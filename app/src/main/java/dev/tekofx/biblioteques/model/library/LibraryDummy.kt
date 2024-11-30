@@ -10,15 +10,15 @@ var firstDayOfSummerDummy = LocalDate.of(2025, 6, 21) // Saturday
 var lastDayOfSummerDummy = LocalDate.of(2025, 9, 22) // Monday
 
 var mondayWinterTimetableDummy = DayTimeTable(
-    intervals = listOf(
+    timeIntervals = listOf(
 
 
-        Interval(
+        TimeInterval(
             from = LocalTime.of(9, 30),
             to = LocalTime.of(14, 0)
         ),
 
-        Interval(
+        TimeInterval(
             from = LocalTime.of(15, 0),
             to = LocalTime.of(20, 0),
         ),
@@ -26,8 +26,8 @@ var mondayWinterTimetableDummy = DayTimeTable(
 )
 
 var tuesdayWinterTimetableDummy = DayTimeTable(
-    intervals = listOf(
-        Interval(
+    timeIntervals = listOf(
+        TimeInterval(
             from = LocalTime.of(10, 0),
             to = LocalTime.of(14, 0),
 
@@ -38,12 +38,12 @@ var tuesdayWinterTimetableDummy = DayTimeTable(
 
 var wednesdayWinterTimetableDummy = DayTimeTable(
     listOf(
-        Interval(
+        TimeInterval(
             from = LocalTime.of(11, 20),
             to = LocalTime.of(13, 0),
         ),
 
-        Interval(
+        TimeInterval(
             from = LocalTime.of(17, 15),
             to = LocalTime.of(20, 0),
         ),
@@ -54,7 +54,7 @@ var wednesdayWinterTimetableDummy = DayTimeTable(
 var thursdayWinterTimetableDummy = DayTimeTable(
     listOf(
 
-        Interval(
+        TimeInterval(
             from = LocalTime.of(16, 15),
             to = LocalTime.of(21, 0),
         ),
@@ -65,7 +65,7 @@ var thursdayWinterTimetableDummy = DayTimeTable(
 var fridayWinterTimetableDummy = DayTimeTable(
     listOf(
 
-        Interval(
+        TimeInterval(
             from = LocalTime.of(18, 0),
             to = LocalTime.of(20, 30),
         ),
@@ -75,7 +75,7 @@ var fridayWinterTimetableDummy = DayTimeTable(
 var saturdayWinterTimetableDummy = DayTimeTable(
     listOf(
 
-        Interval(
+        TimeInterval(
             from = LocalTime.of(9, 0),
             to = LocalTime.of(13, 30),
 
@@ -89,15 +89,15 @@ var sundayWinterTimetableDummy = DayTimeTable(
 
 
 var mondaySummerTimetableDummy = DayTimeTable(
-    intervals = listOf(
+    timeIntervals = listOf(
 
 
-        Interval(
+        TimeInterval(
             from = LocalTime.of(11, 30),
             to = LocalTime.of(14, 0)
         ),
 
-        Interval(
+        TimeInterval(
             from = LocalTime.of(17, 0),
             to = LocalTime.of(22, 0),
         ),
@@ -105,8 +105,8 @@ var mondaySummerTimetableDummy = DayTimeTable(
 )
 
 var tuesdaySummerTimetableDummy = DayTimeTable(
-    intervals = listOf(
-        Interval(
+    timeIntervals = listOf(
+        TimeInterval(
             from = LocalTime.of(17, 0),
             to = LocalTime.of(22, 0),
 
@@ -117,12 +117,12 @@ var tuesdaySummerTimetableDummy = DayTimeTable(
 
 var wednesdaySummerTimetableDummy = DayTimeTable(
     listOf(
-        Interval(
+        TimeInterval(
             from = LocalTime.of(9, 20),
             to = LocalTime.of(11, 0),
         ),
 
-        Interval(
+        TimeInterval(
             from = LocalTime.of(17, 15),
             to = LocalTime.of(18, 0),
         ),
@@ -133,7 +133,7 @@ var wednesdaySummerTimetableDummy = DayTimeTable(
 var thursdaySummerTimetableDummy = DayTimeTable(
     listOf(
 
-        Interval(
+        TimeInterval(
             from = LocalTime.of(15, 0),
             to = LocalTime.of(21, 40),
         ),
@@ -144,7 +144,7 @@ var thursdaySummerTimetableDummy = DayTimeTable(
 var fridaySummerTimetableDummy = DayTimeTable(
     listOf(
 
-        Interval(
+        TimeInterval(
             from = LocalTime.of(14, 0),
             to = LocalTime.of(19, 30),
         ),
@@ -154,7 +154,7 @@ var fridaySummerTimetableDummy = DayTimeTable(
 var saturdaySummerTimetableDummy = DayTimeTable(
     listOf(
 
-        Interval(
+        TimeInterval(
             from = LocalTime.of(9, 0),
             to = LocalTime.of(22, 30),
 

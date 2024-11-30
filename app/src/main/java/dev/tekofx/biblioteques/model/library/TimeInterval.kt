@@ -9,7 +9,7 @@ import java.time.LocalTime
  * @property from The start time of the interval.
  * @property to The end time of the interval.
  */
-data class Interval(val from: LocalTime?, val to: LocalTime?, val observation: String? = null) {
+data class TimeInterval(val from: LocalTime?, val to: LocalTime?, val observation: String? = null) {
 
     fun isNull(): Boolean {
         return from == null || to == null
@@ -35,7 +35,7 @@ data class Interval(val from: LocalTime?, val to: LocalTime?, val observation: S
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as Interval
+        other as TimeInterval
         if (from != other.from) return false
         if (to != other.to) return false
         if (observation != other.observation) return false

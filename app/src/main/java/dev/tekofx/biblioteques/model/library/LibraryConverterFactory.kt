@@ -168,7 +168,7 @@ class LibraryConverterFactory : Converter.Factory() {
         jsonObject: JSONObject,
         estacio: String,
         day: String
-    ): List<Interval>? {
+    ): List<TimeInterval>? {
 
 
         val timeintervalString =
@@ -185,8 +185,8 @@ class LibraryConverterFactory : Converter.Factory() {
                 timeintervalString
             )
         ) {
-            val timeInterval = Interval(null, null, timeintervalString)
-            val timeIntervalsList = mutableListOf<Interval>()
+            val timeInterval = TimeInterval(null, null, timeintervalString)
+            val timeIntervalsList = mutableListOf<TimeInterval>()
             timeIntervalsList.add(timeInterval)
             return timeIntervalsList
         }
@@ -215,7 +215,7 @@ class LibraryConverterFactory : Converter.Factory() {
         val timeIntervalsStrings = regexTime.findAll(timeintervalString).map { it.value }.chunked(2)
 
 
-        val timeIntervals = mutableListOf<Interval>()
+        val timeTimeIntervals = mutableListOf<TimeInterval>()
         for (timeIntervalString in timeIntervalsStrings) {
             var startTimeString = timeIntervalString[0] // "15:30"
             var endTimeString = timeIntervalString[1]   // "19:30"
@@ -243,14 +243,14 @@ class LibraryConverterFactory : Converter.Factory() {
             val startTime = parseTime(startTimeString) // LocalTime 15:30
             val endTime = parseTime(endTimeString)   // LocalTime 19:30
 
-            val timeInterval = Interval(
+            val timeInterval = TimeInterval(
                 startTime, endTime, null
             )
-            timeIntervals.add(timeInterval)
+            timeTimeIntervals.add(timeInterval)
 
         }
 
-        return timeIntervals
+        return timeTimeIntervals
     }
 
 

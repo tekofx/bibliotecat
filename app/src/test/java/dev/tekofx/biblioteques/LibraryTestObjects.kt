@@ -1,11 +1,10 @@
 package dev.tekofx.biblioteques
 
 import dev.tekofx.biblioteques.model.library.DayTimeTable
-import dev.tekofx.biblioteques.model.library.Interval
 import dev.tekofx.biblioteques.model.library.Library
 import dev.tekofx.biblioteques.model.library.Season
 import dev.tekofx.biblioteques.model.library.SeasonTimeTable
-
+import dev.tekofx.biblioteques.model.library.TimeInterval
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
@@ -16,8 +15,8 @@ var firstDayOfSummer = LocalDate.of(2025, 6, 22)
 var lastDayOfSummer = LocalDate.of(2025, 9, 2)
 
 var mondayWinterTimetable = DayTimeTable(
-    intervals = listOf(
-        Interval(
+    timeIntervals = listOf(
+        TimeInterval(
             from = LocalTime.of(15, 30),
             to = LocalTime.of(20, 30)
         ),
@@ -25,12 +24,12 @@ var mondayWinterTimetable = DayTimeTable(
 )
 
 var tuesdayWinterTimetable = DayTimeTable(
-    intervals = listOf(
-        Interval(
+    timeIntervals = listOf(
+        TimeInterval(
             from = LocalTime.of(10, 0),
             to = LocalTime.of(13, 30)
         ),
-        Interval(
+        TimeInterval(
             from = LocalTime.of(15, 30),
             to = LocalTime.of(20, 30)
         ),
@@ -39,7 +38,7 @@ var tuesdayWinterTimetable = DayTimeTable(
 
 var wednesdayWinterTimetable = DayTimeTable(
     listOf(
-        Interval(
+        TimeInterval(
             from = LocalTime.of(15, 30),
             to = LocalTime.of(20, 30),
         )
@@ -49,11 +48,11 @@ var wednesdayWinterTimetable = DayTimeTable(
 var thursdayWinterTimetable = DayTimeTable(
     listOf(
 
-        Interval(
+        TimeInterval(
             from = LocalTime.of(10, 0),
             to = LocalTime.of(13, 30),
         ),
-        Interval(
+        TimeInterval(
             from = LocalTime.of(15, 30),
             to = LocalTime.of(20, 30),
         )
@@ -64,7 +63,7 @@ var thursdayWinterTimetable = DayTimeTable(
 var fridayWinterTimetable = DayTimeTable(
     listOf(
 
-        Interval(
+        TimeInterval(
             from = LocalTime.of(15, 30),
             to = LocalTime.of(20, 30),
         ),
@@ -74,7 +73,7 @@ var fridayWinterTimetable = DayTimeTable(
 var saturdayWinterTimetable = DayTimeTable(
     listOf(
 
-        Interval(
+        TimeInterval(
             from = LocalTime.of(10, 0),
             to = LocalTime.of(13, 30),
         )
@@ -87,10 +86,10 @@ var sundayWinterTimetable = DayTimeTable(
 
 
 var mondaySummerTimetable = DayTimeTable(
-    intervals = listOf(
+    timeIntervals = listOf(
 
 
-        Interval(
+        TimeInterval(
             from = LocalTime.of(15, 30),
             to = LocalTime.of(20, 30)
         )
@@ -99,8 +98,8 @@ var mondaySummerTimetable = DayTimeTable(
 )
 
 var tuesdaySummerTimetable = DayTimeTable(
-    intervals = listOf(
-        Interval(
+    timeIntervals = listOf(
+        TimeInterval(
             from = LocalTime.of(15, 30),
             to = LocalTime.of(20, 30),
 
@@ -111,7 +110,7 @@ var tuesdaySummerTimetable = DayTimeTable(
 
 var wednesdaySummerTimetable = DayTimeTable(
     listOf(
-        Interval(
+        TimeInterval(
             from = LocalTime.of(15, 30),
             to = LocalTime.of(20, 30),
         )
@@ -121,12 +120,12 @@ var wednesdaySummerTimetable = DayTimeTable(
 var thursdaySummerTimetable = DayTimeTable(
     listOf(
 
-        Interval(
+        TimeInterval(
             from = LocalTime.of(10, 0),
             to = LocalTime.of(14, 0),
         ),
 
-        Interval(
+        TimeInterval(
             from = LocalTime.of(15, 30),
             to = LocalTime.of(20, 30),
         ),
@@ -137,7 +136,7 @@ var thursdaySummerTimetable = DayTimeTable(
 var fridaySummerTimetable = DayTimeTable(
     listOf(
 
-        Interval(
+        TimeInterval(
             from = LocalTime.of(10, 0),
             to = LocalTime.of(14, 0),
         ),

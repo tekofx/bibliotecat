@@ -82,7 +82,7 @@ class Library(
     fun isOpen(date: LocalDate, hora: LocalTime): Boolean {
         val currentTimetable = getCurrentSeasonTimetable(date)
         val dayTimetable = currentTimetable.dayTimetables[date.dayOfWeek]
-        return dayTimetable?.intervals?.any { interval ->
+        return dayTimetable?.timeIntervals?.any { interval ->
             if (interval.from != null && interval.to != null) {
                 hora.isAfter(interval.from) && hora.isBefore(interval.to)
             } else {
@@ -171,7 +171,7 @@ class Library(
             return null
         }
 
-        while (currentTimetable.dayTimetables[nextDay.dayOfWeek]?.intervals.isNullOrEmpty()) {
+        while (currentTimetable.dayTimetables[nextDay.dayOfWeek]?.timeIntervals.isNullOrEmpty()) {
             nextDay = nextDay.plusDays(1)
             currentTimetable = getCurrentSeasonTimetable(nextDay)
         }
@@ -185,10 +185,10 @@ class Library(
      * @param time The time to check.
      * @return The current interval, or null if it doesn't exist.
      */
-    fun getCurrentInterval(date: LocalDate, time: LocalTime): Interval? {
+    fun getCurrentInterval(date: LocalDate, time: LocalTime): TimeInterval? {
         val currentTimetable = getCurrentSeasonTimetable(date)
         val dayTimeTable = currentTimetable.dayTimetables[date.dayOfWeek]
-        return dayTimeTable?.intervals?.find { interval ->
+        return dayTimeTable?.timeIntervals?.find { interval ->
             time == interval.from || (time.isAfter(interval.from) && time.isBefore(interval.to))
         }
     }
@@ -199,9 +199,9 @@ class Library(
      * @param time The time to check.
      * @return The next interval of day, or null if it doesn't exist.
      */
-    fun getNextIntervalOfDay(date: LocalDate, time: LocalTime): Interval? {
+    fun getNextIntervalOfDay(date: LocalDate, time: LocalTime): TimeInterval? {
         val dayTimeTable = getCurrentDayTimetable(date)
-        val nextInterval = dayTimeTable?.intervals?.find { interval ->
+        val nextInterval = dayTimeTable?.timeIntervals?.find { interval ->
             time.isBefore(interval.from)
         }
 
@@ -244,10 +244,10 @@ class Library(
             val nextDayName = formatDayOfWeek(nextDay.dayOfWeek)
             // Opens tomorrow
             if (nextDay == date.plusDays(1)) {
-                return "Tancat · Obre demà a las ${nextDayTimetable?.intervals?.firstOrNull()?.from}"
+                return "Tancat · Obre demà a las ${nextDayTimetable?.timeIntervals?.firstOrNull()?.from}"
 
             }
-            return "Tancat · Obre el $nextDayName a las ${nextDayTimetable?.intervals?.firstOrNull()?.from}"
+            return "Tancat · Obre el $nextDayName a las ${nextDayTimetable?.timeIntervals?.firstOrNull()?.from}"
         }
     }
 
