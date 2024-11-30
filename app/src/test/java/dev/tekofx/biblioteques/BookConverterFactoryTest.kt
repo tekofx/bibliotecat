@@ -14,6 +14,7 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -56,7 +57,7 @@ class BookConverterFactoryTest {
         mockWebServer.shutdown()
     }
 
-    @Test(expected = Error::class)
+    @Test
     fun `no results`() {
         val htmlResponse = readContentFromFilePath("src/test/resources/book/no_results.html")
         mockWebServer.enqueue(
@@ -66,7 +67,9 @@ class BookConverterFactoryTest {
         )
 
         runBlocking {
-            sut.getHtmlByUrl("").execute()
+            val response = sut.getHtmlByUrl("").execute()
+            assertNotNull(response.body())
+            assertEquals(response.body()!!.results, null)
         }
     }
 

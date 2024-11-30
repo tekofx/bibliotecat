@@ -110,6 +110,7 @@ class BookConverterFactory : Converter.Factory() {
                     val totalBooks = getTotalSearchResults(doc)
                     val bookResults = constructBookResults(doc)
 
+
                     Log.d("BookConverterFactory", "Search by Signature with Book Results")
                     BookResponse(
                         body = responseBodyString,
