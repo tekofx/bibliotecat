@@ -52,12 +52,15 @@ class BookConverterFactory : Converter.Factory() {
                 advancedSearchElement != null -> {
                     Log.d("BookConverterFactory", "Get Search Scope")
                     val searchScopes = getSearchScope(doc)
-                    BookResponse(body = responseBodyString, searchScopes = searchScopes)
+                    BookResponse(
+                        body = responseBodyString,
+                        searchScopes = searchScopes
+                    )
                 }
 
                 notResultsH2Element != null -> {
-                    Log.d("BookConverterFactory", "Not book found")
-                    throw Error()
+                    Log.d("BookConverterFactory", "Not results")
+                    BookResponse()
                 }
 
                 browseHeaderEntriesElement != null -> {
@@ -68,7 +71,6 @@ class BookConverterFactory : Converter.Factory() {
                         body = responseBodyString,
                         pages = pages,
                         results = generalResults
-
                     )
                 }
 
@@ -118,7 +120,7 @@ class BookConverterFactory : Converter.Factory() {
 
                 else -> {
                     Log.d("BookConverterFactory", "Else case")
-                    BookResponse()
+                    throw Error()
                 }
             }
 
