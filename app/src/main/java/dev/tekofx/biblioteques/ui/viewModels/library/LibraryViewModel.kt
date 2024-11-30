@@ -43,7 +43,7 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
 
     fun getLibrary(pointId: String?, libraryUrl: String?) {
         Log.d(
-            "HomeViewModel",
+            "LibraryVewModel",
             "getLibrary called with pointId: $pointId"
         )
 
@@ -71,7 +71,7 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
     }
 
     private fun getLibraries() {
-        Log.d("HomeViewModel", "getLibraries called")
+        Log.d("LibraryViewModel", "getLibraries")
         isLoading.postValue(true)
         val response = repository.getLibraries()
         response.enqueue(object : Callback<LibraryResponse> {

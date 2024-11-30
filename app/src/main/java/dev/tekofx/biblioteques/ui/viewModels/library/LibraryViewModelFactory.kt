@@ -10,7 +10,7 @@ class LibraryViewModelFactory(private val repository: LibraryRepository) :
     ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        Log.d("HomeViewModelFactory", "create called")
+        Log.d("LibraryViewModelFactory", "create called")
         return if (modelClass.isAssignableFrom(LibraryViewModel::class.java)) {
             LibraryViewModel(this.repository) as T
         } else {
