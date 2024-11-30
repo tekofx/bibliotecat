@@ -24,10 +24,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -43,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import dev.tekofx.biblioteques.R
+import dev.tekofx.biblioteques.RequestLocationPermissionUsingRememberLauncherForActivityResult
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.ColumnContainer
 import dev.tekofx.biblioteques.ui.IconResource
@@ -54,7 +57,6 @@ import dev.tekofx.biblioteques.ui.theme.Typography
 fun TutorialScreen(
     navHostController: NavHostController
 ) {
-
     var page by remember { mutableIntStateOf(0) }
 
 
@@ -154,6 +156,7 @@ fun Screen3() {
 
 @Composable
 fun Screen4() {
+    var show by remember { mutableStateOf(false) }
     ColumnContainer {
         Text(
             text = "Permissions",
@@ -163,6 +166,18 @@ fun Screen4() {
         )
 
         Text("This app will need location access if you want to find libraries near you")
+        TextIconButton(
+            text = "Show Permission Popup",
+            icon = IconResource.fromImageVector(Icons.Outlined.LocationOn),
+            onClick = { show = !show }
+        )
+
+        if (show) {
+            RequestLocationPermissionUsingRememberLauncherForActivityResult(
+                onPermissionGranted = {},
+                onPermissionDenied = {}
+            )
+        }
     }
 }
 
@@ -234,3 +249,4 @@ fun Buttons(
 
     }
 }
+
