@@ -55,7 +55,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
         SelectItem(
             "Tot el catàleg",
             "171",
-            icon = IconResource.fromDrawableResource(R.drawable.manage_search)
+            icon = IconResource.fromDrawableResource(R.drawable.library_books)
         )
     )
 

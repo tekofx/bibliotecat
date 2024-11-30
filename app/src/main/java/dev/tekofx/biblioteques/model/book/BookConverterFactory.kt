@@ -137,15 +137,32 @@ class BookConverterFactory : Converter.Factory() {
         for (searchVal in searchScopeElement) {
             val value = searchVal.attr("value")
             val text = searchVal.text()
+            val icon = getIcon(text)
             searchScopes.add(
                 SelectItem(
                     text,
                     value,
-                    IconResource.fromDrawableResource(R.drawable.manage_search)
+                    icon
                 )
             )
         }
         return searchScopes
+    }
+
+    private fun getIcon(value: String): IconResource {
+        return when {
+            value == "Tot el catàleg" -> IconResource.fromDrawableResource(R.drawable.library_books)
+            value == "Subcatàlegs" -> IconResource.fromDrawableResource(R.drawable.library_books)
+            value == "Comarques" -> IconResource.fromDrawableResource(R.drawable.location_city)
+            value == "Música" -> IconResource.fromDrawableResource(R.drawable.music_note)
+            value == "Pel·lícules" -> IconResource.fromDrawableResource(R.drawable.movie)
+            value == "Còmics" -> IconResource.fromDrawableResource(R.drawable.comic_bubble)
+            value == "Recursos en línia" -> IconResource.fromDrawableResource(R.drawable.public_icon)
+            value == "Audiollibres, lletra gran i braille" -> IconResource.fromDrawableResource(R.drawable.books_movies_and_music)
+            value == "Bibliobusos" -> IconResource.fromDrawableResource(R.drawable.directions_bus)
+            value.startsWith("Bibliobús") -> IconResource.fromDrawableResource(R.drawable.directions_bus)
+            else -> IconResource.fromDrawableResource(R.drawable.location_city)
+        }
     }
 
     /**
