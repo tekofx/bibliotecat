@@ -2,108 +2,10 @@ package dev.tekofx.biblioteques.model.library
 
 import dev.tekofx.biblioteques.model.StatusColor
 import dev.tekofx.biblioteques.utils.formatDayOfWeek
-import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
 
-
-/**
- * Represents a time interval with a start and end time.
- *
- * @property from The start time of the interval.
- * @property to The end time of the interval.
- */
-data class Interval(val from: LocalTime?, val to: LocalTime?, val observation: String? = null) {
-
-    fun isNull(): Boolean {
-        return from == null || to == null
-    }
-
-    override fun toString(): String {
-        if (this.from == null && observation == null) {
-            return "Tancat"
-        }
-        var output = ""
-        if (from != null && to != null) {
-            output = "$from - $to"
-        }
-
-        if (observation != null) {
-            output += " ($observation)"
-        }
-
-        return output
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Interval
-        if (from != other.from) return false
-        if (to != other.to) return false
-        if (observation != other.observation) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = from?.hashCode() ?: 0
-        result = 31 * result + (to?.hashCode() ?: 0)
-        result = 31 * result + (observation?.hashCode() ?: 0)
-        return result
-    }
-}
-
-/**
- * Represents a timetable for a specific day, containing multiple intervals.
- *
- * @property intervals A list of time intervals for the day.
- */
-data class DayTimeTable(val intervals: List<Interval>) {
-
-    var open = false
-
-    init {
-        for (interval in intervals) {
-            if (!interval.isNull()) {
-                open = true
-
-            }
-        }
-    }
-
-    override fun toString(): String {
-        var output = ""
-        if (intervals.isEmpty()) {
-            output += "Tancat"
-        } else {
-
-            output += intervals.joinToString(", ")
-        }
-        return output
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as DayTimeTable
-
-        if (intervals != other.intervals) return false
-        if (open != other.open) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = intervals.hashCode()
-        result = 31 * result + open.hashCode()
-        return result
-    }
-
-}
 
 enum class Season {
     WINTER,
@@ -114,66 +16,6 @@ val seasonTranslation = mapOf(
     Season.WINTER to "Hivern",
     Season.SUMMER to "Estiu"
 )
-
-/**
- * Represents a timetable for a period, containing day-specific timetables.
- *
- * @property start The start date of the timetable period.
- * @property end The end date of the timetable period.
- * @property dayTimetables A map of day-specific timetables.
- */
-data class TimeTable(
-    val start: LocalDate,
-    val end: LocalDate,
-    val dayTimetables: Map<DayOfWeek, DayTimeTable>,
-    val season: Season,
-    val observation: String,
-) {
-
-    var open = false
-
-    init {
-        for (daytimetable in dayTimetables) {
-            if (daytimetable.value.open) {
-                open = true
-            }
-        }
-
-    }
-
-    override fun toString(): String {
-        var output = "(${start} - ${end})\n"
-        for (day in dayTimetables) {
-            output += "${formatDayOfWeek(day.key)}: ${day.value}\n"
-        }
-        return output
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as TimeTable
-
-        if (start != other.start) return false
-        if (end != other.end) return false
-        if (dayTimetables != other.dayTimetables) return false
-        if (season != other.season) return false
-        if (open != other.open) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = start.hashCode()
-        result = 31 * result + end.hashCode()
-        result = 31 * result + dayTimetables.hashCode()
-        result = 31 * result + season.hashCode()
-        result = 31 * result + open.hashCode()
-        return result
-    }
-
-}
 
 
 /**
@@ -466,24 +308,3 @@ class Library(
 
 }
 
-data class DateInterval(
-    val from: LocalDate, val to: LocalDate
-) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as DateInterval
-
-        if (from != other.from) return false
-        if (to != other.to) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = from.hashCode()
-        result = 31 * result + to.hashCode()
-        return result
-    }
-}
