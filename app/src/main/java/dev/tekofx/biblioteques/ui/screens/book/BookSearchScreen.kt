@@ -104,10 +104,12 @@ fun BookSearch(
     var showSearchTypeBottomSheet by remember { mutableStateOf(false) }
     var showSearchScopeBottomSheet by remember { mutableStateOf(false) }
 
+
     fun search() {
         onSearch()
         focus.clearFocus()
     }
+
 
     Column(
         modifier = Modifier
@@ -117,7 +119,7 @@ fun BookSearch(
         verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically)
     ) {
         if (!errorMessage.isNullOrEmpty()) {
-            Text(text = "Llibre no trobat :(")
+            Text(text = errorMessage)
         }
         SearchBar(
             value = queryText,
@@ -193,4 +195,5 @@ fun BookSearch(
 
     }
 }
+
 

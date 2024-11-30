@@ -206,8 +206,12 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
             }
 
             override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
+                val message = when (selectedSearchType.value.value) {
+                    "X" -> "Llibre no trobat :("
+                    else -> "${selectedSearchType.value.text} no trobat :("
+                }
                 Log.e("BookViewModel", "Error finding books: ${t.message.toString()}")
-                errorMessage.postValue("Error getting books")
+                errorMessage.postValue(message)
                 isLoadingSearch.postValue(false)
             }
         })
