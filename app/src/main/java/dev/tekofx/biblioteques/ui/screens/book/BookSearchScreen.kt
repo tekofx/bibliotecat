@@ -178,7 +178,8 @@ fun BookSearch(
             onToggleShow = { showSearchTypeBottomSheet = !showSearchTypeBottomSheet },
             selectItems = searchTypes,
             selectedItem = selectedSearchType,
-            onItemSelected = onSearchTypeSelected,
+            onItemSelected =
+            onSearchTypeSelected,
         )
 
         // Where to search

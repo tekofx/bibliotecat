@@ -44,14 +44,26 @@ fun SelectBottomSheet(
     selectItems: List<SelectItem>,
     selectedItem: SelectItem,
     onItemSelected: (SelectItem) -> Unit,
+    closeOnSelect: Boolean = true,
     showSearchBar: Boolean = false,
     maxHeight: Dp = Dp.Unspecified,
 ) {
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
+
+
     val scope = rememberCoroutineScope()
     var textfieldValue by remember { mutableStateOf("") }
+
+    fun close() {
+        scope.launch { sheetState.hide() }.invokeOnCompletion {
+            if (!sheetState.isVisible) {
+                onToggleShow()
+            }
+        }
+    }
+
     if (show) {
 
         ModalBottomSheet(
@@ -79,11 +91,16 @@ fun SelectBottomSheet(
                         selectItems.filter {
                             it.text.lowercase().contains(textfieldValue.lowercase())
                         }
-                    ) {
+                    ) { item ->
                         Item(
-                            it,
+                            item,
                             selectedItem,
-                            onItemSelected = onItemSelected
+                            onItemSelected = {
+                                onItemSelected(it)
+                                if (closeOnSelect) {
+                                    close()
+                                }
+                            }
                         )
                     }
                 }
@@ -102,16 +119,8 @@ fun SelectBottomSheet(
                 TextIconButton(
                     text = "Tanca",
                     icon = IconResource.fromImageVector(Icons.Outlined.Close),
-
-                    onClick = {
-                        scope.launch { sheetState.hide() }.invokeOnCompletion {
-                            if (!sheetState.isVisible) {
-                                onToggleShow()
-                            }
-                        }
-                    }
+                    onClick = { close() },
                 )
-
             }
         }
     }
