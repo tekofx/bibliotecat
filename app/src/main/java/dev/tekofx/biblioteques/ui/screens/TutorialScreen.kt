@@ -5,6 +5,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
@@ -128,31 +129,22 @@ fun Stepper(actualPage: Int, totalPages: Int) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 16.dp),
+            .padding(vertical = 50.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
         for (page in 0 until totalPages) {
-            AnimatedContent(
-                label = "stepper",
-                targetState = page == actualPage,
-                transitionSpec = {
-                    fadeIn(animationSpec = tween(300)) togetherWith fadeOut(
-                        animationSpec = tween(300)
-                    )
-                }) { isSelected ->
-                val size = if (isSelected) 30.dp else 20.dp
-                val color =
-                    if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer
-                Icon(
-                    modifier =
-                    Modifier.size(size),
-                    painter = IconResource.fromDrawableResource(R.drawable.circle)
-                        .asPainterResource(),
-                    tint = color,
-                    contentDescription = null
-                )
-            }
+
+            Icon(
+                modifier = Modifier
+                    .animateContentSize()
+                    .size(if (page == actualPage) 30.dp else 20.dp),
+                painter = IconResource.fromDrawableResource(R.drawable.circle)
+                    .asPainterResource(),
+                tint = if (page == actualPage) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer,
+                contentDescription = null
+            )
+            Spacer(Modifier.width(10.dp))
         }
     }
 }
@@ -228,7 +220,7 @@ fun Page3() {
         TextIconButton(
             text = "Github",
             onClick = {},
-            icon = IconResource.fromDrawableResource(R.drawable.github_mark)
+            startIcon = IconResource.fromDrawableResource(R.drawable.github_mark)
         )
 
     }
@@ -248,7 +240,7 @@ fun Page4() {
         Text("Aquesta aplicació necessitarà accés a la ubicació si voleu trobar biblioteques a prop vostre")
         TextIconButton(
             text = "Mostra la finestra emergent de permisos",
-            icon = IconResource.fromImageVector(Icons.Outlined.LocationOn),
+            startIcon = IconResource.fromImageVector(Icons.Outlined.LocationOn),
             onClick = { show = !show }
         )
 
@@ -287,7 +279,7 @@ fun Buttons(
         ) {
             TextIconButton(
                 text = "Enrere",
-                icon = IconResource.fromImageVector(Icons.AutoMirrored.Outlined.KeyboardArrowLeft),
+                startIcon = IconResource.fromImageVector(Icons.AutoMirrored.Outlined.KeyboardArrowLeft),
                 enabled = page > 0,
                 onClick = decreasePage
             )
@@ -315,13 +307,13 @@ fun Buttons(
             if (targetState == lastPage) {
                 TextIconButton(
                     text = "Acabar",
-                    icon = IconResource.fromImageVector(Icons.Outlined.Check),
+                    startIcon = IconResource.fromImageVector(Icons.Outlined.Check),
                     onClick = onFinishClicked
                 )
             } else {
                 TextIconButton(
                     text = "Endavant",
-                    icon = IconResource.fromImageVector(Icons.AutoMirrored.Outlined.KeyboardArrowRight),
+                    endIcon = IconResource.fromImageVector(Icons.AutoMirrored.Outlined.KeyboardArrowRight),
                     onClick = increasePage
                 )
             }
