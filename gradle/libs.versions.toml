@@ -4,6 +4,7 @@ coilComposeVersion = "3.0.0-rc02"
 coilNetworkOkhttp = "3.0.0-rc02"
 converterScalars = "2.9.0"
 coreSplashscreen = "1.0.1"
+datastorePreferences = "1.1.1"
 hiltNavigationCompose = "1.2.0"
 coreKtx = "1.10.1"
 junit = "4.13.2"
@@ -25,11 +26,13 @@ runtimeLivedata = "1.7.4"
 uiToolingPreviewAndroid = "1.7.4"
 uiTooling = "1.7.4"
 animationCoreAndroid = "1.7.3"
+benchmarkCommon = "1.3.3"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
@@ -60,6 +63,7 @@ androidx-ui-tooling-preview-android = { group = "androidx.compose.ui", name = "u
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "uiTooling" }
 androidx-animation-core-android = { group = "androidx.compose.animation", name = "animation-core-android", version.ref = "animationCoreAndroid" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+androidx-benchmark-common = { group = "androidx.benchmark", name = "benchmark-common", version.ref = "benchmarkCommon" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

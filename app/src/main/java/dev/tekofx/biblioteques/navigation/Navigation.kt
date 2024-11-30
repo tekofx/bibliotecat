@@ -7,6 +7,8 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -21,6 +23,7 @@ import dev.tekofx.biblioteques.ui.screens.book.BookSearchScreen
 import dev.tekofx.biblioteques.ui.screens.library.LibrariesScreen
 import dev.tekofx.biblioteques.ui.screens.library.LibraryScreen
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
+import dev.tekofx.biblioteques.ui.viewModels.PreferencesViewModel
 import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModel
 
 
@@ -28,11 +31,15 @@ import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModel
 fun Navigation(
     navHostController: NavHostController,
     libraryViewModel: LibraryViewModel,
-    bookViewModel: BookViewModel
+    bookViewModel: BookViewModel,
+    preferencesViewModel: PreferencesViewModel
 ) {
+
+    val preferences by preferencesViewModel.uiState.collectAsState()
+
     NavHost(
         navController = navHostController,
-        startDestination = NavigateDestinations.LIBRARIES_ROUTE
+        startDestination = if (preferences.showTutorial) NavigateDestinations.TUTORIAL_SCREEN else NavigateDestinations.LIBRARIES_ROUTE
     ) {
 
         // Tutorial
@@ -40,7 +47,7 @@ fun Navigation(
             route = NavigateDestinations.TUTORIAL_SCREEN,
             exitTransition = { fadeOut() }
         ) {
-            TutorialScreen(navHostController)
+            TutorialScreen(navHostController, preferencesViewModel)
         }
 
         // Welcome

@@ -51,11 +51,13 @@ import dev.tekofx.biblioteques.ui.ColumnContainer
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.input.TextIconButton
 import dev.tekofx.biblioteques.ui.theme.Typography
+import dev.tekofx.biblioteques.ui.viewModels.PreferencesViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun TutorialScreen(
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    preferencesViewModel: PreferencesViewModel
 ) {
     var page by remember { mutableIntStateOf(0) }
 
@@ -76,7 +78,11 @@ fun TutorialScreen(
         Buttons(
             page = page,
             lastPage = lastPage,
-            onFinishClicked = { navHostController.navigate(NavigateDestinations.WELCOME_SCREEN) },
+            onFinishClicked = {
+                preferencesViewModel.saveShowTutorial(false)
+                navHostController.navigate(NavigateDestinations.WELCOME_SCREEN)
+
+            },
             decreasePage = { page -= 1 },
             increasePage = { page += 1 }
         )

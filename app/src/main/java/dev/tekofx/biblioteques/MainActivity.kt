@@ -1,5 +1,6 @@
 package dev.tekofx.biblioteques
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,6 +18,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -26,15 +30,21 @@ import dev.tekofx.biblioteques.navigation.Navigation
 import dev.tekofx.biblioteques.navigation.showBottomAppBar
 import dev.tekofx.biblioteques.repository.BookRepository
 import dev.tekofx.biblioteques.repository.LibraryRepository
+import dev.tekofx.biblioteques.repository.PreferencesRepository
 import dev.tekofx.biblioteques.ui.components.BottomNavigationBar
 import dev.tekofx.biblioteques.ui.theme.MyApplicationTheme
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
 import dev.tekofx.biblioteques.ui.viewModels.BookViewModelFactory
+import dev.tekofx.biblioteques.ui.viewModels.PreferencesViewModel
+import dev.tekofx.biblioteques.ui.viewModels.PreferencesViewModelFactory
 import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModel
 import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModelFactory
 
-class MainActivity : ComponentActivity() {
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
+    name = "setting"
+)
 
+class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +58,13 @@ class MainActivity : ComponentActivity() {
             this,
             BookViewModelFactory(BookRepository(BookService.getInstance()))
         )[BookViewModel::class.java]
+
+        val preferencesViewModel = ViewModelProvider(
+            this,
+            PreferencesViewModelFactory(PreferencesRepository(dataStore))
+        )[PreferencesViewModel::class.java]
+
+
         installSplashScreen()
         enableEdgeToEdge()
         setContent {
@@ -59,7 +76,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
 
                 ) {
-                    MainScreen(libraryViewModel, bookViewModel)
+                    MainScreen(libraryViewModel, bookViewModel, preferencesViewModel)
                 }
             }
 
@@ -70,11 +87,14 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainScreen(libraryViewModel: LibraryViewModel, bookViewModel: BookViewModel) {
+fun MainScreen(
+    libraryViewModel: LibraryViewModel,
+    bookViewModel: BookViewModel,
+    preferencesViewModel: PreferencesViewModel
+) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-
 
 
     Scaffold(
@@ -93,7 +113,7 @@ fun MainScreen(libraryViewModel: LibraryViewModel, bookViewModel: BookViewModel)
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            Navigation(navController, libraryViewModel, bookViewModel)
+            Navigation(navController, libraryViewModel, bookViewModel, preferencesViewModel)
         }
 
     }

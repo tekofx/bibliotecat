@@ -21,7 +21,6 @@ fun BottomNavigationBar(navHostController: NavHostController) {
     val items = listOf(
         BottomNavigationItems.Item1,
         BottomNavigationItems.Item2,
-        BottomNavigationItems.Item3
     )
 
     BottomAppBar(

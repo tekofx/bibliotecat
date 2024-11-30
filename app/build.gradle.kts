@@ -69,7 +69,7 @@ dependencies {
     implementation(libs.coil.network.okhttp)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
-
+    implementation(libs.androidx.datastore.preferences)
     implementation(libs.ksoup)
     implementation(libs.androidx.navigation.compose)
 
