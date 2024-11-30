@@ -92,7 +92,7 @@ class LibraryConverterFactory : Converter.Factory() {
                     phones = phones,
                     webUrl = webUrl,
                     image = imatge,
-                    summerTimeTable = timetableEstiu,
+                    summerSeasonTimeTable = timetableEstiu,
                     winterTimetable = timetableHivern,
                 )
                 // Rellena los demás atributos según sea necesario
@@ -112,7 +112,7 @@ class LibraryConverterFactory : Converter.Factory() {
         return stringList
     }
 
-    private fun getTimetables(jsonObject: JSONObject): Pair<TimeTable, TimeTable> {
+    private fun getTimetables(jsonObject: JSONObject): Pair<SeasonTimeTable, SeasonTimeTable> {
         val (dateIntervalHivern, dateIntervalEstiu) = getDateIntervals(jsonObject)
         val hivernTimeTable = getTimetable(jsonObject, Season.WINTER, dateIntervalHivern)
         val estiuTimeTable = getTimetable(jsonObject, Season.SUMMER, dateIntervalEstiu)
@@ -123,7 +123,7 @@ class LibraryConverterFactory : Converter.Factory() {
         jsonObject: JSONObject,
         season: Season,
         dateInterval: DateInterval
-    ): TimeTable {
+    ): SeasonTimeTable {
 
         var estacio = "hivern"
 
@@ -144,7 +144,7 @@ class LibraryConverterFactory : Converter.Factory() {
         val observation = Ksoup.parse(observacionsHtml).text()
 
 
-        val weekTimetableDeProva = TimeTable(
+        val weekTimetableDeProva = SeasonTimeTable(
             start = dateInterval.from,
             end = dateInterval.to,
             mapOf(

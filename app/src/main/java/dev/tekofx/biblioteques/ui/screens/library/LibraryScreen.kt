@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import dev.tekofx.biblioteques.model.library.Library
 import dev.tekofx.biblioteques.model.library.LibraryDummy
-import dev.tekofx.biblioteques.model.library.TimeTable
+import dev.tekofx.biblioteques.model.library.SeasonTimeTable
 import dev.tekofx.biblioteques.model.library.seasonTranslation
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.Accordion
@@ -148,21 +148,21 @@ fun LibraryTimetable(
             SegmentedButtonItem(
                 selected = selectedTabIndex == 1,
                 onClick = { selectedTabIndex = 1 },
-                label = { Text(text = "Horari ${seasonTranslation[library.nextSeasonTimeTables.season]}") },
+                label = { Text(text = "Horari ${seasonTranslation[library.nextSeasonSeasonTimeTables.season]}") },
             )
 
         }
         when (selectedTabIndex) {
             0 -> LibraryTimeTable(library.currentSeasonTimetable)
             1 -> {
-                LibraryTimeTable(library.nextSeasonTimeTables)
+                LibraryTimeTable(library.nextSeasonSeasonTimeTables)
             }
         }
     }
 }
 
 @Composable
-fun LibraryTimeTable(timeTable: TimeTable) {
+fun LibraryTimeTable(seasonTimeTable: SeasonTimeTable) {
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -174,18 +174,18 @@ fun LibraryTimeTable(timeTable: TimeTable) {
 
             Text(
                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
-                text = "${formatDate(timeTable.start)} - ${formatDate(timeTable.end)}",
+                text = "${formatDate(seasonTimeTable.start)} - ${formatDate(seasonTimeTable.end)}",
                 style = Typography.bodyLarge
             )
         }
 
         Accordion(
             title = "Observacions",
-            description = timeTable.observation,
+            description = seasonTimeTable.observation,
             icon = IconResource.fromImageVector(Icons.Outlined.Info)
         )
 
-        timeTable.dayTimetables.forEach {
+        seasonTimeTable.dayTimetables.forEach {
             Surface(
                 tonalElevation = if (it.key == LocalDate.now().dayOfWeek) 100.dp else if (it.value.open) 5.dp else 1.dp,
                 shape = RoundedCornerShape(10.dp),

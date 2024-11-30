@@ -30,7 +30,7 @@ val seasonTranslation = mapOf(
  * @property emails A list of email addresses associated with the library.
  * @property phones A list of phones associated with the library.
  * @property image The URL of the library's image.
- * @property summerTimeTable The timetable for the summer period.
+ * @property summerSeasonTimeTable The timetable for the summer period.
  * @property winterTimetable The timetable for the winter period.
  */
 class Library(
@@ -44,13 +44,13 @@ class Library(
     val phones: List<String>,
     val webUrl: String,
     var image: String,
-    val summerTimeTable: TimeTable,
-    val winterTimetable: TimeTable,
+    val summerSeasonTimeTable: SeasonTimeTable,
+    val winterTimetable: SeasonTimeTable,
     private var currentDate: LocalDate? = null
 ) {
 
-    var currentSeasonTimetable: TimeTable
-    var nextSeasonTimeTables: TimeTable
+    var currentSeasonTimetable: SeasonTimeTable
+    var nextSeasonSeasonTimeTables: SeasonTimeTable
 
     init {
         if (currentDate == null) {
@@ -58,12 +58,12 @@ class Library(
 
         }
         currentSeasonTimetable = getCurrentSeasonTimetable(currentDate!!)
-        nextSeasonTimeTables = getNextSeasonTimetable()
+        nextSeasonSeasonTimeTables = getNextSeasonTimetable()
     }
 
     private fun initilializeLibrary() {
         currentSeasonTimetable = getCurrentSeasonTimetable(currentDate!!)
-        nextSeasonTimeTables = getNextSeasonTimetable()
+        nextSeasonSeasonTimeTables = getNextSeasonTimetable()
     }
 
     fun setCurrentDate(date: LocalDate) {
@@ -122,11 +122,11 @@ class Library(
      * @param date The date to check.
      * @return The current timetable.
      */
-    private fun getCurrentSeasonTimetable(date: LocalDate): TimeTable {
-        return if (date == summerTimeTable.start || date == summerTimeTable.end) {
-            summerTimeTable
-        } else if (date.isAfter(summerTimeTable.start) && date.isBefore(summerTimeTable.end)) {
-            return summerTimeTable
+    private fun getCurrentSeasonTimetable(date: LocalDate): SeasonTimeTable {
+        return if (date == summerSeasonTimeTable.start || date == summerSeasonTimeTable.end) {
+            summerSeasonTimeTable
+        } else if (date.isAfter(summerSeasonTimeTable.start) && date.isBefore(summerSeasonTimeTable.end)) {
+            return summerSeasonTimeTable
         } else {
             winterTimetable
         }
@@ -138,12 +138,12 @@ class Library(
      * @param date The date to check.
      * @return The next season timetable.
      */
-    private fun getNextSeasonTimetable(): TimeTable {
-        if (currentSeasonTimetable == summerTimeTable) {
+    private fun getNextSeasonTimetable(): SeasonTimeTable {
+        if (currentSeasonTimetable == summerSeasonTimeTable) {
             return winterTimetable
         }
 
-        return summerTimeTable
+        return summerSeasonTimeTable
     }
 
     /**
@@ -167,7 +167,7 @@ class Library(
         var nextDay = date.plusDays(1)
         var currentTimetable = getCurrentSeasonTimetable(nextDay)
 
-        if (!summerTimeTable.open && !winterTimetable.open) {
+        if (!summerSeasonTimeTable.open && !winterTimetable.open) {
             return null
         }
 
@@ -263,7 +263,7 @@ class Library(
         output += "Phones $phones\n"
         output += "WebUrl $webUrl\n"
         output += "Image $image\n"
-        output += "WinterTimetable: ${winterTimetable}\nSummerTimetable $summerTimeTable\nNextSeasonTimetable $nextSeasonTimeTables"
+        output += "WinterTimetable: ${winterTimetable}\nSummerTimetable $summerSeasonTimeTable\nNextSeasonTimetable $nextSeasonSeasonTimeTables"
         return output
     }
 
@@ -283,7 +283,7 @@ class Library(
         if (phones != other.phones) return false
         if (webUrl != other.webUrl) return false
         if (image != other.image) return false
-        if (summerTimeTable != other.summerTimeTable) return false
+        if (summerSeasonTimeTable != other.summerSeasonTimeTable) return false
         if (winterTimetable != other.winterTimetable) return false
 
         return true
@@ -300,7 +300,7 @@ class Library(
         result = 31 * result + phones.hashCode()
         result = 31 * result + webUrl.hashCode()
         result = 31 * result + image.hashCode()
-        result = 31 * result + summerTimeTable.hashCode()
+        result = 31 * result + summerSeasonTimeTable.hashCode()
         result = 31 * result + winterTimetable.hashCode()
         return result
     }

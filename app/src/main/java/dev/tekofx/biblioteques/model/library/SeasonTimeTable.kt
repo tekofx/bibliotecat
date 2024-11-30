@@ -11,7 +11,7 @@ import java.time.LocalDate
  * @property end The end date of the timetable period.
  * @property dayTimetables A map of day-specific timetables.
  */
-data class TimeTable(
+data class SeasonTimeTable(
     val start: LocalDate,
     val end: LocalDate,
     val dayTimetables: Map<DayOfWeek, DayTimeTable>,
@@ -42,7 +42,7 @@ data class TimeTable(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as TimeTable
+        other as SeasonTimeTable
 
         if (start != other.start) return false
         if (end != other.end) return false

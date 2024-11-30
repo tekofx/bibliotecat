@@ -166,7 +166,7 @@ var sundaySummerTimetableDummy = DayTimeTable(
     listOf()
 )
 
-var winterTimetableDummy = TimeTable(
+var winterTimetableDummy = SeasonTimeTable(
     start = firstDayOfWinterDummy,
     end = lastDayOfWinterDummy,
     dayTimetables = mapOf(
@@ -182,7 +182,7 @@ var winterTimetableDummy = TimeTable(
     observation = ""
 )
 
-var dummySummerTimetableDummy = TimeTable(
+var dummySummerTimetableDummy = SeasonTimeTable(
     start = firstDayOfSummerDummy,
     end = lastDayOfSummerDummy,
     dayTimetables = mapOf(
@@ -211,6 +211,6 @@ var LibraryDummy = Library(
     phones = listOf("123456789"),
     webUrl = "https://test.com",
     image = "https://bibliotecavirtual.diba.cat/documents/350986/0/P1120129.JPGfoto+portada.jpg/9ff2c56c-7424-4d95-b734-0ef67225a281?t=1364040065786",
-    summerTimeTable = dummySummerTimetableDummy,
+    summerSeasonTimeTable = dummySummerTimetableDummy,
     winterTimetable = winterTimetableDummy,
 )

@@ -4,7 +4,7 @@ import dev.tekofx.biblioteques.model.library.DayTimeTable
 import dev.tekofx.biblioteques.model.library.Interval
 import dev.tekofx.biblioteques.model.library.Library
 import dev.tekofx.biblioteques.model.library.Season
-import dev.tekofx.biblioteques.model.library.TimeTable
+import dev.tekofx.biblioteques.model.library.SeasonTimeTable
 
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -152,7 +152,7 @@ var sundaySummerTimetable = DayTimeTable(
     listOf()
 )
 
-var winterTimetable = TimeTable(
+var winterTimetable = SeasonTimeTable(
     start = firstDayOfWinter,
     end = lastDayOfWinter,
     dayTimetables = mapOf(
@@ -167,7 +167,7 @@ var winterTimetable = TimeTable(
     season = Season.WINTER
 )
 
-var summerTimetable = TimeTable(
+var summerTimetable = SeasonTimeTable(
     start = firstDayOfSummer,
     end = lastDayOfSummer,
     dayTimetables = mapOf(
@@ -195,6 +195,6 @@ var LibraryAbrera = Library(
     phones = listOf("937 700 881"),
     webUrl = "https://www.biblioabrera.cat",
     image = "https://bibliotecavirtual.diba.cat/documents/346453/0/Abrera_edifici_exterior+vitrall.jpg/b5b6ae1d-a271-422e-8fe3-bf2a993a9713?t=1327512463534",
-    summerTimeTable = summerTimetable,
+    summerSeasonTimeTable = summerTimetable,
     winterTimetable = winterTimetable,
 )

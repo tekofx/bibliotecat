@@ -4,7 +4,7 @@ import dev.tekofx.biblioteques.model.library.DayTimeTable
 import dev.tekofx.biblioteques.model.library.Interval
 import dev.tekofx.biblioteques.model.library.Library
 import dev.tekofx.biblioteques.model.library.Season
-import dev.tekofx.biblioteques.model.library.TimeTable
+import dev.tekofx.biblioteques.model.library.SeasonTimeTable
 import org.junit.Before
 import org.junit.Test
 import java.time.DayOfWeek
@@ -32,8 +32,8 @@ class LibraryTest {
     private lateinit var fridaySummerTimetable: DayTimeTable
     private lateinit var saturdaySummerTimetable: DayTimeTable
     private lateinit var sundaySummerTimetable: DayTimeTable
-    private lateinit var winterTimetable: TimeTable
-    private lateinit var summerTimetable: TimeTable
+    private lateinit var winterTimetable: SeasonTimeTable
+    private lateinit var summerTimetable: SeasonTimeTable
     private lateinit var libraryTest: Library
 
     /**
@@ -222,7 +222,7 @@ class LibraryTest {
             listOf()
         )
 
-        winterTimetable = TimeTable(
+        winterTimetable = SeasonTimeTable(
             start = firstDayOfWinter,
             end = lastDayOfWinter,
             dayTimetables = mapOf(
@@ -237,7 +237,7 @@ class LibraryTest {
             season = Season.WINTER
         )
 
-        summerTimetable = TimeTable(
+        summerTimetable = SeasonTimeTable(
             start = firstDayOfSummer,
             end = lastDayOfSummer,
             dayTimetables = mapOf(
@@ -264,7 +264,7 @@ class LibraryTest {
             emails = listOf("emails"),
             phones = listOf("123456789"),
             image = "imatge",
-            summerTimeTable = summerTimetable,
+            summerSeasonTimeTable = summerTimetable,
             winterTimetable = winterTimetable,
             webUrl = ""
         )
