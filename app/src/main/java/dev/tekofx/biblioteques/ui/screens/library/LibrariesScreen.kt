@@ -195,7 +195,7 @@ fun SearchBottomSheet(
 
                     TextIconButton(
                         text = "Tanca",
-                        icon = IconResource.fromImageVector(Icons.Outlined.Close),
+                        startIcon = IconResource.fromImageVector(Icons.Outlined.Close),
                         onClick = {
                             scope.launch { sheetState.hide() }.invokeOnCompletion {
                                 if (!sheetState.isVisible) {

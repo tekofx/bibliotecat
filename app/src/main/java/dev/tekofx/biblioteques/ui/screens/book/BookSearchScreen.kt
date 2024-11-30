@@ -134,7 +134,7 @@ fun BookSearch(
         TextIconButton(
             modifier = Modifier.fillMaxWidth(),
             text = selectedSearchType.text,
-            icon = selectedSearchType.icon,
+            startIcon = selectedSearchType.icon,
             onClick = {
                 showSearchTypeBottomSheet = !showSearchTypeBottomSheet
             }
@@ -143,14 +143,14 @@ fun BookSearch(
         TextIconButton(
             modifier = Modifier.fillMaxWidth(),
             text = selectedSearchScope.text,
-            icon = selectedSearchScope.icon,
+            startIcon = selectedSearchScope.icon,
             onClick = {
                 showSearchScopeBottomSheet = !showSearchScopeBottomSheet
             }
         )
 
         TextIconButton(text = "Cerca",
-            icon = IconResource.fromImageVector(Icons.Outlined.Search),
+            startIcon = IconResource.fromImageVector(Icons.Outlined.Search),
             enabled = queryText.isNotEmpty() && !isLoading,
             onClick = {
                 search()

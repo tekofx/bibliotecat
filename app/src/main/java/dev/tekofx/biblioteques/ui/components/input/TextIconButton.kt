@@ -17,7 +17,8 @@ import dev.tekofx.biblioteques.ui.IconResource
 fun TextIconButton(
     modifier: Modifier = Modifier,
     text: String,
-    icon: IconResource,
+    startIcon: IconResource? = null,
+    endIcon: IconResource? = null,
     onClick: () -> Unit,
     enabled: Boolean = true,
 ) {
@@ -28,17 +29,27 @@ fun TextIconButton(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(5.dp)
+            horizontalArrangement = Arrangement.Center
         ) {
-
-            Icon(
-                modifier = Modifier
-                    .padding(start = 0.dp)
-                    .height(24.dp),
-                painter = icon.asPainterResource(),
-                contentDescription = "",
-            )
+            if (startIcon != null) {
+                Icon(
+                    modifier = Modifier
+                        .padding(start = 0.dp)
+                        .height(24.dp),
+                    painter = startIcon.asPainterResource(),
+                    contentDescription = "",
+                )
+            }
             Text(text = text)
+            if (endIcon != null) {
+                Icon(
+                    modifier = Modifier
+                        .padding(start = 0.dp)
+                        .height(24.dp),
+                    painter = endIcon.asPainterResource(),
+                    contentDescription = "",
+                )
+            }
         }
     }
 }

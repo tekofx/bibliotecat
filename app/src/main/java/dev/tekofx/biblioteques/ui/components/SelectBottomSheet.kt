@@ -118,7 +118,7 @@ fun SelectBottomSheet(
 
                 TextIconButton(
                     text = "Tanca",
-                    icon = IconResource.fromImageVector(Icons.Outlined.Close),
+                    startIcon = IconResource.fromImageVector(Icons.Outlined.Close),
                     onClick = { close() },
                 )
             }
