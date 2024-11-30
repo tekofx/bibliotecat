@@ -2,7 +2,11 @@ package dev.tekofx.biblioteques.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
@@ -25,6 +29,8 @@ import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.LocationOn
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,6 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ParagraphStyle
@@ -53,6 +60,7 @@ import dev.tekofx.biblioteques.ui.components.input.TextIconButton
 import dev.tekofx.biblioteques.ui.theme.Typography
 import dev.tekofx.biblioteques.ui.viewModels.PreferencesViewModel
 
+@OptIn(ExperimentalAnimationApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun TutorialScreen(
@@ -60,37 +68,101 @@ fun TutorialScreen(
     preferencesViewModel: PreferencesViewModel
 ) {
     var page by remember { mutableIntStateOf(0) }
+    var previousPage by remember { mutableStateOf<Int?>(null) }
 
 
-    val lastPage = 3
+    val totalPages = 3
     Column {
 
-        when (page) {
-            0 -> Screen1()
-            1 -> Screen2()
-            2 -> Screen3()
-            3 -> Screen4()
+        AnimatedContent(
+            targetState = page,
+            label = "",
+            transitionSpec = {
+                if (previousPage != null && page > previousPage!!) {
+
+                    slideIntoContainer(
+                        towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                    ) togetherWith slideOutOfContainer(
+                        towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                    )
+                } else {
+                    slideIntoContainer(
+                        towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                    ) togetherWith slideOutOfContainer(
+                        towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                    )
+                }
+            }
+        ) { targetPage ->
+            when (targetPage) {
+                0 -> Screen1()
+                1 -> Screen2()
+                2 -> Screen3()
+                3 -> Screen4()
+                else -> Screen1() // Default fallback
+
+            }
         }
 
         // Spacer with weight to push the next elements to the bottom
         Spacer(modifier = Modifier.weight(1f))
 
+        Guide(page, 4)
+
         Buttons(
             page = page,
-            lastPage = lastPage,
+            lastPage = totalPages,
             onFinishClicked = {
                 preferencesViewModel.saveShowTutorial(false)
                 navHostController.navigate(NavigateDestinations.WELCOME_SCREEN)
 
             },
-            decreasePage = { page -= 1 },
-            increasePage = { page += 1 }
+            decreasePage = {
+                previousPage = page
+                page -= 1
+            },
+            increasePage = {
+                previousPage = page
+                page += 1
+            }
         )
 
 
     }
 }
 
+@Composable
+fun Guide(actualPage: Int, totalPages: Int) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        for (page in 0 until totalPages) {
+            val size by animateDpAsState(
+                targetValue = if (page == actualPage) 30.dp else 20.dp,
+                animationSpec = tween(
+                    durationMillis = 500,
+                    easing = LinearOutSlowInEasing
+                ),
+                label = ""
+            )
+            val color: Color =
+                if (page == actualPage) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer
+
+            Icon(
+                modifier = Modifier.size(size),
+                painter = IconResource.fromDrawableResource(R.drawable.circle)
+                    .asPainterResource(),
+                tint = color,
+                contentDescription = ""
+            )
+
+        }
+    }
+}
 
 @Composable
 fun Screen1() {
@@ -115,7 +187,7 @@ fun Screen1() {
 fun Screen2() {
     ColumnContainer {
         Text(
-            text = "Features",
+            text = "Característiques",
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
             style = Typography.headlineLarge,
@@ -123,10 +195,10 @@ fun Screen2() {
 
         val bullet = "\u2022"
         val messages = listOf(
-            "See libraries of Barcelona province",
-            "Filter libraries by Open/Close, name or municipality",
-            "See Information about a library",
-            "Search books in Aladi with a beautiful UI",
+            "Veure biblioteques de la pronvíncia de Barcelona",
+            "Filtrar biblioteques per Obert/Tancat, nom de la biblioteca o municipi",
+            "Consulta informació sobre una biblioteca, com ara horari o ubicació",
+            "Cerca llibres a Aladí amb una interfície d'usuari bonica",
         )
         val paragraphStyle = ParagraphStyle(textIndent = TextIndent(restLine = 12.sp))
         Text(
@@ -148,13 +220,20 @@ fun Screen2() {
 fun Screen3() {
     ColumnContainer {
         Text(
-            text = "About this app",
+            text = "Sobre aquesta aplicació",
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
             style = Typography.headlineLarge
         )
-        Text("This app is not official")
-        Text("This app is Open Source, check out the code here")
+        Text("Aquesta app no és oficial de la Diputació de Barcelona")
+        Text("Aquesta aplicació és de codi obert, podeu consultar el codi aquí")
+
+        TextIconButton(
+            text = "Github",
+            onClick = {},
+            icon = IconResource.fromDrawableResource(R.drawable.github_mark)
+        )
+
     }
 }
 
@@ -163,15 +242,15 @@ fun Screen4() {
     var show by remember { mutableStateOf(false) }
     ColumnContainer {
         Text(
-            text = "Permissions",
+            text = "Permisos",
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
             style = Typography.headlineLarge,
         )
 
-        Text("This app will need location access if you want to find libraries near you")
+        Text("Aquesta aplicació necessitarà accés a la ubicació si voleu trobar biblioteques a prop vostre")
         TextIconButton(
-            text = "Show Permission Popup",
+            text = "Mostra la finestra emergent de permisos",
             icon = IconResource.fromImageVector(Icons.Outlined.LocationOn),
             onClick = { show = !show }
         )

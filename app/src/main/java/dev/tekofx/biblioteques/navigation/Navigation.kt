@@ -39,7 +39,9 @@ fun Navigation(
 
     NavHost(
         navController = navHostController,
-        startDestination = if (preferences.showTutorial) NavigateDestinations.TUTORIAL_SCREEN else NavigateDestinations.LIBRARIES_ROUTE
+        startDestination = if (preferences.showTutorial) NavigateDestinations.TUTORIAL_SCREEN else NavigateDestinations.TUTORIAL_SCREEN,
+        //startDestination = if (preferences.showTutorial) NavigateDestinations.TUTORIAL_SCREEN else NavigateDestinations.LIBRARIES_ROUTE
+
     ) {
 
         // Tutorial

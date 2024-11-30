@@ -2,6 +2,7 @@ package dev.tekofx.biblioteques.ui.components.input
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -31,7 +32,9 @@ fun TextIconButton(
         ) {
 
             Icon(
-                modifier = Modifier.padding(start = 0.dp),
+                modifier = Modifier
+                    .padding(start = 0.dp)
+                    .height(24.dp),
                 painter = icon.asPainterResource(),
                 contentDescription = "",
             )
