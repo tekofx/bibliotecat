@@ -2,6 +2,12 @@ package dev.tekofx.biblioteques.model.library
 
 import java.time.LocalDate
 
+
+/**
+ * Represents a interval between two dates
+ * @param from Start of interval
+ * @param to end of interval
+ */
 data class DateInterval(
     val from: LocalDate, val to: LocalDate
 ) {
