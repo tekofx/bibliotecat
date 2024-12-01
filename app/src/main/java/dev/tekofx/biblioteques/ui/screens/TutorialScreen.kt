@@ -6,9 +6,8 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
@@ -136,36 +135,37 @@ fun Stepper(actualPage: Int, totalPages: Int) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 50.dp),
-        horizontalArrangement = Arrangement.Center,
+        horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically
     ) {
         for (page in 0 until totalPages) {
-            val scale by animateDpAsState(
-                targetValue = if (page == actualPage) 15.dp else 10.dp,
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioLowBouncy,
-                    stiffness = Spring.StiffnessLow
-                ),
-                label = "scale"
-            )
-            val color by animateColorAsState(
-                targetValue = if (page == actualPage) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer,
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                    stiffness = Spring.StiffnessLow
-                ),
-                label = "color"
-            )
-            Box(
-                modifier = Modifier
-                    .size(scale)
-                    .clip(CircleShape)
-                    .background(color),
-                contentAlignment = Alignment.Center
-            ) {}
-            Spacer(Modifier.width(10.dp))
+            Dot(page = page, actualPage)
         }
     }
+}
+
+@Composable
+fun Dot(
+    page: Int,
+    actualPage: Int
+) {
+    val scale by animateDpAsState(
+        targetValue = if (page == actualPage) 15.dp else 10.dp,
+        animationSpec = tween(durationMillis = 500, easing = LinearOutSlowInEasing),
+        label = "scale"
+    )
+    val color by animateColorAsState(
+        targetValue = if (page == actualPage) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer,
+        animationSpec = tween(durationMillis = 500, easing = LinearOutSlowInEasing),
+        label = "color"
+    )
+    Box(
+        modifier = Modifier
+            .size(scale)
+            .clip(CircleShape)
+            .background(color),
+        contentAlignment = Alignment.Center
+    ) {}
 }
 
 @Composable
