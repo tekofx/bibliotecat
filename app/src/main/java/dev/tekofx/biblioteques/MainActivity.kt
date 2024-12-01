@@ -33,12 +33,12 @@ import dev.tekofx.biblioteques.repository.LibraryRepository
 import dev.tekofx.biblioteques.repository.PreferencesRepository
 import dev.tekofx.biblioteques.ui.components.BottomNavigationBar
 import dev.tekofx.biblioteques.ui.theme.MyApplicationTheme
-import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
-import dev.tekofx.biblioteques.ui.viewModels.BookViewModelFactory
-import dev.tekofx.biblioteques.ui.viewModels.PreferencesViewModel
-import dev.tekofx.biblioteques.ui.viewModels.PreferencesViewModelFactory
+import dev.tekofx.biblioteques.ui.viewModels.book.BookViewModel
+import dev.tekofx.biblioteques.ui.viewModels.book.BookViewModelFactory
 import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModel
 import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModelFactory
+import dev.tekofx.biblioteques.ui.viewModels.preferences.PreferencesViewModel
+import dev.tekofx.biblioteques.ui.viewModels.preferences.PreferencesViewModelFactory
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
     name = "setting"

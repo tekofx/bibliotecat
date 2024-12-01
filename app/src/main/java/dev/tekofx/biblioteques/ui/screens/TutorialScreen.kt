@@ -59,7 +59,7 @@ import dev.tekofx.biblioteques.ui.ColumnContainer
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.input.TextIconButton
 import dev.tekofx.biblioteques.ui.theme.Typography
-import dev.tekofx.biblioteques.ui.viewModels.PreferencesViewModel
+import dev.tekofx.biblioteques.ui.viewModels.preferences.PreferencesViewModel
 
 @OptIn(ExperimentalAnimationApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

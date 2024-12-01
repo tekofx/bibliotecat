@@ -40,8 +40,8 @@ import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.SelectBottomSheet
 import dev.tekofx.biblioteques.ui.components.input.SearchBar
 import dev.tekofx.biblioteques.ui.components.input.TextIconButton
-import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
-import dev.tekofx.biblioteques.ui.viewModels.searchTypes
+import dev.tekofx.biblioteques.ui.viewModels.book.BookViewModel
+import dev.tekofx.biblioteques.ui.viewModels.book.searchTypes
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

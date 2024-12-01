@@ -22,9 +22,9 @@ import dev.tekofx.biblioteques.ui.screens.book.BookScreen
 import dev.tekofx.biblioteques.ui.screens.book.BookSearchScreen
 import dev.tekofx.biblioteques.ui.screens.library.LibrariesScreen
 import dev.tekofx.biblioteques.ui.screens.library.LibraryScreen
-import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
-import dev.tekofx.biblioteques.ui.viewModels.PreferencesViewModel
+import dev.tekofx.biblioteques.ui.viewModels.book.BookViewModel
 import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModel
+import dev.tekofx.biblioteques.ui.viewModels.preferences.PreferencesViewModel
 
 
 @Composable

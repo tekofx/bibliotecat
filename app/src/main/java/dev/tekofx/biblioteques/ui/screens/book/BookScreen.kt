@@ -45,7 +45,7 @@ import dev.tekofx.biblioteques.ui.components.StatusBadge
 import dev.tekofx.biblioteques.ui.components.animations.SlideDirection
 import dev.tekofx.biblioteques.ui.components.animations.SlideVertically
 import dev.tekofx.biblioteques.ui.theme.Typography
-import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
+import dev.tekofx.biblioteques.ui.viewModels.book.BookViewModel
 
 @Composable
 fun BookScreen(

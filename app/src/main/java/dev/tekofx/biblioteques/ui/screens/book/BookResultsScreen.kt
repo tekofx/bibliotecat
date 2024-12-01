@@ -41,7 +41,7 @@ import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.components.Loader
 import dev.tekofx.biblioteques.ui.components.PaginatedList
 import dev.tekofx.biblioteques.ui.theme.Typography
-import dev.tekofx.biblioteques.ui.viewModels.BookViewModel
+import dev.tekofx.biblioteques.ui.viewModels.book.BookViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable

@@ -1,4 +1,4 @@
-package dev.tekofx.biblioteques.ui.viewModels
+package dev.tekofx.biblioteques.ui.viewModels.preferences
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
