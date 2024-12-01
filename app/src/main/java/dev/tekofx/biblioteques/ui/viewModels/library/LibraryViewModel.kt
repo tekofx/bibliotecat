@@ -19,28 +19,38 @@ import java.time.LocalTime
 
 class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() {
 
-    val isLoading = MutableLiveData<Boolean>(false)
-    var showOnlyOpen by mutableStateOf(false)
-        private set
-
-    var filtersApplied by mutableStateOf(false)
-        private set
-
+    // Data
     val libraries = MutableLiveData<List<Library>>()
-    var selectedMunicipality by mutableStateOf<String>("")
-        private set
+    private var _libraries = MutableLiveData<List<Library>>()
     val municipalities = MutableLiveData<List<String>>()
     private val _currentLibrary = MutableLiveData<Library?>()
     val currentLibrary: LiveData<Library?> = _currentLibrary
-    val errorMessage = MutableLiveData<String>()
-    private var _libraries = MutableLiveData<List<Library>>()
+
+    // Loaders
+    val isLoading = MutableLiveData<Boolean>(false)
+
+    // Inputs
+    var showOnlyOpen by mutableStateOf(false)
+        private set
     var queryText by mutableStateOf("")
         private set
+    var filtersApplied by mutableStateOf(false)
+        private set
+    var selectedMunicipality by mutableStateOf<String>("")
+        private set
+
+    // Error
+    val errorMessage = MutableLiveData<String>()
 
     init {
         getLibraries()
     }
 
+    /**
+     * Gets a library from [_libraries]. It uses a pointId or a libraryUrl
+     * @param pointId
+     * @param libraryUrl
+     */
     fun getLibrary(pointId: String?, libraryUrl: String?) {
         Log.d(
             "LibraryVewModel",
@@ -70,6 +80,9 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
 
     }
 
+    /**
+     * Gets libraries from API
+     */
     private fun getLibraries() {
         Log.d("LibraryViewModel", "getLibraries")
         isLoading.postValue(true)
@@ -95,21 +108,34 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
 
     }
 
+    /**
+     * Callback of TextField
+     */
     fun onSearchTextChanged(text: String) {
         queryText = text
         applyFilters()
     }
 
+    /**
+     * Callback of Show Open chip
+     * @param switchValue Value of the chip
+     */
     fun onShowOnlyOpen(switchValue: Boolean) {
         showOnlyOpen = switchValue
         applyFilters()
     }
 
+    /**
+     * Callback used when a municipality is selected in Municipaliy Autocomplete
+     */
     fun onMunicipalityChanged(municipality: String) {
         selectedMunicipality = municipality
         applyFilters()
     }
 
+    /**
+     * Clear all the filters
+     */
     fun clearFilters() {
         queryText = ""
         showOnlyOpen = false
@@ -117,7 +143,9 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
         applyFilters()
     }
 
-    // Combine both filters and update the library list private
+    /**
+     * Applies all the filters to the list. Sets [libraries] with the filteres libraries
+     */
     private fun applyFilters() {
         val filteredLibraries = _libraries.value?.filter { library ->
             val matchesSearchText = library.adrecaNom.contains(
