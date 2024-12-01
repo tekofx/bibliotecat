@@ -1,6 +1,8 @@
 package dev.tekofx.biblioteques.ui.screens
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibility
@@ -44,6 +46,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -220,6 +223,8 @@ fun Page2() {
 
 @Composable
 fun Page3() {
+    val context = LocalContext.current
+
     ColumnContainer {
         Text(
             modifier = Modifier.fillMaxWidth(),
@@ -238,7 +243,11 @@ fun Page3() {
 
         TextIconButton(
             text = "Github",
-            onClick = {},
+            onClick = {
+                val intent =
+                    Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/tekofx/Biblioteques"))
+                context.startActivity(intent)
+            },
             startIcon = IconResource.fromDrawableResource(R.drawable.github_mark)
         )
 
