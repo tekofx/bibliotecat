@@ -1,5 +1,6 @@
 package dev.tekofx.biblioteques.ui.screens.book
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,9 +45,11 @@ import dev.tekofx.biblioteques.ui.components.InfoCard
 import dev.tekofx.biblioteques.ui.components.StatusBadge
 import dev.tekofx.biblioteques.ui.components.animations.SlideDirection
 import dev.tekofx.biblioteques.ui.components.animations.SlideVertically
+import dev.tekofx.biblioteques.ui.components.input.SearchBar
 import dev.tekofx.biblioteques.ui.theme.Typography
 import dev.tekofx.biblioteques.ui.viewModels.book.BookViewModel
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun BookScreen(
     bookUrl: String,
@@ -127,7 +130,9 @@ fun BookScreen(
                 showAvailableNow = bookViewModel.availableNowChip,
                 showCanReserve = bookViewModel.canReserveChip,
                 onAvailableNowChipClick = { bookViewModel.onAvailableNowChipClick() },
-                onCanReserveChipClick = { bookViewModel.onCanReserveChipClick() }
+                onCanReserveChipClick = { bookViewModel.onCanReserveChipClick() },
+                onTextFieldChange = { bookViewModel.onTextFieldValueChange(it) },
+                textFieldValue = bookViewModel.bookCopiesTextFieldValue
             )
         }
     }
@@ -190,6 +195,8 @@ fun BookCopiesSegment(
     onCanReserveChipClick: () -> Unit,
     onAvailableNowChipClick: () -> Unit,
     onBookCopyClick: (libraryUrl: String) -> Unit,
+    onTextFieldChange: (String) -> Unit,
+    textFieldValue: String
 ) {
     if (showLoading) {
         Box(
@@ -217,23 +224,15 @@ fun BookCopiesSegment(
             if (noBookCopies) {
                 Text("No hi ha exemplars")
             } else {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    FilterChipComponent(
-                        text = "Disponible Ara",
-                        selected = showAvailableNow,
-                        statusColor = StatusColor.GREEN,
-                        onClick = { onAvailableNowChipClick() }
-                    )
-                    FilterChipComponent(
-                        text = "Es pot reservar",
-                        selected = showCanReserve,
-                        statusColor = StatusColor.YELLOW,
-                        onClick = { onCanReserveChipClick() }
-                    )
-                }
+
+                BookCopiesFilters(
+                    showAvailableNow = showAvailableNow,
+                    showCanReserve = showCanReserve,
+                    onAvailableNowChipClick = onAvailableNowChipClick,
+                    onCanReserveChipClick = onCanReserveChipClick,
+                    onTextFieldChange = onTextFieldChange,
+                    textFieldValue = textFieldValue
+                )
 
                 bookCopies.forEach { bookCopy: BookCopy ->
                     BookCopyCard(
@@ -249,6 +248,44 @@ fun BookCopiesSegment(
     }
 
 
+}
+
+@Composable
+fun BookCopiesFilters(
+    showAvailableNow: Boolean,
+    onAvailableNowChipClick: () -> Unit,
+    onCanReserveChipClick: () -> Unit,
+    showCanReserve: Boolean,
+    onTextFieldChange: (String) -> Unit,
+    textFieldValue: String
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        SearchBar(
+            value = textFieldValue,
+            label = "Filtra",
+            onDone = {},
+            onValueChange = onTextFieldChange
+        )
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            FilterChipComponent(
+                text = "Disponible Ara",
+                selected = showAvailableNow,
+                statusColor = StatusColor.GREEN,
+                onClick = { onAvailableNowChipClick() }
+            )
+            FilterChipComponent(
+                text = "Es pot reservar",
+                selected = showCanReserve,
+                statusColor = StatusColor.YELLOW,
+                onClick = { onCanReserveChipClick() }
+            )
+        }
+    }
 }
 
 

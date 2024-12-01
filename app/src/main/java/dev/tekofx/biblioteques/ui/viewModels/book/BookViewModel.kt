@@ -46,6 +46,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     val results = MutableLiveData<SearchResults<out SearchResult>>()
     val currentBook = MutableLiveData<Book?>()
     val bookCopies = MutableLiveData<List<BookCopy>>(emptyList())
+    private val _bookCopies = MutableLiveData<List<BookCopy>>(emptyList())
 
     // Any word, title, author...
     val selectedSearchType = mutableStateOf(searchTypes.first())
@@ -77,6 +78,8 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     var availableNowChip by mutableStateOf(false)
         private set
     var canReserveChip by mutableStateOf(false)
+        private set
+    var bookCopiesTextFieldValue by mutableStateOf("")
         private set
 
     // Errors
@@ -242,7 +245,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                         Throwable("No response ${response.code()}")
                     )
 
-
+                _bookCopies.postValue(responseBody.bookCopies)
                 book.bookCopies = responseBody.bookCopies
                 bookCopies.postValue(responseBody.bookCopies)
                 currentBook.postValue(book)
@@ -346,8 +349,24 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
         bookCopies.postValue(filteredBookCopies)
     }
 
-    fun removeCurrentBook() {
+    fun onTextFieldValueChange(value: String) {
+        bookCopiesTextFieldValue = value
+
+        if (_bookCopies.value == null) {
+            return
+        }
+
+        val filteredBookCopies = _bookCopies.value!!.filter {
+            it.location.contains(value, ignoreCase = true)
+        }
+
+        bookCopies.postValue(filteredBookCopies)
+    }
+
+
+    fun resetCurrentBook() {
         currentBook.postValue(null)
+        bookCopies.postValue(emptyList())
     }
 
     fun setCanNavigateToResults(value: Boolean) {

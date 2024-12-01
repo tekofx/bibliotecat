@@ -65,7 +65,7 @@ fun BookResultsScreen(
     LaunchedEffect(key1 = 1) {
         Log.d("BookResultsScreen", "LaunchedEffect. Query: $query searchType: $searchType")
         bookViewModel.setCanNavigateToResults(false)
-        bookViewModel.removeCurrentBook()
+        bookViewModel.resetCurrentBook()
     }
     Scaffold(
         modifier = Modifier
