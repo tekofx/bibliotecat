@@ -6,14 +6,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.outlined.AccountBox
@@ -28,11 +31,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -48,6 +60,7 @@ import dev.tekofx.biblioteques.ui.components.animations.SlideVertically
 import dev.tekofx.biblioteques.ui.components.input.SearchBar
 import dev.tekofx.biblioteques.ui.theme.Typography
 import dev.tekofx.biblioteques.ui.viewModels.book.BookViewModel
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -61,6 +74,7 @@ fun BookScreen(
     val isLoadingBookCopies by bookViewModel.isLoadingBookCopies.observeAsState(false)
     val isLoadingBookDetails by bookViewModel.isLoadingBookDetails.observeAsState(false)
     val bookCopies by bookViewModel.bookCopies.observeAsState(emptyList())
+    val listState = rememberLazyListState()
 
 
     // Get book info
@@ -77,63 +91,74 @@ fun BookScreen(
     if (currentBook == null) {
         Text(text = "No es puc trobar el llibre", textAlign = TextAlign.Justify)
     } else {
-        Column(
+        LazyColumn(
+            state = listState,
             modifier = Modifier
                 .padding(horizontal = 10.dp)
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState()),
+                .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            AsyncImage(
-                model = currentBook!!.image,
-                contentDescription = null,
-                placeholder = rememberVectorPainter(image = Icons.Outlined.AccountBox),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(2F)
-                    .clip(RoundedCornerShape(10.dp)),
-                contentScale = ContentScale.Crop
-            )
-
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                tonalElevation = 20.dp,
-                shape = RoundedCornerShape(10.dp)
-            ) {
-                Column(
+            item {
+                AsyncImage(
+                    model = currentBook!!.image,
+                    contentDescription = null,
+                    placeholder = rememberVectorPainter(image = Icons.Outlined.AccountBox),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                        .aspectRatio(2F)
+                        .clip(RoundedCornerShape(10.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            }
+            item {
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    tonalElevation = 20.dp,
+                    shape = RoundedCornerShape(10.dp)
                 ) {
-                    Text(
-                        text = currentBook!!.title,
-                        style = Typography.titleLarge,
-                    )
-                    Text(text = currentBook!!.author, style = Typography.titleMedium)
-                    currentBook!!.publication?.let {
-                        HorizontalDivider(thickness = 2.dp)
-                        Text(text = "Publicació")
-                        Text(text = it, style = Typography.titleMedium)
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Text(
+                            text = currentBook!!.title,
+                            style = Typography.titleLarge,
+                        )
+                        Text(text = currentBook!!.author, style = Typography.titleMedium)
+                        currentBook!!.publication?.let {
+                            HorizontalDivider(thickness = 2.dp)
+                            Text(text = "Publicació")
+                            Text(text = it, style = Typography.titleMedium)
+                        }
                     }
                 }
             }
-            BookDetailsSegment(currentBook!!.bookDetails, isLoadingBookDetails)
-            BookCopiesSegment(
-                noBookCopies = currentBook!!.bookCopies.isEmpty(),
-                bookCopies = bookCopies,
-                showLoading = isLoadingBookCopies,
-                show = !(isLoadingBookCopies || isLoadingBookDetails),
-                onBookCopyClick = {
-                    navController.navigate(NavigateDestinations.LIBRARY_DETAILS_ROUTE + "?libraryUrl=${it}")
-                },
-                showAvailableNow = bookViewModel.availableNowChip,
-                showCanReserve = bookViewModel.canReserveChip,
-                onAvailableNowChipClick = { bookViewModel.onAvailableNowChipClick() },
-                onCanReserveChipClick = { bookViewModel.onCanReserveChipClick() },
-                onTextFieldChange = { bookViewModel.onTextFieldValueChange(it) },
-                textFieldValue = bookViewModel.bookCopiesTextFieldValue
-            )
+            item {
+                BookDetailsSegment(currentBook!!.bookDetails, isLoadingBookDetails)
+            }
+            item {
+                BookCopiesSegment(
+                    noBookCopies = currentBook!!.bookCopies.isEmpty(),
+                    bookCopies = bookCopies,
+                    showLoading = isLoadingBookCopies,
+                    show = !(isLoadingBookCopies || isLoadingBookDetails),
+                    onBookCopyClick = {
+                        navController.navigate(NavigateDestinations.LIBRARY_DETAILS_ROUTE + "?libraryUrl=${it}")
+                    },
+                    showAvailableNow = bookViewModel.availableNowChip,
+                    showCanReserve = bookViewModel.canReserveChip,
+                    onAvailableNowChipClick = { bookViewModel.onAvailableNowChipClick() },
+                    onCanReserveChipClick = { bookViewModel.onCanReserveChipClick() },
+                    onTextFieldChange = { bookViewModel.onTextFieldValueChange(it) },
+                    textFieldValue = bookViewModel.bookCopiesTextFieldValue,
+                    listState = listState
+                )
+            }
+            item {
+                Spacer(modifier = Modifier.height(400.dp))
+            }
         }
     }
 }
@@ -143,7 +168,6 @@ fun BookScreen(
 fun BookDetailsSegment(
     bookDetails: BookDetails?,
     isLoading: Boolean
-
 ) {
     if (isLoading) {
         Box(
@@ -196,7 +220,8 @@ fun BookCopiesSegment(
     onAvailableNowChipClick: () -> Unit,
     onBookCopyClick: (libraryUrl: String) -> Unit,
     onTextFieldChange: (String) -> Unit,
-    textFieldValue: String
+    textFieldValue: String,
+    listState: LazyListState
 ) {
     if (showLoading) {
         Box(
@@ -215,6 +240,7 @@ fun BookCopiesSegment(
             verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
             Text(
                 text = "Exemplars",
                 modifier = Modifier.fillMaxWidth(),
@@ -222,6 +248,7 @@ fun BookCopiesSegment(
                 style = Typography.titleLarge,
             )
             if (noBookCopies) {
+
                 Text("No hi ha exemplars")
             } else {
 
@@ -231,7 +258,8 @@ fun BookCopiesSegment(
                     onAvailableNowChipClick = onAvailableNowChipClick,
                     onCanReserveChipClick = onCanReserveChipClick,
                     onTextFieldChange = onTextFieldChange,
-                    textFieldValue = textFieldValue
+                    textFieldValue = textFieldValue,
+                    listState = listState
                 )
 
                 bookCopies.forEach { bookCopy: BookCopy ->
@@ -257,8 +285,12 @@ fun BookCopiesFilters(
     onCanReserveChipClick: () -> Unit,
     showCanReserve: Boolean,
     onTextFieldChange: (String) -> Unit,
-    textFieldValue: String
+    textFieldValue: String,
+    listState: LazyListState
 ) {
+    val focusRequester = remember { FocusRequester() }
+    val coroutineScope = rememberCoroutineScope()
+    var textFieldY by remember { mutableFloatStateOf(0f) }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -266,7 +298,20 @@ fun BookCopiesFilters(
             value = textFieldValue,
             label = "Filtra",
             onDone = {},
-            onValueChange = onTextFieldChange
+            onValueChange = onTextFieldChange,
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(focusRequester)
+                .onGloballyPositioned { coordinates ->
+                    textFieldY = coordinates.positionInRoot().y
+                }
+                .onFocusChanged { focusState ->
+                    if (focusState.isFocused) {
+                        coroutineScope.launch {
+                            listState.animateScrollToItem(3)
+                        }
+                    }
+                },
         )
         Row(
             horizontalArrangement = Arrangement.spacedBy(10.dp),
