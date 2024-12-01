@@ -242,8 +242,9 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                         Throwable("No response ${response.code()}")
                     )
 
-                val bookCopies = responseBody.bookCopies
-                book.bookCopies = bookCopies
+
+                book.bookCopies = responseBody.bookCopies
+                bookCopies.postValue(responseBody.bookCopies)
                 currentBook.postValue(book)
                 isLoadingBookCopies.postValue(false)
             }
