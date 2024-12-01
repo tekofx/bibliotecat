@@ -327,40 +327,37 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
      * If both are true, it will show all with both states
      */
     private fun filterBookCopies() {
-        val filteredBookCopies = if (!availableNowChip && !canReserveChip) {
-            // Both chips are off, return all book copies
-            currentBook.value?.bookCopies ?: emptyList()
-        } else {
-            currentBook.value?.bookCopies?.filter { bookCopy ->
-                val matchesAvailableNow = if (availableNowChip) {
-                    bookCopy.availability == BookCopyAvailability.AVAILABLE
-                } else {
-                    false
-                }
-                val matchesCanReserve = if (canReserveChip) {
-                    bookCopy.availability == BookCopyAvailability.CAN_RESERVE
-                } else {
-                    false
-                }
-                matchesAvailableNow || matchesCanReserve
-            } ?: emptyList()
-        }
+        val filteredBookCopies =
+            if (!availableNowChip && !canReserveChip && bookCopiesTextFieldValue.isEmpty()) {
+                // Both chips are off and the text field is empty, return all book copies
+                _bookCopies.value!!
+            } else {
+                _bookCopies.value?.filter { bookCopy ->
+                    val matchesAvailableNow = if (availableNowChip) {
+                        bookCopy.availability == BookCopyAvailability.AVAILABLE
+                    } else {
+                        true // Consider all books if the chip is off
+                    }
+                    val matchesCanReserve = if (canReserveChip) {
+                        bookCopy.availability == BookCopyAvailability.CAN_RESERVE
+                    } else {
+                        true // Consider all books if the chip is off
+                    }
+
+                    val matchesLocation =
+                        bookCopy.location.contains(bookCopiesTextFieldValue, ignoreCase = true)
+
+                    matchesAvailableNow && matchesCanReserve && matchesLocation
+                } ?: emptyList()
+            }
 
         bookCopies.postValue(filteredBookCopies)
     }
 
+
     fun onTextFieldValueChange(value: String) {
         bookCopiesTextFieldValue = value
-
-        if (_bookCopies.value == null) {
-            return
-        }
-
-        val filteredBookCopies = _bookCopies.value!!.filter {
-            it.location.contains(value, ignoreCase = true)
-        }
-
-        bookCopies.postValue(filteredBookCopies)
+        filterBookCopies()
     }
 
 
