@@ -16,9 +16,9 @@ sealed class BottomNavigationItems(
         NavigateDestinations.LIBRARIES_ROUTE
     )
 
-    object Books : BottomNavigationItems(
+    object Catalog : BottomNavigationItems(
         IconResource.fromDrawableResource(R.drawable.book),
-        "Llibres",
+        "Catàleg",
         NavigateDestinations.BOOK_SEARCH_ROUTE
     )
 
