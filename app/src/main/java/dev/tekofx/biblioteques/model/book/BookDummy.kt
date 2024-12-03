@@ -8,7 +8,7 @@ val bookDummy = Book(
     author = "Sanderson, Brandon",
     image = "",
     publication = "Barcelona : Nova, junio 2024",
-    temporalUrl = "test",
+    url = "test",
     bookCopies = arrayListOf(
         BookCopy(
             location = " ST. POL DE MAR",

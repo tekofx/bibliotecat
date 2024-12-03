@@ -1,6 +1,8 @@
 package dev.tekofx.biblioteques.ui.screens.book
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,10 +23,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,14 +49,17 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
+import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.model.StatusColor
 import dev.tekofx.biblioteques.model.book.BookCopy
 import dev.tekofx.biblioteques.model.book.BookDetails
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
+import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.InfoCard
 import dev.tekofx.biblioteques.ui.components.StatusBadge
 import dev.tekofx.biblioteques.ui.components.animations.SlideDirection
@@ -75,7 +82,7 @@ fun BookScreen(
     val isLoadingBookDetails by bookViewModel.isLoadingBookDetails.observeAsState(false)
     val bookCopies by bookViewModel.bookCopies.observeAsState(emptyList())
     val listState = rememberLazyListState()
-
+    val context = LocalContext.current
 
     // Get book info
     LaunchedEffect(key1 = null) {
@@ -88,76 +95,102 @@ fun BookScreen(
     }
 
 
-    if (currentBook == null) {
-        Text(text = "No es puc trobar el llibre", textAlign = TextAlign.Justify)
-    } else {
-        LazyColumn(
-            state = listState,
-            modifier = Modifier
-                .padding(horizontal = 10.dp)
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            item {
-                AsyncImage(
-                    model = currentBook!!.image,
-                    contentDescription = null,
-                    placeholder = rememberVectorPainter(image = Icons.Outlined.AccountBox),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(2F)
-                        .clip(RoundedCornerShape(10.dp)),
-                    contentScale = ContentScale.Crop
+    Scaffold(
+        floatingActionButton = {
+            if (currentBook != null) {
+                ExtendedFloatingActionButton(
+                    onClick = {
+                        val intent =
+                            Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse("https://aladi.diba.cat/${currentBook!!.url}")
+                            )
+                        context.startActivity(intent)
+                    },
+                    text = { Text("Veure en Aladi") },
+                    icon = {
+                        Icon(
+                            IconResource.fromDrawableResource(R.drawable.public_icon)
+                                .asPainterResource(),
+                            contentDescription = "web"
+                        )
+                    }
+
                 )
             }
-            item {
-                Surface(
-                    modifier = Modifier.fillMaxWidth(),
-                    tonalElevation = 20.dp,
-                    shape = RoundedCornerShape(10.dp)
-                ) {
-                    Column(
+        }
+    ) {
+        if (currentBook == null) {
+            Text(text = "No es puc trobar el llibre", textAlign = TextAlign.Justify)
+        } else {
+            LazyColumn(
+                state = listState,
+                modifier = Modifier
+                    .padding(horizontal = 10.dp)
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                item {
+                    AsyncImage(
+                        model = currentBook!!.image,
+                        contentDescription = null,
+                        placeholder = rememberVectorPainter(image = Icons.Outlined.AccountBox),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(10.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                            .aspectRatio(2F)
+                            .clip(RoundedCornerShape(10.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+                item {
+                    Surface(
+                        modifier = Modifier.fillMaxWidth(),
+                        tonalElevation = 20.dp,
+                        shape = RoundedCornerShape(10.dp)
                     ) {
-                        Text(
-                            text = currentBook!!.title,
-                            style = Typography.titleLarge,
-                        )
-                        Text(text = currentBook!!.author, style = Typography.titleMedium)
-                        currentBook!!.publication?.let {
-                            HorizontalDivider(thickness = 2.dp)
-                            Text(text = "Publicació")
-                            Text(text = it, style = Typography.titleMedium)
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(10.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            Text(
+                                text = currentBook!!.title,
+                                style = Typography.titleLarge,
+                            )
+                            Text(text = currentBook!!.author, style = Typography.titleMedium)
+                            currentBook!!.publication?.let {
+                                HorizontalDivider(thickness = 2.dp)
+                                Text(text = "Publicació")
+                                Text(text = it, style = Typography.titleMedium)
+                            }
                         }
                     }
                 }
-            }
-            item {
-                BookDetailsSegment(currentBook!!.bookDetails, isLoadingBookDetails)
-            }
-            item {
-                BookCopiesSegment(
-                    noBookCopies = currentBook!!.bookCopies.isEmpty(),
-                    bookCopies = bookCopies,
-                    showLoading = isLoadingBookCopies,
-                    show = !(isLoadingBookCopies || isLoadingBookDetails),
-                    onBookCopyClick = {
-                        navController.navigate(NavigateDestinations.LIBRARY_DETAILS_ROUTE + "?libraryUrl=${it}")
-                    },
-                    showAvailableNow = bookViewModel.availableNowChip,
-                    showCanReserve = bookViewModel.canReserveChip,
-                    onAvailableNowChipClick = { bookViewModel.onAvailableNowChipClick() },
-                    onCanReserveChipClick = { bookViewModel.onCanReserveChipClick() },
-                    onTextFieldChange = { bookViewModel.onTextFieldValueChange(it) },
-                    textFieldValue = bookViewModel.bookCopiesTextFieldValue,
-                    listState = listState
-                )
-            }
-            item {
-                Spacer(modifier = Modifier.height(400.dp))
+                item {
+                    BookDetailsSegment(currentBook!!.bookDetails, isLoadingBookDetails)
+                }
+                item {
+                    BookCopiesSegment(
+                        noBookCopies = currentBook!!.bookCopies.isEmpty(),
+                        bookCopies = bookCopies,
+                        showLoading = isLoadingBookCopies,
+                        show = !(isLoadingBookCopies || isLoadingBookDetails),
+                        onBookCopyClick = {
+                            navController.navigate(NavigateDestinations.LIBRARY_DETAILS_ROUTE + "?libraryUrl=${it}")
+                        },
+                        showAvailableNow = bookViewModel.availableNowChip,
+                        showCanReserve = bookViewModel.canReserveChip,
+                        onAvailableNowChipClick = { bookViewModel.onAvailableNowChipClick() },
+                        onCanReserveChipClick = { bookViewModel.onCanReserveChipClick() },
+                        onTextFieldChange = { bookViewModel.onTextFieldValueChange(it) },
+                        textFieldValue = bookViewModel.bookCopiesTextFieldValue,
+                        listState = listState
+                    )
+                }
+                item {
+                    Spacer(modifier = Modifier.height(400.dp))
+                }
             }
         }
     }

@@ -9,11 +9,9 @@ class Book(
     val image: String,
     val publication: String?,
     var bookCopies: List<BookCopy>,
-    val temporalUrl: String,
+    val url: String,
     var bookDetails: BookDetails? = null
 ) {
-
-
     constructor(bookResult: BookResult) : this(
         id = bookResult.id,
         title = bookResult.title,
@@ -21,7 +19,7 @@ class Book(
         image = bookResult.image,
         publication = bookResult.publication,
         bookCopies = emptyList(),
-        temporalUrl = bookResult.url,
+        url = bookResult.url,
         bookDetails = null
     )
 

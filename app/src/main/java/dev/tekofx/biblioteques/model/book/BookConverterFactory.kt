@@ -258,7 +258,7 @@ class BookConverterFactory : Converter.Factory() {
             author = author,
             image = image,
             publication = publication,
-            temporalUrl = permanentLink,
+            url = permanentLink,
             bookDetails = bookDetails,
             bookCopies = bookCopies
         )
@@ -310,11 +310,6 @@ class BookConverterFactory : Converter.Factory() {
     private fun constructBookDetails(doc: Document): BookDetails {
         Log.d("BookConverterFactory", "constructBookDetails")
 
-
-        val authorElement =
-            doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Autor/Artista" }
-                ?.nextElementSibling()
-
         val editionElement =
             doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Edició" }
                 ?.nextElementSibling()
@@ -347,7 +342,6 @@ class BookConverterFactory : Converter.Factory() {
         val permanentUrl = permanentUrlElement?.attr("href")
         val collection = collectionElement?.text()
         val topic = topicElement?.text()
-        val authorUrl = authorElement?.attr("href")
 
 
         var bookCopiesUrl: String? = null
@@ -365,10 +359,8 @@ class BookConverterFactory : Converter.Factory() {
             description = description,
             synopsis = synopsis,
             isbn = isbn,
-            permanentUrl = permanentUrl,
             collection = collection,
             topic = topic,
-            authorUrl = authorUrl,
             bookCopiesUrl = bookCopiesUrl
         )
     }
