@@ -105,7 +105,7 @@ fun AutoCompleteSelectBar(
             Card(
                 modifier = Modifier
                     .width(textFieldSize.width.dp),
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(0.dp)
             ) {
                 LazyColumn(
                     modifier = Modifier.heightIn(max = 200.dp),
