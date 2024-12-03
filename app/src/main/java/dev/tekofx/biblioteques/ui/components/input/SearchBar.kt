@@ -12,6 +12,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 
@@ -24,6 +25,7 @@ fun SearchBar(
     label: String = "",
     interactionSource: MutableInteractionSource? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
+    shape: Shape = RoundedCornerShape(50.dp)
 ) {
     TextField(
         modifier = modifier,
@@ -40,7 +42,7 @@ fun SearchBar(
         singleLine = true,
         trailingIcon = trailingIcon,
         interactionSource = interactionSource,
-        shape = RoundedCornerShape(50.dp),
+        shape = shape,
         label = { Text(text = label) }
     )
 }
