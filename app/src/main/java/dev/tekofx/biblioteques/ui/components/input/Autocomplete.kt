@@ -14,7 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.KeyboardArrowDown
+import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -30,6 +30,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import dev.tekofx.biblioteques.ui.components.AccordionArrow
 import dev.tekofx.biblioteques.ui.components.input.SearchBar
 
 
@@ -79,11 +80,21 @@ fun AutoCompleteSelectBar(
                 },
             label = "Municipi",
             trailingIcon = {
-                Icon(
-                    modifier = Modifier.size(24.dp),
-                    imageVector = Icons.Rounded.KeyboardArrowDown,
-                    contentDescription = "arrow",
-                )
+
+                if (selectedEntry.isNotEmpty()) {
+                    Icon(
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clickable {
+                                onSelectedEntry("")
+                            },
+                        imageVector = Icons.Rounded.Clear,
+                        contentDescription = "clear",
+
+                        )
+                } else {
+                    AccordionArrow(expanded)
+                }
             }
         )
 
