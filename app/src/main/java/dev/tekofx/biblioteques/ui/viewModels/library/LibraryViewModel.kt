@@ -7,6 +7,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.fleeksoft.ksoup.Ksoup
+import com.fleeksoft.ksoup.network.parseGetRequestBlocking
 import dev.tekofx.biblioteques.dto.LibraryResponse
 import dev.tekofx.biblioteques.model.library.Library
 import dev.tekofx.biblioteques.repository.LibraryRepository
@@ -46,6 +48,7 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
         getLibraries()
     }
 
+
     /**
      * Gets a library from [_libraries]. It uses a pointId or a libraryUrl
      * @param pointId
@@ -57,7 +60,9 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
             "getLibrary called with pointId: $pointId"
         )
 
-        val library: Library? = when {
+        var redirectedUrl = ""
+
+        var library: Library? = when {
             pointId != null -> _libraries.value?.find { library: Library -> library.id == pointId }
             libraryUrl != null -> _libraries.value?.find { library: Library ->
                 library.bibliotecaVirtualUrl?.contains(
@@ -69,6 +74,36 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
             else -> {
                 null
             }
+        }
+
+        //TODO: Improve the implementation
+
+        /**
+         * Sometimes the URL in a BookCopy is not the same as its corresponding [Library] in [_libraries].
+         * But this the URL can redirect to the correct URL. Check if it redirects
+         */
+        if (library == null && !libraryUrl.isNullOrEmpty()) {
+            val doc =
+                Ksoup.parseGetRequestBlocking("https://bibliotecavirtual.diba.cat/$libraryUrl")
+            redirectedUrl =
+                doc.location()?.replace(Regex("^https?://bibliotecavirtual\\.diba\\.cat/"), "")
+                    ?.removeSuffix("?") ?: ""
+        }
+
+        println(redirectedUrl)
+        println(libraryUrl)
+
+        if (redirectedUrl.isNotEmpty() && redirectedUrl != libraryUrl) {
+            library =
+                _libraries.value?.find { it: Library ->
+                    it.bibliotecaVirtualUrl?.contains(
+                        redirectedUrl
+                    ) == true
+
+                }
+
+            println(library)
+
         }
 
         if (library == null) {
@@ -108,6 +143,7 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
         })
 
     }
+
 
     /**
      * Callback of TextField
