@@ -19,9 +19,9 @@ import dev.tekofx.biblioteques.navigation.currentRoute
 @Composable
 fun BottomNavigationBar(navHostController: NavHostController) {
     val items = listOf(
-        BottomNavigationItems.Item1,
-        BottomNavigationItems.Item2,
-        BottomNavigationItems.Item3
+        BottomNavigationItems.Libraries,
+        BottomNavigationItems.Books,
+        BottomNavigationItems.Tutorial
     )
 
     BottomAppBar(

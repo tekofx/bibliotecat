@@ -10,19 +10,19 @@ sealed class BottomNavigationItems(
     val title: String,
     val path: String
 ) {
-    object Item1 : BottomNavigationItems(
+    object Libraries : BottomNavigationItems(
         IconResource.fromImageVector(Icons.Filled.Home),
         "Biblioteques",
         NavigateDestinations.LIBRARIES_ROUTE
     )
 
-    object Item2 : BottomNavigationItems(
+    object Books : BottomNavigationItems(
         IconResource.fromDrawableResource(R.drawable.book),
         "Llibres",
         NavigateDestinations.BOOK_SEARCH_ROUTE
     )
 
-    object Item3 : BottomNavigationItems(
+    object Tutorial : BottomNavigationItems(
         IconResource.fromDrawableResource(R.drawable.ic_notifications_black_24dp),
         "Tutorial",
         NavigateDestinations.TUTORIAL_SCREEN
