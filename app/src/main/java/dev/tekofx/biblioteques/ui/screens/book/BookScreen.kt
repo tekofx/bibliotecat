@@ -377,6 +377,7 @@ fun BookCopyCard(
         shape = RoundedCornerShape(10.dp),
         onClick = {
             if (bookCopy.bibliotecaVirtualUrl != null) {
+                Log.d("BookScreen", bookCopy.bibliotecaVirtualUrl)
                 onClick(bookCopy.bibliotecaVirtualUrl)
             }
         }

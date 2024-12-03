@@ -53,16 +53,16 @@ class LibraryConverterFactory : Converter.Factory() {
                 val libraryElement = elementsArray.getJSONObject(i)
 
 
-                val imatgeArray = libraryElement.getJSONArray("imatge")
-                val puntId = libraryElement.getString("punt_id")
-                val adrecaNom = libraryElement.getString("adreca_nom")
-                val descripcio = libraryElement.getString("descripcio")
-                val municipiNom =
+                val imageArray = libraryElement.getJSONArray("imatge")
+                val pointId = libraryElement.getString("punt_id")
+                val addressName = libraryElement.getString("adreca_nom")
+                val description = libraryElement.getString("descripcio")
+                val municipalityName =
                     libraryElement.getJSONObject("grup_adreca").getString("municipi_nom")
-                uniqueMunicipiNomValues.add(municipiNom)
-                val adrecaCompleta =
+                uniqueMunicipiNomValues.add(municipalityName)
+                val addressFull =
                     libraryElement.getJSONObject("grup_adreca").getString("adreca_completa")
-                val imatge = if (imatgeArray.length() > 0) imatgeArray.getString(0) else ""
+                val image = if (imageArray.length() > 0) imageArray.getString(0) else ""
                 val emails = jsonArrayToStringArray(libraryElement.getJSONArray("email"))
                 val phones = jsonArrayToStringArray(libraryElement.getJSONArray("telefon_contacte"))
                 val webUrl = libraryElement.getString("url_general")
@@ -70,28 +70,36 @@ class LibraryConverterFactory : Converter.Factory() {
                 // Get bibliotecavirtual.diba.cat url
                 var bibliotecaVirtualUrl: String? = null
                 if (doc != null) {
-
                     val emailsTd = doc.selectFirst("td.email:contains(${emails[0]})")
-                    val nameTd = emailsTd?.siblingElements()?.select("td.name")
-                        ?.firstOrNull()
-                    bibliotecaVirtualUrl = nameTd?.getElementsByTag("a")?.attr("href")
+                    val phonesTd = doc.selectFirst("td.phone:contains(${phones[0]})")
+
+                    val nameTd = emailsTd?.siblingElements()?.select("td.name")?.firstOrNull()
+                        ?: phonesTd?.siblingElements()?.select("td.name")?.firstOrNull()
+
+                    bibliotecaVirtualUrl = nameTd?.selectFirst("a")?.attr("href")
                 }
 
+
+                if (pointId == "biblioteca423232") {
+                    println(emails)
+                    println(phones)
+                    println(bibliotecaVirtualUrl)
+                }
                 // Horaris
                 val (timetableHivern, timetableEstiu) = getTimetables(libraryElement)
 
 
                 val library = Library(
-                    id = puntId,
-                    adrecaNom = adrecaNom,
-                    description = descripcio,
-                    municipality = municipiNom,
-                    address = adrecaCompleta,
+                    id = pointId,
+                    adrecaNom = addressName,
+                    description = description,
+                    municipality = municipalityName,
+                    address = addressFull,
                     bibliotecaVirtualUrl = bibliotecaVirtualUrl,
                     emails = emails,
                     phones = phones,
                     webUrl = webUrl,
-                    image = imatge,
+                    image = image,
                     summerSeasonTimeTable = timetableEstiu,
                     winterTimetable = timetableHivern,
                 )

@@ -86,7 +86,11 @@ fun Navigation(
             val pointId = backStackEntry.arguments!!.getString("pointId")
             val libraryUrl = backStackEntry.arguments!!.getString("libraryUrl")
 
-            LibraryScreen(pointID = pointId, libraryUrl, libraryViewModel)
+            LibraryScreen(
+                pointID = pointId,
+                libraryUrl = libraryUrl,
+                libraryViewModel
+            )
         }
         // Books
         composable(
