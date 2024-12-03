@@ -22,5 +22,11 @@ sealed class BottomNavigationItems(
         NavigateDestinations.BOOK_SEARCH_ROUTE
     )
 
+    object Item3 : BottomNavigationItems(
+        IconResource.fromDrawableResource(R.drawable.ic_notifications_black_24dp),
+        "Tutorial",
+        NavigateDestinations.TUTORIAL_SCREEN
+    )
+
 
 }

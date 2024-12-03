@@ -202,10 +202,10 @@ fun Page2() {
 
         val bullet = "\u2022"
         val messages = listOf(
-            "Veure biblioteques de la pronvíncia de Barcelona",
+            "Veure biblioteques de la província de Barcelona",
             "Filtrar biblioteques per Obert/Tancat, nom de la biblioteca o municipi",
             "Consulta informació sobre una biblioteca, com ara horari o ubicació",
-            "Cerca llibres a Aladí amb una interfície d'usuari bonica",
+            "Cerca llibres i altres recursos a Aladí amb una interfície d'usuari bonica",
         )
 
 
