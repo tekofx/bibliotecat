@@ -18,6 +18,7 @@ import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -52,6 +53,7 @@ fun AutoCompleteSelectBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(heightTextFields)
+
                 .clickable(
                     interactionSource = interactionSource,
                     indication = null,
@@ -95,7 +97,8 @@ fun AutoCompleteSelectBar(
                 } else {
                     AccordionArrow(expanded)
                 }
-            }
+            },
+            shape = if (expanded) TextFieldDefaults.shape else RoundedCornerShape(50.dp)
         )
 
         AnimatedVisibility(visible = expanded) {
