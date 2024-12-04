@@ -78,7 +78,7 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
                 }
             }
         }
-        .combine(_filtersApplied) { libraries, filtersApplied ->
+        .combine(_filtersApplied) { libraries, _ ->
             _filtersApplied.value =
                 _selectedMunicipality.value.isNotEmpty() || _showOnlyOpen.value || _queryText.value.isNotEmpty()
             libraries
@@ -114,8 +114,8 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
             var redirectedUrl = ""
 
             var library: Library? = when {
-                pointId != null -> _libraries.value?.find { library: Library -> library.id == pointId }
-                libraryUrl != null -> _libraries.value?.find { library: Library ->
+                pointId != null -> _libraries.value.find { library: Library -> library.id == pointId }
+                libraryUrl != null -> _libraries.value.find { library: Library ->
                     library.bibliotecaVirtualUrl?.contains(
                         libraryUrl
                     ) == true
