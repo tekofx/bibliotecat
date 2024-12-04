@@ -175,7 +175,7 @@ fun Dot(
 fun Page1() {
     ColumnContainer {
         Text(
-            text = "Welcome to ${stringResource(R.string.app_name)}",
+            text = "Benvingut a ${stringResource(R.string.app_name)}",
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
             style = Typography.headlineLarge,
