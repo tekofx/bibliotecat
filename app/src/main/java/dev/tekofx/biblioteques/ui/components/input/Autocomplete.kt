@@ -40,7 +40,6 @@ fun AutoCompleteSelectBar(
     selectedEntry: String,
     onSelectedEntry: (String) -> Unit,
     entries: List<String>,
-    placeholder: String
 ) {
 
     val heightTextFields by remember { mutableStateOf(55.dp) }
