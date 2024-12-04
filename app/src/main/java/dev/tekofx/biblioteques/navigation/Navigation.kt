@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
@@ -63,6 +64,7 @@ fun Navigation(
         // Libraries
         composable(
             route = NavigateDestinations.LIBRARIES_ROUTE,
+            enterTransition = ::slideInToRight,
             exitTransition = { fadeOut() }
         ) {
             LibrariesScreen(navHostController, libraryViewModel)
@@ -96,7 +98,9 @@ fun Navigation(
         composable(
             route = NavigateDestinations.BOOK_SEARCH_ROUTE,
             popEnterTransition = ::slideInToBottom,
+            enterTransition = ::slideInToLeft,
             exitTransition = {
+                // If Next Screen is not LibrariesScreen
                 if (targetState.destination.route != NavigateDestinations.LIBRARIES_ROUTE) {
                     slideOutOfContainer(
                         AnimatedContentTransitionScope.SlideDirection.Up,
@@ -104,7 +108,10 @@ fun Navigation(
                     )
 
                 } else {
-                    null
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = spring()
+                    )
                 }
             }
         ) {
@@ -151,14 +158,14 @@ fun Navigation(
 fun slideInToTop(scope: AnimatedContentTransitionScope<NavBackStackEntry>): EnterTransition {
     return scope.slideIntoContainer(
         AnimatedContentTransitionScope.SlideDirection.Up,
-        animationSpec = tween(300)
+        animationSpec = spring()
     )
 }
 
 fun slideInToBottom(scope: AnimatedContentTransitionScope<NavBackStackEntry>): EnterTransition {
     return scope.slideIntoContainer(
         AnimatedContentTransitionScope.SlideDirection.Down,
-        animationSpec = tween(300)
+        animationSpec = spring()
     )
 }
 
@@ -167,6 +174,25 @@ fun slideOutToBottom(scope: AnimatedContentTransitionScope<NavBackStackEntry>): 
 
     return scope.slideOutOfContainer(
         AnimatedContentTransitionScope.SlideDirection.Down,
-        animationSpec = tween(300)
+        animationSpec = spring()
     )
 }
+
+fun slideInToLeft(scope: AnimatedContentTransitionScope<NavBackStackEntry>): EnterTransition {
+    Log.d("Navigation", "slideInHorizontally")
+
+    return scope.slideIntoContainer(
+        AnimatedContentTransitionScope.SlideDirection.Left,
+        animationSpec = spring()
+    )
+}
+
+fun slideInToRight(scope: AnimatedContentTransitionScope<NavBackStackEntry>): EnterTransition {
+    Log.d("Navigation", "slideInHorizontally")
+
+    return scope.slideIntoContainer(
+        AnimatedContentTransitionScope.SlideDirection.Right,
+        animationSpec = spring()
+    )
+}
+
