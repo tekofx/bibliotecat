@@ -45,7 +45,6 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
     val queryText = _queryText.asStateFlow()
     private val _showOnlyOpen = MutableStateFlow(false)
     val showOnlyOpen = _showOnlyOpen.asStateFlow()
-
     private val _filtersApplied = MutableStateFlow(false)
     var filtersApplied = _filtersApplied.asStateFlow()
 
