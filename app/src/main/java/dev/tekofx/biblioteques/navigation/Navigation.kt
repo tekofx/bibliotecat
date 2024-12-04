@@ -1,6 +1,5 @@
 package dev.tekofx.biblioteques.navigation
 
-import android.util.Log
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -151,6 +150,7 @@ fun Navigation(
     }
 }
 
+// SlideIn Transitions
 fun slideInToTop(scope: AnimatedContentTransitionScope<NavBackStackEntry>): EnterTransition {
     return scope.slideIntoContainer(
         AnimatedContentTransitionScope.SlideDirection.Up,
@@ -163,27 +163,29 @@ fun slideInToBottom(scope: AnimatedContentTransitionScope<NavBackStackEntry>): E
     )
 }
 
-fun slideOutToBottom(scope: AnimatedContentTransitionScope<NavBackStackEntry>): ExitTransition {
-    Log.d("Navigation", "slideOutToBottom")
-
-    return scope.slideOutOfContainer(
-        AnimatedContentTransitionScope.SlideDirection.Down,
-    )
-}
-
-fun slideInToLeft(scope: AnimatedContentTransitionScope<NavBackStackEntry>): EnterTransition {
-    Log.d("Navigation", "slideInHorizontally")
-
-    return scope.slideIntoContainer(
-        AnimatedContentTransitionScope.SlideDirection.Left,
-    )
-}
 
 fun slideInToRight(scope: AnimatedContentTransitionScope<NavBackStackEntry>): EnterTransition {
-    Log.d("Navigation", "slideInHorizontally")
-
     return scope.slideIntoContainer(
         AnimatedContentTransitionScope.SlideDirection.Right,
     )
 }
 
+fun slideInToLeft(scope: AnimatedContentTransitionScope<NavBackStackEntry>): EnterTransition {
+    return scope.slideIntoContainer(
+        AnimatedContentTransitionScope.SlideDirection.Left,
+    )
+}
+
+// SlideOut Transitions
+
+fun slideOutToTop(scope: AnimatedContentTransitionScope<NavBackStackEntry>): ExitTransition {
+    return scope.slideOutOfContainer(
+        AnimatedContentTransitionScope.SlideDirection.Up,
+    )
+}
+
+fun slideOutToBottom(scope: AnimatedContentTransitionScope<NavBackStackEntry>): ExitTransition {
+    return scope.slideOutOfContainer(
+        AnimatedContentTransitionScope.SlideDirection.Down,
+    )
+}
