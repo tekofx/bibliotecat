@@ -133,8 +133,14 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
                 call: Call<LibraryResponse>,
                 response: Response<LibraryResponse>
             ) {
+                val responseBody = response.body() ?: return onFailure(
+                    call,
+                    Throwable("Response Body null")
+                )
+                val municipalitiesResponse = responseBody.municipalities.plus("Barcelona")
+
                 libraries.postValue(response.body()?.elements)
-                municipalities.postValue(response.body()?.municipalities)
+                municipalities.postValue(municipalitiesResponse)
                 _libraries.postValue(response.body()?.elements)
                 isLoading.postValue(false)
                 errorMessage.postValue("")
@@ -199,7 +205,9 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
             } else {
                 true
             }
-            val matchesMunicipality = if (selectedMunicipality.isNotEmpty()) {
+            val matchesMunicipality = if (selectedMunicipality == "Barcelona") {
+                library.municipality.contains("Barcelona")
+            } else if (selectedMunicipality.isNotEmpty()) {
                 selectedMunicipality == library.municipality
             } else {
                 true
