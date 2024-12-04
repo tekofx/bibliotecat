@@ -5,7 +5,7 @@ class BookDetails(
     val description: String?,
     val synopsis: String?,
     val isbn: String?,
-    val collection: String?,
+    val collections: List<String>,
     val topic: String?,
     val bookCopiesUrl: String?,
 )

@@ -115,7 +115,7 @@ class BookConverterFactoryTest {
             assertEquals(bookDetails.isbn, "9788419260284")
             assertEquals(bookDetails.topic, "Novel·les fantàstiques")
             assertEquals(bookDetails.edition, "Primera edición")
-            assertEquals(bookDetails.collection, "Waw & Wayne ; 1")
+            assertEquals(bookDetails.collections, "Waw & Wayne ; 1")
             assertEquals(
                 bookDetails.synopsis,
                 "Han transcurrido trescientos años desde los acontecimientos de la Triología Original Mistborn. Kelsier y Vin han pasado a formar parte de la historia y la mitología, y el mundo de Scadrial se halla a las puertas de la modernidad. Sin embargo, en las tierras fronterizas conocidas como los Áridos, las antiguas magias todavía son una herramienta crucial para quienes defienden el orden y la justicia."

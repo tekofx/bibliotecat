@@ -169,7 +169,6 @@ fun SearchBottomSheet(
                     entries = municipalities,
                     onSelectedEntry = onSelectedMunicipality,
                     selectedEntry = selectedMunicipality,
-                    placeholder = "Municipi"
                 )
                 Row(
                     verticalAlignment = Alignment.CenterVertically,

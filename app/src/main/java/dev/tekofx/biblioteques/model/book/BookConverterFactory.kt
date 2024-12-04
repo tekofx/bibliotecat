@@ -324,7 +324,7 @@ class BookConverterFactory : Converter.Factory() {
         val isbnElement =
             doc.select("td.bibInfoLabel").firstOrNull { it.text() == "ISBN" }
                 ?.nextElementSibling()
-        val collectionElement =
+        val collectionsElement =
             doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Col·lecció" }
                 ?.nextElementSibling()
 
@@ -340,7 +340,7 @@ class BookConverterFactory : Converter.Factory() {
         val synopsis = synopsisElement?.text()
         val isbn = isbnElement?.text()
         val permanentUrl = permanentUrlElement?.attr("href")
-        val collection = collectionElement?.text()
+        val collections = collectionsElement?.select("a")?.map { it.text() } ?: emptyList()
         val topic = topicElement?.text()
 
 
@@ -359,7 +359,7 @@ class BookConverterFactory : Converter.Factory() {
             description = description,
             synopsis = synopsis,
             isbn = isbn,
-            collection = collection,
+            collections = collections,
             topic = topic,
             bookCopiesUrl = bookCopiesUrl
         )
