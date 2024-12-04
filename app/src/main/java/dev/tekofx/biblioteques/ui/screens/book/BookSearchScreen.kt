@@ -22,8 +22,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -33,7 +33,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import dev.tekofx.biblioteques.model.EmptyResults
 import dev.tekofx.biblioteques.model.SelectItem
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.IconResource
@@ -50,17 +49,17 @@ fun BookSearchScreen(
     navHostController: NavHostController, bookViewModel: BookViewModel
 ) {
 
-    val results by bookViewModel.results.observeAsState(
-        EmptyResults()
-    )
-    val searchScopes by bookViewModel.searchScopes.observeAsState(emptyList())
+    val results by bookViewModel.results.collectAsState()
+    val searchScopes by bookViewModel.searchScopes.collectAsState()
+
+    val queryText by bookViewModel.queryText.collectAsState()
 
     var selectedSearchScope by bookViewModel.selectedSearchScope
     var selectedSearchType by bookViewModel.selectedSearchType
 
-    val isLoadingSearch by bookViewModel.isLoadingSearch.observeAsState(false)
-    val search by bookViewModel.canNavigateToResults.observeAsState(false)
-    val errorMessage by bookViewModel.errorMessage.observeAsState()
+    val isLoadingSearch by bookViewModel.isLoadingSearch.collectAsState()
+    val search by bookViewModel.canNavigateToResults.collectAsState()
+    val errorMessage by bookViewModel.errorMessage.collectAsState()
 
     LaunchedEffect(search) {
         if (search) {
@@ -72,8 +71,8 @@ fun BookSearchScreen(
 
     Scaffold() {
         BookSearch(errorMessage = errorMessage,
-            onSearchTextChanged = { bookViewModel.onSearchTextChanged(it) },
-            queryText = bookViewModel.queryText,
+            onSearchTextChanged = bookViewModel::onSearchTextChanged,
+            queryText = queryText,
             isLoading = isLoadingSearch,
             selectedSearchType = selectedSearchType,
             onSearch = { bookViewModel.search() },

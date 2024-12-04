@@ -33,8 +33,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -73,10 +73,15 @@ fun BookScreen(
     bookViewModel: BookViewModel
 ) {
 
-    val currentBook by bookViewModel.currentBook.observeAsState(null)
-    val isLoadingBookCopies by bookViewModel.isLoadingBookCopies.observeAsState(false)
-    val isLoadingBookDetails by bookViewModel.isLoadingBookDetails.observeAsState(false)
-    val bookCopies by bookViewModel.bookCopies.observeAsState(emptyList())
+    val currentBook by bookViewModel.currentBook.collectAsState()
+    val availableNowChip by bookViewModel.availableNowChip.collectAsState()
+    val canReserveChip by bookViewModel.canReserveChip.collectAsState()
+    val bookCopiesTextFieldValue by bookViewModel.bookCopiesTextFieldValue.collectAsState()
+
+
+    val isLoadingBookCopies by bookViewModel.isLoadingBookCopies.collectAsState()
+    val isLoadingBookDetails by bookViewModel.isLoadingBookDetails.collectAsState()
+    val bookCopies by bookViewModel.bookCopies.collectAsState()
     val listState = rememberLazyListState()
     val context = LocalContext.current
 
@@ -175,12 +180,12 @@ fun BookScreen(
                         onBookCopyClick = {
                             navController.navigate(NavigateDestinations.LIBRARY_DETAILS_ROUTE + "?libraryUrl=${it}")
                         },
-                        showAvailableNow = bookViewModel.availableNowChip,
-                        showCanReserve = bookViewModel.canReserveChip,
-                        onAvailableNowChipClick = { bookViewModel.onAvailableNowChipClick() },
-                        onCanReserveChipClick = { bookViewModel.onCanReserveChipClick() },
-                        onTextFieldChange = { bookViewModel.onTextFieldValueChange(it) },
-                        textFieldValue = bookViewModel.bookCopiesTextFieldValue,
+                        showAvailableNow = availableNowChip,
+                        showCanReserve = canReserveChip,
+                        onAvailableNowChipClick = bookViewModel::onAvailableNowChipClick,
+                        onCanReserveChipClick = bookViewModel::onCanReserveChipClick,
+                        onTextFieldChange = bookViewModel::onTextFieldValueChange,
+                        textFieldValue = bookCopiesTextFieldValue,
                         listState = listState
                     )
                 }

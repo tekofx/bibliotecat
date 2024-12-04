@@ -3,16 +3,15 @@ package dev.tekofx.biblioteques.ui.viewModels.book
 import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.dto.BookResponse
 import dev.tekofx.biblioteques.model.BookResult
 import dev.tekofx.biblioteques.model.BookResults
+import dev.tekofx.biblioteques.model.EmptyResults
 import dev.tekofx.biblioteques.model.SearchResult
 import dev.tekofx.biblioteques.model.SearchResults
 import dev.tekofx.biblioteques.model.SelectItem
@@ -22,6 +21,11 @@ import dev.tekofx.biblioteques.model.book.BookCopyAvailability
 import dev.tekofx.biblioteques.model.book.BookDetails
 import dev.tekofx.biblioteques.repository.BookRepository
 import dev.tekofx.biblioteques.ui.IconResource
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -42,11 +46,15 @@ val searchTypes = listOf(
 
 class BookViewModel(private val repository: BookRepository) : ViewModel() {
     // Data
-    val searchScopes = MutableLiveData<List<SelectItem>>()
-    val results = MutableLiveData<SearchResults<out SearchResult>>()
-    val currentBook = MutableLiveData<Book?>()
-    val bookCopies = MutableLiveData<List<BookCopy>>(emptyList())
-    private val _bookCopies = MutableLiveData<List<BookCopy>>(emptyList())
+    val searchScopes = MutableStateFlow<List<SelectItem>>(emptyList())
+
+    private val _results = MutableStateFlow<SearchResults<out SearchResult>>(EmptyResults())
+    val results = _results.asStateFlow()
+    private val _currentBook = MutableStateFlow<Book?>(null)
+    val currentBook = _currentBook.asStateFlow()
+
+
+    private val _bookCopies = MutableStateFlow<List<BookCopy>>(emptyList())
 
     // Any word, title, author...
     val selectedSearchType = mutableStateOf(searchTypes.first())
@@ -62,35 +70,66 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
 
 
     // Loaders
-    val isLoadingSearch = MutableLiveData(false) // Navigating to BookResultsScreen
-    val isLoadingResults = MutableLiveData(false) // Loading results in BookResultsScreen
-    val isLoadingNextPageResults = MutableLiveData(false) // Loading next page of results
-    val isLoadingBookDetails = MutableLiveData(false)
-    val isLoadingBookCopies = MutableLiveData(false)
+    val isLoadingSearch = MutableStateFlow(false) // Navigating to BookResultsScreen
+    val isLoadingResults = MutableStateFlow(false) // Loading results in BookResultsScreen
+    val isLoadingNextPageResults = MutableStateFlow(false) // Loading next page of results
+    val isLoadingBookDetails = MutableStateFlow(false)
+    val isLoadingBookCopies = MutableStateFlow(false)
 
     // Helpers
-    val canNavigateToResults = MutableLiveData(false)
+    val canNavigateToResults = MutableStateFlow(false)
     private val pageIndex = mutableIntStateOf(0)
 
     // Inputs
-    var queryText by mutableStateOf("")
-        private set
-    var availableNowChip by mutableStateOf(false)
-        private set
-    var canReserveChip by mutableStateOf(false)
-        private set
-    var bookCopiesTextFieldValue by mutableStateOf("")
-        private set
+    private val _queryText = MutableStateFlow("")
+    val queryText = _queryText.asStateFlow()
+    private val _availableNowChip = MutableStateFlow(false)
+    val availableNowChip = _availableNowChip.asStateFlow()
+    private val _canReserveChip = MutableStateFlow(false)
+    val canReserveChip = _canReserveChip.asStateFlow()
+    private val _bookCopiesTextFieldValue = MutableStateFlow("")
+    val bookCopiesTextFieldValue = _bookCopiesTextFieldValue.asStateFlow()
 
     // Errors
-    val errorMessage = MutableLiveData<String>()
+    val errorMessage = MutableStateFlow<String>("")
+
+
+    // Data filtering
+    val bookCopies = _bookCopies
+        .combine(_bookCopiesTextFieldValue) { bookCopies, query ->
+            if (query.isBlank()) {
+                bookCopies
+            } else {
+                bookCopies.filter { it.location.contains(query, ignoreCase = true) }
+            }
+
+        }
+        .combine(_availableNowChip) { bookCopies, value ->
+            if (value) {
+                bookCopies.filter { it.availability == BookCopyAvailability.AVAILABLE }
+            } else {
+                bookCopies
+            }
+        }
+        .combine(_canReserveChip) { bookCopies, value ->
+            if (value) {
+                bookCopies.filter { it.availability == BookCopyAvailability.CAN_RESERVE }
+            } else {
+                bookCopies
+            }
+        }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            _bookCopies.value
+        )
 
     init {
         getSearchScope()
     }
 
     private fun getSearchScope() {
-        errorMessage.postValue("")
+        errorMessage.value = ""
         val response = repository.getSearchScope()
         response.enqueue(object : Callback<BookResponse> {
             override fun onResponse(
@@ -102,8 +141,8 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                         Throwable("Not searchScopes")
                     )
 
-                searchScopes.postValue(searchScopesResponse)
-                errorMessage.postValue("")
+                searchScopes.value = searchScopesResponse
+                errorMessage.value = ""
             }
 
             override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
@@ -118,10 +157,10 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
      * Gets [SearchResults] from the page of results
      */
     fun getResults(url: String) {
-        errorMessage.postValue("")
+        errorMessage.value = ""
         Log.d("BookViewModel", "getBooksBySearchResult")
         val response = repository.getHtmlByUrl(url)
-        isLoadingResults.postValue(true)
+        isLoadingResults.value = true
         response.enqueue(object : Callback<BookResponse> {
             override fun onResponse(
                 call: Call<BookResponse>, response: Response<BookResponse>
@@ -129,15 +168,15 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                 val resultsResponse =
                     response.body()?.results ?: return onFailure(call, Throwable("Not Results"))
 
-                results.postValue(resultsResponse)
-                isLoadingResults.postValue(false)
-                errorMessage.postValue("")
+                _results.value = resultsResponse
+                isLoadingResults.value = false
+                errorMessage.value = ""
             }
 
             override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
                 Log.e("BookViewModel", "Error getting results page: ${t.message.toString()}")
-                errorMessage.postValue("no hi ha resultats")
-                isLoadingResults.postValue(false)
+                errorMessage.value = "No hi ha resultats"
+                isLoadingResults.value = false
             }
 
         })
@@ -148,12 +187,11 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
      * Get the next [SearchResults] page. It gets [SearchResults], can be [BookResults] or [SearchResults]
      */
     fun getNextResultsPage() {
-        errorMessage.postValue("")
-        val resultsValue = results.value ?: throw Error()
-        Log.d("BookViewModel", "Get results page ${pageIndex.intValue}/${resultsValue.numItems}")
-        val url = resultsValue.getNextPage() ?: return
+        errorMessage.value = ""
+        Log.d("BookViewModel", "Get results page ${pageIndex.intValue}/${results.value.numItems}")
+        val url = results.value.getNextPage() ?: return
         val response = repository.getHtmlByUrl(url)
-        isLoadingNextPageResults.postValue(true)
+        isLoadingNextPageResults.value = true
         response.enqueue(object : Callback<BookResponse> {
             override fun onResponse(
                 call: Call<BookResponse>, response: Response<BookResponse>
@@ -167,14 +205,14 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                     )
 
                 currentResults.addItems(responseResults.items)
-                results.postValue(currentResults)
-                isLoadingNextPageResults.postValue(false)
+                _results.value = currentResults
+                isLoadingNextPageResults.value = false
             }
 
             override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
                 Log.e("BookViewModel", "Error getting results page: ${t.message.toString()}")
-                errorMessage.postValue("Book not found")
-                isLoadingNextPageResults.postValue(false)
+                errorMessage.value = "Book not found"
+                isLoadingNextPageResults.value = false
             }
         })
     }
@@ -184,17 +222,17 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
      *
      */
     fun search() {
-        errorMessage.postValue("")
+        errorMessage.value = ""
         Log.d(
             "BookViewModel",
             "search query:$queryText searchType:${selectedSearchType.value.value}"
         )
         val response = repository.findBooks(
-            queryText,
+            queryText.value,
             selectedSearchType.value.value,
             selectedSearchScope.value.value
         )
-        isLoadingSearch.postValue(true)
+        isLoadingSearch.value = true
 
         response.enqueue(object : Callback<BookResponse> {
             override fun onResponse(
@@ -202,10 +240,9 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
             ) {
                 val responseResults =
                     response.body()?.results ?: return onFailure(call, Throwable("Not Results"))
-
-                results.postValue(responseResults)
-                canNavigateToResults.postValue(true)
-                isLoadingSearch.postValue(false)
+                _results.value = responseResults
+                canNavigateToResults.value = true
+                isLoadingSearch.value = false
             }
 
             override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
@@ -214,8 +251,8 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                     else -> "${selectedSearchType.value.text} no trobat :("
                 }
                 Log.e("BookViewModel", "Error finding books: ${t.message.toString()}")
-                errorMessage.postValue(message)
-                isLoadingSearch.postValue(false)
+                errorMessage.value = message
+                isLoadingSearch.value = false
             }
         })
     }
@@ -225,13 +262,13 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
      * Gets the [BookCopies][BookCopy] of the full book copies page
      */
     fun getBookCopies(book: Book) {
-        errorMessage.postValue("")
+        errorMessage.value = ""
         Log.d("BookViewModel", "getBookCopies")
         val bookCopiesUrl = book.bookDetails?.bookCopiesUrl ?: return
         Log.d("BookViewModel", "getBookCopies Foung BookCopiesUrl")
         val response = repository.getHtmlByUrl(bookCopiesUrl)
 
-        isLoadingBookCopies.postValue(true)
+        isLoadingBookCopies.value = true
         response.enqueue(object : Callback<BookResponse> {
             override fun onResponse(
                 call: Call<BookResponse>,
@@ -245,17 +282,16 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                         Throwable("No response ${response.code()}")
                     )
 
-                _bookCopies.postValue(responseBody.bookCopies)
+                _bookCopies.value = responseBody.bookCopies
                 book.bookCopies = responseBody.bookCopies
-                bookCopies.postValue(responseBody.bookCopies)
-                currentBook.postValue(book)
-                isLoadingBookCopies.postValue(false)
+                _currentBook.value = book
+                isLoadingBookCopies.value = false
             }
 
             override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
                 Log.e("BookViewModel", t.message.toString())
-                errorMessage.postValue(t.message)
-                isLoadingBookCopies.postValue(false)
+                errorMessage.value = t.message!!
+                isLoadingBookCopies.value = false
             }
         })
 
@@ -266,11 +302,11 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
      * Gets the [BookDetails] of a [Book] from the url of a book.
      */
     fun getBookDetails(bookId: Int) {
-        errorMessage.postValue("")
+        errorMessage.value = ""
         Log.d("BookViewModel", "getBookDetails")
-        isLoadingBookDetails.postValue(true)
+        isLoadingBookDetails.value = true
         val book = filterBook(bookId) ?: return
-        currentBook.postValue(book)
+        _currentBook.value = book
         val currentBookResultUrl = book.url
 
         println(currentBookResultUrl)
@@ -286,17 +322,17 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                 val responseBook =
                     responseBody.book ?: return onFailure(call, Throwable("Book not found"))
 
-                currentBook.postValue(responseBook)
-                bookCopies.postValue(responseBook.bookCopies)
-                isLoadingBookDetails.postValue(false)
+                _currentBook.value = responseBook
+                _bookCopies.value = responseBook.bookCopies
+                isLoadingBookDetails.value = false
                 getBookCopies(responseBook)
 
             }
 
             override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
                 Log.e("BookViewModel", t.message.toString())
-                errorMessage.postValue(t.message)
-                isLoadingBookDetails.postValue(false)
+                errorMessage.value = t.message!!
+                isLoadingBookDetails.value = false
             }
         })
 
@@ -313,8 +349,6 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
             val currentBookResult2 =
                 bookResults.find { book: BookResult -> book.id == id } ?: return null
 
-            println(currentBookResult2.url)
-
             return Book(currentBookResult2)
 
         }
@@ -329,69 +363,69 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
      */
     private fun filterBookCopies() {
         val filteredBookCopies =
-            if (!availableNowChip && !canReserveChip && bookCopiesTextFieldValue.isEmpty()) {
+            if (!availableNowChip.value && !canReserveChip.value && bookCopiesTextFieldValue.value.isEmpty()) {
                 // Both chips are off and the text field is empty, return all book copies
-                _bookCopies.value!!
+                _bookCopies.value
             } else {
-                _bookCopies.value?.filter { bookCopy ->
-                    val matchesAvailableNow = if (availableNowChip) {
+                _bookCopies.value.filter { bookCopy ->
+                    val matchesAvailableNow = if (availableNowChip.value) {
                         bookCopy.availability == BookCopyAvailability.AVAILABLE
                     } else {
                         true // Consider all books if the chip is off
                     }
-                    val matchesCanReserve = if (canReserveChip) {
+                    val matchesCanReserve = if (canReserveChip.value) {
                         bookCopy.availability == BookCopyAvailability.CAN_RESERVE
                     } else {
                         true // Consider all books if the chip is off
                     }
 
                     val matchesLocation =
-                        bookCopy.location.contains(bookCopiesTextFieldValue, ignoreCase = true)
+                        bookCopy.location.contains(
+                            bookCopiesTextFieldValue.value,
+                            ignoreCase = true
+                        )
 
                     matchesAvailableNow && matchesCanReserve && matchesLocation
                 } ?: emptyList()
             }
 
-        bookCopies.postValue(filteredBookCopies)
+        _bookCopies.value = filteredBookCopies
     }
 
 
     fun onTextFieldValueChange(value: String) {
-        bookCopiesTextFieldValue = value
-        filterBookCopies()
+        _bookCopiesTextFieldValue.value = value
     }
 
 
     fun resetCurrentBook() {
-        currentBook.postValue(null)
-        bookCopies.postValue(emptyList())
+        _currentBook.value = null
+        _bookCopies.value = emptyList()
     }
 
     fun setCanNavigateToResults(value: Boolean) {
-        canNavigateToResults.postValue(value)
+        canNavigateToResults.value = value
     }
 
     /**
      * Callback when Available Now Chip is clicked
      */
     fun onAvailableNowChipClick() {
-        availableNowChip = !availableNowChip
-        filterBookCopies()
+        _availableNowChip.value = !_availableNowChip.value
     }
 
     /**
      * Callback when Can Reseve Chip is clicked
      */
     fun onCanReserveChipClick() {
-        canReserveChip = !canReserveChip
-        filterBookCopies()
+        _canReserveChip.value = !_canReserveChip.value
     }
 
     /**
      * Callback when Book Search Textfield text is changed
      */
     fun onSearchTextChanged(text: String) {
-        queryText = text
+        _queryText.value = text
     }
 
 }

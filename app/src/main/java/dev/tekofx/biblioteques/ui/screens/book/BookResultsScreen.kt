@@ -22,8 +22,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,7 +33,6 @@ import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import dev.tekofx.biblioteques.model.BookResult
 import dev.tekofx.biblioteques.model.BookResults
-import dev.tekofx.biblioteques.model.EmptyResults
 import dev.tekofx.biblioteques.model.GeneralResults
 import dev.tekofx.biblioteques.model.SearchResult
 import dev.tekofx.biblioteques.model.SelectItem
@@ -52,12 +51,10 @@ fun BookResultsScreen(
     searchType: String?
 ) {
 
-    val results by bookViewModel.results.observeAsState(
-        EmptyResults()
-    )
-    val isLoadingNextPageResults by bookViewModel.isLoadingNextPageResults.observeAsState(false)
-    val isLoadingResults by bookViewModel.isLoadingResults.observeAsState(false)
-    val errorMessage by bookViewModel.errorMessage.observeAsState("")
+    val results by bookViewModel.results.collectAsState()
+    val isLoadingNextPageResults by bookViewModel.isLoadingNextPageResults.collectAsState()
+    val isLoadingResults by bookViewModel.isLoadingResults.collectAsState()
+    val errorMessage by bookViewModel.errorMessage.collectAsState()
 
 
     val selectedSearchType by bookViewModel.selectedSearchType
