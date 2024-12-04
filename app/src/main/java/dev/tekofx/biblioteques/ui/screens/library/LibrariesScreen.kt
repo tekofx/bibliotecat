@@ -25,6 +25,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -62,13 +63,22 @@ fun LibrariesScreen(
         )
     )
 ) {
-    val libraries by libraryViewModel.libraries.observeAsState(emptyList())
+
+    // Data
     val municipalities by libraryViewModel.municipalities.observeAsState(emptyList())
+    val libraries by libraryViewModel.libraries.collectAsState()
+    val selectedMunicipalityTest by libraryViewModel.selectedMunicipality.collectAsState()
 
-    val isLoading by libraryViewModel.isLoading.observeAsState(false)
+    // Inputs
+    val queryText by libraryViewModel.queryText.collectAsState()
+    val showOnlyOpenTest by libraryViewModel.showOnlyOpen.collectAsState()
     var showBottomSheet by remember { mutableStateOf(false) }
-    val errorMessage by libraryViewModel.errorMessage.observeAsState("")
 
+    // Loaders
+    val isLoading by libraryViewModel.isLoading.observeAsState(false)
+
+    // Errors
+    val errorMessage by libraryViewModel.errorMessage.observeAsState("")
 
     Scaffold(
         modifier = Modifier.padding(horizontal = 5.dp),
@@ -104,15 +114,15 @@ fun LibrariesScreen(
 
         SearchBottomSheet(
             municipalities = municipalities,
-            textFieldValue = libraryViewModel.queryText,
+            textFieldValue = queryText,
             show = showBottomSheet,
-            showOnlyOpen = libraryViewModel.showOnlyOpen,
+            showOnlyOpen = showOnlyOpenTest,
             filtersApplied = libraryViewModel.filtersApplied,
-            selectedMunicipality = libraryViewModel.selectedMunicipality,
-            onShowOnlyOpen = { libraryViewModel.onShowOnlyOpen(it) },
-            onSelectedMunicipality = { libraryViewModel.onMunicipalityChanged(it) },
+            selectedMunicipality = selectedMunicipalityTest,
+            onShowOnlyOpen = libraryViewModel::onShowOnlyOpen,
+            onSelectedMunicipality = libraryViewModel::onMunicipalityChanged,
             onToggleShow = { showBottomSheet = !showBottomSheet },
-            onTextFieldChange = { text -> libraryViewModel.onSearchTextChanged(text) },
+            onTextFieldChange = libraryViewModel::onSearchTextChanged,
             onClearFilters = { libraryViewModel.clearFilters() }
         )
     }

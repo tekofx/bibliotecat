@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.network.parseGetRequestBlocking
 import dev.tekofx.biblioteques.dto.LibraryResponse
@@ -15,6 +16,11 @@ import dev.tekofx.biblioteques.repository.LibraryRepository
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Call
@@ -27,8 +33,6 @@ import java.time.LocalTime
 class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() {
 
     // Data
-    val libraries = MutableLiveData<List<Library>>()
-    private var _libraries = MutableLiveData<List<Library>>()
     val municipalities = MutableLiveData<List<String>>()
     private val _currentLibrary = MutableLiveData<Library?>()
     val currentLibrary: LiveData<Library?> = _currentLibrary
@@ -37,14 +41,56 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
     val isLoading = MutableLiveData<Boolean>(false)
 
     // Inputs
-    var showOnlyOpen by mutableStateOf(false)
-        private set
-    var queryText by mutableStateOf("")
-        private set
+
+
     var filtersApplied by mutableStateOf(false)
         private set
-    var selectedMunicipality by mutableStateOf<String>("")
-        private set
+
+
+    private val _queryText = MutableStateFlow("")
+    private val _libraries = MutableStateFlow<List<Library>>(emptyList())
+    val queryText = _queryText.asStateFlow()
+
+    private val _showOnlyOpen = MutableStateFlow(false)
+    val showOnlyOpen = _showOnlyOpen.asStateFlow()
+
+    private val _selectedMunicipality = MutableStateFlow("")
+    val selectedMunicipality = _selectedMunicipality.asStateFlow()
+
+
+    val libraries = _libraries
+        .combine(_queryText) { libraries, query ->
+            if (query.isBlank()) {
+                libraries
+            } else {
+                libraries.filter { it.adrecaNom.contains(query, ignoreCase = true) }
+            }
+
+        }
+        .combine(_showOnlyOpen) { libraries, value ->
+            libraries.filter {
+                if (value) {
+                    it.isOpen(LocalDate.now(), LocalTime.now())
+                } else {
+                    true
+                }
+            }
+        }
+        .combine(_selectedMunicipality) { libraries, selectedMunicipality ->
+            libraries.filter {
+                if (selectedMunicipality.isNotEmpty()) {
+                    it.municipality == selectedMunicipality
+                } else {
+                    true
+                }
+            }
+
+        }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            _libraries.value
+        )
 
     // Error
     val errorMessage = MutableLiveData<String>()
@@ -100,7 +146,7 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
 
             if (redirectedUrl.isNotEmpty() && redirectedUrl != libraryUrl) {
                 library =
-                    _libraries.value?.find { it: Library ->
+                    _libraries.value.find { it: Library ->
                         it.bibliotecaVirtualUrl?.contains(
                             redirectedUrl
                         ) == true
@@ -139,9 +185,8 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
                 )
                 val municipalitiesResponse = responseBody.municipalities.plus("Barcelona")
 
-                libraries.postValue(response.body()?.elements)
+                _libraries.value = responseBody.elements
                 municipalities.postValue(municipalitiesResponse)
-                _libraries.postValue(response.body()?.elements)
                 isLoading.postValue(false)
                 errorMessage.postValue("")
             }
@@ -160,8 +205,7 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
      * Callback of TextField
      */
     fun onSearchTextChanged(text: String) {
-        queryText = text
-        applyFilters()
+        _queryText.value = text
     }
 
     /**
@@ -169,59 +213,24 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
      * @param switchValue Value of the chip
      */
     fun onShowOnlyOpen(switchValue: Boolean) {
-        showOnlyOpen = switchValue
-        applyFilters()
+        _showOnlyOpen.value = switchValue
     }
 
     /**
      * Callback used when a municipality is selected in Municipaliy Autocomplete
      */
     fun onMunicipalityChanged(municipality: String) {
-        selectedMunicipality = municipality
-        applyFilters()
+        _selectedMunicipality.value = municipality
     }
 
     /**
      * Clear all the filters
      */
     fun clearFilters() {
-        queryText = ""
-        showOnlyOpen = false
-        selectedMunicipality = ""
-        applyFilters()
+        _queryText.value = ""
+        _showOnlyOpen.value = false
+        _selectedMunicipality.value = ""
+        filtersApplied = false
     }
 
-    /**
-     * Applies all the filters to the list. Sets [libraries] with the filteres libraries
-     */
-    private fun applyFilters() {
-        val filteredLibraries = _libraries.value?.filter { library ->
-            val matchesSearchText = library.adrecaNom.contains(
-                queryText,
-                ignoreCase = true
-            )
-            val matchesOpenStatus = if (showOnlyOpen) {
-                library.isOpen(LocalDate.now(), LocalTime.now())
-            } else {
-                true
-            }
-            val matchesMunicipality = if (selectedMunicipality == "Barcelona") {
-                library.municipality.contains("Barcelona")
-            } else if (selectedMunicipality.isNotEmpty()) {
-                selectedMunicipality == library.municipality
-            } else {
-                true
-            }
-
-            matchesSearchText && matchesOpenStatus && matchesMunicipality
-        } ?: emptyList()
-        libraries.postValue(filteredLibraries.sortedBy { it.municipality })
-        if (filteredLibraries.isEmpty()) {
-            errorMessage.postValue("No s'han trobat biblioteques amb aquests filtres")
-        } else {
-            errorMessage.postValue("")
-        }
-
-        filtersApplied = !(queryText == "" && !showOnlyOpen && selectedMunicipality == "")
-    }
 }
