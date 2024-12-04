@@ -1,7 +1,6 @@
 package dev.tekofx.biblioteques.ui.components.library
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -21,17 +21,23 @@ import dev.tekofx.biblioteques.ui.components.animations.SlideVertically
 @Composable
 fun LibraryList(
     onLibraryCardClick: (libraryId: String) -> Unit,
-    libraries: List<Library>
+    libraries: List<Library>,
+    isLoading: Boolean
 ) {
     val listState = rememberLazyListState()
 
     LaunchedEffect(libraries) {
         listState.scrollToItem(0)
     }
+
     SlideVertically(
-        visible = libraries.isNotEmpty(),
+        visible = !isLoading,
         SlideDirection.UP,
     ) {
+        if (libraries.isEmpty()) {
+            Text("No hi ha biblioteques amb aquestes filtres")
+        }
+
         LazyColumn(
             state = listState,
             modifier = Modifier
@@ -41,16 +47,15 @@ fun LibraryList(
         ) {
             items(libraries, key = { it.id }) { library ->
                 Row(modifier = Modifier.animateItem()) {
-
                     LibraryCard(
                         library = library,
                         onClick = {
-                            Log.d("LibraryList", "libraryId " + library.id)
                             onLibraryCardClick(library.id)
                         }
                     )
                 }
             }
+
         }
     }
 }

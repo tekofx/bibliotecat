@@ -109,10 +109,13 @@ fun LibrariesScreen(
 
         LibraryList(
             libraries = libraries,
+            isLoading = isLoading,
             onLibraryCardClick = {
                 navHostController.navigate("${NavigateDestinations.LIBRARY_DETAILS_ROUTE}?pointId=${it}")
             }
         )
+
+
 
         SearchBottomSheet(
             municipalities = municipalities,
