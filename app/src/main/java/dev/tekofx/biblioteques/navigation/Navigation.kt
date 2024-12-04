@@ -4,8 +4,6 @@ import android.util.Log
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -104,13 +102,11 @@ fun Navigation(
                 if (targetState.destination.route != NavigateDestinations.LIBRARIES_ROUTE) {
                     slideOutOfContainer(
                         AnimatedContentTransitionScope.SlideDirection.Up,
-                        animationSpec = tween(300)
                     )
 
                 } else {
                     slideOutOfContainer(
                         AnimatedContentTransitionScope.SlideDirection.Right,
-                        animationSpec = spring()
                     )
                 }
             }
@@ -158,14 +154,12 @@ fun Navigation(
 fun slideInToTop(scope: AnimatedContentTransitionScope<NavBackStackEntry>): EnterTransition {
     return scope.slideIntoContainer(
         AnimatedContentTransitionScope.SlideDirection.Up,
-        animationSpec = spring()
     )
 }
 
 fun slideInToBottom(scope: AnimatedContentTransitionScope<NavBackStackEntry>): EnterTransition {
     return scope.slideIntoContainer(
         AnimatedContentTransitionScope.SlideDirection.Down,
-        animationSpec = spring()
     )
 }
 
@@ -174,7 +168,6 @@ fun slideOutToBottom(scope: AnimatedContentTransitionScope<NavBackStackEntry>): 
 
     return scope.slideOutOfContainer(
         AnimatedContentTransitionScope.SlideDirection.Down,
-        animationSpec = spring()
     )
 }
 
@@ -183,7 +176,6 @@ fun slideInToLeft(scope: AnimatedContentTransitionScope<NavBackStackEntry>): Ent
 
     return scope.slideIntoContainer(
         AnimatedContentTransitionScope.SlideDirection.Left,
-        animationSpec = spring()
     )
 }
 
@@ -192,7 +184,6 @@ fun slideInToRight(scope: AnimatedContentTransitionScope<NavBackStackEntry>): En
 
     return scope.slideIntoContainer(
         AnimatedContentTransitionScope.SlideDirection.Right,
-        animationSpec = spring()
     )
 }
 
