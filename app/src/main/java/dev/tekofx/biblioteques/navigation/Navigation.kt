@@ -38,8 +38,7 @@ fun Navigation(
     NavHost(
         navController = navHostController,
         //startDestination = if (preferences.showTutorial) NavigateDestinations.TUTORIAL_SCREEN else NavigateDestinations.TUTORIAL_SCREEN,
-        startDestination = if (preferences.showTutorial) NavigateDestinations.TUTORIAL_SCREEN else NavigateDestinations.LIBRARIES_ROUTE
-
+        startDestination = if (preferences.showTutorial) NavigateDestinations.TUTORIAL_SCREEN else NavigateDestinations.WELCOME_SCREEN
     ) {
 
         // Tutorial
@@ -61,8 +60,16 @@ fun Navigation(
         // Libraries
         composable(
             route = NavigateDestinations.LIBRARIES_ROUTE,
-            enterTransition = ::slideInToRight,
-            exitTransition = { fadeOut() }
+            //enterTransition = ::slideInToRight,
+            enterTransition = {
+                // If previous screen was BookSearchScreen
+                if (initialState.destination.route == NavigateDestinations.BOOK_SEARCH_ROUTE) {
+                    slideInToRight(this)
+                } else {
+                    null
+                }
+            },
+            exitTransition = { fadeOut() },
         ) {
             LibrariesScreen(navHostController, libraryViewModel)
         }
