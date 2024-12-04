@@ -77,7 +77,7 @@ fun LibrariesScreen(
     var showBottomSheet by remember { mutableStateOf(false) }
 
     // Loaders
-    val isLoading by libraryViewModel.isLoading.observeAsState(false)
+    val isLoading by libraryViewModel.isLoading.collectAsState()
 
     // Errors
     val errorMessage by libraryViewModel.errorMessage.observeAsState("")

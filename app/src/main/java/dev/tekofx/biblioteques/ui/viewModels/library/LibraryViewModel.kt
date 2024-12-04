@@ -38,7 +38,7 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
     val selectedMunicipality = _selectedMunicipality.asStateFlow()
 
     // Loaders
-    val isLoading = MutableLiveData<Boolean>(false)
+    val isLoading = MutableStateFlow<Boolean>(false)
 
     // Inputs
     private val _queryText = MutableStateFlow("")
@@ -106,7 +106,7 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
             "LibraryVewModel",
             "getLibrary called with pointId: $pointId"
         )
-        isLoading.postValue(true)
+        isLoading.value = true
         _currentLibrary.value = null
 
         GlobalScope.launch(Dispatchers.IO) {
@@ -155,7 +155,7 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
                     errorMessage.postValue("")
                 }
                 _currentLibrary.value = library
-                isLoading.postValue(false)
+                isLoading.value = false
             }
         }
 
@@ -167,7 +167,7 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
      */
     private fun getLibraries() {
         Log.d("LibraryViewModel", "getLibraries")
-        isLoading.postValue(true)
+        isLoading.value = true
         val response = repository.getLibraries()
         response.enqueue(object : Callback<LibraryResponse> {
             override fun onResponse(
@@ -182,14 +182,14 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
 
                 _libraries.value = responseBody.elements
                 municipalities.value = municipalitiesResponse
-                isLoading.postValue(false)
+                isLoading.value = false
                 errorMessage.postValue("")
             }
 
             override fun onFailure(call: Call<LibraryResponse>, t: Throwable) {
                 Log.d("LibraryViewModel", "getLibraries error ${t.message}")
                 errorMessage.postValue("Error: No s'han pogut carregar les biblioteques")
-                isLoading.postValue(false)
+                isLoading.value = false
             }
         })
 

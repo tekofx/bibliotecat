@@ -7,6 +7,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -24,7 +25,7 @@ fun WelcomeScreen(
     libraryViewModel: LibraryViewModel
 ) {
 
-    val isLoading by libraryViewModel.isLoading.observeAsState(false)
+    val isLoading by libraryViewModel.isLoading.collectAsState()
 
     LaunchedEffect(key1 = isLoading) {
         if (!isLoading) {
