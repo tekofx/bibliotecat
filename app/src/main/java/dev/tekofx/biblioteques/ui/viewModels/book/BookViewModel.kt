@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.tekofx.biblioteques.R
@@ -47,7 +46,6 @@ val searchTypes = listOf(
 class BookViewModel(private val repository: BookRepository) : ViewModel() {
     // Data
     val searchScopes = MutableStateFlow<List<SelectItem>>(emptyList())
-
     private val _results = MutableStateFlow<SearchResults<out SearchResult>>(EmptyResults())
     val results = _results.asStateFlow()
     private val _currentBook = MutableStateFlow<Book?>(null)
@@ -57,10 +55,10 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     private val _bookCopies = MutableStateFlow<List<BookCopy>>(emptyList())
 
     // Any word, title, author...
-    val selectedSearchType = mutableStateOf(searchTypes.first())
+    val selectedSearchType = MutableStateFlow(searchTypes.first())
 
     // In all catalog, music, Martorell...
-    val selectedSearchScope = mutableStateOf(
+    val selectedSearchScope = MutableStateFlow(
         SelectItem(
             "Tot el catàleg",
             "171",
@@ -157,8 +155,8 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
      * Gets [SearchResults] from the page of results
      */
     fun getResults(url: String) {
-        errorMessage.value = ""
         Log.d("BookViewModel", "getBooksBySearchResult")
+        errorMessage.value = ""
         val response = repository.getHtmlByUrl(url)
         isLoadingResults.value = true
         response.enqueue(object : Callback<BookResponse> {
@@ -355,46 +353,17 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
         return null
     }
 
-    /**
-     * Filters [bookCopies] depending on the states of [availableNowChip] and [canReserveChip].
-     * If [availableNowChip] is true it will show only the ones with [BookCopyAvailability.AVAILABLE].
-     * If [canReserveChip] is true it will show only the ones with [BookCopyAvailability.CAN_RESERVE].
-     * If both are true, it will show all with both states
-     */
-    private fun filterBookCopies() {
-        val filteredBookCopies =
-            if (!availableNowChip.value && !canReserveChip.value && bookCopiesTextFieldValue.value.isEmpty()) {
-                // Both chips are off and the text field is empty, return all book copies
-                _bookCopies.value
-            } else {
-                _bookCopies.value.filter { bookCopy ->
-                    val matchesAvailableNow = if (availableNowChip.value) {
-                        bookCopy.availability == BookCopyAvailability.AVAILABLE
-                    } else {
-                        true // Consider all books if the chip is off
-                    }
-                    val matchesCanReserve = if (canReserveChip.value) {
-                        bookCopy.availability == BookCopyAvailability.CAN_RESERVE
-                    } else {
-                        true // Consider all books if the chip is off
-                    }
-
-                    val matchesLocation =
-                        bookCopy.location.contains(
-                            bookCopiesTextFieldValue.value,
-                            ignoreCase = true
-                        )
-
-                    matchesAvailableNow && matchesCanReserve && matchesLocation
-                } ?: emptyList()
-            }
-
-        _bookCopies.value = filteredBookCopies
-    }
-
 
     fun onTextFieldValueChange(value: String) {
         _bookCopiesTextFieldValue.value = value
+    }
+
+    fun onSearchTypeChange(value: SelectItem) {
+        selectedSearchType.value = value
+    }
+
+    fun onSearchScopeChange(value: SelectItem) {
+        selectedSearchScope.value = value
     }
 
 

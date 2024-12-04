@@ -72,16 +72,19 @@ fun BookScreen(
     navController: NavHostController,
     bookViewModel: BookViewModel
 ) {
-
+    // Data
     val currentBook by bookViewModel.currentBook.collectAsState()
+    val bookCopies by bookViewModel.bookCopies.collectAsState()
+
+    // Input
     val availableNowChip by bookViewModel.availableNowChip.collectAsState()
     val canReserveChip by bookViewModel.canReserveChip.collectAsState()
     val bookCopiesTextFieldValue by bookViewModel.bookCopiesTextFieldValue.collectAsState()
 
-
+    // Loaders
     val isLoadingBookCopies by bookViewModel.isLoadingBookCopies.collectAsState()
     val isLoadingBookDetails by bookViewModel.isLoadingBookDetails.collectAsState()
-    val bookCopies by bookViewModel.bookCopies.collectAsState()
+
     val listState = rememberLazyListState()
     val context = LocalContext.current
 

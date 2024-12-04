@@ -48,21 +48,24 @@ import dev.tekofx.biblioteques.ui.viewModels.book.searchTypes
 fun BookSearchScreen(
     navHostController: NavHostController, bookViewModel: BookViewModel
 ) {
-
+    // Data
     val results by bookViewModel.results.collectAsState()
+
+    // Input
     val searchScopes by bookViewModel.searchScopes.collectAsState()
-
     val queryText by bookViewModel.queryText.collectAsState()
+    val selectedSearchScope by bookViewModel.selectedSearchScope.collectAsState()
+    val selectedSearchType by bookViewModel.selectedSearchType.collectAsState()
 
-    var selectedSearchScope by bookViewModel.selectedSearchScope
-    var selectedSearchType by bookViewModel.selectedSearchType
-
+    // Loader
     val isLoadingSearch by bookViewModel.isLoadingSearch.collectAsState()
-    val search by bookViewModel.canNavigateToResults.collectAsState()
+    val canNavigateToResults by bookViewModel.canNavigateToResults.collectAsState()
+
+    // Error
     val errorMessage by bookViewModel.errorMessage.collectAsState()
 
-    LaunchedEffect(search) {
-        if (search) {
+    LaunchedEffect(canNavigateToResults) {
+        if (canNavigateToResults) {
             Log.d("BookSearchScreen", "Found ${results.items.size} elements")
             navHostController.navigate(NavigateDestinations.BOOK_RESULTS_ROUTE)
         }
@@ -70,16 +73,17 @@ fun BookSearchScreen(
 
 
     Scaffold() {
-        BookSearch(errorMessage = errorMessage,
+        BookSearch(
+            errorMessage = errorMessage,
             onSearchTextChanged = bookViewModel::onSearchTextChanged,
             queryText = queryText,
             isLoading = isLoadingSearch,
             selectedSearchType = selectedSearchType,
-            onSearch = { bookViewModel.search() },
-            onSearchTypeSelected = { selectedSearchType = it },
+            onSearch = bookViewModel::search,
+            onSearchTypeSelected = bookViewModel::onSearchTypeChange,
             searchScopes = searchScopes,
             selectedSearchScope = selectedSearchScope,
-            onSeachScopeSelected = { selectedSearchScope = it }
+            onSeachScopeSelected = bookViewModel::onSearchScopeChange
         )
     }
 }

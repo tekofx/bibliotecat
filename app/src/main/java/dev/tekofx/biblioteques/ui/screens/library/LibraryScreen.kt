@@ -70,8 +70,14 @@ fun LibraryScreen(
     libraryViewModel: LibraryViewModel,
 ) {
     Log.d("LibraryScreen", "Navigated to $pointID")
+
+    // Data
     val currentLibrary by libraryViewModel.currentLibrary.collectAsState()
+
+    // Loader
     val isLoading by libraryViewModel.isLoading.collectAsState()
+
+    // Error
     val errorMessage by libraryViewModel.errorMessage.observeAsState("")
 
     LaunchedEffect(key1 = Unit) {

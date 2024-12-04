@@ -50,14 +50,18 @@ fun BookResultsScreen(
     query: String?,
     searchType: String?
 ) {
-
+    // Data
     val results by bookViewModel.results.collectAsState()
+
+    // Input
+    val selectedSearchType by bookViewModel.selectedSearchType.collectAsState()
+
+    // Loaders
     val isLoadingNextPageResults by bookViewModel.isLoadingNextPageResults.collectAsState()
     val isLoadingResults by bookViewModel.isLoadingResults.collectAsState()
+
+    // Error
     val errorMessage by bookViewModel.errorMessage.collectAsState()
-
-
-    val selectedSearchType by bookViewModel.selectedSearchType
 
     LaunchedEffect(key1 = 1) {
         Log.d("BookResultsScreen", "LaunchedEffect. Query: $query searchType: $searchType")
@@ -91,7 +95,7 @@ fun BookResultsScreen(
                     searchResults = results as BookResults,
                     isLoading = isLoadingNextPageResults,
                     key = { book -> book.id },
-                    onLoadMore = { bookViewModel.getNextResultsPage() },
+                    onLoadMore = bookViewModel::getNextResultsPage,
 
                     ) { book ->
                     BookCard(
@@ -107,7 +111,7 @@ fun BookResultsScreen(
                     searchResults = results as GeneralResults,
                     isLoading = isLoadingNextPageResults,
                     key = { searchResult: SearchResult -> searchResult.text },
-                    onLoadMore = { bookViewModel.getNextResultsPage() },
+                    onLoadMore = bookViewModel::getNextResultsPage,
                 ) { searchResult ->
                     GeneralSearchResultCard(
                         onClick = { bookViewModel.getResults(searchResult.url) },
