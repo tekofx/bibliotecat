@@ -1,4 +1,5 @@
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
@@ -18,7 +19,6 @@ import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -47,6 +47,9 @@ fun AutoCompleteSelectBar(
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
     var expanded by remember { mutableStateOf(false) }
     val interactionSource = remember { MutableInteractionSource() }
+    val topCornerRadius by animateDpAsState(if (expanded) 20.dp else 30.dp, label = "")
+    val bottomCornerRadius by animateDpAsState(if (expanded) 0.dp else 30.dp, label = "")
+
 
     Column(modifier = Modifier.fillMaxWidth()) {
         SearchBar(
@@ -98,14 +101,25 @@ fun AutoCompleteSelectBar(
                     AccordionArrow(expanded)
                 }
             },
-            shape = if (expanded) TextFieldDefaults.shape else RoundedCornerShape(50.dp)
+            shape = RoundedCornerShape(
+                topStart = topCornerRadius,
+                topEnd = topCornerRadius,
+                bottomStart = bottomCornerRadius,
+                bottomEnd = bottomCornerRadius
+            )
         )
 
         AnimatedVisibility(visible = expanded) {
             Card(
                 modifier = Modifier
                     .width(textFieldSize.width.dp),
-                shape = RoundedCornerShape(0.dp)
+                shape = RoundedCornerShape(
+                    topStart = 0.dp,
+                    topEnd = 0.dp,
+                    bottomStart = 20.dp,
+                    bottomEnd = 20.dp
+
+                )
             ) {
                 LazyColumn(
                     modifier = Modifier.heightIn(max = 200.dp),
