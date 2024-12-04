@@ -1,7 +1,6 @@
 package dev.tekofx.biblioteques.ui.viewModels.library
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
@@ -31,9 +31,9 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
 
     // Data
     private val _libraries = MutableStateFlow<List<Library>>(emptyList())
-    val municipalities = MutableLiveData<List<String>>()
-    private val _currentLibrary = MutableLiveData<Library?>()
-    val currentLibrary: LiveData<Library?> = _currentLibrary
+    val municipalities = MutableStateFlow<List<String>>(emptyList())
+    private val _currentLibrary = MutableStateFlow<Library?>(null)
+    val currentLibrary: StateFlow<Library?> = _currentLibrary
     private val _selectedMunicipality = MutableStateFlow("")
     val selectedMunicipality = _selectedMunicipality.asStateFlow()
 
@@ -107,7 +107,7 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
             "getLibrary called with pointId: $pointId"
         )
         isLoading.postValue(true)
-        _currentLibrary.postValue(null)
+        _currentLibrary.value = null
 
         GlobalScope.launch(Dispatchers.IO) {
 
@@ -154,7 +154,7 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
                 } else {
                     errorMessage.postValue("")
                 }
-                _currentLibrary.postValue(library)
+                _currentLibrary.value = library
                 isLoading.postValue(false)
             }
         }
@@ -181,7 +181,7 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
                 val municipalitiesResponse = responseBody.municipalities.plus("Barcelona")
 
                 _libraries.value = responseBody.elements
-                municipalities.postValue(municipalitiesResponse)
+                municipalities.value = municipalitiesResponse
                 isLoading.postValue(false)
                 errorMessage.postValue("")
             }

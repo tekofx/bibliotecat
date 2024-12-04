@@ -65,7 +65,7 @@ fun LibrariesScreen(
 ) {
 
     // Data
-    val municipalities by libraryViewModel.municipalities.observeAsState(emptyList())
+    val municipalities by libraryViewModel.municipalities.collectAsState()
     val libraries by libraryViewModel.libraries.collectAsState()
     val selectedMunicipalityTest by libraryViewModel.selectedMunicipality.collectAsState()
 

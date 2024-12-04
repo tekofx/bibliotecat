@@ -22,6 +22,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
@@ -69,7 +70,7 @@ fun LibraryScreen(
     libraryViewModel: LibraryViewModel,
 ) {
     Log.d("LibraryScreen", "Navigated to $pointID")
-    val currentLibrary by libraryViewModel.currentLibrary.observeAsState(null)
+    val currentLibrary by libraryViewModel.currentLibrary.collectAsState()
     val isLoading by libraryViewModel.isLoading.observeAsState(false)
     val errorMessage by libraryViewModel.errorMessage.observeAsState("")
 
