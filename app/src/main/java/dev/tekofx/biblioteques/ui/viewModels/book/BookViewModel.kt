@@ -50,21 +50,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     val results = _results.asStateFlow()
     private val _currentBook = MutableStateFlow<Book?>(null)
     val currentBook = _currentBook.asStateFlow()
-
-
     private val _bookCopies = MutableStateFlow<List<BookCopy>>(emptyList())
-
-    // Any word, title, author...
-    val selectedSearchType = MutableStateFlow(searchTypes.first())
-
-    // In all catalog, music, Martorell...
-    val selectedSearchScope = MutableStateFlow(
-        SelectItem(
-            "Tot el catàleg",
-            "171",
-            icon = IconResource.fromDrawableResource(R.drawable.library_books)
-        )
-    )
 
 
     // Loaders
@@ -88,9 +74,20 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     private val _bookCopiesTextFieldValue = MutableStateFlow("")
     val bookCopiesTextFieldValue = _bookCopiesTextFieldValue.asStateFlow()
 
+    // Any word, title, author...
+    val selectedSearchType = MutableStateFlow(searchTypes.first())
+
+    // In all catalog, music, Martorell...
+    val selectedSearchScope = MutableStateFlow(
+        SelectItem(
+            "Tot el catàleg",
+            "171",
+            icon = IconResource.fromDrawableResource(R.drawable.library_books)
+        )
+    )
+
     // Errors
     val errorMessage = MutableStateFlow<String>("")
-
 
     // Data filtering
     val bookCopies = _bookCopies
@@ -100,7 +97,6 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
             } else {
                 bookCopies.filter { it.location.contains(query, ignoreCase = true) }
             }
-
         }
         .combine(_availableNowChip) { bookCopies, value ->
             if (value) {
