@@ -1,9 +1,6 @@
 package dev.tekofx.biblioteques.ui.viewModels.library
 
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -33,31 +30,29 @@ import java.time.LocalTime
 class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() {
 
     // Data
+    private val _libraries = MutableStateFlow<List<Library>>(emptyList())
     val municipalities = MutableLiveData<List<String>>()
     private val _currentLibrary = MutableLiveData<Library?>()
     val currentLibrary: LiveData<Library?> = _currentLibrary
+    private val _selectedMunicipality = MutableStateFlow("")
+    val selectedMunicipality = _selectedMunicipality.asStateFlow()
 
     // Loaders
     val isLoading = MutableLiveData<Boolean>(false)
 
     // Inputs
-
-
-    var filtersApplied by mutableStateOf(false)
-        private set
-
-
     private val _queryText = MutableStateFlow("")
-    private val _libraries = MutableStateFlow<List<Library>>(emptyList())
     val queryText = _queryText.asStateFlow()
-
     private val _showOnlyOpen = MutableStateFlow(false)
     val showOnlyOpen = _showOnlyOpen.asStateFlow()
 
-    private val _selectedMunicipality = MutableStateFlow("")
-    val selectedMunicipality = _selectedMunicipality.asStateFlow()
+    private val _filtersApplied = MutableStateFlow(false)
+    var filtersApplied = _filtersApplied.asStateFlow()
 
+    // Error
+    val errorMessage = MutableLiveData<String>()
 
+    // Data filtering
     val libraries = _libraries
         .combine(_queryText) { libraries, query ->
             if (query.isBlank()) {
@@ -65,7 +60,6 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
             } else {
                 libraries.filter { it.adrecaNom.contains(query, ignoreCase = true) }
             }
-
         }
         .combine(_showOnlyOpen) { libraries, value ->
             libraries.filter {
@@ -84,7 +78,11 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
                     true
                 }
             }
-
+        }
+        .combine(_filtersApplied) { libraries, filtersApplied ->
+            _filtersApplied.value =
+                _selectedMunicipality.value.isNotEmpty() || _showOnlyOpen.value || _queryText.value.isNotEmpty()
+            libraries
         }
         .stateIn(
             viewModelScope,
@@ -92,8 +90,6 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
             _libraries.value
         )
 
-    // Error
-    val errorMessage = MutableLiveData<String>()
 
     init {
         getLibraries()
@@ -230,7 +226,7 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
         _queryText.value = ""
         _showOnlyOpen.value = false
         _selectedMunicipality.value = ""
-        filtersApplied = false
+        _filtersApplied.value = false
     }
 
 }

@@ -72,6 +72,8 @@ fun LibrariesScreen(
     // Inputs
     val queryText by libraryViewModel.queryText.collectAsState()
     val showOnlyOpenTest by libraryViewModel.showOnlyOpen.collectAsState()
+    val filtersApplied by libraryViewModel.filtersApplied.collectAsState()
+
     var showBottomSheet by remember { mutableStateOf(false) }
 
     // Loaders
@@ -117,13 +119,13 @@ fun LibrariesScreen(
             textFieldValue = queryText,
             show = showBottomSheet,
             showOnlyOpen = showOnlyOpenTest,
-            filtersApplied = libraryViewModel.filtersApplied,
+            filtersApplied = filtersApplied,
             selectedMunicipality = selectedMunicipalityTest,
             onShowOnlyOpen = libraryViewModel::onShowOnlyOpen,
             onSelectedMunicipality = libraryViewModel::onMunicipalityChanged,
             onToggleShow = { showBottomSheet = !showBottomSheet },
             onTextFieldChange = libraryViewModel::onSearchTextChanged,
-            onClearFilters = { libraryViewModel.clearFilters() }
+            onClearFilters = libraryViewModel::clearFilters
         )
     }
 }
