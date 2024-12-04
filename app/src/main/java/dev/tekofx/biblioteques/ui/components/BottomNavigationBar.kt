@@ -21,7 +21,7 @@ fun BottomNavigationBar(navHostController: NavHostController) {
     val items = listOf(
         BottomNavigationItems.Libraries,
         BottomNavigationItems.Catalog,
-        BottomNavigationItems.Tutorial
+        //BottomNavigationItems.Tutorial
     )
 
     BottomAppBar(

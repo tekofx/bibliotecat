@@ -12,6 +12,11 @@ import com.fleeksoft.ksoup.network.parseGetRequestBlocking
 import dev.tekofx.biblioteques.dto.LibraryResponse
 import dev.tekofx.biblioteques.model.library.Library
 import dev.tekofx.biblioteques.repository.LibraryRepository
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -54,64 +59,64 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
      * @param pointId
      * @param libraryUrl
      */
+    @OptIn(DelicateCoroutinesApi::class)
     fun getLibrary(pointId: String?, libraryUrl: String?) {
         Log.d(
             "LibraryVewModel",
             "getLibrary called with pointId: $pointId"
         )
+        isLoading.postValue(true)
+        _currentLibrary.postValue(null)
 
-        var redirectedUrl = ""
+        GlobalScope.launch(Dispatchers.IO) {
 
-        var library: Library? = when {
-            pointId != null -> _libraries.value?.find { library: Library -> library.id == pointId }
-            libraryUrl != null -> _libraries.value?.find { library: Library ->
-                library.bibliotecaVirtualUrl?.contains(
-                    libraryUrl
-                ) == true
-            }
+            var redirectedUrl = ""
 
-
-            else -> {
-                null
-            }
-        }
-
-        //TODO: Improve the implementation
-
-        /**
-         * Sometimes the URL in a BookCopy is not the same as its corresponding [Library] in [_libraries].
-         * But this the URL can redirect to the correct URL. Check if it redirects
-         */
-        if (library == null && !libraryUrl.isNullOrEmpty()) {
-            val doc =
-                Ksoup.parseGetRequestBlocking("https://bibliotecavirtual.diba.cat/$libraryUrl")
-            redirectedUrl =
-                doc.location()?.replace(Regex("^https?://bibliotecavirtual\\.diba\\.cat/"), "")
-                    ?.removeSuffix("?") ?: ""
-        }
-
-        println(redirectedUrl)
-        println(libraryUrl)
-
-        if (redirectedUrl.isNotEmpty() && redirectedUrl != libraryUrl) {
-            library =
-                _libraries.value?.find { it: Library ->
-                    it.bibliotecaVirtualUrl?.contains(
-                        redirectedUrl
+            var library: Library? = when {
+                pointId != null -> _libraries.value?.find { library: Library -> library.id == pointId }
+                libraryUrl != null -> _libraries.value?.find { library: Library ->
+                    library.bibliotecaVirtualUrl?.contains(
+                        libraryUrl
                     ) == true
-
                 }
 
-            println(library)
 
-        }
+                else -> {
+                    null
+                }
+            }
 
-        if (library == null) {
-            errorMessage.postValue("Error: No s'ha pogut obtenir la biblioteca")
-        } else {
-            errorMessage.postValue("")
+            /**
+             * Sometimes the URL in a BookCopy is not the same as its corresponding [Library] in [_libraries].
+             * But this the URL can redirect to the correct URL. Check if it redirects
+             */
+            if (library == null && !libraryUrl.isNullOrEmpty()) {
+                val doc =
+                    Ksoup.parseGetRequestBlocking("https://bibliotecavirtual.diba.cat/$libraryUrl")
+                redirectedUrl =
+                    doc.location()?.replace(Regex("^https?://bibliotecavirtual\\.diba\\.cat/"), "")
+                        ?.removeSuffix("?") ?: ""
+            }
+
+            if (redirectedUrl.isNotEmpty() && redirectedUrl != libraryUrl) {
+                library =
+                    _libraries.value?.find { it: Library ->
+                        it.bibliotecaVirtualUrl?.contains(
+                            redirectedUrl
+                        ) == true
+                    }
+            }
+
+            withContext(Dispatchers.Main) {
+                if (library == null) {
+                    errorMessage.postValue("Error: No s'ha pogut obtenir la biblioteca")
+                } else {
+                    errorMessage.postValue("")
+                }
+                _currentLibrary.postValue(library)
+                isLoading.postValue(false)
+            }
         }
-        _currentLibrary.postValue(library)
 
 
     }

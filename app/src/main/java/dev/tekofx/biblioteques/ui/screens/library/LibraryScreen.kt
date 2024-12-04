@@ -78,48 +78,54 @@ fun LibraryScreen(
         libraryViewModel.getLibrary(pointID, libraryUrl)
     }
 
-    currentLibrary?.let { library ->
-        Column(
-            modifier = Modifier
-                .padding(bottom = 10.dp)
-        ) {
+    if (currentLibrary == null || isLoading) {
+        Loader(isLoading, "Obtenint Data", errorMessage)
 
-            AsyncImage(
-                model = library.image,
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(2F)
-                    .clip(RoundedCornerShape(10.dp)),
-                contentScale = ContentScale.Crop
-            )
+    } else {
+        currentLibrary?.let { library ->
+
             Column(
                 modifier = Modifier
-                    .padding(horizontal = 20.dp)
-                    .padding(top = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(5.dp)
+                    .padding(bottom = 10.dp)
             ) {
-                Text(text = library.adrecaNom, style = Typography.headlineMedium)
-                Text(text = library.municipality, style = Typography.headlineSmall)
-                StatusBadge(
-                    library.getStatusColor(),
-                    library.generateStateMessage(LocalDate.now(), LocalTime.now()),
-                    Typography.titleLarge
+
+                AsyncImage(
+                    model = library.image,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(2F)
+                        .clip(RoundedCornerShape(10.dp)),
+                    contentScale = ContentScale.Crop
                 )
-                TabRowComponent(
-                    tabEntries = tabEntries,
-                    contentScreens = listOf(
-                        { LibraryTimetable(library) },
-                        { LibraryLocation(library) },
-                        { LibraryContact(library) },
-                    ),
-                    modifier = Modifier.fillMaxSize(),
-                )
+                Column(
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp)
+                        .padding(top = 20.dp),
+                    verticalArrangement = Arrangement.spacedBy(5.dp)
+                ) {
+                    Text(text = library.adrecaNom, style = Typography.headlineMedium)
+                    Text(text = library.municipality, style = Typography.headlineSmall)
+                    StatusBadge(
+                        library.getStatusColor(),
+                        library.generateStateMessage(LocalDate.now(), LocalTime.now()),
+                        Typography.titleLarge
+                    )
+                    TabRowComponent(
+                        tabEntries = tabEntries,
+                        contentScreens = listOf(
+                            { LibraryTimetable(library) },
+                            { LibraryLocation(library) },
+                            { LibraryContact(library) },
+                        ),
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
             }
         }
-    } ?: run {
-        Loader(isLoading, "Obtenint Data", errorMessage)
+
     }
+
 }
 
 @Composable
