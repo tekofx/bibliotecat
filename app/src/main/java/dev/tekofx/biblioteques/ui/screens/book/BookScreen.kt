@@ -379,10 +379,19 @@ fun BookCopyCard(
                 .padding(10.dp)
                 .fillMaxWidth()
         ) {
-            Text(
-                text = bookCopy.location,
-                style = Typography.titleMedium
-            )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Icon(
+                    IconResource.fromDrawableResource(R.drawable.location_city).asPainterResource(),
+                    contentDescription = ""
+                )
+
+                Text(
+                    text = bookCopy.location,
+                    style = Typography.titleMedium
+                )
+            }
             Row(
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
