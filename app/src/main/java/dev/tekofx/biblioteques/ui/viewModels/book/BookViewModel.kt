@@ -377,6 +377,9 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
      */
     fun onAvailableNowChipClick() {
         _availableNowChip.value = !_availableNowChip.value
+        if (_canReserveChip.value) {
+            _canReserveChip.value = false
+        }
     }
 
     /**
@@ -384,6 +387,9 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
      */
     fun onCanReserveChipClick() {
         _canReserveChip.value = !_canReserveChip.value
+        if (_availableNowChip.value) {
+            _availableNowChip.value = false
+        }
     }
 
     /**
