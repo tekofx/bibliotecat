@@ -21,6 +21,7 @@ import dev.tekofx.biblioteques.ui.components.animations.SlideVertically
 @Composable
 fun LibraryList(
     onLibraryCardClick: (libraryId: String) -> Unit,
+    filtersApplied: Boolean,
     libraries: List<Library>,
     isLoading: Boolean
 ) {
@@ -34,7 +35,7 @@ fun LibraryList(
         visible = !isLoading,
         SlideDirection.UP,
     ) {
-        if (libraries.isEmpty()) {
+        if (libraries.isEmpty() && filtersApplied) {
             Text("No hi ha biblioteques amb aquestes filtres")
         }
 

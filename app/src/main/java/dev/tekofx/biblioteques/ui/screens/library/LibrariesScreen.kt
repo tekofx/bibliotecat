@@ -22,6 +22,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -52,6 +53,7 @@ import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModel
 import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModelFactory
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun LibrariesScreen(
@@ -81,6 +83,7 @@ fun LibrariesScreen(
     // Errors
     val errorMessage by libraryViewModel.errorMessage.observeAsState("")
 
+
     Scaffold(
         modifier = Modifier.padding(horizontal = 5.dp),
         floatingActionButton = {
@@ -101,20 +104,22 @@ fun LibrariesScreen(
             }
         }
     ) {
-
-        Loader(
-            isLoading, "Obtenint Biblioteques", errorMessage
-        )
-
-        LibraryList(
-            libraries = libraries,
-            isLoading = isLoading,
-            onLibraryCardClick = {
-                navHostController.navigate("${NavigateDestinations.LIBRARY_DETAILS_ROUTE}?pointId=${it}")
-            }
-        )
-
-
+        PullToRefreshBox(
+            isRefreshing = isLoading,
+            onRefresh = { libraryViewModel.getLibraries() },
+        ) {
+            Loader(
+                isLoading, "Obtenint Biblioteques", errorMessage
+            )
+            LibraryList(
+                libraries = libraries,
+                filtersApplied = filtersApplied,
+                isLoading = isLoading,
+                onLibraryCardClick = {
+                    navHostController.navigate("${NavigateDestinations.LIBRARY_DETAILS_ROUTE}?pointId=${it}")
+                }
+            )
+        }
 
         SearchBottomSheet(
             municipalities = municipalities,
@@ -131,6 +136,7 @@ fun LibrariesScreen(
         )
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

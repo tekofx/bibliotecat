@@ -40,6 +40,7 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
     // Loaders
     val isLoading = MutableStateFlow<Boolean>(false)
 
+
     // Inputs
     private val _queryText = MutableStateFlow("")
     val queryText = _queryText.asStateFlow()
@@ -169,9 +170,10 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
     /**
      * Gets libraries from API
      */
-    private fun getLibraries() {
+    fun getLibraries() {
         Log.d("LibraryViewModel", "getLibraries")
         isLoading.value = true
+        _libraries.value = emptyList()
         val response = repository.getLibraries()
         response.enqueue(object : Callback<LibraryResponse> {
             override fun onResponse(
