@@ -34,7 +34,7 @@ class LibraryConverterFactory : Converter.Factory() {
             val uniqueMunicipiNomValues = mutableSetOf<String>()
 
             val elementsArray = jsonObject.getJSONArray("elements")
-            val libraryList = ArrayList<Library>()
+            val libraryList = mutableListOf<Library>()
 
             // Get libraries list from bibliotecavirtual in order to get the library bibliotecavirtual url
             var doc: Document? = null
@@ -66,6 +66,7 @@ class LibraryConverterFactory : Converter.Factory() {
                 val emails = jsonArrayToStringArray(libraryElement.getJSONArray("email"))
                 val phones = jsonArrayToStringArray(libraryElement.getJSONArray("telefon_contacte"))
                 val webUrl = libraryElement.getString("url_general")
+                val location = libraryElement.getString("localitzacio")
 
                 // Get bibliotecavirtual.diba.cat url
                 var bibliotecaVirtualUrl: String? = null
@@ -79,15 +80,8 @@ class LibraryConverterFactory : Converter.Factory() {
                     bibliotecaVirtualUrl = nameTd?.selectFirst("a")?.attr("href")
                 }
 
-
-                if (pointId == "biblioteca423232") {
-                    println(emails)
-                    println(phones)
-                    println(bibliotecaVirtualUrl)
-                }
                 // Horaris
                 val (timetableHivern, timetableEstiu) = getTimetables(libraryElement)
-
 
                 val library = Library(
                     id = pointId,
@@ -99,13 +93,14 @@ class LibraryConverterFactory : Converter.Factory() {
                     emails = emails,
                     phones = phones,
                     webUrl = webUrl,
+                    location = location,
                     image = image,
                     summerSeasonTimeTable = timetableEstiu,
                     winterTimetable = timetableHivern,
                 )
-                // Rellena los demás atributos según sea necesario
                 libraryList.add(library)
             }
+            println(libraryList.size)
 
             val response = LibraryResponse(libraryList, uniqueMunicipiNomValues.toList())
             response

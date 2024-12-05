@@ -42,6 +42,7 @@ class Library(
     val bibliotecaVirtualUrl: String?,
     val emails: List<String>,
     val phones: List<String>,
+    val location: String,
     val webUrl: String,
     var image: String,
     val summerSeasonTimeTable: SeasonTimeTable,
