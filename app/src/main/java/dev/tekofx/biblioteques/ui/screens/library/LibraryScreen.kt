@@ -32,10 +32,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import coil3.request.CachePolicy
+import coil3.request.ImageRequest
+import coil3.request.crossfade
+import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.model.library.Library
 import dev.tekofx.biblioteques.model.library.LibraryDummy
 import dev.tekofx.biblioteques.model.library.SeasonTimeTable
@@ -95,9 +101,13 @@ fun LibraryScreen(
                 modifier = Modifier
                     .padding(bottom = 10.dp)
             ) {
-
                 AsyncImage(
-                    model = library.image,
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(library.image)
+                        .memoryCachePolicy(CachePolicy.ENABLED)
+                        .crossfade(true)
+                        .build(),
+                    placeholder = painterResource(R.drawable.outer),
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()
