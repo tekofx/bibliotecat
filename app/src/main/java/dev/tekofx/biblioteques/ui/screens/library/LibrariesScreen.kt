@@ -13,11 +13,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
@@ -88,19 +92,31 @@ fun LibrariesScreen(
         modifier = Modifier.padding(horizontal = 5.dp),
         floatingActionButton = {
             if (!isLoading) {
-                ExtendedFloatingActionButton(
-                    text = { Text("Filtrar") },
-                    icon = {
-                        Icon(
-                            IconResource.fromDrawableResource(R.drawable.filter_list)
-                                .asPainterResource(),
-                            contentDescription = ""
-                        )
-                    },
-                    onClick = {
-                        showBottomSheet = true
+                BadgedBox(
+                    badge = {
+                        if (filtersApplied) {
+                            Badge(
+                                modifier = Modifier.size(20.dp),
+                                containerColor = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     }
-                )
+                ) {
+
+                    ExtendedFloatingActionButton(
+                        text = { Text("Filtrar") },
+                        icon = {
+                            Icon(
+                                IconResource.fromDrawableResource(R.drawable.filter_list)
+                                    .asPainterResource(),
+                                contentDescription = ""
+                            )
+                        },
+                        onClick = {
+                            showBottomSheet = true
+                        }
+                    )
+                }
             }
         }
     ) {
