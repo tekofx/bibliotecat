@@ -17,7 +17,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.MailOutline
-import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -64,7 +63,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 val tabEntries = listOf(
-    TabEntry("Horaris", IconResource.fromImageVector(Icons.Outlined.Menu)),
+    TabEntry("Horaris", IconResource.fromDrawableResource(R.drawable.schedule)),
     TabEntry("Ubicació", IconResource.fromImageVector(Icons.Outlined.LocationOn)),
     TabEntry("Contacta", IconResource.fromImageVector(Icons.Outlined.MailOutline)),
 )
