@@ -72,7 +72,11 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
         .combine(_selectedMunicipality) { libraries, selectedMunicipality ->
             libraries.filter {
                 if (selectedMunicipality.isNotEmpty()) {
-                    it.municipality == selectedMunicipality
+                    if (selectedMunicipality == "Barcelona") {
+                        it.municipality.contains(selectedMunicipality)
+                    } else {
+                        it.municipality == selectedMunicipality
+                    }
                 } else {
                     true
                 }
