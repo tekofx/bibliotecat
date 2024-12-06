@@ -198,4 +198,5 @@ var LibraryAbrera = Library(
     image = "https://bibliotecavirtual.diba.cat/documents/346453/0/Abrera_edifici_exterior+vitrall.jpg/b5b6ae1d-a271-422e-8fe3-bf2a993a9713?t=1327512463534",
     summerSeasonTimeTable = summerTimetable,
     winterTimetable = winterTimetable,
+    location = ""
 )

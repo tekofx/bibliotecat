@@ -268,6 +268,7 @@ class LibraryTest {
             image = "imatge",
             summerSeasonTimeTable = summerTimetable,
             winterTimetable = winterTimetable,
+            location = "",
             webUrl = ""
         )
     }
