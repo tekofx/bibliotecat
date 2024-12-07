@@ -203,6 +203,9 @@ class Library(
     fun getNextIntervalOfDay(date: LocalDate, time: LocalTime): TimeInterval? {
         val dayTimeTable = getCurrentDayTimetable(date)
         val nextInterval = dayTimeTable?.timeIntervals?.find { interval ->
+            if (interval.from == null) {
+                return null
+            }
             time.isBefore(interval.from)
         }
 
