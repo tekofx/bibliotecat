@@ -136,7 +136,6 @@ class Library(
     /**
      * Gets the next season timetable based on the given date.
      *
-     * @param date The date to check.
      * @return The next season timetable.
      */
     private fun getNextSeasonTimetable(): SeasonTimeTable {
