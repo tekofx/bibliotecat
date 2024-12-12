@@ -104,6 +104,9 @@ class LibraryConverterFactory : Converter.Factory() {
                     jsonArrayToStringArray(libraryElement.getJSONArray("telefon_contacte"))
                 val webUrl = libraryElement.getString("url_general")
                 val location = libraryElement.getString("localitzacio")
+                val (latitude, longitude) = location.takeIf { it.isNotEmpty() }?.split(",")
+                    ?.map { it.toDouble() } ?: listOf(0.0, 0.0)
+
 
                 // Get bibliotecavirtual.diba.cat url
                 var bibliotecaVirtualUrl: String? = null
@@ -130,7 +133,7 @@ class LibraryConverterFactory : Converter.Factory() {
                     emails = emails,
                     phones = phones,
                     webUrl = webUrl,
-                    location = location,
+                    location = listOf(latitude, longitude),
                     image = image,
                     summerSeasonTimeTable = timetableEstiu,
                     winterTimetable = timetableHivern,

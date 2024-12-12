@@ -21,6 +21,8 @@ navigationCompose = "2.8.4"
 navigationFragmentKtx = "2.6.0"
 navigationUiKtx = "2.6.0"
 activity = "1.8.0"
+osmAndroidCompose = "6.1.6."
+osmdroidAndroid = "6.1.16"
 robolectric = "4.7.3"
 runtimeLivedata = "1.7.4"
 uiToolingPreviewAndroid = "1.7.4"
@@ -56,6 +58,8 @@ material3 = { module = "androidx.compose.material3:material3" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
 mockwebserver = { module = "com.squareup.okhttp3:mockwebserver", version.ref = "mockwebserver" }
+osm-android-compose = { module = "tech.utsmankece:osm-android-compose", version = "0.0.5" }
+osmdroid-android = { module = "org.osmdroid:osmdroid-android", version.ref = "osmdroidAndroid" }
 picasso = { module = "com.squareup.picasso:picasso", version = "2.71828" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version = "2.11.0" }
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }

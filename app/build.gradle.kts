@@ -62,6 +62,10 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.activity)
 
+    // Open Street Maps
+    implementation(libs.osm.android.compose)
+    implementation(libs.osmdroid.android)
+
     implementation(libs.androidx.core.splashscreen)
 
     implementation(libs.picasso)
