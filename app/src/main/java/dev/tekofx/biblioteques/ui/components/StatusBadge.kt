@@ -25,6 +25,7 @@ fun StatusBadge(
     val color = when (statusColor) {
         StatusColor.GREEN -> R.color.green_open
         StatusColor.YELLOW -> R.color.yellow_soon
+        StatusColor.ORANGE -> R.color.orange_depends
         StatusColor.RED -> R.color.red_closed
     }
 

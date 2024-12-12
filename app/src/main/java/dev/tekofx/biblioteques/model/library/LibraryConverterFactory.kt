@@ -4,7 +4,10 @@ import android.util.Log
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.network.parseGetRequestBlocking
 import com.fleeksoft.ksoup.nodes.Document
+import dev.tekofx.biblioteques.call.HolidayService
 import dev.tekofx.biblioteques.dto.LibraryResponse
+import dev.tekofx.biblioteques.model.HolidayDay
+import dev.tekofx.biblioteques.repository.HolidayRepository
 import okhttp3.ResponseBody
 import org.json.JSONArray
 import org.json.JSONObject
@@ -21,7 +24,7 @@ import java.time.format.DateTimeParseException
 class LibraryConverterFactory : Converter.Factory() {
 
     private val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("[H:mm][HH:mm]")
-
+    private val holidaryRepository = HolidayRepository(HolidayService.getInstance())
 
     override fun responseBodyConverter(
         type: Type, annotations: Array<Annotation>, retrofit: Retrofit
@@ -35,6 +38,7 @@ class LibraryConverterFactory : Converter.Factory() {
 
             val elementsArray = jsonObject.getJSONArray("elements")
             val libraryList = mutableListOf<Library>()
+            var holidays: List<HolidayDay> = emptyList()
 
             // Get libraries list from bibliotecavirtual in order to get the library bibliotecavirtual url
             var doc: Document? = null
@@ -48,10 +52,41 @@ class LibraryConverterFactory : Converter.Factory() {
                     "Error getting bibliotecavirtual.diba.cat: $exception"
                 )
             }
+
+//            val test3 =
+//                "https://analisi.transparenciacatalunya.cat/resource/b4eh-r8up.json?\$query=SELECT%0A%20%20`any_calendari`%2C%0A%20%20`data`%2C%0A%20%20`ajuntament_o_nucli_municipal`%2C%0A%20%20`codi_municipal`%2C%0A%20%20`codi_municipi_ine`%2C%0A%20%20`pedania`%2C%0A%20%20`festiu`%2C%0A%20%20`codiidescat`%0AWHERE%20`any_calendari`%20IN%20(%222024%22)"
+//            val holidayResponse = holidaryRepository.getJson(test3)
+//            holidayResponse.enqueue(object : Callback<HolidayResponse> {
+//                override fun onResponse(
+//                    call: Call<HolidayResponse>,
+//                    response: Response<HolidayResponse>
+//                ) {
+//                    val res = response.body() ?: return onFailure(
+//                        call,
+//                        Throwable("Response Body null")
+//                    )
+//                    val url = call.request().url
+//                    holidays = res.body
+//                    println("Request URL: $url")
+//                    println(res.body)
+//                }
+//
+//                override fun onFailure(call: Call<HolidayResponse>, t: Throwable) {
+//
+//                    Log.d("LibraryConverterFactoryHoliday", "get error ${t.toString()}")
+//                    val url = call.request().url
+//                    println("Request URL: $url")
+//                }
+//            })
+//
+//            holidays.forEach { holiday ->
+//                println(holiday)
+//            }
+
+
             for (i in 0 until elementsArray.length()) {
 
                 val libraryElement = elementsArray.getJSONObject(i)
-
 
                 val imageArray = libraryElement.getJSONArray("imatge")
                 val pointId = libraryElement.getString("punt_id")
@@ -60,11 +95,13 @@ class LibraryConverterFactory : Converter.Factory() {
                 val municipalityName =
                     libraryElement.getJSONObject("grup_adreca").getString("municipi_nom")
                 uniqueMunicipiNomValues.add(municipalityName)
+                val postalCode = libraryElement.getJSONObject("rel_municipis").getString("ine")
                 val addressFull =
                     libraryElement.getJSONObject("grup_adreca").getString("adreca_completa")
                 val image = if (imageArray.length() > 0) imageArray.getString(0) else ""
                 val emails = jsonArrayToStringArray(libraryElement.getJSONArray("email"))
-                val phones = jsonArrayToStringArray(libraryElement.getJSONArray("telefon_contacte"))
+                val phones =
+                    jsonArrayToStringArray(libraryElement.getJSONArray("telefon_contacte"))
                 val webUrl = libraryElement.getString("url_general")
                 val location = libraryElement.getString("localitzacio")
 
@@ -97,10 +134,10 @@ class LibraryConverterFactory : Converter.Factory() {
                     image = image,
                     summerSeasonTimeTable = timetableEstiu,
                     winterTimetable = timetableHivern,
+                    postalCode = postalCode
                 )
                 libraryList.add(library)
             }
-            println(libraryList.size)
 
             val response = LibraryResponse(libraryList, uniqueMunicipiNomValues.toList())
             response

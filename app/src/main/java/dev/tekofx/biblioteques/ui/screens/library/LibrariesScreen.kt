@@ -40,12 +40,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import dev.tekofx.biblioteques.R
-import dev.tekofx.biblioteques.call.LibraryService
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
-import dev.tekofx.biblioteques.repository.LibraryRepository
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.Loader
 import dev.tekofx.biblioteques.ui.components.input.SearchBar
@@ -54,7 +51,6 @@ import dev.tekofx.biblioteques.ui.components.input.TextIconButtonOutlined
 import dev.tekofx.biblioteques.ui.components.library.LibraryList
 import dev.tekofx.biblioteques.ui.theme.Typography
 import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModel
-import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModelFactory
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,11 +58,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun LibrariesScreen(
     navHostController: NavHostController,
-    libraryViewModel: LibraryViewModel = viewModel(
-        factory = LibraryViewModelFactory(
-            LibraryRepository(LibraryService.getInstance())
-        )
-    )
+    libraryViewModel: LibraryViewModel
 ) {
 
     // Data

@@ -1,5 +1,6 @@
 package dev.tekofx.biblioteques.model.library
 
+import dev.tekofx.biblioteques.model.HolidayDay
 import dev.tekofx.biblioteques.model.StatusColor
 import dev.tekofx.biblioteques.utils.formatDayOfWeek
 import java.time.Duration
@@ -38,6 +39,7 @@ class Library(
     val adrecaNom: String,
     val description: String,
     val municipality: String,
+    val postalCode: String,
     val address: String,
     val bibliotecaVirtualUrl: String?,
     val emails: List<String>,
@@ -47,6 +49,7 @@ class Library(
     var image: String,
     val summerSeasonTimeTable: SeasonTimeTable,
     val winterTimetable: SeasonTimeTable,
+    var holidays: List<HolidayDay> = emptyList<HolidayDay>(),
     private var currentDate: LocalDate? = null
 ) {
 
@@ -95,13 +98,19 @@ class Library(
     fun getStatusColor(): StatusColor {
         val currentDate = LocalDate.now()
         val currentTime = LocalTime.now()
-        if (isOpen(currentDate, currentTime)) {
-            if (isClosingSoon(currentDate, currentTime)) {
-                return StatusColor.YELLOW
+
+        this.holidays.find { it.date == currentDate }
+            ?.let { return StatusColor.ORANGE }
+        return when {
+            isOpen(currentDate, currentTime) -> {
+                if (isClosingSoon(currentDate, currentTime)) {
+                    StatusColor.YELLOW
+                } else {
+                    StatusColor.GREEN
+                }
             }
-            return StatusColor.GREEN
-        } else {
-            return StatusColor.RED
+
+            else -> StatusColor.RED
         }
     }
 
@@ -221,6 +230,15 @@ class Library(
      * @return A message indicating the state of the library.
      */
     fun generateStateMessage(date: LocalDate, time: LocalTime): String {
+
+        val holiday = this.holidays.find {
+            it.date == date
+        }
+
+        if (holiday != null) {
+            return "Festiu ${holiday.holiday}"
+        }
+
         if (isOpen(date, time)) {
             val currentInterval = getCurrentInterval(date, time)!!
 

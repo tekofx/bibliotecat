@@ -11,9 +11,10 @@
     <color name="light_blue_600">#FF039BE5</color>
     <color name="gray_400">#FFBDBDBD</color>
     <color name="gray_600">#FF757575</color>
-    <color name="green_open">#FF32CD32</color>
     <color name="red_closed">#FFFF0000</color>
+    <color name="orange_depends">#FF6600</color>
     <color name="yellow_soon">#FFFFEB3B</color>
+    <color name="green_open">#FF32CD32</color>
 
 
 </resources>

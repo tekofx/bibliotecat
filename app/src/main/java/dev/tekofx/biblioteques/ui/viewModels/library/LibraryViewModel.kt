@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.network.parseGetRequestBlocking
-import dev.tekofx.biblioteques.dto.LibraryResponse
 import dev.tekofx.biblioteques.model.library.Library
 import dev.tekofx.biblioteques.repository.LibraryRepository
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -20,9 +19,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -174,31 +170,13 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
         Log.d("LibraryViewModel", "getLibraries")
         isLoading.value = true
         _libraries.value = emptyList()
-        val response = repository.getLibraries()
-        response.enqueue(object : Callback<LibraryResponse> {
-            override fun onResponse(
-                call: Call<LibraryResponse>,
-                response: Response<LibraryResponse>
-            ) {
-                val responseBody = response.body() ?: return onFailure(
-                    call,
-                    Throwable("Response Body null")
-                )
-                val municipalitiesResponse = responseBody.municipalities.plus("Barcelona")
-
-                _libraries.value = responseBody.elements
-                municipalities.value = municipalitiesResponse
-                isLoading.value = false
-                errorMessage.postValue("")
-            }
-
-            override fun onFailure(call: Call<LibraryResponse>, t: Throwable) {
-                Log.d("LibraryViewModel", "getLibraries error ${t.message}")
-                errorMessage.postValue("Error: No s'han pogut carregar les biblioteques")
-                isLoading.value = false
-            }
-        })
-
+        viewModelScope.launch {
+            val response = repository.getLibraries()
+            _libraries.value = response.elements
+            municipalities.value = response.municipalities
+            isLoading.value = false
+            errorMessage.postValue("")
+        }
     }
 
 

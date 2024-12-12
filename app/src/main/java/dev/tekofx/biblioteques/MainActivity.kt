@@ -25,10 +25,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dev.tekofx.biblioteques.call.BookService
+import dev.tekofx.biblioteques.call.HolidayService
 import dev.tekofx.biblioteques.call.LibraryService
 import dev.tekofx.biblioteques.navigation.Navigation
 import dev.tekofx.biblioteques.navigation.showBottomAppBar
 import dev.tekofx.biblioteques.repository.BookRepository
+import dev.tekofx.biblioteques.repository.HolidayRepository
 import dev.tekofx.biblioteques.repository.LibraryRepository
 import dev.tekofx.biblioteques.repository.PreferencesRepository
 import dev.tekofx.biblioteques.ui.components.BottomNavigationBar
@@ -51,7 +53,13 @@ class MainActivity : ComponentActivity() {
 
         val libraryViewModel = ViewModelProvider(
             this,
-            LibraryViewModelFactory(LibraryRepository(LibraryService.getInstance()))
+            LibraryViewModelFactory(
+                LibraryRepository(
+                    LibraryService.getInstance(),
+                    HolidayService.getInstance()
+                ),
+                HolidayRepository(HolidayService.getInstance())
+            )
         )[LibraryViewModel::class.java]
 
         val bookViewModel = ViewModelProvider(
