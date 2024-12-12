@@ -2,6 +2,7 @@ package dev.tekofx.biblioteques.ui.components
 
 import android.graphics.drawable.Drawable
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.utsman.osmandcompose.DefaultMapProperties
@@ -40,19 +42,20 @@ fun Map(library: Library) {
     }
     SideEffect {
         mapProperties = mapProperties
+            .copy(isMultiTouchControls = false)
+            .copy(isAnimating = false)
+            .copy(isFlingEnable = false)
+            .copy(isEnableRotationGesture = false)
             .copy(isTilesScaledToDpi = true)
             .copy(tileSources = TileSourceFactory.DEFAULT_TILE_SOURCE)
-            .copy(isEnableRotationGesture = false)
             .copy(zoomButtonVisibility = ZoomButtonVisibility.NEVER)
-            .copy(isMultiTouchControls = false)
-            .copy(isFlingEnable = false)
-            .copy(isAnimating = false)
     }
     val cameraState = rememberCameraState {
         geoPoint = GeoPoint(
             library.location[0],
             library.location[1]
         )
+        speed = 0L
         zoom = 18.0 // optional, default is 5.0
     }
 
@@ -72,10 +75,14 @@ fun Map(library: Library) {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-    ) {
+    )
+    {
         OpenStreetMap(
             cameraState = cameraState,
-            properties = mapProperties
+            properties = mapProperties,
+            modifier = Modifier.pointerInput(Unit) {
+                detectDragGestures { _, _ -> } // Disable Drag
+            }
         ) {
             Marker(
                 icon = depokIcon,
