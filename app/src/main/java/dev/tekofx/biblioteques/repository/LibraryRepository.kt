@@ -6,19 +6,34 @@ import dev.tekofx.biblioteques.dto.LibraryResponse
 import dev.tekofx.biblioteques.model.HolidayDay
 import dev.tekofx.biblioteques.model.library.Library
 import retrofit2.awaitResponse
+import java.time.LocalDate
 
 class LibraryRepository(
     private val libraryService: LibraryService,
     private val holidayService: HolidayService
 ) {
     suspend fun getLibraries(): LibraryResponse {
-        val year = 2024
-
+        val year = LocalDate.now().year
         val localHolidayDaysUrl =
-            "https://analisi.transparenciacatalunya.cat/resource/b4eh-r8up.json?\$query=SELECT%0A%20%20`any_calendari`%2C%0A%20%20`data`%2C%0A%20%20`ajuntament_o_nucli_municipal`%2C%0A%20%20`codi_municipal`%2C%0A%20%20`codi_municipi_ine`%2C%0A%20%20`pedania`%2C%0A%20%20`festiu`%2C%0A%20%20`codiidescat`%0AWHERE%20`any_calendari`%20IN%20(%22$year%22)"
+            "https://analisi.transparenciacatalunya.cat/resource/b4eh-r8up.json?\$query=SELECT\n" +
+                    "  `any_calendari`,\n" +
+                    "  `data`,\n" +
+                    "  `ajuntament_o_nucli_municipal`,\n" +
+                    "  `codi_municipi_ine`,\n" +
+                    "  `festiu`\n" +
+                    "WHERE\n" +
+                    "  (`any_calendari` = \"2024\")\n" +
+                    "  AND (caseless_starts_with(`codi_municipi_ine`, \"08\")\n" +
+                    "         AND (caseless_ne(`ajuntament_o_nucli_municipal`, \"null\")\n" +
+                    "                AND caseless_ne(\n" +
+                    "                  `ajuntament_o_nucli_municipal`,\n" +
+                    "                  \"C. A. de Catalunya\"\n" +
+                    "                )))\n" +
+                    "ORDER BY `data` ASC NULL LAST"
+
 
         val cataloniaHolidayDaysUrl =
-            "https://analisi.transparenciacatalunya.cat/resource/8qnu-agns.json?\$query=SELECT%20%60codi%60%2C%20%60any%60%2C%20%60data%60%2C%20%60nom_del_festiu%60%20WHERE%20%60any%60%20IN%20(%22$year%22)"
+            "https://analisi.transparenciacatalunya.cat/resource/8qnu-agns.json?\$query=SELECT `codi`, `any`, `data`, `nom_del_festiu` WHERE `any` IN (\"$year\")"
         val librariesResponse = libraryService.getLibraries().awaitResponse()
         val localHolidayDaysResponse = holidayService.getJson(localHolidayDaysUrl).awaitResponse()
         val cataloniaHolidayDaysResponse =
