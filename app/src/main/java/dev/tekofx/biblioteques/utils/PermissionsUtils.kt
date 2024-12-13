@@ -1,4 +1,4 @@
-package dev.tekofx.biblioteques
+package dev.tekofx.biblioteques.utils
 
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
