@@ -57,13 +57,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import dev.tekofx.biblioteques.R
-import dev.tekofx.biblioteques.RequestLocationPermissionUsingRememberLauncherForActivityResult
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.ColumnContainer
 import dev.tekofx.biblioteques.ui.components.input.TextIconButton
 import dev.tekofx.biblioteques.ui.theme.Typography
 import dev.tekofx.biblioteques.ui.viewModels.preferences.PreferencesViewModel
+import dev.tekofx.biblioteques.utils.RequestLocationPermissionUsingRememberLauncherForActivityResult
 
 @OptIn(ExperimentalAnimationApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

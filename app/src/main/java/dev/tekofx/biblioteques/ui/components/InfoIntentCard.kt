@@ -1,12 +1,6 @@
 package dev.tekofx.biblioteques.ui.components
 
 
-import android.content.ActivityNotFoundException
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -31,25 +25,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.theme.Typography
+import dev.tekofx.biblioteques.utils.IntentType
+import dev.tekofx.biblioteques.utils.openApp
 
-enum class ContactType {
-    MAIL,
-    PHONE,
-    WEB,
-    LOCATION
-}
 
 @Composable
-fun InfoIntentCard(contactType: ContactType, text: String) {
+fun InfoIntentCard(contactType: IntentType, text: String) {
     val context = LocalContext.current
-
 
     val iconResource = remember(contactType) {
         when (contactType) {
-            ContactType.MAIL -> IconResource.fromImageVector(Icons.Outlined.MailOutline)
-            ContactType.PHONE -> IconResource.fromImageVector(Icons.Outlined.Phone)
-            ContactType.WEB -> IconResource.fromImageVector(Icons.Outlined.Info)
-            ContactType.LOCATION -> IconResource.fromImageVector(Icons.Outlined.LocationOn)
+            IntentType.MAIL -> IconResource.fromImageVector(Icons.Outlined.MailOutline)
+            IntentType.PHONE -> IconResource.fromImageVector(Icons.Outlined.Phone)
+            IntentType.WEB -> IconResource.fromImageVector(Icons.Outlined.Info)
+            IntentType.LOCATION -> IconResource.fromImageVector(Icons.Outlined.LocationOn)
         }
     }
 
@@ -81,26 +70,3 @@ fun InfoIntentCard(contactType: ContactType, text: String) {
     }
 }
 
-fun openApp(context: Context, contactType: ContactType, data: String) {
-
-    val uri = when (contactType) {
-        ContactType.PHONE -> Uri.parse("tel:${Uri.encode("+34$data")}")
-        ContactType.MAIL -> Uri.parse("mailto:${Uri.encode(data)}")
-        ContactType.WEB -> Uri.parse(Uri.encode(data))
-        ContactType.LOCATION -> Uri.parse("geo:0,0?q=${Uri.encode(data)}")
-    }
-
-    val intent = Intent(
-        Intent.ACTION_VIEW,
-        uri
-    )
-
-    try {
-        context.startActivity(intent)
-    } catch (e: ActivityNotFoundException) {
-        Log.e("LibraryContactCard", e.toString())
-        Toast.makeText(context, "No app installed to manage $contactType", Toast.LENGTH_SHORT)
-            .show()
-    }
-
-}
