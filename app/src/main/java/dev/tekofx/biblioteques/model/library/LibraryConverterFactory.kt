@@ -4,10 +4,7 @@ import android.util.Log
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.network.parseGetRequestBlocking
 import com.fleeksoft.ksoup.nodes.Document
-import dev.tekofx.biblioteques.call.HolidayService
 import dev.tekofx.biblioteques.dto.LibraryResponse
-import dev.tekofx.biblioteques.model.HolidayDay
-import dev.tekofx.biblioteques.repository.HolidayRepository
 import okhttp3.ResponseBody
 import org.json.JSONArray
 import org.json.JSONObject
@@ -24,7 +21,6 @@ import java.time.format.DateTimeParseException
 class LibraryConverterFactory : Converter.Factory() {
 
     private val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("[H:mm][HH:mm]")
-    private val holidaryRepository = HolidayRepository(HolidayService.getInstance())
 
     override fun responseBodyConverter(
         type: Type, annotations: Array<Annotation>, retrofit: Retrofit
@@ -38,7 +34,6 @@ class LibraryConverterFactory : Converter.Factory() {
 
             val elementsArray = jsonObject.getJSONArray("elements")
             val libraryList = mutableListOf<Library>()
-            var holidays: List<HolidayDay> = emptyList()
 
             // Get libraries list from bibliotecavirtual in order to get the library bibliotecavirtual url
             var doc: Document? = null
