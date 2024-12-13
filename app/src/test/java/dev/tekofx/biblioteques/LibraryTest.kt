@@ -268,7 +268,8 @@ class LibraryTest {
             image = "imatge",
             summerSeasonTimeTable = summerTimetable,
             winterTimetable = winterTimetable,
-            location = "",
+            location = listOf(123.0, 23.3),
+            postalCode = "09",
             webUrl = ""
         )
     }

@@ -1,6 +1,8 @@
 package dev.tekofx.biblioteques
 
+import dev.tekofx.biblioteques.call.HolidayService
 import dev.tekofx.biblioteques.call.LibraryService
+import dev.tekofx.biblioteques.model.HolidayConverterFactory
 import dev.tekofx.biblioteques.model.library.LibraryConverterFactory
 import dev.tekofx.biblioteques.repository.LibraryRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -32,14 +34,21 @@ class LibraryConverterFactoryTest {
         .writeTimeout(1, TimeUnit.SECONDS)
         .build()
 
-    private val api = Retrofit.Builder()
+    private val libraryApi = Retrofit.Builder()
         .baseUrl(mockWebServer.url("/"))
         .client(client)
         .addConverterFactory(LibraryConverterFactory())
         .build()
         .create(LibraryService::class.java)
 
-    private val sut = LibraryRepository(api)
+    private val holidayApi = Retrofit.Builder()
+        .baseUrl(mockWebServer.url("/"))
+        .client(client)
+        .addConverterFactory(HolidayConverterFactory())
+        .build()
+        .create(HolidayService::class.java)
+
+    private val sut = LibraryRepository(libraryApi, holidayApi)
 
     @After
     fun tearDown() {
@@ -56,11 +65,11 @@ class LibraryConverterFactoryTest {
         )
 
         runBlocking {
-            val actual = sut.getLibraries().execute()
+            val actual = sut.getLibraries()
             assertNotNull(actual)
-            val libraries = actual.body()?.elements
+            val libraries = actual.elements
             assertNotNull(libraries)
-            assertEquals(236, libraries!!.size)
+            assertEquals(236, libraries.size)
             assertEquals(LibraryAbrera, libraries[0])
         }
     }
