@@ -51,7 +51,6 @@ import dev.tekofx.biblioteques.model.library.SeasonTimeTable
 import dev.tekofx.biblioteques.model.library.seasonTranslation
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.Accordion
-import dev.tekofx.biblioteques.ui.components.ContactType
 import dev.tekofx.biblioteques.ui.components.InfoIntentCard
 import dev.tekofx.biblioteques.ui.components.Loader
 import dev.tekofx.biblioteques.ui.components.Map
@@ -62,6 +61,7 @@ import dev.tekofx.biblioteques.ui.components.input.SegmentedButtonItem
 import dev.tekofx.biblioteques.ui.components.input.SegmentedButtons
 import dev.tekofx.biblioteques.ui.theme.Typography
 import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModel
+import dev.tekofx.biblioteques.utils.IntentType
 import dev.tekofx.biblioteques.utils.formatDate
 import dev.tekofx.biblioteques.utils.formatDayOfWeek
 import org.osmdroid.config.Configuration
@@ -277,21 +277,21 @@ fun LibraryContact(library: Library) {
 
         library.emails.forEach {
             InfoIntentCard(
-                contactType = ContactType.MAIL,
+                contactType = IntentType.MAIL,
                 text = it
             )
         }
 
         library.phones.forEach {
             InfoIntentCard(
-                contactType = ContactType.PHONE,
+                contactType = IntentType.PHONE,
                 text = it
             )
         }
 
         if (library.webUrl.isNotEmpty()) {
             InfoIntentCard(
-                ContactType.WEB,
+                IntentType.WEB,
                 library.webUrl
             )
         }
@@ -302,7 +302,7 @@ fun LibraryContact(library: Library) {
 @Composable
 fun LibraryLocation(library: Library) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        InfoIntentCard(ContactType.LOCATION, library.address)
+        InfoIntentCard(IntentType.LOCATION, library.address)
         Map(library)
     }
 }
