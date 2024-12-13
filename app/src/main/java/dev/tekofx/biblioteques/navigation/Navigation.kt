@@ -159,6 +159,10 @@ fun Navigation(
 
         composable(
             route = NavigateDestinations.MAP_ROUTE + "?pointId={pointId}",
+            enterTransition = ::slideInToTop,
+            exitTransition = ::slideOutToBottom,
+            popEnterTransition = ::slideInToTop,
+            popExitTransition = ::slideOutToBottom,
             arguments = listOf(
                 navArgument("pointId") {
                     type = NavType.StringType
