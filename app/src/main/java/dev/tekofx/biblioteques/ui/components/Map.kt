@@ -2,7 +2,7 @@ package dev.tekofx.biblioteques.ui.components
 
 import android.graphics.drawable.Drawable
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -95,7 +95,7 @@ fun Map(library: Library) {
             },
             modifier = Modifier
                 .pointerInput(Unit) {
-                    detectDragGestures { _, _ -> } // Disable Drag
+                    detectVerticalDragGestures { _, _ -> } // Disable Drag
                 }
         ) {
             Marker(
