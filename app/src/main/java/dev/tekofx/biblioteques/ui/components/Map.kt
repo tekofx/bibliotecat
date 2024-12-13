@@ -25,18 +25,42 @@ import com.utsman.osmandcompose.rememberCameraState
 import com.utsman.osmandcompose.rememberMarkerState
 import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.model.library.Library
+import dev.tekofx.biblioteques.utils.IntentType
+import dev.tekofx.biblioteques.utils.openApp
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 
 @Composable
 fun Map(library: Library) {
-    // define camera state
-    val depokMarkerState = rememberMarkerState(
+    val context = LocalContext.current
+
+    val cameraState = rememberCameraState {
+        geoPoint = GeoPoint(
+            library.location[0],
+            library.location[1]
+        )
+        speed = 0L
+        zoom = 18.0 // optional, default is 5.0
+    }
+
+    // Marker
+    val markerState = rememberMarkerState(
         geoPoint = GeoPoint(
             library.location[0],
             library.location[1]
         )
     )
+
+    val markerIcon: Drawable? by remember {
+        mutableStateOf(
+            AppCompatResources.getDrawable(
+                context,
+                R.drawable.local_library
+            )
+        )
+    }
+
+    // Map properties
     var mapProperties by remember {
         mutableStateOf(DefaultMapProperties)
     }
@@ -49,44 +73,34 @@ fun Map(library: Library) {
             .copy(isTilesScaledToDpi = true)
             .copy(tileSources = TileSourceFactory.DEFAULT_TILE_SOURCE)
             .copy(zoomButtonVisibility = ZoomButtonVisibility.NEVER)
-    }
-    val cameraState = rememberCameraState {
-        geoPoint = GeoPoint(
-            library.location[0],
-            library.location[1]
-        )
-        speed = 0L
-        zoom = 18.0 // optional, default is 5.0
+            .copy(minZoomLevel = 18.0)
+            .copy(maxZoomLevel = 18.0)
     }
 
-    val context = LocalContext.current
-    // define marker icon
-    val depokIcon: Drawable? by remember {
-        mutableStateOf(
-            AppCompatResources.getDrawable(
-                context,
-                R.drawable.local_library
-            )
-        )
-    }
-
-    // add node
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(10.dp))
     )
     {
         OpenStreetMap(
             cameraState = cameraState,
             properties = mapProperties,
-            modifier = Modifier.pointerInput(Unit) {
-                detectDragGestures { _, _ -> } // Disable Drag
-            }
+            onMapClick = {
+                openApp(
+                    context,
+                    IntentType.LOCATION,
+                    "${library.location[0]},${library.location[1]}"
+                )
+            },
+            modifier = Modifier
+                .pointerInput(Unit) {
+                    detectDragGestures { _, _ -> } // Disable Drag
+                }
         ) {
             Marker(
-                icon = depokIcon,
-                state = depokMarkerState // add marker state
+                icon = markerIcon,
+                state = markerState
             )
         }
     }
