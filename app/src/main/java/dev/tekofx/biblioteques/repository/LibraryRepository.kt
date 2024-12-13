@@ -48,14 +48,7 @@ class LibraryRepository(
         val librariesWithHolidays =
             addHolidaysToLibraries(libraries, localHolidayDays, cataloniaHolidayDays)
 
-        librariesWithHolidays.forEach {
-            println(it.municipality)
-            println(it.holidays)
-        }
-
-        return LibraryResponse(libraries, municipalities)
-
-
+        return LibraryResponse(librariesWithHolidays, municipalities)
     }
 
     /**

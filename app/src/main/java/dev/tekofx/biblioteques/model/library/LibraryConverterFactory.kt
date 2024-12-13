@@ -53,37 +53,6 @@ class LibraryConverterFactory : Converter.Factory() {
                 )
             }
 
-//            val test3 =
-//                "https://analisi.transparenciacatalunya.cat/resource/b4eh-r8up.json?\$query=SELECT%0A%20%20`any_calendari`%2C%0A%20%20`data`%2C%0A%20%20`ajuntament_o_nucli_municipal`%2C%0A%20%20`codi_municipal`%2C%0A%20%20`codi_municipi_ine`%2C%0A%20%20`pedania`%2C%0A%20%20`festiu`%2C%0A%20%20`codiidescat`%0AWHERE%20`any_calendari`%20IN%20(%222024%22)"
-//            val holidayResponse = holidaryRepository.getJson(test3)
-//            holidayResponse.enqueue(object : Callback<HolidayResponse> {
-//                override fun onResponse(
-//                    call: Call<HolidayResponse>,
-//                    response: Response<HolidayResponse>
-//                ) {
-//                    val res = response.body() ?: return onFailure(
-//                        call,
-//                        Throwable("Response Body null")
-//                    )
-//                    val url = call.request().url
-//                    holidays = res.body
-//                    println("Request URL: $url")
-//                    println(res.body)
-//                }
-//
-//                override fun onFailure(call: Call<HolidayResponse>, t: Throwable) {
-//
-//                    Log.d("LibraryConverterFactoryHoliday", "get error ${t.toString()}")
-//                    val url = call.request().url
-//                    println("Request URL: $url")
-//                }
-//            })
-//
-//            holidays.forEach { holiday ->
-//                println(holiday)
-//            }
-
-
             for (i in 0 until elementsArray.length()) {
 
                 val libraryElement = elementsArray.getJSONObject(i)

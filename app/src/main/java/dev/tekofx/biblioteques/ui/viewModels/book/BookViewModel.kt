@@ -303,7 +303,6 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
         _currentBook.value = book
         val currentBookResultUrl = book.url
 
-        println(currentBookResultUrl)
         val response = repository.getBookDetails(currentBookResultUrl)
         response.enqueue(object : Callback<BookResponse> {
             override fun onResponse(
