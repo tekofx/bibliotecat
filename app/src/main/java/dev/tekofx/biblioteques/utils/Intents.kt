@@ -19,7 +19,7 @@ fun openApp(context: Context, intentType: IntentType, data: String) {
     val uri = when (intentType) {
         IntentType.PHONE -> Uri.parse("tel:${Uri.encode("+34$data")}")
         IntentType.MAIL -> Uri.parse("mailto:${Uri.encode(data)}")
-        IntentType.WEB -> Uri.parse(Uri.encode(data))
+        IntentType.WEB -> Uri.parse(data)
         IntentType.LOCATION -> Uri.parse("geo:0,0?q=${Uri.encode(data)}")
     }
 
@@ -31,7 +31,7 @@ fun openApp(context: Context, intentType: IntentType, data: String) {
     try {
         context.startActivity(intent)
     } catch (e: ActivityNotFoundException) {
-        Log.e("LibraryContactCard", e.toString())
+        Log.e("Intents", e.toString())
         Toast.makeText(context, "No app installed to manage $intentType", Toast.LENGTH_SHORT)
             .show()
     }
