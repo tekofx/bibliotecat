@@ -27,12 +27,16 @@ import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.model.library.Library
 import dev.tekofx.biblioteques.utils.IntentType
 import dev.tekofx.biblioteques.utils.openApp
+import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 
 @Composable
 fun Map(library: Library) {
     val context = LocalContext.current
+
+    // Config userAgent for OpenStreetMaps
+    Configuration.getInstance().userAgentValue = context.getString(R.string.app_name)
 
     val cameraState = rememberCameraState {
         geoPoint = GeoPoint(

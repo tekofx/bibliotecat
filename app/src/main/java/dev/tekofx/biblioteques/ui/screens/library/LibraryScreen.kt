@@ -64,7 +64,6 @@ import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModel
 import dev.tekofx.biblioteques.utils.IntentType
 import dev.tekofx.biblioteques.utils.formatDate
 import dev.tekofx.biblioteques.utils.formatDayOfWeek
-import org.osmdroid.config.Configuration
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -100,13 +99,12 @@ fun LibraryScreen(
     // Data
     val currentLibrary by libraryViewModel.currentLibrary.collectAsState()
     var isMapMoving by remember { mutableStateOf(false) }
+
     // Loader
     val isLoading by libraryViewModel.isLoading.collectAsState()
 
     // Error
     val errorMessage by libraryViewModel.errorMessage.observeAsState("")
-
-    Configuration.getInstance().userAgentValue = "MapApp"
 
     LaunchedEffect(key1 = Unit) {
         Log.d("LibraryScreen", "pointId $pointID libraryUrl $libraryUrl")
