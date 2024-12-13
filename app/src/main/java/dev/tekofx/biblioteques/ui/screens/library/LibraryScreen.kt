@@ -19,7 +19,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.MailOutline
-import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -149,12 +148,6 @@ fun LibraryScreen(
                         library.generateStateMessage(LocalDate.now(), LocalTime.now()),
                         Typography.titleLarge
                     )
-
-                    Button(
-                        onClick = { navHostController.navigate(NavigateDestinations.MAP_ROUTE + "?pointId=$pointID") }
-                    ) {
-                        Text("Test")
-                    }
 
                     TabRowComponent(
                         tabEntries = tabEntries,
