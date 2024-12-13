@@ -13,6 +13,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import dev.tekofx.biblioteques.ui.screens.MapScreen
 import dev.tekofx.biblioteques.ui.screens.TutorialScreen
 import dev.tekofx.biblioteques.ui.screens.WelcomeScreen
 import dev.tekofx.biblioteques.ui.screens.book.BookResultsScreen
@@ -95,7 +96,8 @@ fun Navigation(
             LibraryScreen(
                 pointID = pointId,
                 libraryUrl = libraryUrl,
-                libraryViewModel
+                libraryViewModel,
+                navHostController
             )
         }
         // Books
@@ -152,6 +154,21 @@ fun Navigation(
         ) { backStackEntry ->
             val bookUrl = backStackEntry.arguments!!.getString("bookUrl")!!
             BookScreen(bookUrl, navHostController, bookViewModel)
+        }
+
+
+        composable(
+            route = NavigateDestinations.MAP_ROUTE + "?pointId={pointId}",
+            arguments = listOf(
+                navArgument("pointId") {
+                    type = NavType.StringType
+                    nullable = false
+                }
+            )
+        )
+        { backStackEntry ->
+            val pointId = backStackEntry.arguments!!.getString("pointId")!!
+            MapScreen(pointId, libraryViewModel)
         }
 
     }

@@ -2,37 +2,31 @@ package dev.tekofx.biblioteques.ui.components
 
 import android.graphics.drawable.Drawable
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.compose.foundation.gestures.detectVerticalDragGestures
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import com.utsman.osmandcompose.DefaultMapProperties
+import com.utsman.osmandcompose.MapProperties
 import com.utsman.osmandcompose.Marker
 import com.utsman.osmandcompose.OpenStreetMap
-import com.utsman.osmandcompose.ZoomButtonVisibility
 import com.utsman.osmandcompose.rememberCameraState
 import com.utsman.osmandcompose.rememberMarkerState
 import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.model.library.Library
-import dev.tekofx.biblioteques.utils.IntentType
-import dev.tekofx.biblioteques.utils.openApp
 import org.osmdroid.config.Configuration
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 
+
 @Composable
-fun Map(library: Library) {
+fun Map(
+    library: Library,
+    onClick: () -> Unit,
+    properties: MapProperties = DefaultMapProperties,
+    modifier: Modifier = Modifier
+) {
     val context = LocalContext.current
 
     // Config userAgent for OpenStreetMaps
@@ -64,48 +58,17 @@ fun Map(library: Library) {
         )
     }
 
-    // Map properties
-    var mapProperties by remember {
-        mutableStateOf(DefaultMapProperties)
-    }
-    SideEffect {
-        mapProperties = mapProperties
-            .copy(isMultiTouchControls = false)
-            .copy(isAnimating = false)
-            .copy(isFlingEnable = false)
-            .copy(isEnableRotationGesture = false)
-            .copy(isTilesScaledToDpi = true)
-            .copy(tileSources = TileSourceFactory.DEFAULT_TILE_SOURCE)
-            .copy(zoomButtonVisibility = ZoomButtonVisibility.NEVER)
-            .copy(minZoomLevel = 18.0)
-            .copy(maxZoomLevel = 18.0)
-    }
 
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(10.dp))
-    )
-    {
-        OpenStreetMap(
-            cameraState = cameraState,
-            properties = mapProperties,
-            onMapClick = {
-                openApp(
-                    context,
-                    IntentType.LOCATION,
-                    "${library.location[0]},${library.location[1]}"
-                )
-            },
-            modifier = Modifier
-                .pointerInput(Unit) {
-                    detectVerticalDragGestures { _, _ -> } // Disable Drag
-                }
-        ) {
-            Marker(
-                icon = markerIcon,
-                state = markerState
-            )
-        }
+
+    OpenStreetMap(
+        cameraState = cameraState,
+        properties = properties,
+        onMapClick = { onClick() },
+        modifier = modifier
+    ) {
+        Marker(
+            icon = markerIcon,
+            state = markerState
+        )
     }
 }

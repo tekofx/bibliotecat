@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.MailOutline
+import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,7 +28,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -40,6 +40,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
@@ -49,11 +50,12 @@ import dev.tekofx.biblioteques.model.library.Library
 import dev.tekofx.biblioteques.model.library.LibraryDummy
 import dev.tekofx.biblioteques.model.library.SeasonTimeTable
 import dev.tekofx.biblioteques.model.library.seasonTranslation
+import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.Accordion
 import dev.tekofx.biblioteques.ui.components.InfoIntentCard
 import dev.tekofx.biblioteques.ui.components.Loader
-import dev.tekofx.biblioteques.ui.components.Map
+import dev.tekofx.biblioteques.ui.components.SmallMap
 import dev.tekofx.biblioteques.ui.components.StatusBadge
 import dev.tekofx.biblioteques.ui.components.TabEntry
 import dev.tekofx.biblioteques.ui.components.TabRowComponent
@@ -93,12 +95,12 @@ fun LibraryScreen(
     pointID: String?,
     libraryUrl: String?,
     libraryViewModel: LibraryViewModel,
+    navHostController: NavHostController
 ) {
     Log.d("LibraryScreen", "Navigated to $pointID")
 
     // Data
     val currentLibrary by libraryViewModel.currentLibrary.collectAsState()
-    var isMapMoving by remember { mutableStateOf(false) }
 
     // Loader
     val isLoading by libraryViewModel.isLoading.collectAsState()
@@ -116,7 +118,6 @@ fun LibraryScreen(
 
     } else {
         currentLibrary?.let { library ->
-
             Column(
                 modifier = Modifier
                     .padding(bottom = 10.dp)
@@ -149,11 +150,21 @@ fun LibraryScreen(
                         Typography.titleLarge
                     )
 
+                    Button(
+                        onClick = { navHostController.navigate(NavigateDestinations.MAP_ROUTE + "?pointId=$pointID") }
+                    ) {
+                        Text("Test")
+                    }
+
                     TabRowComponent(
                         tabEntries = tabEntries,
                         contentScreens = listOf(
                             { LibraryTimetable(library) },
-                            { LibraryLocation(library) },
+                            {
+                                LibraryLocation(library, onMapClick = {
+                                    navHostController.navigate(NavigateDestinations.MAP_ROUTE + "?pointId=$pointID")
+                                })
+                            },
                             { LibraryContact(library) },
                         ),
                         modifier = Modifier.fillMaxSize(),
@@ -298,10 +309,10 @@ fun LibraryContact(library: Library) {
 }
 
 @Composable
-fun LibraryLocation(library: Library) {
+fun LibraryLocation(library: Library, onMapClick: () -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         InfoIntentCard(IntentType.LOCATION, library.address)
-        Map(library)
+        SmallMap(library, onMapClick)
     }
 }
 
@@ -309,7 +320,7 @@ fun LibraryLocation(library: Library) {
 @Preview
 @Composable
 fun LibraryLocationPreview() {
-    LibraryLocation(LibraryDummy)
+    LibraryLocation(LibraryDummy, onMapClick = {})
 }
 
 
