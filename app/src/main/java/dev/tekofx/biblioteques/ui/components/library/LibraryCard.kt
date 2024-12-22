@@ -15,8 +15,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.model.library.Library
 import dev.tekofx.biblioteques.ui.components.StatusBadge
 import dev.tekofx.biblioteques.ui.theme.Typography
@@ -45,6 +47,7 @@ fun LibraryCard(
         ) {
             AsyncImage(
                 model = library.image,
+                placeholder = painterResource(R.drawable.local_library),
                 contentDescription = null,
                 modifier = Modifier
                     .weight(1f)

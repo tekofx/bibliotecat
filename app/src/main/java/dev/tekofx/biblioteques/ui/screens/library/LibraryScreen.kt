@@ -110,7 +110,7 @@ fun LibraryScreen(
                         .memoryCachePolicy(CachePolicy.ENABLED)
                         .crossfade(true)
                         .build(),
-                    placeholder = painterResource(R.drawable.outer),
+                    placeholder = painterResource(R.drawable.local_library),
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()
