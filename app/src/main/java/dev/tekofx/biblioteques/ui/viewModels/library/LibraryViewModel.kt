@@ -171,11 +171,18 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
         isLoading.value = true
         _libraries.value = emptyList()
         viewModelScope.launch {
-            val response = repository.getLibraries()
-            _libraries.value = response.elements
-            municipalities.value = response.municipalities
-            isLoading.value = false
-            errorMessage.postValue("")
+            try {
+
+                val response = repository.getLibraries()
+                _libraries.value = response.elements
+                municipalities.value = response.municipalities
+                isLoading.value = false
+                errorMessage.postValue("")
+            } catch (e: Exception) {
+                Log.d("LibraryViewModel", "Error: ${e.message}")
+                errorMessage.postValue("Error: No s'han pogut obtenir les biblioteques")
+                isLoading.value = false
+            }
         }
     }
 
