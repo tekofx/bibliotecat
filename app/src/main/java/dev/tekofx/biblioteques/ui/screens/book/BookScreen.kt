@@ -227,7 +227,15 @@ fun BookDetailsSegment(
                 bookDetails.description?.let {
                     InfoCard("Descripció", it)
                 }
-                InfoCard("Col·lecció", bookDetails.collections.joinToString("\n"))
+
+                if (bookDetails.collections.isNotEmpty()) {
+                    InfoCard(
+                        "Col·leccions",
+                        bookDetails.collections.joinToString(prefix = "- ", separator = "\n- ")
+                    )
+                }
+
+
                 bookDetails.isbn?.let {
                     InfoCard("ISBN", it)
                 }

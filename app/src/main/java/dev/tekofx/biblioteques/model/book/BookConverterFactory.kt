@@ -317,6 +317,7 @@ class BookConverterFactory : Converter.Factory() {
         val descriptionElement =
             doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Descripció" }
                 ?.nextElementSibling()
+
         val synopsisElement =
             doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Sinopsi" }
                 ?.nextElementSibling()
@@ -324,14 +325,37 @@ class BookConverterFactory : Converter.Factory() {
         val isbnElement =
             doc.select("td.bibInfoLabel").firstOrNull { it.text() == "ISBN" }
                 ?.nextElementSibling()
-        val collectionsElement =
+
+
+        // Get collections
+
+        val collectionBibInfoLabelElement =
             doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Col·lecció" }
+
+        val collectionsElements = mutableListOf<Element>()
+
+        val firstCollectionElement =
+            collectionBibInfoLabelElement
                 ?.nextElementSibling()
+
+        if (firstCollectionElement != null) {
+            collectionsElements.add(firstCollectionElement)
+
+            do {
+                val nextCollectionElement = firstCollectionElement.parent()?.nextElementSibling()
+                val bibInfoLabelElement =
+                    nextCollectionElement?.select("td.bibInfoLabel")?.firstOrNull()
+                val bibInfoDataElement =
+                    nextCollectionElement?.select("td.bibInfoData")?.firstOrNull()
+                if (bibInfoDataElement != null) {
+                    collectionsElements.add(bibInfoDataElement)
+                }
+            } while (bibInfoLabelElement != null)
+        }
 
         val topicElement =
             doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Tema" }
                 ?.nextElementSibling()
-
 
         val permanentUrlElement = doc.selectFirst("a#recordnum")
 
@@ -340,7 +364,7 @@ class BookConverterFactory : Converter.Factory() {
         val synopsis = synopsisElement?.text()
         val isbn = isbnElement?.text()
         val permanentUrl = permanentUrlElement?.attr("href")
-        val collections = collectionsElement?.select("a")?.map { it.text() } ?: emptyList()
+        val collections = collectionsElements.map { it.text() }
         val topic = topicElement?.text()
 
 
