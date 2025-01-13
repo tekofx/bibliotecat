@@ -70,6 +70,11 @@ class LibraryRepository(
         return localHolidayDaysResponse
     }
 
+    /**
+     * Gets the Catalonia holiday days from the API
+     * @param year: Int
+     * @return Response<HolidayResponse>?
+     */
     private suspend fun getCataloniaHolidayDaysResponse(year: Int): Response<HolidayResponse>? {
         val cataloniaHolidayDaysUrl =
             "https://analisi.transparenciacatalunya.cat/resource/8qnu-agns.json?\$query=SELECT `codi`, `any`, `data`, `nom_del_festiu` WHERE `any` IN (\"$year\")"
