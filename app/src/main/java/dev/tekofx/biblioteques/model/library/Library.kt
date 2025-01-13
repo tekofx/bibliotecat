@@ -84,6 +84,12 @@ class Library(
      * @return True if the library is open, false otherwise.
      */
     fun isOpen(date: LocalDate, hora: LocalTime): Boolean {
+
+        // Check if it is a holiday
+        this.holidays.find { it.date == date }
+            ?.let { return false }
+
+        // Check if the library is open
         val currentTimetable = getCurrentSeasonTimetable(date)
         val dayTimetable = currentTimetable.dayTimetables[date.dayOfWeek]
         return dayTimetable?.timeIntervals?.any { interval ->

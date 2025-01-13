@@ -172,7 +172,6 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
         _libraries.value = emptyList()
         viewModelScope.launch {
             try {
-
                 val response = repository.getLibraries()
                 _libraries.value = response.elements
                 municipalities.value = response.municipalities
