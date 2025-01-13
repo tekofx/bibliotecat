@@ -46,7 +46,6 @@ import dev.tekofx.biblioteques.model.library.Library
 import dev.tekofx.biblioteques.model.library.LibraryDummy
 import dev.tekofx.biblioteques.model.library.SeasonTimeTable
 import dev.tekofx.biblioteques.model.library.seasonTranslation
-import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.Accordion
 import dev.tekofx.biblioteques.ui.components.InfoIntentCard
@@ -62,6 +61,7 @@ import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModel
 import dev.tekofx.biblioteques.utils.IntentType
 import dev.tekofx.biblioteques.utils.formatDate
 import dev.tekofx.biblioteques.utils.formatDayOfWeek
+import dev.tekofx.biblioteques.utils.openApp
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -80,6 +80,8 @@ fun LibraryScreen(
     navHostController: NavHostController
 ) {
     Log.d("LibraryScreen", "Navigated to $pointID")
+
+    val currentContext = LocalContext.current
 
     // Data
     val currentLibrary by libraryViewModel.currentLibrary.collectAsState()
@@ -138,7 +140,12 @@ fun LibraryScreen(
                             { LibraryTimetable(library) },
                             {
                                 LibraryLocation(library, onMapClick = {
-                                    navHostController.navigate(NavigateDestinations.MAP_ROUTE + "?pointId=$pointID")
+                                    //navHostController.navigate(NavigateDestinations.MAP_ROUTE + "?pointId=$pointID")
+                                    openApp(
+                                        currentContext,
+                                        IntentType.LOCATION,
+                                        library.location.joinToString(",")
+                                    )
                                 })
                             },
                             { LibraryContact(library) },
