@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.Normalizer
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -54,7 +55,10 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
             if (query.isBlank()) {
                 libraries
             } else {
-                libraries.filter { it.adrecaNom.contains(query, ignoreCase = true) }
+                libraries.filter {
+                    Normalizer.normalize(it.adrecaNom, Normalizer.Form.NFD)
+                        .replace("\\p{M}".toRegex(), "").contains(query, ignoreCase = true)
+                }
             }
         }
         .combine(_showOnlyOpen) { libraries, value ->

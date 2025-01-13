@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import dev.tekofx.biblioteques.ui.components.AccordionArrow
 import dev.tekofx.biblioteques.ui.components.input.SearchBar
-
+import java.text.Normalizer
 
 @Composable
 fun AutoCompleteSelectBar(
@@ -49,13 +49,11 @@ fun AutoCompleteSelectBar(
     val topCornerRadius by animateDpAsState(if (expanded) 20.dp else 30.dp, label = "")
     val bottomCornerRadius by animateDpAsState(if (expanded) 0.dp else 30.dp, label = "")
 
-
     Column(modifier = Modifier.fillMaxWidth()) {
         SearchBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(heightTextFields)
-
                 .clickable(
                     interactionSource = interactionSource,
                     indication = null,
@@ -71,7 +69,6 @@ fun AutoCompleteSelectBar(
                 onSelectedEntry(it)
                 expanded = true
             },
-            // Perform action when the TextField is clicked
             interactionSource = remember { MutableInteractionSource() }
                 .also { interactionSource ->
                     LaunchedEffect(interactionSource) {
@@ -84,7 +81,6 @@ fun AutoCompleteSelectBar(
                 },
             label = "Municipi",
             trailingIcon = {
-
                 if (selectedEntry.isNotEmpty()) {
                     Icon(
                         modifier = Modifier
@@ -94,8 +90,7 @@ fun AutoCompleteSelectBar(
                             },
                         imageVector = Icons.Rounded.Clear,
                         contentDescription = "clear",
-
-                        )
+                    )
                 } else {
                     AccordionArrow(expanded)
                 }
@@ -117,40 +112,35 @@ fun AutoCompleteSelectBar(
                     topEnd = 0.dp,
                     bottomStart = 20.dp,
                     bottomEnd = 20.dp
-
                 )
             ) {
                 LazyColumn(
                     modifier = Modifier.heightIn(max = 200.dp),
                 ) {
-
-                    if (selectedEntry.isNotEmpty()) {
-                        items(
-                            entries.filter {
-                                it.lowercase().contains(selectedEntry.lowercase())
-                            }.sorted()
-                        ) {
-                            ItemElement(title = it) { title ->
-                                onSelectedEntry(title)
-                                expanded = false
-                            }
-                        }
+                    val normalizedSelectedEntry = selectedEntry.normalize()
+                    val filteredEntries = if (selectedEntry.isNotEmpty()) {
+                        entries.filter {
+                            it.normalize().contains(normalizedSelectedEntry, ignoreCase = true)
+                        }.sorted()
                     } else {
-                        items(
-                            entries.sorted()
-                        ) {
-                            ItemElement(title = it) { title ->
-                                onSelectedEntry(title)
-                                expanded = false
-                            }
-                        }
+                        entries.sorted()
                     }
 
+                    items(filteredEntries) {
+                        ItemElement(title = it) { title ->
+                            onSelectedEntry(title)
+                            expanded = false
+                        }
+                    }
                 }
-
             }
         }
     }
+}
+
+fun String.normalize(): String {
+    return Normalizer.normalize(this, Normalizer.Form.NFD)
+        .replace("\\p{InCombiningDiacriticalMarks}+".toRegex(), "")
 }
 
 @Composable
