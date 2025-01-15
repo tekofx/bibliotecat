@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.dto.BookResponse
+import dev.tekofx.biblioteques.exceptions.NotFound
 import dev.tekofx.biblioteques.model.BookResult
 import dev.tekofx.biblioteques.model.BookResults
 import dev.tekofx.biblioteques.model.EmptyResults
@@ -28,6 +29,7 @@ import kotlinx.coroutines.flow.stateIn
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.net.UnknownHostException
 
 val searchTypes = listOf(
     SelectItem("Qualsevol paraula", "X", IconResource.fromDrawableResource(R.drawable.abc)),
@@ -140,7 +142,16 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
             }
 
             override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
-                Log.e("BookViewModel", "Error getting search Scope: ${t.message.toString()}")
+                when (t) {
+                    is UnknownHostException -> {
+                        errorMessage.value = ""
+                    }
+
+                    else -> {
+                        errorMessage.value = ""
+                    }
+                }
+                Log.e("BookViewModel", "Error getting search Scope: ${t}")
             }
 
         })
@@ -160,7 +171,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                 call: Call<BookResponse>, response: Response<BookResponse>
             ) {
                 val resultsResponse =
-                    response.body()?.results ?: return onFailure(call, Throwable("Not Results"))
+                    response.body()?.results ?: return onFailure(call, NotFound())
 
                 _results.value = resultsResponse
                 isLoadingResults.value = false
@@ -168,8 +179,20 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
             }
 
             override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
-                Log.e("BookViewModel", "Error getting results page: ${t.message.toString()}")
-                errorMessage.value = "No hi ha resultats"
+                when (t) {
+                    is NotFound -> {
+                        errorMessage.value = "No hi ha resultats"
+                    }
+
+                    is UnknownHostException -> {
+                        errorMessage.value = "Could not connect to the server"
+                    }
+
+                    else -> {
+                        errorMessage.value = ""
+                    }
+                }
+                Log.e("BookViewModel", "Error getting results page: $t")
                 isLoadingResults.value = false
             }
 
@@ -233,19 +256,29 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                 call: Call<BookResponse>, response: Response<BookResponse>
             ) {
                 val responseResults =
-                    response.body()?.results ?: return onFailure(call, Throwable("Not Results"))
+                    response.body()?.results ?: return onFailure(call, NotFound())
                 _results.value = responseResults
                 canNavigateToResults.value = true
                 isLoadingSearch.value = false
             }
 
             override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
-                val message = when (selectedSearchType.value.value) {
-                    "X" -> "Llibre no trobat :("
-                    else -> "${selectedSearchType.value.text} no trobat :("
+
+                when (t) {
+                    is NotFound -> {
+                        val message = when (selectedSearchType.value.value) {
+                            "X" -> "Llibre no trobat :("
+                            else -> "${selectedSearchType.value.text} no trobat :("
+                        }
+                        errorMessage.value = message
+                    }
+
+                    is UnknownHostException -> {
+                        errorMessage.value = "Could not connect to the server"
+                    }
                 }
+
                 Log.e("BookViewModel", "Error finding books: ${t.message.toString()}")
-                errorMessage.value = message
                 isLoadingSearch.value = false
             }
         })
@@ -268,8 +301,6 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                 call: Call<BookResponse>,
                 response: Response<BookResponse>
             ) {
-
-
                 val responseBody =
                     response.body() ?: return onFailure(
                         call,

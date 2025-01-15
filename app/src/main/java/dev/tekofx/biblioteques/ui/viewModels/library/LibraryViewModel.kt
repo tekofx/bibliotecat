@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.net.UnknownHostException
 import java.text.Normalizer
 import java.time.LocalDate
 import java.time.LocalTime
@@ -181,6 +182,10 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
                 municipalities.value = response.municipalities
                 isLoading.value = false
                 errorMessage.postValue("")
+            } catch (e: UnknownHostException) {
+                Log.d("LibraryViewModel", "Error: ${e.message}")
+                errorMessage.postValue("Error: No hi ha connexió a internet")
+                isLoading.value = false
             } catch (e: Exception) {
                 Log.d("LibraryViewModel", "Error: ${e.message}")
                 errorMessage.postValue("Error: No s'han pogut obtenir les biblioteques")
@@ -221,5 +226,5 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
         _selectedMunicipality.value = ""
         _filtersApplied.value = false
     }
-
 }
+
