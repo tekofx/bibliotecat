@@ -44,6 +44,8 @@ import androidx.navigation.NavHostController
 import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.IconResource
+import dev.tekofx.biblioteques.ui.components.Alert
+import dev.tekofx.biblioteques.ui.components.AlertType
 import dev.tekofx.biblioteques.ui.components.Loader
 import dev.tekofx.biblioteques.ui.components.input.SearchBar
 import dev.tekofx.biblioteques.ui.components.input.TextIconButton
@@ -118,6 +120,10 @@ fun LibrariesScreen(
         ) {
             Loader(
                 isLoading, "Obtenint Biblioteques", errorMessage
+            )
+
+            Alert(
+                errorMessage, AlertType.ERROR, floating = true
             )
             LibraryList(
                 libraries = libraries,

@@ -11,3 +11,9 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val surface = Color(0xFF988E8F)
+
+
+// Alert colors
+val alertInfo = Color(0xFF4A90E2)
+val alertError = Color(0xFFD0021B)
+val alertWarning = Color(0xFFFFA000)

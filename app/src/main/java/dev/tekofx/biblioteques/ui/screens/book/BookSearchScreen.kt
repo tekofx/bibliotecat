@@ -19,7 +19,6 @@ import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -36,6 +35,8 @@ import androidx.navigation.NavHostController
 import dev.tekofx.biblioteques.model.SelectItem
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.IconResource
+import dev.tekofx.biblioteques.ui.components.Alert
+import dev.tekofx.biblioteques.ui.components.AlertType
 import dev.tekofx.biblioteques.ui.components.SelectBottomSheet
 import dev.tekofx.biblioteques.ui.components.input.SearchBar
 import dev.tekofx.biblioteques.ui.components.input.TextIconButton
@@ -122,7 +123,7 @@ fun BookSearch(
         verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically)
     ) {
         if (!errorMessage.isNullOrEmpty()) {
-            Text(text = errorMessage)
+            Alert(errorMessage, AlertType.ERROR)
         }
         SearchBar(
             value = queryText,
