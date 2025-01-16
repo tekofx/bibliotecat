@@ -274,7 +274,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                     }
 
                     is UnknownHostException -> {
-                        errorMessage.value = "Could not connect to the server"
+                        errorMessage.value = "Error: No hi ha connexió a internet"
                     }
                 }
 
