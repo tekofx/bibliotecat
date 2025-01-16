@@ -53,6 +53,8 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     private val _currentBook = MutableStateFlow<Book?>(null)
     val currentBook = _currentBook.asStateFlow()
     private val _bookCopies = MutableStateFlow<List<BookCopy>>(emptyList())
+    private val _areThereMoreCopies = MutableStateFlow(false)
+    val areThereMoreCopies = _areThereMoreCopies.asStateFlow()
 
 
     // Loaders
@@ -61,6 +63,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     val isLoadingNextPageResults = MutableStateFlow(false) // Loading next page of results
     val isLoadingBookDetails = MutableStateFlow(false)
     val isLoadingBookCopies = MutableStateFlow(false)
+    val isLoadingMoreBookCopies = MutableStateFlow(false)
 
     // Helpers
     val canNavigateToResults = MutableStateFlow(false)
@@ -284,45 +287,6 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
         })
     }
 
-
-    /**
-     * Gets the [BookCopies][BookCopy] of the full book copies page
-     */
-    fun getBookCopies(book: Book) {
-        errorMessage.value = ""
-        Log.d("BookViewModel", "getBookCopies")
-        val bookCopiesUrl = book.bookDetails?.bookCopiesUrl ?: return
-        Log.d("BookViewModel", "getBookCopies Foung BookCopiesUrl")
-        val response = repository.getHtmlByUrl(bookCopiesUrl)
-
-        isLoadingBookCopies.value = true
-        response.enqueue(object : Callback<BookResponse> {
-            override fun onResponse(
-                call: Call<BookResponse>,
-                response: Response<BookResponse>
-            ) {
-                val responseBody =
-                    response.body() ?: return onFailure(
-                        call,
-                        Throwable("No response ${response.code()}")
-                    )
-
-                _bookCopies.value = responseBody.bookCopies
-                book.bookCopies = responseBody.bookCopies
-                _currentBook.value = book
-                isLoadingBookCopies.value = false
-            }
-
-            override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
-                Log.e("BookViewModel", t.message.toString())
-                errorMessage.value = t.message!!
-                isLoadingBookCopies.value = false
-            }
-        })
-
-    }
-
-
     /**
      * Gets the [BookDetails] of a [Book] from the url of a book.
      */
@@ -349,7 +313,12 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                 _currentBook.value = responseBook
                 _bookCopies.value = responseBook.bookCopies
                 isLoadingBookDetails.value = false
-                getBookCopies(responseBook)
+                println("value ${responseBody.thereAreMoreCopies}")
+                _areThereMoreCopies.value = responseBody.thereAreMoreCopies
+                if (responseBody.thereAreMoreCopies) {
+                    //getBookCopies(responseBook)
+                    println("There are more books")
+                }
 
             }
 
@@ -361,6 +330,46 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
         })
 
     }
+
+
+    /**
+     * Gets the [BookCopies][BookCopy] of the full book copies page
+     */
+    fun getMoreBookCopies(book: Book) {
+        isLoadingMoreBookCopies.value = true
+        errorMessage.value = ""
+        Log.d("BookViewModel", "getBookCopies")
+        val bookCopiesUrl = book.bookDetails?.bookCopiesUrl ?: return
+        Log.d("BookViewModel", "getBookCopies Foung BookCopiesUrl")
+        val response = repository.getHtmlByUrl(bookCopiesUrl)
+
+        response.enqueue(object : Callback<BookResponse> {
+            override fun onResponse(
+                call: Call<BookResponse>,
+                response: Response<BookResponse>
+            ) {
+                val responseBody =
+                    response.body() ?: return onFailure(
+                        call,
+                        Throwable("No response ${response.code()}")
+                    )
+
+                _bookCopies.value = responseBody.bookCopies
+                book.bookCopies = responseBody.bookCopies
+                _currentBook.value = book
+                isLoadingMoreBookCopies.value = false
+                _areThereMoreCopies.value = false
+            }
+
+            override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
+                Log.e("BookViewModel", "GetBookCopies Error: $t")
+                errorMessage.value = t.message!!
+                isLoadingMoreBookCopies.value = false
+            }
+        })
+
+    }
+
 
     /**
      * Gets a [BookResult] from [results] and converts it to [Book]
