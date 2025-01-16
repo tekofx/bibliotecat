@@ -86,7 +86,6 @@ fun BookResultsScreen(
         Loader(
             isLoading = isLoadingResults,
             text = "Loading results",
-            errorText = errorMessage
         )
 
         when (results) {

@@ -98,7 +98,7 @@ fun LibraryScreen(
     }
 
     if (currentLibrary == null || isLoading) {
-        Loader(isLoading, "Obtenint Data", errorMessage)
+        Loader(isLoading, "Obtenint Data")
 
     } else {
         currentLibrary?.let { library ->

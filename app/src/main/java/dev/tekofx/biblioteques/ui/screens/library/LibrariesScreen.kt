@@ -118,13 +118,8 @@ fun LibrariesScreen(
             isRefreshing = isLoading,
             onRefresh = { libraryViewModel.getLibraries() },
         ) {
-            Loader(
-                isLoading, "Obtenint Biblioteques", errorMessage
-            )
-
-            Alert(
-                errorMessage, AlertType.ERROR, floating = true
-            )
+            Loader(isLoading, "Obtenint Biblioteques")
+            Alert(errorMessage, AlertType.ERROR, floating = true)
             LibraryList(
                 libraries = libraries,
                 filtersApplied = filtersApplied,

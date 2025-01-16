@@ -34,6 +34,8 @@ fun Alert(
     modifier: Modifier = Modifier,
     floating: Boolean = false
 ) {
+    if (message.isEmpty()) return
+
     Box(
         modifier = if (floating) {
             modifier
