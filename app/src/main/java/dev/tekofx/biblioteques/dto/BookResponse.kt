@@ -12,6 +12,7 @@ data class BookResponse(
     @SerializedName("body") var body: String = "",
     @SerializedName("book") var book: Book? = null,
     @SerializedName("bookCopies") var bookCopies: List<BookCopy> = arrayListOf(),
+    @SerializedName("thereAreMoreCopies") var thereAreMoreCopies: Boolean = false,
     @SerializedName("totalBooks") var totalBooks: Int = 0,
     @SerializedName("bookDetails") var bookDetails: BookDetails? = null,
     @SerializedName("pages") var pages: List<String> = emptyList(),

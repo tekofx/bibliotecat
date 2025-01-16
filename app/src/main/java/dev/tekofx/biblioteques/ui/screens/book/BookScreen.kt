@@ -8,11 +8,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.outlined.AccountBox
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FilterChip
@@ -75,6 +74,8 @@ fun BookScreen(
     // Data
     val currentBook by bookViewModel.currentBook.collectAsState()
     val bookCopies by bookViewModel.bookCopies.collectAsState()
+    val areThereMoreCopies by bookViewModel.areThereMoreCopies.collectAsState()
+
 
     // Input
     val availableNowChip by bookViewModel.availableNowChip.collectAsState()
@@ -83,6 +84,8 @@ fun BookScreen(
 
     // Loaders
     val isLoadingBookCopies by bookViewModel.isLoadingBookCopies.collectAsState()
+    val isLoadingMoreBookCopies by bookViewModel.isLoadingMoreBookCopies.collectAsState()
+
     val isLoadingBookDetails by bookViewModel.isLoadingBookDetails.collectAsState()
 
     val listState = rememberLazyListState()
@@ -178,13 +181,16 @@ fun BookScreen(
                     BookCopiesSegment(
                         noBookCopies = currentBook!!.bookCopies.isEmpty(),
                         bookCopies = bookCopies,
-                        showLoading = isLoadingBookCopies,
+                        isLoadingBookCopies = isLoadingBookCopies,
+                        isLoadingMoreBookCopies = isLoadingMoreBookCopies,
                         show = !(isLoadingBookCopies || isLoadingBookDetails),
                         onBookCopyClick = {
                             navController.navigate(NavigateDestinations.LIBRARY_DETAILS_ROUTE + "?libraryUrl=${it}")
                         },
                         showAvailableNow = availableNowChip,
                         showCanReserve = canReserveChip,
+                        areThereMoreCopies = areThereMoreCopies,
+                        getMoreBookCopies = { bookViewModel.getMoreBookCopies(currentBook!!) },
                         onAvailableNowChipClick = bookViewModel::onAvailableNowChipClick,
                         onCanReserveChipClick = bookViewModel::onCanReserveChipClick,
                         onTextFieldChange = bookViewModel::onTextFieldValueChange,
@@ -192,9 +198,7 @@ fun BookScreen(
                         listState = listState
                     )
                 }
-                item {
-                    Spacer(modifier = Modifier.height(400.dp))
-                }
+
             }
         }
     }
@@ -255,9 +259,12 @@ fun BookDetailsSegment(
 fun BookCopiesSegment(
     noBookCopies: Boolean,
     bookCopies: List<BookCopy>,
-    showLoading: Boolean,
+    isLoadingBookCopies: Boolean,
+    isLoadingMoreBookCopies: Boolean,
     show: Boolean,
     showAvailableNow: Boolean,
+    areThereMoreCopies: Boolean,
+    getMoreBookCopies: () -> Unit,
     showCanReserve: Boolean,
     onCanReserveChipClick: () -> Unit,
     onAvailableNowChipClick: () -> Unit,
@@ -266,7 +273,7 @@ fun BookCopiesSegment(
     textFieldValue: String,
     listState: LazyListState
 ) {
-    if (showLoading) {
+    if (isLoadingBookCopies) {
         Box(
             modifier = Modifier.fillMaxSize(),
         ) {
@@ -294,7 +301,6 @@ fun BookCopiesSegment(
 
                 Text("No hi ha exemplars")
             } else {
-
                 BookCopiesFilters(
                     showAvailableNow = showAvailableNow,
                     showCanReserve = showCanReserve,
@@ -314,7 +320,25 @@ fun BookCopiesSegment(
                 if (bookCopies.isEmpty()) {
                     Text(text = "No hi ha exemplars amb aquests filtres")
                 }
+                if (areThereMoreCopies) {
+
+                    if (isLoadingMoreBookCopies) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                        ) {
+                            CircularProgressIndicator(Modifier.align(Alignment.Center))
+                        }
+                    } else {
+                        Button(
+                            onClick = { getMoreBookCopies() },
+                            modifier = Modifier.padding(10.dp)
+                        ) {
+                            Text("Carrega més")
+                        }
+                    }
+                }
             }
+
         }
     }
 

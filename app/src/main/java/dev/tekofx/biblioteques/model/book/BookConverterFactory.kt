@@ -87,10 +87,16 @@ class BookConverterFactory : Converter.Factory() {
                     val book = contructBookFromBookDetails(doc)
                     val bookDetails = constructBookDetails(doc)
                     val bookResults = constructBookResultsFromBookDetails(doc)
+
+                    val thereAreMoreCopies =
+                        doc.select("input[type=submit][value='Veure més exemplars o indicar el volum/còpia']")
+                            .firstOrNull()
+
                     BookResponse(
                         book = book,
                         bookDetails = bookDetails,
                         results = bookResults,
+                        thereAreMoreCopies = thereAreMoreCopies != null
                     )
                 }
 
