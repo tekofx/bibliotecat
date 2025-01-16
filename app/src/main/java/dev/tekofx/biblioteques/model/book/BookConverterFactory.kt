@@ -262,7 +262,7 @@ class BookConverterFactory : Converter.Factory() {
             id = 0,
             title = title,
             author = author,
-            image = image,
+            image = image.split("&log=").first(),
             publication = publication,
             url = permanentLink,
             bookDetails = bookDetails,
@@ -303,7 +303,7 @@ class BookConverterFactory : Converter.Factory() {
                     url = permanentLink,
                     publication = publication,
                     author = author,
-                    image = image
+                    image = image.split("&log=").first()
                 )
             ),
             pages = emptyList(),
@@ -508,7 +508,7 @@ class BookConverterFactory : Converter.Factory() {
                         author = author,
                         publication = publication,
                         url = url,
-                        image = image,
+                        image = image.split("&log=").first(),
                     )
                 )
 

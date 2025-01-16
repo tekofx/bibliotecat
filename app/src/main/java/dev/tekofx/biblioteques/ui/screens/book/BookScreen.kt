@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -135,16 +134,63 @@ fun BookScreen(
                 modifier = Modifier
                     .padding(horizontal = 10.dp)
                     .fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+//                item {
+//                    Surface(
+//                        tonalElevation = 40.dp,
+//                        shape = RoundedCornerShape(20.dp),
+//                    ) {
+//                        Column(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .wrapContentHeight()
+//                                .padding(10.dp)
+//                        ) {
+//                            Row(
+//                                verticalAlignment = Alignment.Top,
+//                                horizontalArrangement = Arrangement.spacedBy(10.dp)
+//                            ) {
+//                                AsyncImage(
+//                                    model = currentBook!!.image,
+//                                    contentDescription = null,
+//                                    modifier = Modifier
+//                                        .height(200.dp)
+//                                        .aspectRatio(0.6f)
+//                                        .clip(RoundedCornerShape(10.dp)),
+//                                    contentScale = ContentScale.Crop
+//                                )
+//                                Column(
+//                                    modifier = Modifier.fillMaxHeight(),
+//                                    verticalArrangement = Arrangement.Top
+//                                ) {
+//                                    Text(
+//                                        text = currentBook!!.title,
+//                                        style = Typography.titleLarge
+//                                    )
+//                                    Text(
+//                                        text = currentBook!!.author,
+//                                        style = Typography.titleMedium
+//                                    )
+//                                    currentBook!!.publication?.let {
+//                                        Text(
+//                                            text = it,
+//                                            style = Typography.titleMedium
+//                                        )
+//                                    }
+//                                }
+//                            }
+//
+//                        }
+//                    }
+//                }
                 item {
                     AsyncImage(
                         model = currentBook!!.image,
                         contentDescription = null,
                         placeholder = rememberVectorPainter(image = Icons.Outlined.AccountBox),
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(2F)
                             .clip(RoundedCornerShape(10.dp)),
                         contentScale = ContentScale.Crop
                     )
