@@ -9,16 +9,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 
 @Composable
 fun Loader(
     isLoading: Boolean,
     text: String,
-    errorText: String
 ) {
     Box(
         modifier = Modifier
@@ -34,16 +31,6 @@ fun Loader(
                 CircularProgressIndicator()
                 Text(text = text)
             }
-        } else if (errorText.isNotEmpty()) {
-            Text(
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .padding(20.dp),
-                text = errorText,
-                lineHeight = 40.sp,
-                textAlign = TextAlign.Center,
-                fontSize = 30.sp
-            )
         }
 
     }
