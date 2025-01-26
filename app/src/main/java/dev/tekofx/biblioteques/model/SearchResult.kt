@@ -29,16 +29,14 @@ abstract class SearchResults<SearchResult>(
 
 }
 
-class EmptyResult() : SearchResult(
+class EmptyResult : SearchResult(
     id = 0,
     numEntries = null,
     text = "",
     url = ""
 )
 
-class EmptyResults(
-
-) : SearchResults<EmptyResult>(
+class EmptyResults : SearchResults<EmptyResult>(
     numItems = 0,
     items = emptyList(),
     pages = emptyList()
@@ -50,9 +48,7 @@ class GeneralResults(
     override val numItems: Int
 ) : SearchResults<GeneralResult>(
     items, pages, numItems
-) {
-
-}
+)
 
 class BookResults(
     override var items: List<BookResult>,
@@ -60,9 +56,7 @@ class BookResults(
     override val numItems: Int
 ) : SearchResults<BookResult>(
     items, pages, numItems
-) {
-
-}
+)
 
 abstract class SearchResult(
     open val id: Int,

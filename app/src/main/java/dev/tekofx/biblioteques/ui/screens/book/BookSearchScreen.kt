@@ -73,7 +73,7 @@ fun BookSearchScreen(
     }
 
 
-    Scaffold() {
+    Scaffold {
         BookSearch(
             errorMessage = errorMessage,
             onSearchTextChanged = bookViewModel::onSearchTextChanged,

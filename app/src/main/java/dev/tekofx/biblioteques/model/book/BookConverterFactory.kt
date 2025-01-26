@@ -31,15 +31,15 @@ class BookConverterFactory : Converter.Factory() {
 
             val notResultsH2Element =
                 doc.select("h2")
-                    .firstOrNull() { it.text().contains("no hi ha resultats", ignoreCase = true) }
+                    .firstOrNull { it.text().contains("no hi ha resultats", ignoreCase = true) }
 
             val advancedSearchElement =
                 doc.select("h2")
-                    .firstOrNull() { it.text().contains("Cerca avançada", ignoreCase = true) }
+                    .firstOrNull { it.text().contains("Cerca avançada", ignoreCase = true) }
 
 
             val divBrowseSearchTool = doc.select("div.browseSearchtoolMessage")
-                .firstOrNull() { it.text().contains("resultats trobats.", ignoreCase = true) }
+                .firstOrNull { it.text().contains("resultats trobats.", ignoreCase = true) }
 
 
             val bibInfoLabelElement = doc.select("td.bibInfoLabel").firstOrNull()
