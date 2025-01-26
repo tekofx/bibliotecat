@@ -113,7 +113,7 @@ class BookConverterFactoryTest {
             assertEquals(results.items.size, 1)
             assertEquals(results.pages.size, 0)
             assertEquals(bookDetails.isbn, "9788419260284")
-            assertEquals(bookDetails.topic, "Novel·les fantàstiques")
+            assertEquals(bookDetails.topics, "Novel·les fantàstiques")
             assertEquals(bookDetails.edition, "Primera edición")
             assertEquals(bookDetails.collections, "Waw & Wayne ; 1")
             assertEquals(

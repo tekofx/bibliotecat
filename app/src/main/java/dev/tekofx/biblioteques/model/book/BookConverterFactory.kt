@@ -324,14 +324,7 @@ class BookConverterFactory : Converter.Factory() {
         val isbnElement = getElement("ISBN", doc)
         val collectionsElements = getMultipleElements("Col·lecció",doc)
         val topicElements= getMultipleElements("Tema",doc)
-
-
-        Log.d("BookConverterFactory", "constructBookDetails: Got topicElement")
-
-
         val permanentUrlElement = doc.selectFirst("a#recordnum")
-        Log.d("BookConverterFactory", "constructBookDetails: Got permanentUrl")
-
 
         val edition = editionElement?.text()
         val description = descriptionElement?.text()
