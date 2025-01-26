@@ -173,6 +173,7 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
      */
     fun getLibraries() {
         Log.d("LibraryViewModel", "getLibraries")
+        errorMessage.postValue("")   // Clear error message
         isLoading.value = true
         _libraries.value = emptyList()
         viewModelScope.launch {
