@@ -3,13 +3,16 @@ package dev.tekofx.biblioteques.ui.screens
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
@@ -26,6 +29,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -33,16 +37,25 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
+import androidx.compose.material.icons.outlined.ArrowForward
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Warning
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,6 +63,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -72,12 +86,28 @@ fun TutorialScreen(
     navHostController: NavHostController,
     preferencesViewModel: PreferencesViewModel
 ) {
-    var page by remember { mutableIntStateOf(0) }
+    var page by remember { mutableIntStateOf(1) }
     var previousPage by remember { mutableStateOf<Int?>(null) }
 
+    fun navigateToWelcomeScreen() {
+        preferencesViewModel.saveShowTutorial(false)
+        navHostController.navigate(NavigateDestinations.WELCOME_SCREEN)
+    }
 
-    val totalPages = 3
+
+    val totalPages = 4
     Column {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
+        ) {
+
+            TextButton(
+                onClick = { navigateToWelcomeScreen() }
+            ) {
+                Text("Skip")
+            }
+        }
 
         AnimatedContent(
             targetState = page,
@@ -100,10 +130,10 @@ fun TutorialScreen(
             }
         ) { targetPage ->
             when (targetPage) {
-                0 -> Page1()
-                1 -> Page2()
-                2 -> Page3()
-                3 -> Page4()
+                1 -> Page1()
+                2 -> Page2()
+                3 -> Page3()
+                4 -> Page4()
                 else -> Page1() // Default fallback
 
             }
@@ -112,25 +142,88 @@ fun TutorialScreen(
         // Spacer with weight to push the next elements to the bottom
         Spacer(modifier = Modifier.weight(1f))
 
-        Stepper(page, 4)
+        Stepper(page, totalPages)
 
-        Buttons(
-            page = page,
-            lastPage = totalPages,
-            onFinishClicked = {
-                preferencesViewModel.saveShowTutorial(false)
-                navHostController.navigate(NavigateDestinations.WELCOME_SCREEN)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            CircularButtonWithProgress(
+                page = page,
+                lastPage = totalPages,
+                onFinishClicked = ::navigateToWelcomeScreen,
+                decreasePage = {
+                    previousPage = page
+                    page -= 1
+                },
+                increasePage = {
+                    previousPage = page
+                    page += 1
+                }
+            )
+        }
+        Spacer(modifier = Modifier.height(20.dp))
+    }
+}
 
-            },
-            decreasePage = {
-                previousPage = page
-                page -= 1
-            },
-            increasePage = {
-                previousPage = page
-                page += 1
-            }
+
+@Composable
+fun CircularButtonWithProgress(
+    page: Int,
+    lastPage: Int,
+    onFinishClicked: () -> Unit,
+    increasePage: () -> Unit,
+    decreasePage: () -> Unit
+) {
+    BackHandler {
+        decreasePage()
+    }
+
+    val progress = page.toFloat() / lastPage.toFloat()
+    val progressAnimation by animateFloatAsState(
+        targetValue = progress,
+        animationSpec = tween(easing = FastOutSlowInEasing),
+    )
+
+    Box(contentAlignment = Alignment.Center) {
+        CircularProgressIndicator(
+            progress = { progressAnimation },
+            modifier = Modifier.size(60.dp),
+            color = MaterialTheme.colorScheme.primary,
+            strokeWidth = 4.dp,
         )
+        IconButton(
+            onClick = {
+                if (page == lastPage) {
+                    onFinishClicked()
+                } else {
+                    increasePage()
+                }
+            },
+            modifier = Modifier
+                .size(50.dp)
+                .background(MaterialTheme.colorScheme.primary, CircleShape),
+        ) {
+            AnimatedContent(
+                targetState = page,
+                transitionSpec = {
+                    fadeIn() togetherWith fadeOut()
+                }
+            ) { targetPage: Int ->
+                if (targetPage == lastPage) {
+                    Icon(
+                        modifier = Modifier.size(40.dp),
+                        imageVector = Icons.Outlined.Check, contentDescription = "Finish"
+                    )
+                } else {
+                    Icon(
+                        modifier = Modifier.size(40.dp),
+                        imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                        contentDescription = "Next"
+                    )
+                }
+            }
+        }
 
 
     }
@@ -145,8 +238,8 @@ fun Stepper(actualPage: Int, totalPages: Int) {
         horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        for (page in 0 until totalPages) {
-            Dot(page = page, actualPage)
+        for (i in 1..totalPages) {
+            Dot(page = i, actualPage = actualPage)
         }
     }
 }
@@ -313,71 +406,4 @@ fun Page4() {
 }
 
 
-@Composable
-fun Buttons(
-    page: Int,
-    lastPage: Int,
-    onFinishClicked: () -> Unit,
-    increasePage: () -> Unit,
-    decreasePage: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 10.dp),
-        horizontalArrangement = Arrangement.spacedBy(
-            space = 0.dp,
-            alignment = Alignment.CenterHorizontally
-        )
-    ) {
-
-        AnimatedVisibility(
-            visible = page != 0,
-            enter = scaleIn() + expandHorizontally(),
-            exit = scaleOut() + shrinkHorizontally()
-        ) {
-            TextIconButton(
-                text = "Enrere",
-                startIcon = IconResource.fromImageVector(Icons.AutoMirrored.Outlined.KeyboardArrowLeft),
-                enabled = page > 0,
-                onClick = decreasePage
-            )
-        }
-        AnimatedVisibility(
-            visible = page != 0,
-            enter = scaleIn() + expandHorizontally(),
-            exit = scaleOut() + shrinkHorizontally()
-        ) {
-            Spacer(modifier = Modifier.width(40.dp))
-        }
-
-
-        AnimatedContent(
-            targetState = page,
-            transitionSpec = {
-                fadeIn(animationSpec = tween(300)) togetherWith fadeOut(
-                    animationSpec = tween(
-                        300
-                    )
-                )
-            },
-            label = ""
-        ) { targetState ->
-            if (targetState == lastPage) {
-                TextIconButton(
-                    text = "Acabar",
-                    startIcon = IconResource.fromImageVector(Icons.Outlined.Check),
-                    onClick = onFinishClicked
-                )
-            } else {
-                TextIconButton(
-                    text = "Endavant",
-                    endIcon = IconResource.fromImageVector(Icons.AutoMirrored.Outlined.KeyboardArrowRight),
-                    onClick = increasePage
-                )
-            }
-        }
-
-    }
-}
 
