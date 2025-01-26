@@ -292,8 +292,11 @@ fun BookDetailsSegment(
                 bookDetails.synopsis?.let {
                     InfoCard("Sinopsi", it)
                 }
-                bookDetails.topic?.let {
-                    InfoCard("Tema", it)
+                if (bookDetails.topics.isNotEmpty()) {
+                    InfoCard(
+                        "Tema",
+                        bookDetails.topics.joinToString(prefix = "- ", separator = "\n- ")
+                    )
                 }
             }
         }

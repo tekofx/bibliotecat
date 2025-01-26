@@ -92,6 +92,8 @@ class BookConverterFactory : Converter.Factory() {
                         doc.select("input[type=submit][value='Veure més exemplars o indicar el volum/còpia']")
                             .firstOrNull()
 
+                    Log.d("BookConverterFactory", "Test")
+
                     BookResponse(
                         book = book,
                         bookDetails = bookDetails,
@@ -316,54 +318,20 @@ class BookConverterFactory : Converter.Factory() {
     private fun constructBookDetails(doc: Document): BookDetails {
         Log.d("BookConverterFactory", "constructBookDetails")
 
-        val editionElement =
-            doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Edició" }
-                ?.nextElementSibling()
-
-        val descriptionElement =
-            doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Descripció" }
-                ?.nextElementSibling()
-
-        val synopsisElement =
-            doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Sinopsi" }
-                ?.nextElementSibling()
-
-        val isbnElement =
-            doc.select("td.bibInfoLabel").firstOrNull { it.text() == "ISBN" }
-                ?.nextElementSibling()
+        val editionElement = getElement("Edició", doc)
+        val descriptionElement = getElement("Descripció", doc)
+        val synopsisElement = getElement("Sinopsi", doc)
+        val isbnElement = getElement("ISBN", doc)
+        val collectionsElements = getMultipleElements("Col·lecció",doc)
+        val topicElements= getMultipleElements("Tema",doc)
 
 
-        // Get collections
+        Log.d("BookConverterFactory", "constructBookDetails: Got topicElement")
 
-        val collectionBibInfoLabelElement =
-            doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Col·lecció" }
-
-        val collectionsElements = mutableListOf<Element>()
-
-        val firstCollectionElement =
-            collectionBibInfoLabelElement
-                ?.nextElementSibling()
-
-        if (firstCollectionElement != null) {
-            collectionsElements.add(firstCollectionElement)
-
-            do {
-                val nextCollectionElement = firstCollectionElement.parent()?.nextElementSibling()
-                val bibInfoLabelElement =
-                    nextCollectionElement?.select("td.bibInfoLabel")?.firstOrNull()
-                val bibInfoDataElement =
-                    nextCollectionElement?.select("td.bibInfoData")?.firstOrNull()
-                if (bibInfoDataElement != null) {
-                    collectionsElements.add(bibInfoDataElement)
-                }
-            } while (bibInfoLabelElement != null)
-        }
-
-        val topicElement =
-            doc.select("td.bibInfoLabel").firstOrNull { it.text() == "Tema" }
-                ?.nextElementSibling()
 
         val permanentUrlElement = doc.selectFirst("a#recordnum")
+        Log.d("BookConverterFactory", "constructBookDetails: Got permanentUrl")
+
 
         val edition = editionElement?.text()
         val description = descriptionElement?.text()
@@ -371,7 +339,7 @@ class BookConverterFactory : Converter.Factory() {
         val isbn = isbnElement?.text()
         val permanentUrl = permanentUrlElement?.attr("href")
         val collections = collectionsElements.map { it.text() }
-        val topic = topicElement?.text()
+        val topics= topicElements.map { it.text() }
 
 
         var bookCopiesUrl: String? = null
@@ -390,9 +358,46 @@ class BookConverterFactory : Converter.Factory() {
             synopsis = synopsis,
             isbn = isbn,
             collections = collections,
-            topic = topic,
+            topics = topics,
             bookCopiesUrl = bookCopiesUrl
         )
+    }
+
+    /**
+     * Gets an element from a key
+     * @param key Key to search
+     * @param doc Document
+     * @return Element?
+     */
+    private fun getElement(key: String, doc: Document): Element? {
+        return doc.select("td.bibInfoLabel").firstOrNull { it.text() == key }?.nextElementSibling()
+    }
+
+    /**
+     * Gets multiple elements from a key. It is used for collections and topics
+     * @param key Key to search
+     * @param doc Document
+     * @return List of elements
+     */
+    private fun getMultipleElements(key:String, doc: Document): MutableList<Element> {
+        Log.d("BookConverterFactory", "constructBookDetails: Get collections")
+        val collectionsElements = mutableListOf<Element>()
+
+        var keyElement =
+            doc.select("td.bibInfoLabel").firstOrNull { it.text() == key }
+
+        if (keyElement == null) {
+            return collectionsElements
+        }
+
+        do {
+            val value = keyElement!!.nextElementSibling()?.select("a")
+            val nextParent = keyElement.parent()?.nextElementSibling()
+            keyElement = nextParent?.selectFirst("td")
+            collectionsElements.addAll(value ?: emptyList())
+
+        } while (keyElement != null && keyElement.text() == "")
+        return collectionsElements
     }
 
     /**
