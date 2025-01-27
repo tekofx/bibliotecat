@@ -2,7 +2,7 @@ package dev.tekofx.biblioteques
 
 import dev.tekofx.biblioteques.call.HolidayService
 import dev.tekofx.biblioteques.call.LibraryService
-import dev.tekofx.biblioteques.model.HolidayConverterFactory
+import dev.tekofx.biblioteques.model.holiday.HolidayConverterFactory
 import dev.tekofx.biblioteques.model.library.LibraryConverterFactory
 import dev.tekofx.biblioteques.repository.LibraryRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi

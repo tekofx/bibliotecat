@@ -1,8 +1,8 @@
-package dev.tekofx.biblioteques.model
+package dev.tekofx.biblioteques.model.holiday
 
 import java.time.LocalDate
 
-data class HolidayDay(
+data class Holiday(
     val year: Int,
     val date: LocalDate,
     val place: String,

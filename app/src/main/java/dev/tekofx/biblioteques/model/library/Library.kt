@@ -1,6 +1,6 @@
 package dev.tekofx.biblioteques.model.library
 
-import dev.tekofx.biblioteques.model.HolidayDay
+import dev.tekofx.biblioteques.model.holiday.Holiday
 import dev.tekofx.biblioteques.model.StatusColor
 import dev.tekofx.biblioteques.utils.formatDayOfWeek
 import java.time.Duration
@@ -49,7 +49,7 @@ class Library(
     var image: String,
     val summerSeasonTimeTable: SeasonTimeTable,
     val winterTimetable: SeasonTimeTable,
-    var holidays: List<HolidayDay> = emptyList<HolidayDay>(),
+    var holidays: List<Holiday> = emptyList<Holiday>(),
     private var currentDate: LocalDate? = null
 ) {
 

@@ -1,4 +1,4 @@
-package dev.tekofx.biblioteques.model
+package dev.tekofx.biblioteques.model.holiday
 
 import dev.tekofx.biblioteques.dto.HolidayResponse
 import okhttp3.ResponseBody
@@ -21,12 +21,12 @@ class HolidayConverterFactory : Converter.Factory() {
 
                 val data = body.string()
                 val jsonArray = JSONArray(data)
-                var holidayList: List<HolidayDay> = emptyList()
+                var holidayList: List<Holiday>
 
-                if (jsonArray.getJSONObject(0).has("any_calendari")) {
-                    holidayList = constructLocalHolidayDays(jsonArray)
+                holidayList = if (jsonArray.getJSONObject(0).has("any_calendari")) {
+                    constructLocalHolidays(jsonArray)
                 } else {
-                    holidayList = constructGeneralCataloniaHolidayDays(jsonArray)
+                    constructGeneralCataloniaHolidays(jsonArray)
                 }
 
                 HolidayResponse(holidayList)
@@ -34,8 +34,8 @@ class HolidayConverterFactory : Converter.Factory() {
         }
     }
 
-    private fun constructGeneralCataloniaHolidayDays(jsonArray: JSONArray): List<HolidayDay> {
-        val localHolidayList = mutableListOf<HolidayDay>()
+    private fun constructGeneralCataloniaHolidays(jsonArray: JSONArray): List<Holiday> {
+        val localHolidayList = mutableListOf<Holiday>()
         for (i in 0 until jsonArray.length()) {
             val jsonObject = jsonArray.getJSONObject(i)
             val year = jsonObject.getInt("any")
@@ -43,20 +43,20 @@ class HolidayConverterFactory : Converter.Factory() {
             val localDate = localDateTime.toLocalDate()
             val holidayName = jsonObject.getString("nom_del_festiu")
 
-            val holidayDay = HolidayDay(
+            val holiday = Holiday(
                 year = year,
                 date = localDate,
                 place = "Catalunya",
                 holiday = holidayName,
                 postalCode = "08"
             )
-            localHolidayList.add(holidayDay)
+            localHolidayList.add(holiday)
         }
         return localHolidayList
     }
 
-    private fun constructLocalHolidayDays(jsonArray: JSONArray): List<HolidayDay> {
-        val localHolidayList = mutableListOf<HolidayDay>()
+    private fun constructLocalHolidays(jsonArray: JSONArray): List<Holiday> {
+        val localHolidayList = mutableListOf<Holiday>()
         for (i in 0 until jsonArray.length()) {
 
             val jsonObject = jsonArray.getJSONObject(i)
@@ -67,16 +67,16 @@ class HolidayConverterFactory : Converter.Factory() {
             val localDate = localDateTime.toLocalDate()
             val place = jsonObject.getString("ajuntament_o_nucli_municipal")
             val postalCode = jsonObject.getString("codi_municipi_ine")
-            val holiday = jsonObject.getString("festiu")
+            val holidayObject = jsonObject.getString("festiu")
 
-            val holidayDay = HolidayDay(
+            val holiday = Holiday(
                 year = year,
                 date = localDate,
                 place = place,
-                holiday = holiday,
+                holiday = holidayObject,
                 postalCode = postalCode
             )
-            localHolidayList.add(holidayDay)
+            localHolidayList.add(holiday)
         }
         return localHolidayList
     }

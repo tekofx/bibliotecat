@@ -1,12 +1,15 @@
 package dev.tekofx.biblioteques.call
 
 import dev.tekofx.biblioteques.dto.HolidayResponse
-import dev.tekofx.biblioteques.model.HolidayConverterFactory
+import dev.tekofx.biblioteques.model.holiday.HolidayConverterFactory
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.http.GET
 import retrofit2.http.Url
 
+/**
+ * Service to get the holidays from https://analisi.transparenciacatalunya.cat/Treball/Calendari-de-festes-locals-a-Catalunya/b4eh-r8up/about_data
+ */
 interface HolidayService {
 
 
