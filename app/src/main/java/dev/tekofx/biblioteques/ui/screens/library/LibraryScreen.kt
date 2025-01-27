@@ -122,16 +122,16 @@ fun LibraryScreen(
                 )
                 Column(
                     modifier = Modifier
-                        .padding(horizontal = 20.dp)
-                        .padding(top = 20.dp),
+                        .padding(horizontal = 10.dp)
+                        .padding(top = 10.dp),
                     verticalArrangement = Arrangement.spacedBy(5.dp)
                 ) {
-                    Text(text = library.adrecaNom, style = Typography.headlineMedium)
-                    Text(text = library.municipality, style = Typography.headlineSmall)
+                    Text(text = library.adrecaNom, style = Typography.headlineSmall)
+                    Text(text = library.municipality, style = Typography.titleLarge)
                     StatusBadge(
                         library.getStatusColor(),
                         library.generateStateMessage(LocalDate.now(), LocalTime.now()),
-                        Typography.titleLarge
+                        Typography.titleMedium
                     )
 
                     TabRowComponent(

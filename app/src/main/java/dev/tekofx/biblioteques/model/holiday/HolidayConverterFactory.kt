@@ -21,9 +21,8 @@ class HolidayConverterFactory : Converter.Factory() {
 
                 val data = body.string()
                 val jsonArray = JSONArray(data)
-                var holidayList: List<Holiday>
 
-                holidayList = if (jsonArray.getJSONObject(0).has("any_calendari")) {
+                val holidayList: List<Holiday> = if (jsonArray.getJSONObject(0).has("any_calendari")) {
                     constructLocalHolidays(jsonArray)
                 } else {
                     constructGeneralCataloniaHolidays(jsonArray)
