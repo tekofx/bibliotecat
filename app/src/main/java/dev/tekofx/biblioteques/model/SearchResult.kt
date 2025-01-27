@@ -71,7 +71,7 @@ class BookResult(
     val author: String,
     val publication: String?,
     override val url: String,
-    val image: String,
+    val image: String?,
 ) : SearchResult(
     id, title, url, null
 )

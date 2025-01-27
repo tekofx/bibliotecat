@@ -92,7 +92,6 @@ class BookConverterFactory : Converter.Factory() {
                         doc.select("input[type=submit][value='Veure més exemplars o indicar el volum/còpia']")
                             .firstOrNull()
 
-                    Log.d("BookConverterFactory", "Test")
 
                     BookResponse(
                         book = book,
@@ -488,7 +487,7 @@ class BookConverterFactory : Converter.Factory() {
             val titleElement = descriptionElement?.selectFirst("span.titular")?.selectFirst("a")
             val imageElement = bookElement.selectFirst("div.brief_portada")?.selectFirst("img")
 
-            if (titleElement != null && imageElement != null) {
+            if (titleElement != null) {
                 val descriptionFields = descriptionElement.toString().split("<br>")
                 val url = titleElement.attr("href")
                 val author = descriptionFields[2].trim()
@@ -496,7 +495,7 @@ class BookConverterFactory : Converter.Factory() {
 
                 val id = url.split("&").last().split("%")[0].toInt()
                 val title = titleElement.text()
-                val image = imageElement.attr("src")
+                val image = imageElement?.attr("src")
 
 
                 bookResultList.add(
@@ -506,7 +505,7 @@ class BookConverterFactory : Converter.Factory() {
                         author = author,
                         publication = publication,
                         url = url,
-                        image = image.split("&log=").first(),
+                        image = image?.split("&log=")?.first(),
                     )
                 )
 

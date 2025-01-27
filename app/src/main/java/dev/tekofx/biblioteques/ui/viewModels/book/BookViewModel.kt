@@ -127,6 +127,12 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
         getSearchScope()
     }
 
+    /**
+     * Gets the search scope from the aladi.diba.cat. This allows user to search in different libraries or catalogs
+     * in the same search.
+     * The search scope is a list of [SelectItem] that contains the name of the library and the id of the library.
+     *
+     */
     private fun getSearchScope() {
         errorMessage.value = ""
         val response = repository.getSearchScope()
@@ -165,7 +171,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
      * Gets [SearchResults] from the page of results
      */
     fun getResults(url: String) {
-        Log.d("BookViewModel", "getBooksBySearchResult")
+        Log.d("BookViewModel", "getResults")
         errorMessage.value = ""
         val response = repository.getHtmlByUrl(url)
         isLoadingResults.value = true
@@ -179,6 +185,8 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                 _results.value = resultsResponse
                 isLoadingResults.value = false
                 errorMessage.value = ""
+
+                Log.d("BookViewModel", "Results: ${resultsResponse.items.size}")
             }
 
             override fun onFailure(p0: Call<BookResponse>, t: Throwable) {

@@ -28,15 +28,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
+import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.model.BookResult
 import dev.tekofx.biblioteques.model.BookResults
 import dev.tekofx.biblioteques.model.GeneralResults
 import dev.tekofx.biblioteques.model.SearchResult
 import dev.tekofx.biblioteques.model.SelectItem
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
+import dev.tekofx.biblioteques.ui.components.Cover
 import dev.tekofx.biblioteques.ui.components.Loader
 import dev.tekofx.biblioteques.ui.components.PaginatedList
 import dev.tekofx.biblioteques.ui.theme.Typography
@@ -98,7 +104,7 @@ fun BookResultsScreen(
 
                     ) { book ->
                     BookCard(
-                        book = book as BookResult,
+                        bookResult = book as BookResult,
                         onClick = {
                             navHostController.navigate("${NavigateDestinations.BOOK_DETAILS_ROUTE}/${book.id}")
                         }
@@ -125,7 +131,7 @@ fun BookResultsScreen(
 
 @Composable
 fun BookCard(
-    book: BookResult,
+    bookResult: BookResult,
     onClick: () -> Unit
 ) {
 
@@ -145,28 +151,33 @@ fun BookCard(
                 verticalAlignment = Alignment.Top,
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                AsyncImage(
-                    model = book.image,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .height(200.dp)
-                        .aspectRatio(0.6f)
-                        .clip(RoundedCornerShape(10.dp)),
-                    contentScale = ContentScale.Crop
-                )
+                if (bookResult.image==null){
+                    Cover(bookResult = bookResult)
+                }else{
+
+                    AsyncImage(
+                        model = bookResult.image,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .height(200.dp)
+                            .aspectRatio(0.6f)
+                            .clip(RoundedCornerShape(10.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                }
                 Column(
                     modifier = Modifier.fillMaxHeight(),
                     verticalArrangement = Arrangement.Top
                 ) {
                     Text(
-                        text = book.title,
+                        text = bookResult.title,
                         style = Typography.titleLarge
                     )
                     Text(
-                        text = book.author,
+                        text = bookResult.author,
                         style = Typography.titleMedium
                     )
-                    book.publication?.let {
+                    bookResult.publication?.let {
                         Text(
                             text = it,
                             style = Typography.titleMedium
