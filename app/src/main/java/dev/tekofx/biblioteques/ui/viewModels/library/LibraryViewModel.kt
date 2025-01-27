@@ -74,8 +74,9 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
         .combine(_selectedMunicipality) { libraries, selectedMunicipality ->
             libraries.filter {
                 if (selectedMunicipality.isNotEmpty()) {
-                    if (selectedMunicipality == "Barcelona") {
-                        it.municipality.contains(selectedMunicipality)
+                    // If Barcelona (Tots els districtes) is selected, show all libraries in Barcelona
+                    if (selectedMunicipality == "Barcelona (Tots els districtes)") {
+                        it.municipality.contains("Barcelona")
                     } else {
                         it.municipality == selectedMunicipality
                     }
