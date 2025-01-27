@@ -36,7 +36,7 @@ class LibraryRepository(
 
             return LibraryResponse(librariesWithHolidays, municipalities)
         } catch (e: JSONException) {
-            Log.d("LibraryRepository", "Error getting libraries", e)
+            Log.e("LibraryRepository", "Error getting libraries", e)
             return LibraryResponse(emptyList(), emptyList())
         }
     }
@@ -64,7 +64,7 @@ class LibraryRepository(
         val localHolidaysResponse = try {
             holidayService.getJson(localHolidaysUrl).awaitResponse()
         } catch (e: Exception) {
-            Log.d("LibraryRepository", "Error getting local holiday days", e)
+            Log.e("LibraryRepository", "Error getting local holiday days", e)
             null
         }
 
@@ -83,7 +83,7 @@ class LibraryRepository(
         val cataloniaHolidaysResponse = try {
             holidayService.getJson(cataloniaHolidaysUrl).awaitResponse()
         } catch (e: Exception) {
-            Log.d("LibraryRepository", "Error getting catalonia holiday days", e)
+            Log.e("LibraryRepository", "Error getting catalonia holiday days", e)
             null
         }
 
