@@ -74,16 +74,14 @@ class LibraryConverterFactory : Converter.Factory() {
 
                 // Get bibliotecavirtual.diba.cat url
                 var bibliotecaVirtualUrl: String? = null
-                if (doc != null) {
-                    val emailsTd = doc.selectFirst("td.email:contains(${emails[0]})")
-                    val phonesTd = doc.selectFirst("td.phone:contains(${phones[0]})")
-
+                if (doc != null && emails.isNotEmpty() && phones.isNotEmpty()) {
+                    val emailsTd = doc.select("td.email:contains(${emails[0]})").firstOrNull()
+                    val phonesTd = doc.select("td.phone:contains(${phones[0]})").firstOrNull()
                     val nameTd = emailsTd?.siblingElements()?.select("td.name")?.firstOrNull()
                         ?: phonesTd?.siblingElements()?.select("td.name")?.firstOrNull()
 
                     bibliotecaVirtualUrl = nameTd?.selectFirst("a")?.attr("href")
                 }
-
                 // Horaris
                 val (timetableHivern, timetableEstiu) = getTimetables(libraryElement)
 
@@ -106,6 +104,7 @@ class LibraryConverterFactory : Converter.Factory() {
                 libraryList.add(library)
             }
 
+            Log.d("LibraryConverterFactory", "Library list size: ${libraryList.size}")
             val response = LibraryResponse(libraryList, uniqueMunicipiNomValues.toList())
             response
         }

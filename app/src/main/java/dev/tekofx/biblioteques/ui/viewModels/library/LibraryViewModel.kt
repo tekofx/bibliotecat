@@ -185,11 +185,11 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
                 isLoading.value = false
                 errorMessage.postValue("")
             } catch (e: UnknownHostException) {
-                Log.d("LibraryViewModel", "Error: ${e.message}")
+                Log.d("LibraryViewModel", "Error: $e")
                 errorMessage.postValue("Error: No hi ha connexió a internet")
                 isLoading.value = false
             } catch (e: Exception) {
-                Log.d("LibraryViewModel", "Error: ${e.message}")
+                Log.d("LibraryViewModel", "Error: $e")
                 errorMessage.postValue("Error: No s'han pogut obtenir les biblioteques")
                 isLoading.value = false
             }
