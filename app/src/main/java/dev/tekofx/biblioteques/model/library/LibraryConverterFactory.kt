@@ -63,10 +63,10 @@ class LibraryConverterFactory : Converter.Factory() {
                 val addressFull =
                     libraryElement.getJSONObject("grup_adreca").getString("adreca_completa")
                 val image = if (imageArray.length() > 0) imageArray.getString(0) else ""
-                val emails = jsonArrayToStringArray(libraryElement.getJSONArray("email"))
+                val emails = jsonArrayToStringArray(libraryElement.getJSONArray("email")).ifEmpty { null }
                 val phones =
-                    jsonArrayToStringArray(libraryElement.getJSONArray("telefon_contacte"))
-                val webUrl = libraryElement.getString("url_general")
+                    jsonArrayToStringArray(libraryElement.getJSONArray("telefon_contacte")).ifEmpty { null }
+                val webUrl = libraryElement.getString("url_general").ifEmpty { null }
                 val location = libraryElement.getString("localitzacio")
                 val (latitude, longitude) = location.takeIf { it.isNotEmpty() }?.split(",")
                     ?.map { it.toDouble() } ?: listOf(0.0, 0.0)
@@ -74,7 +74,7 @@ class LibraryConverterFactory : Converter.Factory() {
 
                 // Get bibliotecavirtual.diba.cat url
                 var bibliotecaVirtualUrl: String? = null
-                if (doc != null && emails.isNotEmpty() && phones.isNotEmpty()) {
+                if (doc != null && emails!=null && phones!=null) {
                     val emailsTd = doc.select("td.email:contains(${emails[0]})").firstOrNull()
                     val phonesTd = doc.select("td.phone:contains(${phones[0]})").firstOrNull()
                     val nameTd = emailsTd?.siblingElements()?.select("td.name")?.firstOrNull()
@@ -146,9 +146,7 @@ class LibraryConverterFactory : Converter.Factory() {
         val timeIntervalsDissabte = getTimeIntervals(jsonObject, estacio, "dissabte")
         val timeIntervalsDiumenge = getTimeIntervals(jsonObject, estacio, "diumenge")
 
-        val observacionsHtml = jsonObject.getString("observacions_$estacio")
-        val observation = Ksoup.parse(observacionsHtml).text()
-
+        val observationsHtml = jsonObject.getString("observacions_$estacio").ifEmpty { null }
 
         val weekTimetableDeProva = SeasonTimeTable(
             start = dateInterval.from,
@@ -163,7 +161,8 @@ class LibraryConverterFactory : Converter.Factory() {
                 DayOfWeek.SUNDAY to DayTimeTable(timeIntervalsDiumenge ?: listOf())
             ),
             season = season,
-            observation = observation
+            // If observationsHTML is not null parse it, if not let it null
+            observation = observationsHtml?.let { getObservacionsEstacio(jsonObject, estacio) }
         )
 
         return weekTimetableDeProva

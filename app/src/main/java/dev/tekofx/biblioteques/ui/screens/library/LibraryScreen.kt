@@ -2,6 +2,7 @@ package dev.tekofx.biblioteques.ui.screens.library
 
 
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,14 +10,20 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.MailOutline
+import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -217,11 +224,13 @@ fun LibraryTimeTable(seasonTimeTable: SeasonTimeTable) {
             )
         }
 
-        Accordion(
-            title = "Observacions",
-            description = seasonTimeTable.observation,
-            icon = IconResource.fromImageVector(Icons.Outlined.Info)
-        )
+        seasonTimeTable.observation?.let {
+            Accordion(
+                title = "Observacions",
+                description = seasonTimeTable.observation,
+                icon = IconResource.fromImageVector(Icons.Outlined.Info)
+            )
+        }
 
         seasonTimeTable.dayTimetables.forEach {
             Surface(
@@ -267,25 +276,53 @@ fun LibraryContact(library: Library) {
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
 
-        library.emails.forEach {
-            InfoIntentCard(
-                contactType = IntentType.MAIL,
-                text = it
-            )
-        }
 
-        library.phones.forEach {
-            InfoIntentCard(
-                contactType = IntentType.PHONE,
-                text = it
-            )
-        }
+        if (library.emails == null && library.phones == null && library.webUrl == null) {
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                tonalElevation = 20.dp,
+                shape = RoundedCornerShape(10.dp)
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        modifier = Modifier.width(50.dp).height(50.dp),
+                        painter = IconResource.fromImageVector(Icons.Outlined.Clear)
+                            .asPainterResource(),
+                        contentDescription = "No dades de contacte"
+                    )
+                    Text(
+                        modifier = Modifier
+                            .padding(20.dp),
+                        text = "No dades de contacte"
+                    )
+                }
+            }
+        } else {
 
-        if (library.webUrl.isNotEmpty()) {
-            InfoIntentCard(
-                IntentType.WEB,
-                library.webUrl
-            )
+            library.emails?.forEach {
+                InfoIntentCard(
+                    contactType = IntentType.MAIL,
+                    text = it
+                )
+            }
+
+            library.phones?.forEach {
+                InfoIntentCard(
+                    contactType = IntentType.PHONE,
+                    text = it
+                )
+            }
+
+            library.webUrl?.let {
+                InfoIntentCard(
+                    IntentType.WEB,
+                    library.webUrl
+                )
+            }
         }
     }
 

@@ -16,7 +16,7 @@ data class SeasonTimeTable(
     val end: LocalDate,
     val dayTimetables: Map<DayOfWeek, DayTimeTable>,
     val season: Season,
-    val observation: String,
+    val observation: String?,
 ) {
 
     var open = false
