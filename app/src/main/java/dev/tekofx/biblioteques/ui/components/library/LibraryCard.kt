@@ -34,9 +34,7 @@ fun LibraryCard(
     Surface(
         tonalElevation = 40.dp,
         shape = RoundedCornerShape(20.dp),
-        onClick = {
-            onClick()
-        }
+        onClick = onClick
     ) {
 
         Row(
@@ -65,14 +63,16 @@ fun LibraryCard(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
 
-                Text(
-                    text = library.adrecaNom,
-                    style = Typography.titleLarge
-                )
-                Text(
-                    text = library.municipality,
-                    style = Typography.titleMedium,
-                )
+                Column {
+                    Text(
+                        text = library.adrecaNom,
+                        style = Typography.titleLarge
+                    )
+                    Text(
+                        text = library.municipality,
+                        style = Typography.titleMedium,
+                    )
+                }
                 StatusBadge(
                     library.getStatusColor(),
                     library.generateStateMessage(LocalDate.now(), LocalTime.now()),
