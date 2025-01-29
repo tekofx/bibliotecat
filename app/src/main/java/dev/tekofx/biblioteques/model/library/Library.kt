@@ -263,7 +263,7 @@ class Library(
 
             // If there are no more intervals today, look for the next opening day
             // If next day null means Permanently closed
-            val nextDay = getNextDayOpen(date) ?: return "Tancat Permanentment"
+            val nextDay = getNextDayOpen(date) ?: return "Tancat temporalment"
 
 
             val nextTimetable = getCurrentSeasonTimetable(nextDay)
@@ -274,6 +274,9 @@ class Library(
                 return "Tancat · Obre demà a las ${nextDayTimetable?.timeIntervals?.firstOrNull()?.from}"
 
             }
+
+
+            // Opens another day
             return "Tancat · Obre el $nextDayName a las ${nextDayTimetable?.timeIntervals?.firstOrNull()?.from}"
         }
     }
