@@ -1,6 +1,6 @@
 package dev.tekofx.biblioteques.ui
 
-import android.support.annotation.DrawableRes
+import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
