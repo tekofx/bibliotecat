@@ -51,6 +51,7 @@ import coil3.request.crossfade
 import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.model.library.Library
 import dev.tekofx.biblioteques.model.library.LibraryDummy
+import dev.tekofx.biblioteques.model.library.Season
 import dev.tekofx.biblioteques.model.library.SeasonTimeTable
 import dev.tekofx.biblioteques.model.library.seasonTranslation
 import dev.tekofx.biblioteques.ui.IconResource
@@ -174,6 +175,8 @@ fun LibraryTimetable(
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val scrollState = rememberScrollState()
+    val summerIcon=IconResource.fromDrawableResource(R.drawable.sunny).asPainterResource()
+    val winterIcon=IconResource.fromDrawableResource(R.drawable.ac_unit).asPainterResource()
 
     Column(
         modifier = Modifier
@@ -183,17 +186,19 @@ fun LibraryTimetable(
 
         ) {
 
-
         SegmentedButtons {
             SegmentedButtonItem(
                 selected = selectedTabIndex == 0,
                 onClick = { selectedTabIndex = 0 },
-                label = { Text(text = "Horari Actual (${seasonTranslation[library.currentSeasonTimetable.season]})") },
+                label = { Text(text = "Horari ${seasonTranslation[library.currentSeasonTimetable.season]} (Actual)") },
+                icon = { if(library.currentSeasonTimetable.season==Season.SUMMER) Icon(painter = summerIcon, contentDescription = "Summer") else Icon(painter = winterIcon, contentDescription = "Winter") }
             )
             SegmentedButtonItem(
                 selected = selectedTabIndex == 1,
                 onClick = { selectedTabIndex = 1 },
                 label = { Text(text = "Horari ${seasonTranslation[library.nextSeasonSeasonTimeTables.season]}") },
+                icon = { if(library.nextSeasonSeasonTimeTables.season==Season.SUMMER) Icon(painter = summerIcon, contentDescription = "Summer") else Icon(painter = winterIcon, contentDescription = "Winter") }
+
             )
 
         }
