@@ -2,6 +2,7 @@ package dev.tekofx.biblioteques.ui.components
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.SpringSpec
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,12 +36,16 @@ fun Accordion(
 
 
     Card(
-        onClick = {
-            show = !show
-            rotateIcon = !rotateIcon
-        },
-        shape = RoundedCornerShape(10.dp)
-    ) {
+        modifier = Modifier.clickable(
+            onClick = {
+                show = !show
+                rotateIcon = !rotateIcon
+            },
+            indication = null, // Remove the click animation
+            interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() }
+        ),
+        shape = RoundedCornerShape(10.dp),
+      ) {
         Column(
             modifier = Modifier
                 .animateContentSize(
