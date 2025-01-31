@@ -190,7 +190,7 @@ fun LibraryTimetable(
             SegmentedButtonItem(
                 selected = selectedTabIndex == 0,
                 onClick = { selectedTabIndex = 0 },
-                label = { Text(text = "Horari ${seasonTranslation[library.currentSeasonTimetable.season]} (Actual)") },
+                label = { Text(text = "Horari ${seasonTranslation[library.currentSeasonTimetable.season]}") },
                 icon = { if(library.currentSeasonTimetable.season==Season.SUMMER) Icon(painter = summerIcon, contentDescription = "Summer") else Icon(painter = winterIcon, contentDescription = "Winter") }
             )
             SegmentedButtonItem(
