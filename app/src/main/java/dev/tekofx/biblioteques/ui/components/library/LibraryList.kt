@@ -30,10 +30,6 @@ fun LibraryList(
 ) {
     val listState = rememberLazyListState()
 
-    LaunchedEffect(libraries) {
-        listState.scrollToItem(0)
-    }
-
     SlideVertically(
         visible = !isLoading,
         SlideDirection.UP,
