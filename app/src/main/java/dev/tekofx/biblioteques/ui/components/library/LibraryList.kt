@@ -39,7 +39,7 @@ fun LibraryList(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = 10.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp,Alignment.CenterVertically)
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             item{
                 if (libraries.isEmpty() && filtersApplied) {
