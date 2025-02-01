@@ -1,26 +1,23 @@
 package dev.tekofx.biblioteques.ui.viewModels.book
 
 import android.util.Log
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.dto.BookResponse
 import dev.tekofx.biblioteques.exceptions.NotFound
-import dev.tekofx.biblioteques.model.BookResult
-import dev.tekofx.biblioteques.model.BookResults
-import dev.tekofx.biblioteques.model.EmptyResults
-import dev.tekofx.biblioteques.model.SearchResult
-import dev.tekofx.biblioteques.model.SearchResults
-import dev.tekofx.biblioteques.model.SelectItem
+import dev.tekofx.biblioteques.model.search.BookResult
+import dev.tekofx.biblioteques.model.search.BookResults
+import dev.tekofx.biblioteques.model.search.EmptyResults
+import dev.tekofx.biblioteques.model.search.Search
+import dev.tekofx.biblioteques.model.search.SearchResult
+import dev.tekofx.biblioteques.model.search.SearchResults
+import dev.tekofx.biblioteques.model.search.SearchArgument
 import dev.tekofx.biblioteques.model.book.Book
 import dev.tekofx.biblioteques.model.book.BookCopy
 import dev.tekofx.biblioteques.model.book.BookCopyAvailability
 import dev.tekofx.biblioteques.model.book.BookDetails
 import dev.tekofx.biblioteques.repository.BookRepository
-import dev.tekofx.biblioteques.ui.IconResource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,23 +28,11 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.net.UnknownHostException
 
-val searchTypes = listOf(
-    SelectItem("Qualsevol paraula", "X", IconResource.fromDrawableResource(R.drawable.abc)),
-    SelectItem("Títol", "t", IconResource.fromDrawableResource(R.drawable.title)),
-    SelectItem("Autor/Artista", "a", IconResource.fromImageVector(Icons.Filled.Person)),
-    SelectItem("Tema", "d", IconResource.fromDrawableResource(R.drawable.topic)),
-    SelectItem("ISBN/ISSN", "i", IconResource.fromDrawableResource(R.drawable.numbers)),
-    SelectItem(
-        "Lloc de publicació de revistas",
-        "m",
-        IconResource.fromDrawableResource(R.drawable.location_city)
-    ),
-    SelectItem("Signatura", "c", IconResource.fromDrawableResource(R.drawable.assignment)),
-)
+
 
 class BookViewModel(private val repository: BookRepository) : ViewModel() {
     // Data
-    val searchScopes = MutableStateFlow<List<SelectItem>>(emptyList())
+    val searchScopes = MutableStateFlow<List<SearchArgument>>(emptyList())
     private val _results = MutableStateFlow<SearchResults<out SearchResult>>(EmptyResults())
     val results = _results.asStateFlow()
     private val _currentBook = MutableStateFlow<Book?>(null)
@@ -70,8 +55,8 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     private val pageIndex = mutableIntStateOf(0)
 
     // Inputs
-    private val _queryText = MutableStateFlow("")
-    val queryText = _queryText.asStateFlow()
+    private val _search = MutableStateFlow(Search())
+    val search = _search.asStateFlow()
     private val _availableNowChip = MutableStateFlow(false)
     val availableNowChip = _availableNowChip.asStateFlow()
     private val _canReserveChip = MutableStateFlow(false)
@@ -79,17 +64,6 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     private val _bookCopiesTextFieldValue = MutableStateFlow("")
     val bookCopiesTextFieldValue = _bookCopiesTextFieldValue.asStateFlow()
 
-    // Any word, title, author...
-    val selectedSearchType = MutableStateFlow(searchTypes.first())
-
-    // In all catalog, music, Martorell...
-    val selectedSearchScope = MutableStateFlow(
-        SelectItem(
-            "Tot el catàleg",
-            "171",
-            icon = IconResource.fromDrawableResource(R.drawable.library_books)
-        )
-    )
 
     // Errors
     val errorMessage = MutableStateFlow<String>("")
@@ -130,7 +104,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     /**
      * Gets the search scope from the aladi.diba.cat. This allows user to search in different libraries or catalogs
      * in the same search.
-     * The search scope is a list of [SelectItem] that contains the name of the library and the id of the library.
+     * The search scope is a list of [SearchArgument] that contains the name of the library and the id of the library.
      *
      */
     private fun getSearchScope() {
@@ -253,12 +227,10 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
         errorMessage.value = ""
         Log.d(
             "BookViewModel",
-            "search query:$queryText searchType:${selectedSearchType.value.value}"
+            "search query: $search"
         )
-        val response = repository.findBooks(
-            queryText.value,
-            selectedSearchType.value.value,
-            selectedSearchScope.value.value
+        val response = repository.search(
+            search.value
         )
         isLoadingSearch.value = true
 
@@ -277,9 +249,9 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
 
                 when (t) {
                     is NotFound -> {
-                        val message = when (selectedSearchType.value.value) {
+                        val message = when (search.value.searchType.value) {
                             "X" -> "Llibre no trobat :("
-                            else -> "${selectedSearchType.value.text} no trobat :("
+                            else -> "${search.value.searchType.name} no trobat :("
                         }
                         errorMessage.value = message
                     }
@@ -397,16 +369,23 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     }
 
 
-    fun onTextFieldValueChange(value: String) {
+    fun onBookCopiesTextfieldChange(value: String) {
         _bookCopiesTextFieldValue.value = value
     }
 
-    fun onSearchTypeChange(value: SelectItem) {
-        selectedSearchType.value = value
+    fun onSearchTypeChange(value: SearchArgument) {
+        _search.value = _search.value.copy(searchType = value)
     }
 
-    fun onSearchScopeChange(value: SelectItem) {
-        selectedSearchScope.value = value
+    fun onSearchScopeChange(value: SearchArgument) {
+        _search.value = _search.value.copy(searchScope = value)
+    }
+
+    /**
+     * Callback when Book Search Textfield text is changed
+     */
+    fun onSearchTextChanged(text: String) {
+        _search.value = _search.value.copy(query = text)
     }
 
 
@@ -439,11 +418,6 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
         }
     }
 
-    /**
-     * Callback when Book Search Textfield text is changed
-     */
-    fun onSearchTextChanged(text: String) {
-        _queryText.value = text
-    }
+
 
 }

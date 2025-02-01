@@ -7,11 +7,11 @@ import com.fleeksoft.ksoup.nodes.Element
 import com.fleeksoft.ksoup.select.Elements
 import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.dto.BookResponse
-import dev.tekofx.biblioteques.model.BookResult
-import dev.tekofx.biblioteques.model.BookResults
-import dev.tekofx.biblioteques.model.GeneralResult
-import dev.tekofx.biblioteques.model.GeneralResults
-import dev.tekofx.biblioteques.model.SelectItem
+import dev.tekofx.biblioteques.model.search.BookResult
+import dev.tekofx.biblioteques.model.search.BookResults
+import dev.tekofx.biblioteques.model.search.GeneralResult
+import dev.tekofx.biblioteques.model.search.GeneralResults
+import dev.tekofx.biblioteques.model.search.SearchArgument
 import dev.tekofx.biblioteques.model.StatusColor
 import dev.tekofx.biblioteques.ui.IconResource
 import okhttp3.ResponseBody
@@ -136,8 +136,8 @@ class BookConverterFactory : Converter.Factory() {
     }
 
 
-    private fun getSearchScope(doc: Document): List<SelectItem> {
-        val searchScopes = mutableListOf<SelectItem>()
+    private fun getSearchScope(doc: Document): List<SearchArgument> {
+        val searchScopes = mutableListOf<SearchArgument>()
         val searchScopeElement =
             doc.selectFirst("select#searchscope")?.getElementsByTag("option")
                 ?: return emptyList()
@@ -146,7 +146,7 @@ class BookConverterFactory : Converter.Factory() {
             val text = searchVal.text()
             val icon = getIcon(text)
             searchScopes.add(
-                SelectItem(
+                SearchArgument(
                     text,
                     value,
                     icon

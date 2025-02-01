@@ -28,19 +28,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
-import coil3.request.ImageRequest
-import coil3.request.crossfade
-import dev.tekofx.biblioteques.R
-import dev.tekofx.biblioteques.model.BookResult
-import dev.tekofx.biblioteques.model.BookResults
-import dev.tekofx.biblioteques.model.GeneralResults
-import dev.tekofx.biblioteques.model.SearchResult
-import dev.tekofx.biblioteques.model.SelectItem
+import dev.tekofx.biblioteques.model.search.BookResult
+import dev.tekofx.biblioteques.model.search.BookResults
+import dev.tekofx.biblioteques.model.search.GeneralResults
+import dev.tekofx.biblioteques.model.search.SearchResult
+import dev.tekofx.biblioteques.model.search.SearchArgument
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.components.Cover
 import dev.tekofx.biblioteques.ui.components.Loader
@@ -60,7 +55,7 @@ fun BookResultsScreen(
     val results by bookViewModel.results.collectAsState()
 
     // Input
-    val selectedSearchType by bookViewModel.selectedSearchType.collectAsState()
+    val search by bookViewModel.search.collectAsState()
 
     // Loaders
     val isLoadingNextPageResults by bookViewModel.isLoadingNextPageResults.collectAsState()
@@ -121,7 +116,7 @@ fun BookResultsScreen(
                     GeneralSearchResultCard(
                         onClick = { bookViewModel.getResults(searchResult.url) },
                         searchResult = searchResult,
-                        selectedSearchType = selectedSearchType
+                        selectedSearchType = search.searchType
                     )
                 }
         }
@@ -195,7 +190,7 @@ fun BookCard(
 fun GeneralSearchResultCard(
     onClick: () -> Unit,
     searchResult: SearchResult,
-    selectedSearchType: SelectItem
+    selectedSearchType: SearchArgument
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),

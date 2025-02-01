@@ -30,7 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import dev.tekofx.biblioteques.model.SelectItem
+import dev.tekofx.biblioteques.model.search.SearchArgument
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.input.SearchBar
 import dev.tekofx.biblioteques.ui.components.input.TextIconButton
@@ -41,9 +41,9 @@ import kotlinx.coroutines.launch
 fun SelectBottomSheet(
     show: Boolean,
     onToggleShow: () -> Unit,
-    selectItems: List<SelectItem>,
-    selectedItem: SelectItem,
-    onItemSelected: (SelectItem) -> Unit,
+    searchArguments: List<SearchArgument>,
+    selectedItem: SearchArgument,
+    onItemSelected: (SearchArgument) -> Unit,
     closeOnSelect: Boolean = true,
     showSearchBar: Boolean = false,
     maxHeight: Dp = Dp.Unspecified,
@@ -79,7 +79,7 @@ fun SelectBottomSheet(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                Text(text = "Cerca on ${selectedItem.text}")
+                Text(text = "Cerca on ${selectedItem.name}")
 
                 LazyColumn(
                     modifier = Modifier
@@ -88,8 +88,8 @@ fun SelectBottomSheet(
                     verticalArrangement = Arrangement.spacedBy(1.dp)
                 ) {
                     items(
-                        selectItems.filter {
-                            it.text.lowercase().contains(textfieldValue.lowercase())
+                        searchArguments.filter {
+                            it.name.lowercase().contains(textfieldValue.lowercase())
                         }
                     ) { item ->
                         Item(
@@ -128,9 +128,9 @@ fun SelectBottomSheet(
 
 @Composable
 fun Item(
-    item: SelectItem,
-    selectedItem: SelectItem,
-    onItemSelected: (SelectItem) -> Unit
+    item: SearchArgument,
+    selectedItem: SearchArgument,
+    onItemSelected: (SearchArgument) -> Unit
 ) {
     Surface(
         tonalElevation = if (selectedItem == item) 20.dp else 0.dp,
@@ -155,7 +155,7 @@ fun Item(
                 )
 
                 Text(
-                    text = item.text,
+                    text = item.name,
                     style = MaterialTheme.typography.titleMedium
                 )
             }

@@ -95,6 +95,8 @@ dependencies {
     // Ksoup
     implementation(libs.ksoup)
     implementation(libs.ksoup.network)
+    implementation(libs.androidx.animation.core.android)
+    implementation(libs.androidx.animation.core.android)
 
 
     ///////////////////////////// Testing Libraries /////////////////////////////

@@ -1,4 +1,4 @@
-package dev.tekofx.biblioteques.model
+package dev.tekofx.biblioteques.model.search
 
 
 abstract class SearchResults<SearchResult>(

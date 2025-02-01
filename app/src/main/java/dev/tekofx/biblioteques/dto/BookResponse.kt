@@ -1,9 +1,9 @@
 package dev.tekofx.biblioteques.dto
 
 import com.google.gson.annotations.SerializedName
-import dev.tekofx.biblioteques.model.SearchResult
-import dev.tekofx.biblioteques.model.SearchResults
-import dev.tekofx.biblioteques.model.SelectItem
+import dev.tekofx.biblioteques.model.search.SearchResult
+import dev.tekofx.biblioteques.model.search.SearchResults
+import dev.tekofx.biblioteques.model.search.SearchArgument
 import dev.tekofx.biblioteques.model.book.Book
 import dev.tekofx.biblioteques.model.book.BookCopy
 import dev.tekofx.biblioteques.model.book.BookDetails
@@ -17,6 +17,6 @@ data class BookResponse(
     @SerializedName("bookDetails") var bookDetails: BookDetails? = null,
     @SerializedName("pages") var pages: List<String> = emptyList(),
     @SerializedName("results") var results: SearchResults<out SearchResult>? = null,
-    @SerializedName("searchScopes") var searchScopes: List<SelectItem> = emptyList()
+    @SerializedName("searchScopes") var searchScopes: List<SearchArgument> = emptyList()
 )
 

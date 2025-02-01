@@ -1,6 +1,6 @@
 package dev.tekofx.biblioteques.model.book
 
-import dev.tekofx.biblioteques.model.BookResult
+import dev.tekofx.biblioteques.model.search.BookResult
 
 class Book(
     val id: Int,

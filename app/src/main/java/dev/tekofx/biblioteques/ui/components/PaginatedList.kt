@@ -31,8 +31,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import dev.tekofx.biblioteques.model.SearchResult
-import dev.tekofx.biblioteques.model.SearchResults
+import dev.tekofx.biblioteques.model.search.SearchResult
+import dev.tekofx.biblioteques.model.search.SearchResults
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 

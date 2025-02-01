@@ -239,7 +239,7 @@ fun BookScreen(
                         getMoreBookCopies = { bookViewModel.getMoreBookCopies(currentBook!!) },
                         onAvailableNowChipClick = bookViewModel::onAvailableNowChipClick,
                         onCanReserveChipClick = bookViewModel::onCanReserveChipClick,
-                        onTextFieldChange = bookViewModel::onTextFieldValueChange,
+                        onTextFieldChange = bookViewModel::onBookCopiesTextfieldChange,
                         textFieldValue = bookCopiesTextFieldValue,
                         listState = listState
                     )

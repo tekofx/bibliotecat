@@ -32,7 +32,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import dev.tekofx.biblioteques.model.SelectItem
+import dev.tekofx.biblioteques.model.search.SearchArgument
+import dev.tekofx.biblioteques.model.search.SearchTypes
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.Alert
@@ -41,7 +42,6 @@ import dev.tekofx.biblioteques.ui.components.SelectBottomSheet
 import dev.tekofx.biblioteques.ui.components.input.SearchBar
 import dev.tekofx.biblioteques.ui.components.input.TextIconButton
 import dev.tekofx.biblioteques.ui.viewModels.book.BookViewModel
-import dev.tekofx.biblioteques.ui.viewModels.book.searchTypes
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -53,10 +53,9 @@ fun BookSearchScreen(
     val results by bookViewModel.results.collectAsState()
 
     // Input
+    val search by bookViewModel.search.collectAsState()
     val searchScopes by bookViewModel.searchScopes.collectAsState()
-    val queryText by bookViewModel.queryText.collectAsState()
-    val selectedSearchScope by bookViewModel.selectedSearchScope.collectAsState()
-    val selectedSearchType by bookViewModel.selectedSearchType.collectAsState()
+
 
     // Loader
     val isLoadingSearch by bookViewModel.isLoadingSearch.collectAsState()
@@ -77,13 +76,13 @@ fun BookSearchScreen(
         BookSearch(
             errorMessage = errorMessage,
             onSearchTextChanged = bookViewModel::onSearchTextChanged,
-            queryText = queryText,
+            queryText = search.query,
             isLoading = isLoadingSearch,
-            selectedSearchType = selectedSearchType,
+            selectedSearchType = search.searchType,
             onSearch = bookViewModel::search,
             onSearchTypeSelected = bookViewModel::onSearchTypeChange,
             searchScopes = searchScopes,
-            selectedSearchScope = selectedSearchScope,
+            selectedSearchScope = search.searchScope,
             onSeachScopeSelected = bookViewModel::onSearchScopeChange
         )
     }
@@ -95,11 +94,11 @@ fun BookSearch(
     onSearchTextChanged: (String) -> Unit,
     queryText: String,
     isLoading: Boolean,
-    selectedSearchType: SelectItem,
-    onSearchTypeSelected: (SelectItem) -> Unit,
-    searchScopes: List<SelectItem>,
-    selectedSearchScope: SelectItem,
-    onSeachScopeSelected: (SelectItem) -> Unit,
+    selectedSearchType: SearchArgument,
+    onSearchTypeSelected: (SearchArgument) -> Unit,
+    searchScopes: List<SearchArgument>,
+    selectedSearchScope: SearchArgument,
+    onSeachScopeSelected: (SearchArgument) -> Unit,
     onSearch: () -> Unit
 ) {
     val focus = LocalFocusManager.current
@@ -132,12 +131,12 @@ fun BookSearch(
             trailingIcon = {
                 Icon(Icons.Outlined.Search, contentDescription = "")
             },
-            label = "Cerca ${selectedSearchType.text.lowercase()}"
+            label = "Cerca ${selectedSearchType.name.lowercase()}"
         )
 
         TextIconButton(
             modifier = Modifier.fillMaxWidth(),
-            text = selectedSearchType.text,
+            text = selectedSearchType.name,
             startIcon = selectedSearchType.icon,
             onClick = {
                 showSearchTypeBottomSheet = !showSearchTypeBottomSheet
@@ -146,7 +145,7 @@ fun BookSearch(
 
         TextIconButton(
             modifier = Modifier.fillMaxWidth(),
-            text = selectedSearchScope.text,
+            text = selectedSearchScope.name,
             startIcon = selectedSearchScope.icon,
             onClick = {
                 showSearchScopeBottomSheet = !showSearchScopeBottomSheet
@@ -180,7 +179,7 @@ fun BookSearch(
         SelectBottomSheet(
             show = showSearchTypeBottomSheet,
             onToggleShow = { showSearchTypeBottomSheet = !showSearchTypeBottomSheet },
-            selectItems = searchTypes,
+            searchArguments = SearchTypes,
             selectedItem = selectedSearchType,
             onItemSelected =
             onSearchTypeSelected,
@@ -190,7 +189,7 @@ fun BookSearch(
         SelectBottomSheet(
             show = showSearchScopeBottomSheet,
             onToggleShow = { showSearchScopeBottomSheet = !showSearchScopeBottomSheet },
-            selectItems = searchScopes,
+            searchArguments = searchScopes,
             selectedItem = selectedSearchScope,
             onItemSelected = onSeachScopeSelected,
             showSearchBar = true,

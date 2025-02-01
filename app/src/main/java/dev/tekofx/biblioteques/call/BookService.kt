@@ -11,7 +11,7 @@ import retrofit2.http.Query
 
 interface BookService {
     @GET(value = "search*cat/?searchscope=171&submit=Cercar")
-    fun findBooks(
+    fun search(
         @Query("searcharg") searchArg: String,
         @Query("searchtype") searchType: String,
         @Query("searchscope") searchScope: String,
