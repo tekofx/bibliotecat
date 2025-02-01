@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.theme.Typography
 import dev.tekofx.biblioteques.utils.IntentType
@@ -37,7 +38,7 @@ fun InfoIntentCard(contactType: IntentType, text: String) {
         when (contactType) {
             IntentType.MAIL -> IconResource.fromImageVector(Icons.Outlined.MailOutline)
             IntentType.PHONE -> IconResource.fromImageVector(Icons.Outlined.Phone)
-            IntentType.WEB -> IconResource.fromImageVector(Icons.Outlined.Info)
+            IntentType.WEB ->  IconResource.fromDrawableResource(R.drawable.public_icon)
             IntentType.LOCATION -> IconResource.fromImageVector(Icons.Outlined.LocationOn)
         }
     }
