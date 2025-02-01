@@ -8,7 +8,7 @@ import retrofit2.Call
 
 class BookRepository(private val bookService: BookService) {
     fun search(search: Search): Call<BookResponse> {
-        Log.d("BookRepository", "Request ${search.query} ${search.searchType.name} ${search.searchScope.name}")
+        Log.d("BookRepository", "Request $search")
         return bookService.search(search.query, search.searchType.value, search.searchScope.value)
     }
 

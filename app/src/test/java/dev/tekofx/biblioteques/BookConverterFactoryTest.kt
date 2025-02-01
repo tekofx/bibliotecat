@@ -1,11 +1,20 @@
 package dev.tekofx.biblioteques
 
+import android.health.connect.datatypes.SexualActivityRecord
 import dev.tekofx.biblioteques.call.BookService
 import dev.tekofx.biblioteques.model.search.BookResults
 import dev.tekofx.biblioteques.model.search.GeneralResults
 import dev.tekofx.biblioteques.model.search.SearchResults
 import dev.tekofx.biblioteques.model.book.BookConverterFactory
+import dev.tekofx.biblioteques.model.search.Search
+import dev.tekofx.biblioteques.model.search.SearchArgument
+import dev.tekofx.biblioteques.model.search.SearchTypeAuthor
+import dev.tekofx.biblioteques.model.search.SearchTypeISBN
+import dev.tekofx.biblioteques.model.search.SearchTypeSignature
+import dev.tekofx.biblioteques.model.search.SearchTypeTopic
+import dev.tekofx.biblioteques.model.search.SearchTypes
 import dev.tekofx.biblioteques.repository.BookRepository
+import dev.tekofx.biblioteques.ui.IconResource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -50,6 +59,12 @@ class BookConverterFactoryTest {
 
 
     private val sut = BookRepository(api)
+
+    private val searchScopeAllCatalog=SearchArgument(
+        "Tot el catàleg",
+        "171",
+        icon = IconResource.fromDrawableResource(R.drawable.library_books)
+    )
 
 
     @After
@@ -196,7 +211,7 @@ class BookConverterFactoryTest {
     @Test
     fun `search by author`() {
         runBlocking {
-            val response = realBookRepository.search("sanderson", "a", "171").execute()
+            val response = realBookRepository.search(Search("sanderson", SearchTypeAuthor , searchScopeAllCatalog)).execute()
             assert(response.body()?.results is SearchResults)
         }
     }
@@ -204,7 +219,8 @@ class BookConverterFactoryTest {
     @Test
     fun `search by topic`() {
         runBlocking {
-            val response = realBookRepository.search("plantes", "d", "171").execute()
+            val response = realBookRepository.search(Search("plantes", SearchTypeTopic, searchScopeAllCatalog)).execute()
+
             assert(response.body()?.results is SearchResults)
         }
     }
@@ -212,7 +228,8 @@ class BookConverterFactoryTest {
     @Test
     fun `search by issn and get list of issns`() {
         runBlocking {
-            val response = realBookRepository.search("978", "i", "171").execute()
+            val response = realBookRepository.search(Search("978", SearchTypeISBN,searchScopeAllCatalog)).execute()
+
             val results = response.body()?.results!!
             assert(response.body()?.results is SearchResults)
             assert(results.items.isNotEmpty())
@@ -223,7 +240,7 @@ class BookConverterFactoryTest {
     @Test
     fun `search by issn and get a book`() {
         runBlocking {
-            val response = realBookRepository.search("9788419260260", "i", "171").execute()
+            val response = realBookRepository.search(Search("9788419260260", SearchTypeISBN, searchScopeAllCatalog)).execute()
             assert(response.body()?.results is BookResults)
 
         }
@@ -232,7 +249,8 @@ class BookConverterFactoryTest {
     @Test
     fun `search by signature and get list`() {
         runBlocking {
-            val response = realBookRepository.search("N San", "c", "171").execute()
+            val response = realBookRepository.search(Search("N San", SearchTypeSignature, searchScopeAllCatalog)).execute()
+
             val results = response.body()?.results!!
             assert(response.body()?.results is SearchResults)
             assert(results.items.isNotEmpty())
@@ -242,7 +260,7 @@ class BookConverterFactoryTest {
     @Test
     fun `search by signature and not found`() {
         runBlocking {
-            val response = realBookRepository.search("san", "c", "171").execute()
+            val response = realBookRepository.search(Search("san", SearchTypeSignature, searchScopeAllCatalog)).execute()
             val results = response.body()?.results!!
             assert(response.body()?.results is SearchResults)
             assert(results.items.isNotEmpty())

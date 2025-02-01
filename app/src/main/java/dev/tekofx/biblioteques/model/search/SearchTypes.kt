@@ -5,16 +5,21 @@ import androidx.compose.material.icons.filled.Person
 import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.ui.IconResource
 
+
+val SearchTypeAnyWord= SearchArgument("Qualsevol paraula", "X", IconResource.fromDrawableResource(R.drawable.abc))
+val SearchTypeTitle= SearchArgument("Títol", "t", IconResource.fromDrawableResource(R.drawable.title))
+val SearchTypeAuthor= SearchArgument("Autor/Artista", "a", IconResource.fromImageVector(Icons.Filled.Person))
+val SearchTypeTopic= SearchArgument("Tema", "d", IconResource.fromDrawableResource(R.drawable.topic))
+val SearchTypeISBN= SearchArgument("ISBN/ISSN", "i", IconResource.fromDrawableResource(R.drawable.numbers))
+val SearchTypeMagazineLocation= SearchArgument("Lloc de publicació de revistas", "m", IconResource.fromDrawableResource(R.drawable.location_city))
+val SearchTypeSignature= SearchArgument("Signatura", "c", IconResource.fromDrawableResource(R.drawable.assignment))
+
 val SearchTypes = listOf(
-    SearchArgument("Qualsevol paraula", "X", IconResource.fromDrawableResource(R.drawable.abc)),
-    SearchArgument("Títol", "t", IconResource.fromDrawableResource(R.drawable.title)),
-    SearchArgument("Autor/Artista", "a", IconResource.fromImageVector(Icons.Filled.Person)),
-    SearchArgument("Tema", "d", IconResource.fromDrawableResource(R.drawable.topic)),
-    SearchArgument("ISBN/ISSN", "i", IconResource.fromDrawableResource(R.drawable.numbers)),
-    SearchArgument(
-        "Lloc de publicació de revistas",
-        "m",
-        IconResource.fromDrawableResource(R.drawable.location_city)
-    ),
-    SearchArgument("Signatura", "c", IconResource.fromDrawableResource(R.drawable.assignment)),
+    SearchTypeAnyWord,
+    SearchTypeTitle,
+    SearchTypeAuthor,
+    SearchTypeTopic,
+    SearchTypeISBN,
+    SearchTypeMagazineLocation,
+    SearchTypeSignature
 )

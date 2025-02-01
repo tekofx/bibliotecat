@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import dev.tekofx.biblioteques.model.search.Search
 import dev.tekofx.biblioteques.model.search.SearchArgument
 import dev.tekofx.biblioteques.model.search.SearchTypes
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
@@ -74,30 +75,26 @@ fun BookSearchScreen(
 
     Scaffold {
         BookSearch(
-            errorMessage = errorMessage,
+            search = search,
             onSearchTextChanged = bookViewModel::onSearchTextChanged,
-            queryText = search.query,
-            isLoading = isLoadingSearch,
-            selectedSearchType = search.searchType,
-            onSearch = bookViewModel::search,
             onSearchTypeSelected = bookViewModel::onSearchTypeChange,
+            onSeachScopeSelected = bookViewModel::onSearchScopeChange,
+            errorMessage = errorMessage,
+            isLoading = isLoadingSearch,
+            onSearch = bookViewModel::search,
             searchScopes = searchScopes,
-            selectedSearchScope = search.searchScope,
-            onSeachScopeSelected = bookViewModel::onSearchScopeChange
         )
     }
 }
 
 @Composable
 fun BookSearch(
+    search: Search,
     errorMessage: String?,
     onSearchTextChanged: (String) -> Unit,
-    queryText: String,
     isLoading: Boolean,
-    selectedSearchType: SearchArgument,
     onSearchTypeSelected: (SearchArgument) -> Unit,
     searchScopes: List<SearchArgument>,
-    selectedSearchScope: SearchArgument,
     onSeachScopeSelected: (SearchArgument) -> Unit,
     onSearch: () -> Unit
 ) {
@@ -125,19 +122,19 @@ fun BookSearch(
             Alert(errorMessage, AlertType.ERROR)
         }
         SearchBar(
-            value = queryText,
+            value = search.query,
             onValueChange = { onSearchTextChanged(it) },
             onDone = { search() },
             trailingIcon = {
                 Icon(Icons.Outlined.Search, contentDescription = "")
             },
-            label = "Cerca ${selectedSearchType.name.lowercase()}"
+            label = "Cerca ${search.searchType.name.lowercase()}"
         )
 
         TextIconButton(
             modifier = Modifier.fillMaxWidth(),
-            text = selectedSearchType.name,
-            startIcon = selectedSearchType.icon,
+            text = search.searchType.name,
+            startIcon = search.searchType.icon,
             onClick = {
                 showSearchTypeBottomSheet = !showSearchTypeBottomSheet
             }
@@ -145,8 +142,8 @@ fun BookSearch(
 
         TextIconButton(
             modifier = Modifier.fillMaxWidth(),
-            text = selectedSearchScope.name,
-            startIcon = selectedSearchScope.icon,
+            text = search.searchScope.name,
+            startIcon = search.searchScope.icon,
             onClick = {
                 showSearchScopeBottomSheet = !showSearchScopeBottomSheet
             }
@@ -154,7 +151,7 @@ fun BookSearch(
 
         TextIconButton(text = "Cerca",
             startIcon = IconResource.fromImageVector(Icons.Outlined.Search),
-            enabled = queryText.isNotEmpty() && !isLoading,
+            enabled = search.query.isNotEmpty() && !isLoading,
             onClick = {
                 search()
             }
@@ -180,7 +177,7 @@ fun BookSearch(
             show = showSearchTypeBottomSheet,
             onToggleShow = { showSearchTypeBottomSheet = !showSearchTypeBottomSheet },
             searchArguments = SearchTypes,
-            selectedItem = selectedSearchType,
+            selectedItem = search.searchType,
             onItemSelected =
             onSearchTypeSelected,
         )
@@ -190,7 +187,7 @@ fun BookSearch(
             show = showSearchScopeBottomSheet,
             onToggleShow = { showSearchScopeBottomSheet = !showSearchScopeBottomSheet },
             searchArguments = searchScopes,
-            selectedItem = selectedSearchScope,
+            selectedItem = search.searchScope,
             onItemSelected = onSeachScopeSelected,
             showSearchBar = true,
             maxHeight = 300.dp

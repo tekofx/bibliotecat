@@ -123,26 +123,12 @@ fun Navigation(
         }
 
         composable(
-            route = NavigateDestinations.BOOK_RESULTS_ROUTE + "?query={query}&searchtype={searchtype}",
+            route = NavigateDestinations.BOOK_RESULTS_ROUTE,
             enterTransition = ::slideInToTop,
             popEnterTransition = ::slideInToBottom,
             popExitTransition = ::slideOutToBottom,
-            arguments = listOf(
-                navArgument("query") {
-                    type = NavType.StringType
-                    nullable = true
-                    defaultValue = null
-                },
-                navArgument("searchtype") {
-                    type = NavType.StringType
-                    nullable = true
-                    defaultValue = null
-                }
-            )
         ) { backStackEntry ->
-            val query = backStackEntry.arguments?.getString("query")
-            val searchType = backStackEntry.arguments?.getString("searchtype")
-            BookResultsScreen(navHostController, bookViewModel, query, searchType)
+            BookResultsScreen(navHostController, bookViewModel)
         }
 
         composable(

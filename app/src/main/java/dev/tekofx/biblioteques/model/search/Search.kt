@@ -25,8 +25,4 @@ data class Search(
         "171",
         icon = IconResource.fromDrawableResource(R.drawable.library_books)
     )
-) {
-    override fun toString(): String {
-        return "Search(query='$query', searchType=${searchType.name}, searchScope=${searchScope.name})"
-    }
-}
+)

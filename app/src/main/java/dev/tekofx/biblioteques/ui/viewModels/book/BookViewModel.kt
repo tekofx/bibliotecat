@@ -227,7 +227,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
         errorMessage.value = ""
         Log.d(
             "BookViewModel",
-            "search query: $search"
+            "search query: ${search.value}"
         )
         val response = repository.search(
             search.value

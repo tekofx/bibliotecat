@@ -25,4 +25,8 @@ class SearchArgument(
         return result
     }
 
+    override fun toString(): String {
+        return name
+    }
+
 }

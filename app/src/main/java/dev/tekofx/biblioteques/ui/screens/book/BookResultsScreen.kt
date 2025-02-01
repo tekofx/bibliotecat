@@ -48,8 +48,6 @@ import dev.tekofx.biblioteques.ui.viewModels.book.BookViewModel
 fun BookResultsScreen(
     navHostController: NavHostController,
     bookViewModel: BookViewModel,
-    query: String?,
-    searchType: String?
 ) {
     // Data
     val results by bookViewModel.results.collectAsState()
@@ -65,7 +63,7 @@ fun BookResultsScreen(
     val errorMessage by bookViewModel.errorMessage.collectAsState()
 
     LaunchedEffect(key1 = 1) {
-        Log.d("BookResultsScreen", "LaunchedEffect. Query: $query searchType: $searchType")
+        Log.d("BookResultsScreen", "Found ${results.items.size} elements")
         bookViewModel.setCanNavigateToResults(false)
         bookViewModel.resetCurrentBook()
     }
