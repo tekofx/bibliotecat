@@ -37,8 +37,7 @@ fun LibraryList(
         LazyColumn(
             state = listState,
             modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 10.dp),
+                .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             item{
