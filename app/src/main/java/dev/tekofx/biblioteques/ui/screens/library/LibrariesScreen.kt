@@ -24,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -176,12 +177,11 @@ fun SearchBottomSheet(
             },
             sheetState = sheetState
         ) {
-            // Sheet content
             Column(
                 modifier = Modifier.padding(10.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 SearchBar(
                     value = textFieldValue,
                     onValueChange = onTextFieldChange,
@@ -193,18 +193,7 @@ fun SearchBottomSheet(
                     onSelectedEntry = onSelectedMunicipality,
                     selectedEntry = selectedMunicipality,
                 )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    Text(text = "Obert ara", style = Typography.bodyLarge)
-                    Switch(
-                        checked = showOnlyOpen,
-                        onCheckedChange = {
-                            onShowOnlyOpen(it)
-                        }
-                    )
-                }
+                ShowOnlyOpenSwitch(showOnlyOpen, onShowOnlyOpen)
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -247,3 +236,44 @@ fun SearchBottomSheet(
     }
 }
 
+@Composable
+private fun ShowOnlyOpenSwitch(
+    showOnlyOpen: Boolean,
+    onShowOnlyOpen: (value: Boolean) -> Unit
+) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        tonalElevation = 20.dp,
+        shape = MaterialTheme.shapes.extraLarge
+    ) {
+        Row(
+            modifier = Modifier.padding(10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Icon(
+                    IconResource.fromDrawableResource(R.drawable.schedule)
+                        .asPainterResource(),
+                    contentDescription = "Obert ara"
+                )
+                Column {
+                    Text(text = "Obert ara", style = Typography.bodyLarge)
+                    Text(
+                        text = "Mostar només les biblioteques obertes",
+                        style = Typography.bodySmall
+                    )
+                }
+            }
+            Switch(
+                checked = showOnlyOpen,
+                onCheckedChange = {
+                    onShowOnlyOpen(it)
+                }
+            )
+        }
+    }
+}
