@@ -26,7 +26,9 @@ import kotlinx.coroutines.flow.stateIn
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.concurrent.TimeoutException
 
 
 
@@ -259,9 +261,16 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                     is UnknownHostException -> {
                         errorMessage.value = "Error: No hi ha connexió a internet"
                     }
+
+                    is TimeoutException, is SocketTimeoutException -> {
+                        errorMessage.value = "Error: Temps d'espera superat"
+                        Log.d("BookViewModel", "TimeoutException")
+                    }
+
+
                 }
 
-                Log.e("BookViewModel", "Error finding books: ${t.message.toString()}")
+                Log.e("BookViewModel", "Error finding books: $t")
                 isLoadingSearch.value = false
             }
         })
@@ -303,6 +312,17 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
             }
 
             override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
+                when (t) {
+                    
+                    is UnknownHostException -> {
+                        errorMessage.value = "Error: No hi ha connexió a internet"
+                    }
+
+                    is TimeoutException, is SocketTimeoutException -> {
+                        errorMessage.value = "Error: Temps d'espera superat"
+                        Log.d("BookViewModel", "TimeoutException")
+                    }
+                }
                 Log.e("BookViewModel", t.message.toString())
                 errorMessage.value = t.message!!
                 isLoadingBookDetails.value = false
