@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -23,10 +22,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
@@ -42,6 +45,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -72,8 +76,8 @@ fun TutorialScreen(
     navHostController: NavHostController,
     preferencesViewModel: PreferencesViewModel
 ) {
-    var page by remember { mutableIntStateOf(1) }
-    var previousPage by remember { mutableStateOf<Int?>(null) }
+    val totalPages = 4
+    val pagerState = rememberPagerState { totalPages }
 
     fun navigateToWelcomeScreen() {
         preferencesViewModel.saveShowTutorial(false)
@@ -81,7 +85,6 @@ fun TutorialScreen(
     }
 
 
-    val totalPages = 4
     Column {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -95,57 +98,30 @@ fun TutorialScreen(
             }
         }
 
-        AnimatedContent(
-            targetState = page,
-            label = "",
-            transitionSpec = {
-                if (previousPage != null && page > previousPage!!) {
-
-                    slideIntoContainer(
-                        towards = AnimatedContentTransitionScope.SlideDirection.Left,
-                    ) togetherWith slideOutOfContainer(
-                        towards = AnimatedContentTransitionScope.SlideDirection.Left,
-                    )
-                } else {
-                    slideIntoContainer(
-                        towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                    ) togetherWith slideOutOfContainer(
-                        towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                    )
-                }
-            }
-        ) { targetPage ->
-            when (targetPage) {
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+        ) { page ->
+            when (page + 1) {
                 1 -> Page1()
                 2 -> Page2()
                 3 -> Page3()
                 4 -> Page4()
                 else -> Page1() // Default fallback
-
             }
         }
 
-        // Spacer with weight to push the next elements to the bottom
-        Spacer(modifier = Modifier.weight(1f))
-
-        Stepper(page, totalPages)
+        Stepper(pagerState)
 
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
             CircularButtonWithProgress(
-                page = page,
-                lastPage = totalPages,
+                pagerState = pagerState,
                 onFinishClicked = ::navigateToWelcomeScreen,
-                decreasePage = {
-                    previousPage = page
-                    page -= 1
-                },
-                increasePage = {
-                    previousPage = page
-                    page += 1
-                }
             )
         }
         Spacer(modifier = Modifier.height(20.dp))
@@ -155,17 +131,33 @@ fun TutorialScreen(
 
 @Composable
 fun CircularButtonWithProgress(
-    page: Int,
-    lastPage: Int,
+    pagerState: PagerState,
     onFinishClicked: () -> Unit,
-    increasePage: () -> Unit,
-    decreasePage: () -> Unit
 ) {
-    BackHandler {
-        decreasePage()
+    var selectedPage by remember { mutableIntStateOf(0) }
+    var clickedButtonOrBack by remember { mutableStateOf(false) }
+
+    LaunchedEffect(selectedPage) {
+        if (clickedButtonOrBack) {
+            pagerState.animateScrollToPage(selectedPage)
+            clickedButtonOrBack = false
+        }
     }
 
-    val progress = page.toFloat() / lastPage.toFloat()
+    LaunchedEffect(pagerState.currentPage) {
+        if (!clickedButtonOrBack) {
+            selectedPage = pagerState.currentPage
+        }
+    }
+
+    BackHandler {
+        if (pagerState.currentPage > 0) {
+            clickedButtonOrBack = true
+            selectedPage--
+        }
+    }
+
+    val progress = (pagerState.currentPage + 1) / pagerState.pageCount.toFloat()
     val progressAnimation by animateFloatAsState(
         targetValue = progress,
         animationSpec = tween(easing = FastOutSlowInEasing),
@@ -180,10 +172,11 @@ fun CircularButtonWithProgress(
         )
         IconButton(
             onClick = {
-                if (page == lastPage) {
+                if (pagerState.currentPage == pagerState.pageCount - 1) {
                     onFinishClicked()
                 } else {
-                    increasePage()
+                    clickedButtonOrBack = true
+                    selectedPage++
                 }
             },
             modifier = Modifier
@@ -191,12 +184,12 @@ fun CircularButtonWithProgress(
                 .background(MaterialTheme.colorScheme.primary, CircleShape),
         ) {
             AnimatedContent(
-                targetState = page,
+                targetState = pagerState.currentPage,
                 transitionSpec = {
                     fadeIn() togetherWith fadeOut()
                 }
             ) { targetPage: Int ->
-                if (targetPage == lastPage) {
+                if (targetPage == pagerState.pageCount - 1) {
                     Icon(
                         modifier = Modifier.size(40.dp),
                         imageVector = Icons.Outlined.Check, contentDescription = "Finish"
@@ -216,7 +209,7 @@ fun CircularButtonWithProgress(
 }
 
 @Composable
-fun Stepper(actualPage: Int, totalPages: Int) {
+fun Stepper(pagerState: PagerState) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -224,24 +217,21 @@ fun Stepper(actualPage: Int, totalPages: Int) {
         horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        for (i in 1..totalPages) {
-            Dot(page = i, actualPage = actualPage)
+        for (i in 0 until pagerState.pageCount) {
+            Dot(isSelected = pagerState.currentPage == i)
         }
     }
 }
 
 @Composable
-fun Dot(
-    page: Int,
-    actualPage: Int
-) {
+fun Dot(isSelected: Boolean) {
     val scale by animateDpAsState(
-        targetValue = if (page == actualPage) 15.dp else 10.dp,
+        targetValue = if (isSelected) 15.dp else 10.dp,
         animationSpec = tween(durationMillis = 500, easing = LinearOutSlowInEasing),
         label = "scale"
     )
     val color by animateColorAsState(
-        targetValue = if (page == actualPage) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer,
+        targetValue = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer,
         animationSpec = tween(durationMillis = 500, easing = LinearOutSlowInEasing),
         label = "color"
     )
