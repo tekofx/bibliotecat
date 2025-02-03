@@ -24,8 +24,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -49,10 +47,10 @@ import dev.tekofx.biblioteques.ui.components.Alert
 import dev.tekofx.biblioteques.ui.components.AlertType
 import dev.tekofx.biblioteques.ui.components.Loader
 import dev.tekofx.biblioteques.ui.components.input.SearchBar
+import dev.tekofx.biblioteques.ui.components.input.SurfaceSwitch
 import dev.tekofx.biblioteques.ui.components.input.TextIconButton
 import dev.tekofx.biblioteques.ui.components.input.TextIconButtonOutlined
 import dev.tekofx.biblioteques.ui.components.library.LibraryList
-import dev.tekofx.biblioteques.ui.theme.Typography
 import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModel
 import kotlinx.coroutines.launch
 
@@ -193,7 +191,13 @@ fun SearchBottomSheet(
                     onSelectedEntry = onSelectedMunicipality,
                     selectedEntry = selectedMunicipality,
                 )
-                ShowOnlyOpenSwitch(showOnlyOpen, onShowOnlyOpen)
+                SurfaceSwitch(
+                    value = showOnlyOpen,
+                    onValueChange = onShowOnlyOpen,
+                    iconResource = IconResource.fromDrawableResource(R.drawable.schedule),
+                    title = "Obert ara",
+                    description = "Mostar només les biblioteques obertes"
+                )
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -236,44 +240,3 @@ fun SearchBottomSheet(
     }
 }
 
-@Composable
-private fun ShowOnlyOpenSwitch(
-    showOnlyOpen: Boolean,
-    onShowOnlyOpen: (value: Boolean) -> Unit
-) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        tonalElevation = 20.dp,
-        shape = MaterialTheme.shapes.extraLarge
-    ) {
-        Row(
-            modifier = Modifier.padding(10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                Icon(
-                    IconResource.fromDrawableResource(R.drawable.schedule)
-                        .asPainterResource(),
-                    contentDescription = "Obert ara"
-                )
-                Column {
-                    Text(text = "Obert ara", style = Typography.bodyLarge)
-                    Text(
-                        text = "Mostar només les biblioteques obertes",
-                        style = Typography.bodySmall
-                    )
-                }
-            }
-            Switch(
-                checked = showOnlyOpen,
-                onCheckedChange = {
-                    onShowOnlyOpen(it)
-                }
-            )
-        }
-    }
-}
