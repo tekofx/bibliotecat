@@ -37,12 +37,13 @@ fun BottomNavigationBar(navHostController: NavHostController) {
                     modifier = Modifier.height(30.dp),
                     selected = selected,
                     onClick = {
-                        navHostController.navigate(item.path)
-                        {
-                            popUpTo(navHostController.graph.findStartDestination().id) {
-                                saveState = true
+                        if (!selected) { // Avoid navigating to the same destination
+                            navHostController.navigate(item.path) {
+                                popUpTo(navHostController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                restoreState = true
                             }
-                            restoreState = true
                         }
                     },
                     icon = {

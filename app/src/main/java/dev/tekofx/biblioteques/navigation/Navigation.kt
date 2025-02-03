@@ -103,7 +103,15 @@ fun Navigation(
         // Books
         composable(
             route = NavigateDestinations.BOOK_SEARCH_ROUTE,
-            popEnterTransition = ::slideInToBottom,
+            popEnterTransition = {
+                // If previous screen was LibrariesScreen
+                if (initialState.destination.route == NavigateDestinations.LIBRARIES_ROUTE) {
+                    slideInToLeft(this)
+                } else {
+                    slideInToBottom(this)
+                }
+            },
+
             enterTransition = ::slideInToLeft,
             exitTransition = {
                 // If Next Screen is not LibrariesScreen
