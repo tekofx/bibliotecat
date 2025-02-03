@@ -28,7 +28,7 @@ fun BottomNavigationBar(navHostController: NavHostController) {
         contentPadding = PaddingValues(0.dp),
         modifier = Modifier
             .padding(0.dp)
-            .height(80.dp)
+            .height(60.dp)
     ) {
         NavigationBar {
             items.forEach { item ->

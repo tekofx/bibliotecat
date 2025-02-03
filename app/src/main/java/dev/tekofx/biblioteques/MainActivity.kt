@@ -11,9 +11,8 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -50,6 +49,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
 
         val libraryViewModel = ViewModelProvider(
             this,
@@ -74,18 +74,9 @@ class MainActivity : ComponentActivity() {
 
 
         installSplashScreen()
-        enableEdgeToEdge()
         setContent {
             MyApplicationTheme {
-
-                Surface(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-
-                ) {
-                    MainScreen(libraryViewModel, bookViewModel, preferencesViewModel)
-                }
+                MainScreen(libraryViewModel, bookViewModel, preferencesViewModel)
             }
 
 
@@ -106,6 +97,9 @@ fun MainScreen(
 
 
     Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .safeDrawingPadding(),
         bottomBar = {
             AnimatedVisibility(
                 enter = slideInVertically(initialOffsetY = { it }),
@@ -119,7 +113,6 @@ fun MainScreen(
         Box(
             modifier = Modifier
                 .padding(padding)
-                .fillMaxSize()
         ) {
             Navigation(navController, libraryViewModel, bookViewModel, preferencesViewModel)
         }
