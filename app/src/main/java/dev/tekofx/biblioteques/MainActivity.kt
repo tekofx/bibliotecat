@@ -1,5 +1,6 @@
 package dev.tekofx.biblioteques
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,12 +11,16 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -72,16 +77,27 @@ class MainActivity : ComponentActivity() {
             PreferencesViewModelFactory(PreferencesRepository(dataStore))
         )[PreferencesViewModel::class.java]
 
-
         installSplashScreen()
         setContent {
             MyApplicationTheme {
                 MainScreen(libraryViewModel, bookViewModel, preferencesViewModel)
+                SetNavigationBarColor()
             }
 
 
         }
 
+
+    }
+}
+
+@Composable
+fun SetNavigationBarColor() {
+    val color = MaterialTheme.colorScheme.surface
+    val window = (LocalContext.current as Activity).window
+
+    SideEffect {
+        window.navigationBarColor = color.toArgb()
     }
 }
 
@@ -99,7 +115,7 @@ fun MainScreen(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .safeDrawingPadding(),
+            .navigationBarsPadding(),
         bottomBar = {
             AnimatedVisibility(
                 enter = slideInVertically(initialOffsetY = { it }),
