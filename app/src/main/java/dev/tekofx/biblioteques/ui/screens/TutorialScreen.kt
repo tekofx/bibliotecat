@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -69,7 +68,6 @@ import dev.tekofx.biblioteques.ui.theme.Typography
 import dev.tekofx.biblioteques.ui.viewModels.preferences.PreferencesViewModel
 import dev.tekofx.biblioteques.utils.RequestLocationPermissionUsingRememberLauncherForActivityResult
 
-@OptIn(ExperimentalAnimationApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun TutorialScreen(
@@ -161,6 +159,7 @@ fun CircularButtonWithProgress(
     val progressAnimation by animateFloatAsState(
         targetValue = progress,
         animationSpec = tween(easing = FastOutSlowInEasing),
+        label = "progressAnimation",
     )
 
     Box(contentAlignment = Alignment.Center) {
@@ -187,7 +186,8 @@ fun CircularButtonWithProgress(
                 targetState = pagerState.currentPage,
                 transitionSpec = {
                     fadeIn() togetherWith fadeOut()
-                }
+                },
+                label = "ButtonContent"
             ) { targetPage: Int ->
                 if (targetPage == pagerState.pageCount - 1) {
                     Icon(
