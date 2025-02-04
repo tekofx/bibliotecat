@@ -68,7 +68,6 @@ import dev.tekofx.biblioteques.utils.formatDate
 import dev.tekofx.biblioteques.utils.formatDayOfWeek
 import dev.tekofx.biblioteques.utils.openApp
 import java.time.LocalDate
-import java.time.LocalTime
 
 
 val tabEntries = listOf(
@@ -134,8 +133,8 @@ fun LibraryScreen(
                     Text(text = library.adrecaNom, style = Typography.headlineSmall)
                     Text(text = library.municipality, style = Typography.titleLarge)
                     StatusBadge(
-                        library.getStatusColor(),
-                        library.generateStateMessage(LocalDate.now(), LocalTime.now()),
+                        library.openStatus.color,
+                        library.openStatus.message,
                         Typography.titleMedium
                     )
 

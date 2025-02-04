@@ -23,8 +23,6 @@ import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.model.library.Library
 import dev.tekofx.biblioteques.ui.components.StatusBadge
 import dev.tekofx.biblioteques.ui.theme.Typography
-import java.time.LocalDate
-import java.time.LocalTime
 
 @Composable
 fun LibraryCard(
@@ -74,8 +72,8 @@ fun LibraryCard(
                     )
                 }
                 StatusBadge(
-                    library.getStatusColor(),
-                    library.generateStateMessage(LocalDate.now(), LocalTime.now()),
+                    library.openStatus.color,
+                    library.openStatus.message,
                     Typography.bodyMedium
                 )
 

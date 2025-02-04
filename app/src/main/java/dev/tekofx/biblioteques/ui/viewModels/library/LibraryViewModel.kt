@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.network.parseGetRequestBlocking
 import dev.tekofx.biblioteques.model.library.Library
+import dev.tekofx.biblioteques.model.library.OpenStatusEnum
 import dev.tekofx.biblioteques.repository.LibraryRepository
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -21,8 +22,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.net.UnknownHostException
 import java.text.Normalizer
-import java.time.LocalDate
-import java.time.LocalTime
 
 
 class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() {
@@ -65,7 +64,7 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
         .combine(_showOnlyOpen) { libraries, value ->
             libraries.filter {
                 if (value) {
-                    it.isOpen(LocalDate.now(), LocalTime.now())
+                    it.openStatus.open is OpenStatusEnum.Open
                 } else {
                     true
                 }
