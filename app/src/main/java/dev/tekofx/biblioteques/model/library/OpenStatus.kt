@@ -52,8 +52,28 @@ class OpenStatus(
                 color = StatusColor.YELLOW
             }
 
+            opensInAfternoon() -> {
+                open = OpenStatusEnum.Closed.openInAfternoon
+                color = StatusColor.RED
+            }
+
+            opensTomorrow() -> {
+                open = OpenStatusEnum.Closed.openTomorrow
+                color = StatusColor.RED
+            }
+
+            opensInDays() -> {
+                open = OpenStatusEnum.Closed.openInDays
+                color = StatusColor.RED
+            }
+
+            isHoliday() -> {
+                open = OpenStatusEnum.Closed.holiday
+                color = StatusColor.ORANGE
+            }
+
             else -> {
-                open = OpenStatusEnum.Closed.closed
+                open = OpenStatusEnum.Closed.closedTemporarily
                 color = StatusColor.RED
             }
         }
@@ -75,6 +95,26 @@ class OpenStatus(
             currentTime.isAfter(interval.from) && currentTime.isBefore(interval.to)
         } ?: false
     }
+
+    private fun opensInAfternoon(): Boolean {
+        val nextIntervalOfDay = timetable.getNextIntervalOfDay(currentDate, currentTime)
+        return nextIntervalOfDay != null
+    }
+
+    private fun opensTomorrow(): Boolean {
+        val nextDay = timetable.getNextDayOpen(currentDate)
+        return nextDay != null && nextDay == currentDate.plusDays(1)
+    }
+
+    private fun opensInDays(): Boolean {
+        val nextDay = timetable.getNextDayOpen(currentDate)
+        return nextDay != null && nextDay != currentDate.plusDays(1)
+    }
+
+    private fun isHoliday(): Boolean {
+        return holidays.find { it.date == currentDate } != null
+    }
+
 
     private fun getStatusColor(): StatusColor {
         holidays.find { it.date == currentDate }?.let { return StatusColor.ORANGE }
