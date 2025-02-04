@@ -63,7 +63,8 @@ class LibraryConverterFactory : Converter.Factory() {
                 val addressFull =
                     libraryElement.getJSONObject("grup_adreca").getString("adreca_completa")
                 val image = if (imageArray.length() > 0) imageArray.getString(0) else ""
-                val emails = jsonArrayToStringArray(libraryElement.getJSONArray("email")).ifEmpty { null }
+                val emails =
+                    jsonArrayToStringArray(libraryElement.getJSONArray("email")).ifEmpty { null }
                 val phones =
                     jsonArrayToStringArray(libraryElement.getJSONArray("telefon_contacte")).ifEmpty { null }
                 val webUrl = libraryElement.getString("url_general").ifEmpty { null }
@@ -74,7 +75,7 @@ class LibraryConverterFactory : Converter.Factory() {
 
                 // Get bibliotecavirtual.diba.cat url
                 var bibliotecaVirtualUrl: String? = null
-                if (doc != null && emails!=null && phones!=null) {
+                if (doc != null && emails != null && phones != null) {
                     val emailsTd = doc.select("td.email:contains(${emails[0]})").firstOrNull()
                     val phonesTd = doc.select("td.phone:contains(${phones[0]})").firstOrNull()
                     val nameTd = emailsTd?.siblingElements()?.select("td.name")?.firstOrNull()
@@ -84,6 +85,7 @@ class LibraryConverterFactory : Converter.Factory() {
                 }
                 // Horaris
                 val (timetableHivern, timetableEstiu) = getTimetables(libraryElement)
+                val timetable = Timetable(timetableHivern, timetableEstiu)
 
                 val library = Library(
                     id = pointId,
@@ -97,8 +99,7 @@ class LibraryConverterFactory : Converter.Factory() {
                     webUrl = webUrl,
                     location = listOf(latitude, longitude),
                     image = image,
-                    summerSeasonTimeTable = timetableEstiu,
-                    winterTimetable = timetableHivern,
+                    timetable = timetable,
                     postalCode = postalCode
                 )
                 libraryList.add(library)

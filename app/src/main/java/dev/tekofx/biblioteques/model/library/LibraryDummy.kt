@@ -198,6 +198,11 @@ var dummySummerTimetableDummy = SeasonTimeTable(
     observation = ""
 )
 
+val dummyTimetable = Timetable(
+    winterTimetable = winterTimetableDummy,
+    summerTimetable = dummySummerTimetableDummy
+)
+
 
 var LibraryDummy = Library(
 
@@ -212,7 +217,6 @@ var LibraryDummy = Library(
     webUrl = "https://test.com",
     location = listOf(12.0, 12.0),
     image = "https://bibliotecavirtual.diba.cat/documents/350986/0/P1120129.JPGfoto+portada.jpg/9ff2c56c-7424-4d95-b734-0ef67225a281?t=1364040065786",
-    summerSeasonTimeTable = dummySummerTimetableDummy,
-    winterTimetable = winterTimetableDummy,
+    timetable = dummyTimetable,
     postalCode = "08000"
 )

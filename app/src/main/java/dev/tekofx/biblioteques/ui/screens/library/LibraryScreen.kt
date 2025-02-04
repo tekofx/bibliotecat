@@ -2,7 +2,6 @@ package dev.tekofx.biblioteques.ui.screens.library
 
 
 import android.util.Log
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,7 +20,6 @@ import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.MailOutline
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -175,8 +172,8 @@ fun LibraryTimetable(
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val scrollState = rememberScrollState()
-    val summerIcon=IconResource.fromDrawableResource(R.drawable.sunny).asPainterResource()
-    val winterIcon=IconResource.fromDrawableResource(R.drawable.ac_unit).asPainterResource()
+    val summerIcon = IconResource.fromDrawableResource(R.drawable.sunny).asPainterResource()
+    val winterIcon = IconResource.fromDrawableResource(R.drawable.ac_unit).asPainterResource()
 
     Column(
         modifier = Modifier
@@ -190,22 +187,32 @@ fun LibraryTimetable(
             SegmentedButtonItem(
                 selected = selectedTabIndex == 0,
                 onClick = { selectedTabIndex = 0 },
-                label = { Text(text = "Horari ${seasonTranslation[library.currentSeasonTimetable.season]}") },
-                icon = { if(library.currentSeasonTimetable.season==Season.SUMMER) Icon(painter = summerIcon, contentDescription = "Summer") else Icon(painter = winterIcon, contentDescription = "Winter") }
+                label = { Text(text = "Horari ${seasonTranslation[library.timetable.currentSeasonTimetable.season]}") },
+                icon = {
+                    if (library.timetable.currentSeasonTimetable.season == Season.SUMMER) Icon(
+                        painter = summerIcon,
+                        contentDescription = "Summer"
+                    ) else Icon(painter = winterIcon, contentDescription = "Winter")
+                }
             )
             SegmentedButtonItem(
                 selected = selectedTabIndex == 1,
                 onClick = { selectedTabIndex = 1 },
-                label = { Text(text = "Horari ${seasonTranslation[library.nextSeasonSeasonTimeTables.season]}") },
-                icon = { if(library.nextSeasonSeasonTimeTables.season==Season.SUMMER) Icon(painter = summerIcon, contentDescription = "Summer") else Icon(painter = winterIcon, contentDescription = "Winter") }
+                label = { Text(text = "Horari ${seasonTranslation[library.timetable.nextSeasonTimetable.season]}") },
+                icon = {
+                    if (library.timetable.nextSeasonTimetable.season == Season.SUMMER) Icon(
+                        painter = summerIcon,
+                        contentDescription = "Summer"
+                    ) else Icon(painter = winterIcon, contentDescription = "Winter")
+                }
 
             )
 
         }
         when (selectedTabIndex) {
-            0 -> LibraryTimeTable(library.currentSeasonTimetable)
+            0 -> LibraryTimeTable(library.timetable.currentSeasonTimetable)
             1 -> {
-                LibraryTimeTable(library.nextSeasonSeasonTimeTables)
+                LibraryTimeTable(library.timetable.nextSeasonTimetable)
             }
         }
     }
@@ -294,7 +301,9 @@ fun LibraryContact(library: Library) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        modifier = Modifier.width(50.dp).height(50.dp),
+                        modifier = Modifier
+                            .width(50.dp)
+                            .height(50.dp),
                         painter = IconResource.fromImageVector(Icons.Outlined.Clear)
                             .asPainterResource(),
                         contentDescription = "No dades de contacte"
