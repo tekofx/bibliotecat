@@ -495,8 +495,8 @@ fun BookCopyCard(
                 }
             }
             StatusBadge(
-                bookCopy.statusColor,
-                text = bookCopy.status,
+                bookCopy.availability.color,
+                text = bookCopy.availability.text,
                 textStyle = Typography.bodyMedium
             )
 

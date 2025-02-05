@@ -7,7 +7,6 @@ import com.fleeksoft.ksoup.nodes.Element
 import com.fleeksoft.ksoup.select.Elements
 import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.dto.BookResponse
-import dev.tekofx.biblioteques.model.StatusColor
 import dev.tekofx.biblioteques.model.result.BookResult
 import dev.tekofx.biblioteques.model.result.BookResults
 import dev.tekofx.biblioteques.model.result.GeneralResult
@@ -429,43 +428,14 @@ class BookConverterFactory : Converter.Factory() {
                     notes = null
                 }
 
-                val (bookCopyAvailability, statusColor) = when {
-                    status.contains(
-                        "Disponible",
-                        ignoreCase = true
-                    ) -> BookCopyAvailability.AVAILABLE to StatusColor.GREEN
-
-                    status.contains(
-                        "Prestatge reserva",
-                        ignoreCase = true
-                    ) -> BookCopyAvailability.CAN_RESERVE to StatusColor.YELLOW
-
-                    status.contains(
-                        "Venç el",
-                        ignoreCase = true
-                    ) -> BookCopyAvailability.CAN_RESERVE to StatusColor.YELLOW
-
-                    status.contains(
-                        "En trànsit",
-                        ignoreCase = true
-                    ) -> BookCopyAvailability.CAN_RESERVE to StatusColor.YELLOW
-
-                    status.contains(
-                        "IR PENDENT",
-                        ignoreCase = true
-                    ) -> BookCopyAvailability.CAN_RESERVE to StatusColor.YELLOW
-
-                    else -> BookCopyAvailability.NOT_AVAILABLE to StatusColor.RED
-                }
+                val availability = Availability(status)
 
                 bookCopies.add(
                     BookCopy(
                         location = location,
                         signature = signature,
-                        status = status,
                         notes = notes,
-                        availability = bookCopyAvailability,
-                        statusColor = statusColor,
+                        availability = availability,
                         bibliotecaVirtualUrl = bibliotecaVirtualUrl,
                     )
                 )

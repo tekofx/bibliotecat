@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.tekofx.biblioteques.dto.BookResponse
 import dev.tekofx.biblioteques.exceptions.NotFound
+import dev.tekofx.biblioteques.model.book.Availability
 import dev.tekofx.biblioteques.model.book.Book
 import dev.tekofx.biblioteques.model.book.BookCopy
-import dev.tekofx.biblioteques.model.book.BookCopyAvailability
 import dev.tekofx.biblioteques.model.book.BookDetails
 import dev.tekofx.biblioteques.model.result.BookResult
 import dev.tekofx.biblioteques.model.result.BookResults
@@ -80,14 +80,14 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
         }
         .combine(_availableNowChip) { bookCopies, value ->
             if (value) {
-                bookCopies.filter { it.availability == BookCopyAvailability.AVAILABLE }
+                bookCopies.filter { it.availability.value == Availability.Value.AVAILABLE }
             } else {
                 bookCopies
             }
         }
         .combine(_canReserveChip) { bookCopies, value ->
             if (value) {
-                bookCopies.filter { it.availability == BookCopyAvailability.CAN_RESERVE }
+                bookCopies.filter { it.availability.value == Availability.Value.CAN_RESERVE }
             } else {
                 bookCopies
             }
