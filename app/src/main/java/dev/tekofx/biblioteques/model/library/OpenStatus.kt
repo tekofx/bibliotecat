@@ -1,7 +1,6 @@
 package dev.tekofx.biblioteques.model.library
 
 import dev.tekofx.biblioteques.model.StatusColor
-import dev.tekofx.biblioteques.model.holiday.Holiday
 import dev.tekofx.biblioteques.utils.formatDayOfWeek
 import java.time.Duration
 import java.time.LocalDate
@@ -25,10 +24,9 @@ sealed class OpenStatusEnum {
 }
 
 class OpenStatus(
-    val holidays: List<Holiday>,
     val timetable: Timetable
 ) {
-    var open: OpenStatusEnum = OpenStatusEnum.Closed.closed
+    var status: OpenStatusEnum = OpenStatusEnum.Closed.closed
     var color: StatusColor = StatusColor.RED
     var message: String = ""
     private var currentDate: LocalDate = LocalDate.now()
@@ -39,46 +37,10 @@ class OpenStatus(
     }
 
     private fun initialize() {
-        message = generateStateMessage()
-
-        when {
-            isOpen() -> {
-                open = OpenStatusEnum.Open.open
-                color = getStatusColor()
-            }
-
-            isClosingSoon() -> {
-                open = OpenStatusEnum.Open.closingSoon
-                color = StatusColor.YELLOW
-            }
-
-            opensInAfternoon() -> {
-                open = OpenStatusEnum.Closed.openInAfternoon
-                color = StatusColor.RED
-            }
-
-            opensTomorrow() -> {
-                open = OpenStatusEnum.Closed.openTomorrow
-                color = StatusColor.RED
-            }
-
-            opensInDays() -> {
-                open = OpenStatusEnum.Closed.openInDays
-                color = StatusColor.RED
-            }
-
-            isHoliday() -> {
-                open = OpenStatusEnum.Closed.holiday
-                color = StatusColor.ORANGE
-            }
-
-            else -> {
-                open = OpenStatusEnum.Closed.closedTemporarily
-                color = StatusColor.RED
-            }
-        }
-
-
+        val data = getData()
+        status = data.first
+        color = data.second
+        message = data.third
     }
 
     fun setDateTime(date: LocalDate, time: LocalTime) {
@@ -87,80 +49,72 @@ class OpenStatus(
         initialize()
     }
 
+    private fun getData(): Triple<OpenStatusEnum, StatusColor, String> {
+        timetable.holidays.find { it.date == currentDate }?.let {
+            Triple(OpenStatusEnum.Closed.holiday, StatusColor.ORANGE, "Festiu ${it.holiday}")
+        }
+
+        if (isOpen()) {
+            val currentInterval = timetable.getInterval(currentDate, currentTime)!!
+            return if (isClosingSoon()) {
+                Triple(
+                    OpenStatusEnum.Open.closingSoon,
+                    StatusColor.YELLOW,
+                    "Obert · Tanca a les ${currentInterval.to}"
+                )
+            } else {
+                Triple(
+                    OpenStatusEnum.Open.open,
+                    StatusColor.GREEN,
+                    "Obert · Fins a ${currentInterval.to}"
+                )
+            }
+        } else {
+            val nextIntervalOfDay = timetable.getNextIntervalOfDay(currentDate, currentTime)
+            if (nextIntervalOfDay != null) {
+                return Triple(
+                    OpenStatusEnum.Closed.openInAfternoon,
+                    StatusColor.RED,
+                    "Tancat · Obre a las ${nextIntervalOfDay.from}"
+                )
+            }
+
+            val nextDay = timetable.getNextDayOpen(currentDate) ?: return Triple(
+                OpenStatusEnum.Closed.closedTemporarily,
+                StatusColor.RED,
+                "Tancat temporalment"
+            )
+            val nextDayTimetable = timetable.getCurrentDayTimetable(nextDay)
+            val nextDayName = formatDayOfWeek(nextDay.dayOfWeek)
+            return if (nextDay == currentDate.plusDays(1)) {
+                Triple(
+                    OpenStatusEnum.Closed.openTomorrow,
+                    StatusColor.RED,
+                    "Tancat · Obre demà a las ${nextDayTimetable?.timeIntervals?.firstOrNull()?.from}"
+                )
+            } else {
+                Triple(
+                    OpenStatusEnum.Closed.openInDays,
+                    StatusColor.RED,
+                    "Tancat · Obre el $nextDayName a las ${nextDayTimetable?.timeIntervals?.firstOrNull()?.from}"
+                )
+            }
+        }
+    }
+
 
     private fun isOpen(): Boolean {
-        holidays.find { it.date == currentDate }?.let { return false }
+        timetable.holidays.find { it.date == currentDate }?.let { return false }
         val dayTimetable = timetable.getCurrentDayTimetable(currentDate)
         return dayTimetable?.timeIntervals?.any { interval ->
             currentTime.isAfter(interval.from) && currentTime.isBefore(interval.to)
         } ?: false
     }
 
-    private fun opensInAfternoon(): Boolean {
-        val nextIntervalOfDay = timetable.getNextIntervalOfDay(currentDate, currentTime)
-        return nextIntervalOfDay != null
-    }
-
-    private fun opensTomorrow(): Boolean {
-        val nextDay = timetable.getNextDayOpen(currentDate)
-        return nextDay != null && nextDay == currentDate.plusDays(1)
-    }
-
-    private fun opensInDays(): Boolean {
-        val nextDay = timetable.getNextDayOpen(currentDate)
-        return nextDay != null && nextDay != currentDate.plusDays(1)
-    }
-
-    private fun isHoliday(): Boolean {
-        return holidays.find { it.date == currentDate } != null
-    }
-
-
-    private fun getStatusColor(): StatusColor {
-        holidays.find { it.date == currentDate }?.let { return StatusColor.ORANGE }
-        return when {
-            isOpen() -> {
-                if (isClosingSoon()) {
-                    StatusColor.YELLOW
-                } else {
-                    StatusColor.GREEN
-                }
-            }
-
-            else -> StatusColor.RED
-        }
-    }
-
     private fun isClosingSoon(): Boolean {
-        val currentInterval = timetable.getCurrentInterval(currentDate, currentTime) ?: return false
+        val currentInterval = timetable.getInterval(currentDate, currentTime) ?: return false
         return Duration.between(currentTime, currentInterval.to).toMinutes() <= 60
     }
 
-    private fun generateStateMessage(): String {
-        holidays.find { it.date == currentDate }?.let { return "Festiu ${it.holiday}" }
-
-        if (isOpen()) {
-            val currentInterval = timetable.getCurrentInterval(currentDate, currentTime)!!
-            return if (isClosingSoon()) {
-                "Obert · Tanca a les ${currentInterval.to}"
-            } else {
-                "Obert · Fins a ${currentInterval.to}"
-            }
-        } else {
-            val nextIntervalOfDay = timetable.getNextIntervalOfDay(currentDate, currentTime)
-            if (nextIntervalOfDay != null) {
-                return "Tancat · Obre a las ${nextIntervalOfDay.from}"
-            }
-
-            val nextDay = timetable.getNextDayOpen(currentDate) ?: return "Tancat temporalment"
-            val nextDayTimetable = timetable.getCurrentDayTimetable(nextDay)
-            val nextDayName = formatDayOfWeek(nextDay.dayOfWeek)
-            return if (nextDay == currentDate.plusDays(1)) {
-                "Tancat · Obre demà a las ${nextDayTimetable?.timeIntervals?.firstOrNull()?.from}"
-            } else {
-                "Tancat · Obre el $nextDayName a las ${nextDayTimetable?.timeIntervals?.firstOrNull()?.from}"
-            }
-        }
-    }
 
 }

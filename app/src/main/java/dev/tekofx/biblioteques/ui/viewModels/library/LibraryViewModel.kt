@@ -64,7 +64,7 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
         .combine(_showOnlyOpen) { libraries, value ->
             libraries.filter {
                 if (value) {
-                    it.openStatus.open is OpenStatusEnum.Open
+                    it.openStatus.status is OpenStatusEnum.Open
                 } else {
                     true
                 }

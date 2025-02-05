@@ -26,7 +26,9 @@ class LibraryRepository(
             val cataloniaHolidaysResponse = getCataloniaHolidaysResponse(year)
 
             val libraries = librariesResponse.body()?.elements ?: emptyList()
-            val municipalities = librariesResponse.body()?.municipalities?.plus("Barcelona (Tots els districtes)") ?: emptyList() // Added Barcelona to the list of municipalities
+            val municipalities =
+                librariesResponse.body()?.municipalities?.plus("Barcelona (Tots els districtes)")
+                    ?: emptyList() // Added Barcelona to the list of municipalities
 
             val localHolidays = localHolidaysResponse?.body()?.body ?: emptyList()
             val cataloniaHolidays = cataloniaHolidaysResponse?.body()?.body ?: emptyList()
@@ -105,7 +107,7 @@ class LibraryRepository(
             val holy = localHolidays.filter { holiday ->
                 library.postalCode == holiday.postalCode
             }
-            library.holidays = holy.plus(cataloniaHolidays)
+            library.timetable.holidays = holy.plus(cataloniaHolidays)
         }
         return libraries
     }
