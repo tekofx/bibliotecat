@@ -1,6 +1,9 @@
 package dev.tekofx.biblioteques.model.library
 
+import dev.tekofx.biblioteques.model.StatusColor
 import dev.tekofx.biblioteques.model.holiday.Holiday
+import dev.tekofx.biblioteques.utils.formatDayOfWeek
+import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -10,48 +13,148 @@ class Timetable(
     var holidays: List<Holiday>,
 ) {
 
-    lateinit var currentSeasonTimetable: SeasonTimeTable
-    lateinit var nextSeasonTimetable: SeasonTimeTable
 
-    init {
-        initializeTimetables(LocalDate.now())
+    /**
+     * Creates a [OpenStatus] based on the date, time and the timetable info
+     * @param date
+     * @param time
+     *
+     * @return [OpenStatus]
+     */
+    fun getOpenStatus(
+        date: LocalDate, time: LocalTime
+    ): OpenStatus {
+        holidays.find { it.date == date }?.let {
+            return OpenStatus(
+                OpenStatusEnum.Closed.holiday, StatusColor.ORANGE, "Festiu ${it.holiday}"
+            )
+        }
+
+        if (isOpen(date, time)) {
+            val currentInterval = getInterval(date, time)!!
+            return if (isClosingSoon(date, time)) {
+                OpenStatus(
+                    OpenStatusEnum.Open.closingSoon,
+                    StatusColor.YELLOW,
+                    "Obert · Tanca a les ${currentInterval.to}"
+                )
+            } else {
+                OpenStatus(
+                    OpenStatusEnum.Open.open,
+                    StatusColor.GREEN,
+                    "Obert · Fins a ${currentInterval.to}"
+                )
+            }
+        } else {
+            val nextIntervalOfDay = getNextIntervalOfDay(date, time)
+            if (nextIntervalOfDay != null) {
+                return OpenStatus(
+                    OpenStatusEnum.Closed.openInAfternoon,
+                    StatusColor.RED,
+                    "Tancat · Obre a las ${nextIntervalOfDay.from}"
+                )
+            }
+
+            val nextDay = getNextDayOpen(date) ?: return OpenStatus(
+                OpenStatusEnum.Closed.closedTemporarily, StatusColor.RED, "Tancat temporalment"
+            )
+
+            val nextDayTimetable = getDayTimetable(nextDay)
+            val nextDayName = formatDayOfWeek(nextDay.dayOfWeek)
+            return if (nextDay == date.plusDays(1)) {
+                OpenStatus(
+                    OpenStatusEnum.Closed.openTomorrow,
+                    StatusColor.RED,
+                    "Tancat · Obre demà a las ${nextDayTimetable?.timeIntervals?.firstOrNull()?.from}"
+                )
+            } else {
+                OpenStatus(
+                    OpenStatusEnum.Closed.openInDays,
+                    StatusColor.RED,
+                    "Tancat · Obre el $nextDayName a las ${nextDayTimetable?.timeIntervals?.firstOrNull()?.from}"
+                )
+            }
+        }
     }
 
-    private fun initializeTimetables(currentDate: LocalDate) {
-        currentSeasonTimetable = getSeasonTimetableOfDate(currentDate)
-        nextSeasonTimetable = determineNextSeasonTimetable()
+    /**
+     * Checks if its open given a [LocalDate] and a [LocalTime]
+     * @param date
+     * @param time
+     */
+    private fun isOpen(date: LocalDate, time: LocalTime): Boolean {
+        holidays.find { it.date == date }?.let { return false }
+        val dayTimetable = getDayTimetable(date)
+        return dayTimetable?.timeIntervals?.any { interval ->
+            time.isAfter(interval.from) && time.isBefore(interval.to)
+        } ?: false
     }
 
+    /**
+     * Checks if it is closing in less than an hour given a [LocalDate] and a [LocalTime]
+     * @param date
+     * @param time
+     */
+    private fun isClosingSoon(date: LocalDate, time: LocalTime): Boolean {
+        val currentInterval = getInterval(date, time) ?: return false
+        return Duration.between(time, currentInterval.to).toMinutes() <= 60
+    }
 
-    private fun getSeasonTimetableOfDate(date: LocalDate): SeasonTimeTable {
-        return if (date.isAfter(summerTimetable.start) && date.isBefore(summerTimetable.end)) {
+    /**
+     * Return the [SeasonTimeTable] of a given [LocalDate]
+     * @param date
+     *
+     * @return [SeasonTimeTable]
+     */
+    fun getSeasonTimetableOfDate(date: LocalDate): SeasonTimeTable {
+        return if ((date.isAfter(summerTimetable.start) || date.isEqual(summerTimetable.start)) && date.isBefore(
+                summerTimetable.end
+            )
+        ) {
             summerTimetable
         } else {
             winterTimetable
         }
     }
 
-    private fun determineNextSeasonTimetable(): SeasonTimeTable {
-        return if (currentSeasonTimetable == summerTimetable) {
+    /**
+     * Return the next [SeasonTimeTable] of a given [LocalDate]
+     * @param date
+     *
+     * @return [SeasonTimeTable]
+     */
+    fun getNextSeasonTimetableOfDate(date: LocalDate): SeasonTimeTable {
+        return if (getSeasonTimetableOfDate(date) == summerTimetable) {
             winterTimetable
         } else {
             summerTimetable
         }
     }
 
-    fun getCurrentDayTimetable(date: LocalDate): DayTimeTable? {
+    /**
+     * Return the [DayTimeTable] of a given [LocalDate]
+     * @param date
+     *
+     * @return [DayTimeTable] if the [date] has one, null if not
+     */
+    private fun getDayTimetable(date: LocalDate): DayTimeTable? {
         val currentTimetable = getSeasonTimetableOfDate(date)
         return currentTimetable.dayTimetables[date.dayOfWeek]
     }
 
-    fun getNextDayOpen(date: LocalDate): LocalDate? {
+    /**
+     * Return the next [LocalDate] that it's open of a given [LocalDate]
+     * @param date
+     *
+     * @return [LocalDate] of the next day that it's open. If the [summerTimetable] and [winterTimetable] don't have any [DayTimeTable], it returns null
+     */
+    private fun getNextDayOpen(date: LocalDate): LocalDate? {
         var nextDay = date.plusDays(1)
         var currentTimetable = getSeasonTimetableOfDate(nextDay)
 
         if (!summerTimetable.open && !winterTimetable.open) {
             return null
         }
-
         while (currentTimetable.dayTimetables[nextDay.dayOfWeek]?.timeIntervals.isNullOrEmpty()) {
             nextDay = nextDay.plusDays(1)
             currentTimetable = getSeasonTimetableOfDate(nextDay)
@@ -60,7 +163,14 @@ class Timetable(
         return nextDay
     }
 
-    fun getInterval(date: LocalDate, time: LocalTime): TimeInterval? {
+    /**
+     * Return the [TimeInterval] of a given [LocalDate] and [LocalTime]
+     * @param date
+     * @param time
+     *
+     * @return [TimeInterval] of the [date] and [time]. Null if it does not have one
+     */
+    private fun getInterval(date: LocalDate, time: LocalTime): TimeInterval? {
         val currentTimetable = getSeasonTimetableOfDate(date)
         val dayTimeTable = currentTimetable.dayTimetables[date.dayOfWeek]
         return dayTimeTable?.timeIntervals?.find { interval ->
@@ -68,8 +178,15 @@ class Timetable(
         }
     }
 
-    fun getNextIntervalOfDay(date: LocalDate, time: LocalTime): TimeInterval? {
-        val dayTimeTable = getCurrentDayTimetable(date)
+    /**
+     * Return the next [TimeInterval] of a given [LocalDate] and [LocalTime]
+     * @param date
+     * @param time
+     *
+     * @return next [TimeInterval] of the [date] and [time]. Null if it does not have one
+     */
+    private fun getNextIntervalOfDay(date: LocalDate, time: LocalTime): TimeInterval? {
+        val dayTimeTable = getDayTimetable(date)
         return dayTimeTable?.timeIntervals?.find { interval ->
             time.isBefore(interval.from)
         }

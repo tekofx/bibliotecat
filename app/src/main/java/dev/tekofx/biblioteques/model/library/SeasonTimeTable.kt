@@ -31,7 +31,7 @@ data class SeasonTimeTable(
     }
 
     override fun toString(): String {
-        var output = "(${start} - ${end})\n"
+        var output = "$season (${start} - ${end})\n"
         for (day in dayTimetables) {
             output += "${formatDayOfWeek(day.key)}: ${day.value}\n"
         }

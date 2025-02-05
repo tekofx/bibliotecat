@@ -200,7 +200,8 @@ var dummySummerTimetableDummy = SeasonTimeTable(
 
 val dummyTimetable = Timetable(
     winterTimetable = winterTimetableDummy,
-    summerTimetable = dummySummerTimetableDummy
+    summerTimetable = dummySummerTimetableDummy,
+    emptyList()
 )
 
 

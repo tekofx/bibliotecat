@@ -186,9 +186,17 @@ fun LibraryTimetable(
             SegmentedButtonItem(
                 selected = selectedTabIndex == 0,
                 onClick = { selectedTabIndex = 0 },
-                label = { Text(text = "Horari ${seasonTranslation[library.timetable.currentSeasonTimetable.season]}") },
+                label = {
+                    Text(
+                        text = "Horari ${
+                            seasonTranslation[library.timetable.getSeasonTimetableOfDate(
+                                LocalDate.now()
+                            ).season]
+                        }"
+                    )
+                },
                 icon = {
-                    if (library.timetable.currentSeasonTimetable.season == Season.SUMMER) Icon(
+                    if (library.timetable.getSeasonTimetableOfDate(LocalDate.now()).season == Season.SUMMER) Icon(
                         painter = summerIcon,
                         contentDescription = "Summer"
                     ) else Icon(painter = winterIcon, contentDescription = "Winter")
@@ -197,9 +205,17 @@ fun LibraryTimetable(
             SegmentedButtonItem(
                 selected = selectedTabIndex == 1,
                 onClick = { selectedTabIndex = 1 },
-                label = { Text(text = "Horari ${seasonTranslation[library.timetable.nextSeasonTimetable.season]}") },
+                label = {
+                    Text(
+                        text = "Horari ${
+                            seasonTranslation[library.timetable.getNextSeasonTimetableOfDate(
+                                LocalDate.now()
+                            ).season]
+                        }"
+                    )
+                },
                 icon = {
-                    if (library.timetable.nextSeasonTimetable.season == Season.SUMMER) Icon(
+                    if (library.timetable.getNextSeasonTimetableOfDate(LocalDate.now()).season == Season.SUMMER) Icon(
                         painter = summerIcon,
                         contentDescription = "Summer"
                     ) else Icon(painter = winterIcon, contentDescription = "Winter")
@@ -209,9 +225,9 @@ fun LibraryTimetable(
 
         }
         when (selectedTabIndex) {
-            0 -> LibraryTimeTable(library.timetable.currentSeasonTimetable)
+            0 -> LibraryTimeTable(library.timetable.getSeasonTimetableOfDate(LocalDate.now()))
             1 -> {
-                LibraryTimeTable(library.timetable.nextSeasonTimetable)
+                LibraryTimeTable(library.timetable.getNextSeasonTimetableOfDate(LocalDate.now()))
             }
         }
     }

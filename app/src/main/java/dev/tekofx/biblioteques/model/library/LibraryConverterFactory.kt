@@ -85,7 +85,7 @@ class LibraryConverterFactory : Converter.Factory() {
                 }
                 // Horaris
                 val (timetableHivern, timetableEstiu) = getTimetables(libraryElement)
-                val timetable = Timetable(timetableHivern, timetableEstiu)
+                val timetable = Timetable(timetableHivern, timetableEstiu, emptyList())
 
                 val library = Library(
                     id = pointId,
