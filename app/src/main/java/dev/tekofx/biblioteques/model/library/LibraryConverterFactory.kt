@@ -89,7 +89,7 @@ class LibraryConverterFactory : Converter.Factory() {
 
                 val library = Library(
                     id = pointId,
-                    adrecaNom = addressName,
+                    name = addressName,
                     description = description,
                     municipality = municipalityName,
                     address = addressFull,

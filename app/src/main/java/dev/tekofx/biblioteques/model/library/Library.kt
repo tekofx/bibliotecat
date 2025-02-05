@@ -5,7 +5,7 @@ import java.time.LocalTime
 
 class Library(
     val id: String,
-    val adrecaNom: String,
+    val name: String,
     val description: String,
     val municipality: String,
     val postalCode: String,
@@ -20,11 +20,4 @@ class Library(
 ) {
 
     var libraryStatus: LibraryStatus = timetable.getOpenStatus(LocalDate.now(), LocalTime.now())
-
-
-    fun setDateTime(date: LocalDate, time: LocalTime) {
-        libraryStatus = timetable.getOpenStatus(date, time)
-    }
-
-
 }

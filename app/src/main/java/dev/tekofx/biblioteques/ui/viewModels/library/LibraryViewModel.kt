@@ -56,7 +56,7 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
                 libraries
             } else {
                 libraries.filter {
-                    Normalizer.normalize(it.adrecaNom, Normalizer.Form.NFD)
+                    Normalizer.normalize(it.name, Normalizer.Form.NFD)
                         .replace("\\p{M}".toRegex(), "").contains(query, ignoreCase = true)
                 }
             }

@@ -63,7 +63,7 @@ fun LibraryCard(
 
                 Column {
                     Text(
-                        text = library.adrecaNom,
+                        text = library.name,
                         style = Typography.titleLarge
                     )
                     Text(

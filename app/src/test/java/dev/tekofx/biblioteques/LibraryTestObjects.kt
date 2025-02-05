@@ -309,7 +309,7 @@ var emptyTimetable = Timetable(
 
 var LibraryAbrera = Library(
     id = "biblioteca2058919",
-    adrecaNom = "Biblioteca Josep Roca i Bros",
+    name = "Biblioteca Josep Roca i Bros",
     description = " Biblioteca Josep Roca i Bros. Abrera",
     municipality = "Abrera",
     address = "Carrer Federico García Lorca, 17 08630 Abrera",
@@ -325,7 +325,7 @@ var LibraryAbrera = Library(
 
 var LibraryCanCasacuberta = Library(
     id = "biblioteca422652",
-    adrecaNom = "Biblioteca Can Casacuberta",
+    name = "Biblioteca Can Casacuberta",
     description = "Biblioteca Can Casacuberta. Badalona",
     municipality = "Badalona",
     address = "Carrer Mossèn Anton, 40-48 08912 Badalona",

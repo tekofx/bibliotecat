@@ -46,7 +46,7 @@ fun MapScreen(
                     modifier = Modifier.padding(10.dp)
                 ) {
 
-                    currentLibrary?.let { Text(it.adrecaNom) }
+                    currentLibrary?.let { Text(it.name) }
                 }
             }
         }

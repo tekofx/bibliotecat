@@ -127,7 +127,7 @@ fun LibraryScreen(
                         .padding(top = 10.dp),
                     verticalArrangement = Arrangement.spacedBy(5.dp)
                 ) {
-                    Text(text = library.adrecaNom, style = Typography.headlineSmall)
+                    Text(text = library.name, style = Typography.headlineSmall)
                     Text(text = library.municipality, style = Typography.titleLarge)
                     StatusBadge(
                         library.libraryStatus.color,
