@@ -15,12 +15,11 @@ sealed class OpenStatusEnum {
         object openInDays : Closed()
         object closedTemporarily : Closed()
         object holiday : Closed()
-        object closed : Closed()
     }
 }
 
 data class OpenStatus(
-    var status: OpenStatusEnum = OpenStatusEnum.Closed.closed,
+    var status: OpenStatusEnum = OpenStatusEnum.Closed.openInDays,
     var color: StatusColor = StatusColor.RED,
     var message: String = ""
 )

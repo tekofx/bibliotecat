@@ -130,46 +130,4 @@ class TimetableTest {
         assertEquals(summerTimetable, timetable.getNextSeasonTimetableOfDate(lastDayOfSummer))
     }
 
-
-//    @Test
-//    fun getCurrentDayTimetableTest() {
-//        val monday = LocalDate.of(2024, 10, 21)
-//        val sunday = LocalDate.of(2024, 10, 27)
-//        assert(libraryTest.getCurrentDayTimetable(monday) == mondayWinterTimetable)
-//        assert(libraryTest.getCurrentDayTimetable(sunday) == sundayWinterTimetable)
-//
-//    }
-//
-//    @Test
-//    fun getCurrentIntervalTest() {
-//        val monday = LocalDate.of(2024, 10, 21)
-//        val time = LocalTime.of(10, 0)
-//        val time17 = LocalTime.of(17, 0)
-//
-//        assert(
-//            libraryTest.getCurrentInterval(monday, time) == TimeInterval(
-//                from = LocalTime.of(9, 30),
-//                to = LocalTime.of(14, 0)
-//            )
-//        )
-//        assert(
-//            libraryTest.getCurrentInterval(lastDayOfSummer, time17) == TimeInterval(
-//                from = LocalTime.of(17, 0),
-//                to = LocalTime.of(22, 0),
-//            )
-//        )
-//    }
-//
-//    @Test
-//    fun getNextIntervalOfDayTest() {
-//        val monday = LocalDate.of(2024, 10, 21)
-//        val time = LocalTime.of(10, 0)
-//
-//        assert(
-//            libraryTest.getNextIntervalOfDay(monday, time) == TimeInterval(
-//                from = LocalTime.of(15, 0),
-//                to = LocalTime.of(20, 0),
-//            )
-//        )
-//    }
 }
