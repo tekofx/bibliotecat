@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.network.parseGetRequestBlocking
 import dev.tekofx.biblioteques.model.library.Library
-import dev.tekofx.biblioteques.model.library.LibraryStatusValue
+import dev.tekofx.biblioteques.model.library.LibraryStatus
 import dev.tekofx.biblioteques.repository.LibraryRepository
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -64,7 +64,7 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
         .combine(_showOnlyOpen) { libraries, value ->
             libraries.filter {
                 if (value) {
-                    it.libraryStatus.value is LibraryStatusValue.Library
+                    it.libraryStatus.value is LibraryStatus.Value.Open
                 } else {
                     true
                 }

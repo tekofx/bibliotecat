@@ -26,7 +26,7 @@ class Timetable(
     ): LibraryStatus {
         holidays.find { it.date == date }?.let {
             return LibraryStatus(
-                LibraryStatusValue.Closed.holiday, StatusColor.ORANGE, "Festiu ${it.name}"
+                LibraryStatus.Value.Closed.Holiday, StatusColor.ORANGE, "Festiu ${it.name}"
             )
         }
 
@@ -34,13 +34,13 @@ class Timetable(
             val currentInterval = getInterval(date, time)!!
             return if (isClosingSoon(date, time)) {
                 LibraryStatus(
-                    LibraryStatusValue.Library.closingSoon,
+                    LibraryStatus.Value.Open.closingSoon,
                     StatusColor.YELLOW,
                     "Obert · Tanca a les ${currentInterval.to}"
                 )
             } else {
                 LibraryStatus(
-                    LibraryStatusValue.Library.library,
+                    LibraryStatus.Value.Open.open,
                     StatusColor.GREEN,
                     "Obert · Fins a ${currentInterval.to}"
                 )
@@ -49,27 +49,27 @@ class Timetable(
             val nextIntervalOfDay = getNextIntervalOfDay(date, time)
             if (nextIntervalOfDay != null) {
                 return LibraryStatus(
-                    LibraryStatusValue.Closed.libraryInAfternoon,
+                    LibraryStatus.Value.Closed.openAfternoon,
                     StatusColor.RED,
                     "Tancat · Obre a las ${nextIntervalOfDay.from}"
                 )
             }
 
             val nextDay = getNextDayOpen(date) ?: return LibraryStatus(
-                LibraryStatusValue.Closed.closedTemporarily, StatusColor.RED, "Tancat temporalment"
+                LibraryStatus.Value.Closed.closedTemporarily, StatusColor.RED, "Tancat temporalment"
             )
 
             val nextDayTimetable = getDayTimetable(nextDay)
             val nextDayName = formatDayOfWeek(nextDay.dayOfWeek)
             return if (nextDay == date.plusDays(1)) {
                 LibraryStatus(
-                    LibraryStatusValue.Closed.libraryTomorrow,
+                    LibraryStatus.Value.Closed.openTomorrow,
                     StatusColor.RED,
                     "Tancat · Obre demà a las ${nextDayTimetable?.timeIntervals?.firstOrNull()?.from}"
                 )
             } else {
                 LibraryStatus(
-                    LibraryStatusValue.Closed.libraryInDays,
+                    LibraryStatus.Value.Closed.openInDays,
                     StatusColor.RED,
                     "Tancat · Obre el $nextDayName a las ${nextDayTimetable?.timeIntervals?.firstOrNull()?.from}"
                 )

@@ -2,8 +2,6 @@ package dev.tekofx.biblioteques
 
 import dev.tekofx.biblioteques.model.StatusColor
 import dev.tekofx.biblioteques.model.library.LibraryStatus
-import dev.tekofx.biblioteques.model.library.LibraryStatusValue.Closed
-import dev.tekofx.biblioteques.model.library.LibraryStatusValue.Library
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.time.LocalDate
