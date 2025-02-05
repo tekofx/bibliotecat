@@ -1,9 +1,9 @@
 package dev.tekofx.biblioteques
 
 import dev.tekofx.biblioteques.model.StatusColor
-import dev.tekofx.biblioteques.model.library.OpenStatus
-import dev.tekofx.biblioteques.model.library.OpenStatusEnum.Closed
-import dev.tekofx.biblioteques.model.library.OpenStatusEnum.Open
+import dev.tekofx.biblioteques.model.library.LibraryStatus
+import dev.tekofx.biblioteques.model.library.LibraryStatusValue.Closed
+import dev.tekofx.biblioteques.model.library.LibraryStatusValue.Library
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.time.LocalDate
@@ -19,8 +19,8 @@ class TimetableTest {
         val time16 = LocalTime.of(16, 0)
 
         assertEquals(
-            OpenStatus(
-                Open.open,
+            LibraryStatus(
+                Library.library,
                 message = "Obert · Fins a 20:30",
                 color = StatusColor.GREEN
             ), timetable.getOpenStatus(monday, time16)
@@ -32,8 +32,8 @@ class TimetableTest {
         val monday = LocalDate.of(2024, 10, 21)
         val time20 = LocalTime.of(20, 0)
         assertEquals(
-            OpenStatus(
-                Open.closingSoon,
+            LibraryStatus(
+                Library.closingSoon,
                 message = "Obert · Tanca a les 20:30",
                 color = StatusColor.YELLOW
             ), timetable.getOpenStatus(monday, time20)
@@ -45,8 +45,8 @@ class TimetableTest {
         val tuesday = LocalDate.of(2024, 10, 22)
         val time14 = LocalTime.of(14, 0)
         assertEquals(
-            OpenStatus(
-                Closed.openInAfternoon,
+            LibraryStatus(
+                Closed.libraryInAfternoon,
                 message = "Tancat · Obre a las 15:30",
                 color = StatusColor.RED
             ), timetable.getOpenStatus(tuesday, time14)
@@ -58,8 +58,8 @@ class TimetableTest {
         val tuesday = LocalDate.of(2024, 10, 22)
         val time21 = LocalTime.of(21, 0)
         assertEquals(
-            OpenStatus(
-                Closed.openTomorrow,
+            LibraryStatus(
+                Closed.libraryTomorrow,
                 message = "Tancat · Obre demà a las 15:30",
                 color = StatusColor.RED
             ), timetable.getOpenStatus(tuesday, time21)
@@ -71,8 +71,8 @@ class TimetableTest {
         val friday = LocalDate.of(2025, 8, 23)
         val time21 = LocalTime.of(21, 0)
         assertEquals(
-            OpenStatus(
-                Closed.openInDays,
+            LibraryStatus(
+                Closed.libraryInDays,
                 message = "Tancat · Obre el Dilluns a las 15:30",
                 color = StatusColor.RED
             ), timetable.getOpenStatus(friday, time21)
@@ -85,7 +85,7 @@ class TimetableTest {
         val time21 = LocalTime.of(10, 0)
 
         assertEquals(
-            OpenStatus(
+            LibraryStatus(
                 Closed.closedTemporarily,
                 message = "Tancat temporalment",
                 color = StatusColor.RED
@@ -100,7 +100,7 @@ class TimetableTest {
         val tuesday = LocalDate.of(2024, 1, 1)
         val time21 = LocalTime.of(10, 0)
         assertEquals(
-            OpenStatus(
+            LibraryStatus(
                 Closed.holiday,
                 message = "Festiu Cap d'Any",
                 color = StatusColor.ORANGE

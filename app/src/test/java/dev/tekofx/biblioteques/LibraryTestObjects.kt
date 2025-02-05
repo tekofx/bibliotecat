@@ -275,21 +275,21 @@ var holidays = listOf(
         date = LocalDate.of(2024, 12, 25),
         place = "Catalunya",
         postalCode = "08",
-        holiday = "Nadal"
+        name = "Nadal"
     ),
     Holiday(
         year = 2024,
         date = LocalDate.of(2024, 12, 26),
         place = "Catalunya",
         postalCode = "08",
-        holiday = "Sant Esteve"
+        name = "Sant Esteve"
     ),
     Holiday(
         year = 2024,
         date = LocalDate.of(2024, 1, 1),
         place = "Catalunya",
         postalCode = "08",
-        holiday = "Cap d'Any"
+        name = "Cap d'Any"
     ),
 )
 

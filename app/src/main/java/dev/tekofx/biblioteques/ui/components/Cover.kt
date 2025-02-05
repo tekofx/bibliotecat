@@ -11,8 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import dev.tekofx.biblioteques.model.search.BookResult
 import dev.tekofx.biblioteques.model.book.Book
+import dev.tekofx.biblioteques.model.result.BookResult
 import kotlin.random.Random
 
 @Composable
@@ -28,15 +28,15 @@ fun Cover(book: Book? = null, bookResult: BookResult? = null) {
             .height(200.dp)
             .aspectRatio(0.6f)
             .clip(RoundedCornerShape(10.dp)),
-        color=randomColor
+        color = randomColor
     ) {
         Column {
-            book?.let{
+            book?.let {
                 Text(book.title)
                 Text(book.author)
             }
 
-            bookResult?.let{
+            bookResult?.let {
                 Text(bookResult.title)
                 Text(bookResult.author)
             }

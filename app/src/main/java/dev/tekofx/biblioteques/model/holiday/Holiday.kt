@@ -7,5 +7,5 @@ data class Holiday(
     val date: LocalDate,
     val place: String,
     val postalCode: String,
-    val holiday: String
+    val name: String
 )

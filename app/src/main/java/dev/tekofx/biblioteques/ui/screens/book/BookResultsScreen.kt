@@ -31,10 +31,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
-import dev.tekofx.biblioteques.model.search.BookResult
-import dev.tekofx.biblioteques.model.search.BookResults
-import dev.tekofx.biblioteques.model.search.GeneralResults
-import dev.tekofx.biblioteques.model.search.SearchResult
+import dev.tekofx.biblioteques.model.result.BookResult
+import dev.tekofx.biblioteques.model.result.BookResults
+import dev.tekofx.biblioteques.model.result.GeneralResults
+import dev.tekofx.biblioteques.model.result.SearchResult
 import dev.tekofx.biblioteques.model.search.SearchArgument
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.components.Cover
@@ -144,9 +144,9 @@ fun BookCard(
                 verticalAlignment = Alignment.Top,
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                if (bookResult.image==null){
+                if (bookResult.image == null) {
                     Cover(bookResult = bookResult)
-                }else{
+                } else {
 
                     AsyncImage(
                         model = bookResult.image,

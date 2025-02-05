@@ -6,17 +6,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.tekofx.biblioteques.dto.BookResponse
 import dev.tekofx.biblioteques.exceptions.NotFound
-import dev.tekofx.biblioteques.model.search.BookResult
-import dev.tekofx.biblioteques.model.search.BookResults
-import dev.tekofx.biblioteques.model.search.EmptyResults
-import dev.tekofx.biblioteques.model.search.Search
-import dev.tekofx.biblioteques.model.search.SearchResult
-import dev.tekofx.biblioteques.model.search.SearchResults
-import dev.tekofx.biblioteques.model.search.SearchArgument
 import dev.tekofx.biblioteques.model.book.Book
 import dev.tekofx.biblioteques.model.book.BookCopy
 import dev.tekofx.biblioteques.model.book.BookCopyAvailability
 import dev.tekofx.biblioteques.model.book.BookDetails
+import dev.tekofx.biblioteques.model.result.BookResult
+import dev.tekofx.biblioteques.model.result.BookResults
+import dev.tekofx.biblioteques.model.result.EmptyResults
+import dev.tekofx.biblioteques.model.result.SearchResult
+import dev.tekofx.biblioteques.model.result.SearchResults
+import dev.tekofx.biblioteques.model.search.Search
+import dev.tekofx.biblioteques.model.search.SearchArgument
 import dev.tekofx.biblioteques.repository.BookRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -29,7 +29,6 @@ import retrofit2.Response
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.concurrent.TimeoutException
-
 
 
 class BookViewModel(private val repository: BookRepository) : ViewModel() {
@@ -313,7 +312,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
 
             override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
                 when (t) {
-                    
+
                     is UnknownHostException -> {
                         errorMessage.value = "Error: No hi ha connexió a internet"
                     }
@@ -437,7 +436,6 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
             _availableNowChip.value = false
         }
     }
-
 
 
 }

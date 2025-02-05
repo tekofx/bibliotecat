@@ -16,10 +16,3 @@ class BookCopy(
     }
 }
 
-
-enum class BookCopyAvailability {
-    AVAILABLE,
-    CAN_RESERVE,
-    NOT_AVAILABLE
-
-}

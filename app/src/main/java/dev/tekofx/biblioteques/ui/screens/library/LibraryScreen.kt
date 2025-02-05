@@ -38,7 +38,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
@@ -47,10 +46,8 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.model.library.Library
-import dev.tekofx.biblioteques.model.library.LibraryDummy
 import dev.tekofx.biblioteques.model.library.Season
 import dev.tekofx.biblioteques.model.library.SeasonTimeTable
-import dev.tekofx.biblioteques.model.library.seasonTranslation
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.Accordion
 import dev.tekofx.biblioteques.ui.components.InfoIntentCard
@@ -133,8 +130,8 @@ fun LibraryScreen(
                     Text(text = library.adrecaNom, style = Typography.headlineSmall)
                     Text(text = library.municipality, style = Typography.titleLarge)
                     StatusBadge(
-                        library.openStatus.color,
-                        library.openStatus.message,
+                        library.libraryStatus.color,
+                        library.libraryStatus.message,
                         Typography.titleMedium
                     )
 
@@ -189,9 +186,9 @@ fun LibraryTimetable(
                 label = {
                     Text(
                         text = "Horari ${
-                            seasonTranslation[library.timetable.getSeasonTimetableOfDate(
+                            library.timetable.getSeasonTimetableOfDate(
                                 LocalDate.now()
-                            ).season]
+                            ).season.translation
                         }"
                     )
                 },
@@ -208,9 +205,9 @@ fun LibraryTimetable(
                 label = {
                     Text(
                         text = "Horari ${
-                            seasonTranslation[library.timetable.getNextSeasonTimetableOfDate(
+                            library.timetable.getNextSeasonTimetableOfDate(
                                 LocalDate.now()
-                            ).season]
+                            ).season.translation
                         }"
                     )
                 },
@@ -365,23 +362,3 @@ fun LibraryLocation(library: Library, onMapClick: () -> Unit) {
     }
 }
 
-
-@Preview
-@Composable
-fun LibraryLocationPreview() {
-    LibraryLocation(LibraryDummy, onMapClick = {})
-}
-
-
-@Preview
-@Composable
-fun LibraryContactPreview() {
-    LibraryContact(LibraryDummy)
-}
-
-
-@Preview
-@Composable
-fun LibraryInfoPreview() {
-    LibraryTimetable(LibraryDummy)
-}

@@ -1,12 +1,12 @@
 package dev.tekofx.biblioteques.dto
 
 import com.google.gson.annotations.SerializedName
-import dev.tekofx.biblioteques.model.search.SearchResult
-import dev.tekofx.biblioteques.model.search.SearchResults
-import dev.tekofx.biblioteques.model.search.SearchArgument
 import dev.tekofx.biblioteques.model.book.Book
 import dev.tekofx.biblioteques.model.book.BookCopy
 import dev.tekofx.biblioteques.model.book.BookDetails
+import dev.tekofx.biblioteques.model.result.SearchResult
+import dev.tekofx.biblioteques.model.result.SearchResults
+import dev.tekofx.biblioteques.model.search.SearchArgument
 
 data class BookResponse(
     @SerializedName("body") var body: String = "",

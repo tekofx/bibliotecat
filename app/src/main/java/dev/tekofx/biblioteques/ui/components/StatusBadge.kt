@@ -22,12 +22,6 @@ fun StatusBadge(
     text: String,
     textStyle: TextStyle = TextStyle.Default
 ) {
-    val color = when (statusColor) {
-        StatusColor.GREEN -> R.color.green_open
-        StatusColor.YELLOW -> R.color.yellow_soon
-        StatusColor.ORANGE -> R.color.orange_depends
-        StatusColor.RED -> R.color.red_closed
-    }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -38,7 +32,7 @@ fun StatusBadge(
             modifier = Modifier
                 .size(20.dp)
                 .padding(end = 8.dp),
-            colorFilter = ColorFilter.tint(colorResource(id = color))
+            colorFilter = ColorFilter.tint(colorResource(id = statusColor.value))
         )
         Text(
             text = text,

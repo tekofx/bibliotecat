@@ -22,11 +22,12 @@ class HolidayConverterFactory : Converter.Factory() {
                 val data = body.string()
                 val jsonArray = JSONArray(data)
 
-                val holidayList: List<Holiday> = if (jsonArray.getJSONObject(0).has("any_calendari")) {
-                    constructLocalHolidays(jsonArray)
-                } else {
-                    constructGeneralCataloniaHolidays(jsonArray)
-                }
+                val holidayList: List<Holiday> =
+                    if (jsonArray.getJSONObject(0).has("any_calendari")) {
+                        constructLocalHolidays(jsonArray)
+                    } else {
+                        constructGeneralCataloniaHolidays(jsonArray)
+                    }
 
                 HolidayResponse(holidayList)
             }
@@ -46,7 +47,7 @@ class HolidayConverterFactory : Converter.Factory() {
                 year = year,
                 date = localDate,
                 place = "Catalunya",
-                holiday = holidayName,
+                name = holidayName,
                 postalCode = "08"
             )
             localHolidayList.add(holiday)
@@ -72,7 +73,7 @@ class HolidayConverterFactory : Converter.Factory() {
                 year = year,
                 date = localDate,
                 place = place,
-                holiday = holidayObject,
+                name = holidayObject,
                 postalCode = postalCode
             )
             localHolidayList.add(holiday)

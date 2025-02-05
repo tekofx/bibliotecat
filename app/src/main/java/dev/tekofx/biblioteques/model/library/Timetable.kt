@@ -15,32 +15,32 @@ class Timetable(
 
 
     /**
-     * Creates a [OpenStatus] based on the date, time and the timetable info
+     * Creates a [LibraryStatus] based on the date, time and the timetable info
      * @param date
      * @param time
      *
-     * @return [OpenStatus]
+     * @return [LibraryStatus]
      */
     fun getOpenStatus(
         date: LocalDate, time: LocalTime
-    ): OpenStatus {
+    ): LibraryStatus {
         holidays.find { it.date == date }?.let {
-            return OpenStatus(
-                OpenStatusEnum.Closed.holiday, StatusColor.ORANGE, "Festiu ${it.holiday}"
+            return LibraryStatus(
+                LibraryStatusValue.Closed.holiday, StatusColor.ORANGE, "Festiu ${it.name}"
             )
         }
 
         if (isOpen(date, time)) {
             val currentInterval = getInterval(date, time)!!
             return if (isClosingSoon(date, time)) {
-                OpenStatus(
-                    OpenStatusEnum.Open.closingSoon,
+                LibraryStatus(
+                    LibraryStatusValue.Library.closingSoon,
                     StatusColor.YELLOW,
                     "Obert · Tanca a les ${currentInterval.to}"
                 )
             } else {
-                OpenStatus(
-                    OpenStatusEnum.Open.open,
+                LibraryStatus(
+                    LibraryStatusValue.Library.library,
                     StatusColor.GREEN,
                     "Obert · Fins a ${currentInterval.to}"
                 )
@@ -48,28 +48,28 @@ class Timetable(
         } else {
             val nextIntervalOfDay = getNextIntervalOfDay(date, time)
             if (nextIntervalOfDay != null) {
-                return OpenStatus(
-                    OpenStatusEnum.Closed.openInAfternoon,
+                return LibraryStatus(
+                    LibraryStatusValue.Closed.libraryInAfternoon,
                     StatusColor.RED,
                     "Tancat · Obre a las ${nextIntervalOfDay.from}"
                 )
             }
 
-            val nextDay = getNextDayOpen(date) ?: return OpenStatus(
-                OpenStatusEnum.Closed.closedTemporarily, StatusColor.RED, "Tancat temporalment"
+            val nextDay = getNextDayOpen(date) ?: return LibraryStatus(
+                LibraryStatusValue.Closed.closedTemporarily, StatusColor.RED, "Tancat temporalment"
             )
 
             val nextDayTimetable = getDayTimetable(nextDay)
             val nextDayName = formatDayOfWeek(nextDay.dayOfWeek)
             return if (nextDay == date.plusDays(1)) {
-                OpenStatus(
-                    OpenStatusEnum.Closed.openTomorrow,
+                LibraryStatus(
+                    LibraryStatusValue.Closed.libraryTomorrow,
                     StatusColor.RED,
                     "Tancat · Obre demà a las ${nextDayTimetable?.timeIntervals?.firstOrNull()?.from}"
                 )
             } else {
-                OpenStatus(
-                    OpenStatusEnum.Closed.openInDays,
+                LibraryStatus(
+                    LibraryStatusValue.Closed.libraryInDays,
                     StatusColor.RED,
                     "Tancat · Obre el $nextDayName a las ${nextDayTimetable?.timeIntervals?.firstOrNull()?.from}"
                 )

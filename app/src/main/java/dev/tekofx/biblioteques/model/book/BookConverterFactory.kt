@@ -7,12 +7,12 @@ import com.fleeksoft.ksoup.nodes.Element
 import com.fleeksoft.ksoup.select.Elements
 import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.dto.BookResponse
-import dev.tekofx.biblioteques.model.search.BookResult
-import dev.tekofx.biblioteques.model.search.BookResults
-import dev.tekofx.biblioteques.model.search.GeneralResult
-import dev.tekofx.biblioteques.model.search.GeneralResults
-import dev.tekofx.biblioteques.model.search.SearchArgument
 import dev.tekofx.biblioteques.model.StatusColor
+import dev.tekofx.biblioteques.model.result.BookResult
+import dev.tekofx.biblioteques.model.result.BookResults
+import dev.tekofx.biblioteques.model.result.GeneralResult
+import dev.tekofx.biblioteques.model.result.GeneralResults
+import dev.tekofx.biblioteques.model.search.SearchArgument
 import dev.tekofx.biblioteques.ui.IconResource
 import okhttp3.ResponseBody
 import retrofit2.Converter
@@ -321,8 +321,8 @@ class BookConverterFactory : Converter.Factory() {
         val descriptionElement = getElement("Descripció", doc)
         val synopsisElement = getElement("Sinopsi", doc)
         val isbnElement = getElement("ISBN", doc)
-        val collectionsElements = getMultipleElements("Col·lecció",doc)
-        val topicElements= getMultipleElements("Tema",doc)
+        val collectionsElements = getMultipleElements("Col·lecció", doc)
+        val topicElements = getMultipleElements("Tema", doc)
         val permanentUrlElement = doc.selectFirst("a#recordnum")
 
         val edition = editionElement?.text()
@@ -331,7 +331,7 @@ class BookConverterFactory : Converter.Factory() {
         val isbn = isbnElement?.text()
         val permanentUrl = permanentUrlElement?.attr("href")
         val collections = collectionsElements.map { it.text() }
-        val topics= topicElements.map { it.text() }
+        val topics = topicElements.map { it.text() }
 
 
         var bookCopiesUrl: String? = null
@@ -371,7 +371,7 @@ class BookConverterFactory : Converter.Factory() {
      * @param doc Document
      * @return List of elements
      */
-    private fun getMultipleElements(key:String, doc: Document): MutableList<Element> {
+    private fun getMultipleElements(key: String, doc: Document): MutableList<Element> {
         Log.d("BookConverterFactory", "constructBookDetails: Get collections")
         val collectionsElements = mutableListOf<Element>()
 

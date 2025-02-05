@@ -19,11 +19,11 @@ class Library(
     val timetable: Timetable,
 ) {
 
-    var openStatus: OpenStatus = timetable.getOpenStatus(LocalDate.now(), LocalTime.now())
+    var libraryStatus: LibraryStatus = timetable.getOpenStatus(LocalDate.now(), LocalTime.now())
 
 
     fun setDateTime(date: LocalDate, time: LocalTime) {
-        openStatus = timetable.getOpenStatus(date, time)
+        libraryStatus = timetable.getOpenStatus(date, time)
     }
 
 

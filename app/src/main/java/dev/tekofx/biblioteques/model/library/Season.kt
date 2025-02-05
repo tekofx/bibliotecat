@@ -1,11 +1,6 @@
 package dev.tekofx.biblioteques.model.library
 
-enum class Season {
-    WINTER,
-    SUMMER
+enum class Season(val translation: String) {
+    WINTER("Hivern"),
+    SUMMER("Estiu")
 }
-
-val seasonTranslation = mapOf(
-    Season.WINTER to "Hivern",
-    Season.SUMMER to "Estiu"
-)

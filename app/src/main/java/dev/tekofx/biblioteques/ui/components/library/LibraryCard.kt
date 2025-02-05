@@ -72,8 +72,8 @@ fun LibraryCard(
                     )
                 }
                 StatusBadge(
-                    library.openStatus.color,
-                    library.openStatus.message,
+                    library.libraryStatus.color,
+                    library.libraryStatus.message,
                     Typography.bodyMedium
                 )
 
