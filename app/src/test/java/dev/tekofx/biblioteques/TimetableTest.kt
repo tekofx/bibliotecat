@@ -18,7 +18,7 @@ class TimetableTest {
 
         assertEquals(
             LibraryStatus(
-                Library.library,
+                LibraryStatus.Value.Open.open,
                 message = "Obert · Fins a 20:30",
                 color = StatusColor.GREEN
             ), timetable.getOpenStatus(monday, time16)
@@ -31,7 +31,7 @@ class TimetableTest {
         val time20 = LocalTime.of(20, 0)
         assertEquals(
             LibraryStatus(
-                Library.closingSoon,
+                LibraryStatus.Value.Open.closingSoon,
                 message = "Obert · Tanca a les 20:30",
                 color = StatusColor.YELLOW
             ), timetable.getOpenStatus(monday, time20)
@@ -44,7 +44,7 @@ class TimetableTest {
         val time14 = LocalTime.of(14, 0)
         assertEquals(
             LibraryStatus(
-                Closed.libraryInAfternoon,
+                LibraryStatus.Value.Closed.openAfternoon,
                 message = "Tancat · Obre a las 15:30",
                 color = StatusColor.RED
             ), timetable.getOpenStatus(tuesday, time14)
@@ -57,7 +57,7 @@ class TimetableTest {
         val time21 = LocalTime.of(21, 0)
         assertEquals(
             LibraryStatus(
-                Closed.libraryTomorrow,
+                LibraryStatus.Value.Closed.openTomorrow,
                 message = "Tancat · Obre demà a las 15:30",
                 color = StatusColor.RED
             ), timetable.getOpenStatus(tuesday, time21)
@@ -70,7 +70,7 @@ class TimetableTest {
         val time21 = LocalTime.of(21, 0)
         assertEquals(
             LibraryStatus(
-                Closed.libraryInDays,
+                LibraryStatus.Value.Closed.openInDays,
                 message = "Tancat · Obre el Dilluns a las 15:30",
                 color = StatusColor.RED
             ), timetable.getOpenStatus(friday, time21)
@@ -84,7 +84,7 @@ class TimetableTest {
 
         assertEquals(
             LibraryStatus(
-                Closed.closedTemporarily,
+                LibraryStatus.Value.Closed.closedTemporarily,
                 message = "Tancat temporalment",
                 color = StatusColor.RED
             ),
@@ -99,7 +99,7 @@ class TimetableTest {
         val time21 = LocalTime.of(10, 0)
         assertEquals(
             LibraryStatus(
-                Closed.holiday,
+                LibraryStatus.Value.Closed.Holiday,
                 message = "Festiu Cap d'Any",
                 color = StatusColor.ORANGE
             ), timetable.getOpenStatus(tuesday, time21)
