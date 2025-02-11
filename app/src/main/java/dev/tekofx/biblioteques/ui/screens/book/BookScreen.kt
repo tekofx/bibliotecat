@@ -469,10 +469,19 @@ fun BookCopyCard(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                Icon(
-                    IconResource.fromDrawableResource(R.drawable.location_city).asPainterResource(),
-                    contentDescription = ""
-                )
+                if (bookCopy.location.contains("bibliobús", true)) {
+                    Icon(
+                        IconResource.fromDrawableResource(R.drawable.directions_bus)
+                            .asPainterResource(),
+                        contentDescription = ""
+                    )
+                } else {
+                    Icon(
+                        IconResource.fromDrawableResource(R.drawable.location_city)
+                            .asPainterResource(),
+                        contentDescription = ""
+                    )
+                }
 
                 Text(
                     text = bookCopy.location,
