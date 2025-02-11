@@ -18,7 +18,6 @@ class LibraryRepository(
 ) {
     suspend fun getLibraries(): LibraryResponse {
         try {
-
             val year = LocalDate.now().year
 
             val librariesResponse = libraryService.getLibraries().awaitResponse()
@@ -40,6 +39,9 @@ class LibraryRepository(
 
             return LibraryResponse(librariesWithHolidays, municipalities)
         } catch (e: JSONException) {
+            Log.e("LibraryRepository", "Error getting libraries", e)
+            return LibraryResponse(emptyList(), emptyList())
+        } catch (e: Exception) {
             Log.e("LibraryRepository", "Error getting libraries", e)
             return LibraryResponse(emptyList(), emptyList())
         }

@@ -86,7 +86,11 @@ class Timetable(
         holidays.find { it.date == date }?.let { return false }
         val dayTimetable = getDayTimetable(date)
         return dayTimetable?.timeIntervals?.any { interval ->
-            time.isAfter(interval.from) && time.isBefore(interval.to)
+            interval.from?.let { fromTime ->
+                interval.to?.let { toTime ->
+                    time.isAfter(fromTime) && time.isBefore(toTime)
+                }
+            } ?: false
         } ?: false
     }
 
@@ -188,7 +192,7 @@ class Timetable(
     private fun getNextIntervalOfDay(date: LocalDate, time: LocalTime): TimeInterval? {
         val dayTimeTable = getDayTimetable(date)
         return dayTimeTable?.timeIntervals?.find { interval ->
-            time.isBefore(interval.from)
+            interval.from?.let { time.isBefore(it) } ?: false
         }
     }
 }

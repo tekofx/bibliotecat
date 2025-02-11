@@ -19,5 +19,6 @@ class Library(
     val timetable: Timetable,
 ) {
 
+
     var libraryStatus: LibraryStatus = timetable.getOpenStatus(LocalDate.now(), LocalTime.now())
 }

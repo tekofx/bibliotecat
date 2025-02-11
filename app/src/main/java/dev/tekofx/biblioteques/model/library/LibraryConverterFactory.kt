@@ -47,7 +47,7 @@ class LibraryConverterFactory : Converter.Factory() {
                     "Error getting bibliotecavirtual.diba.cat: $exception"
                 )
             }
-
+            val municipalityCountMap = mutableMapOf<String, Int>()
             for (i in 0 until elementsArray.length()) {
 
                 val libraryElement = elementsArray.getJSONObject(i)
@@ -59,6 +59,8 @@ class LibraryConverterFactory : Converter.Factory() {
                 val municipalityName =
                     libraryElement.getJSONObject("grup_adreca").getString("municipi_nom")
                 uniqueMunicipiNomValues.add(municipalityName)
+//                municipalityCountMap[municipalityName] =
+//                    municipalityCountMap.getOrDefault(municipalityName, 0) + 1
                 val postalCode = libraryElement.getJSONObject("rel_municipis").getString("ine")
                 val addressFull =
                     libraryElement.getJSONObject("grup_adreca").getString("adreca_completa")
@@ -104,6 +106,10 @@ class LibraryConverterFactory : Converter.Factory() {
                 )
                 libraryList.add(library)
             }
+            // Print the municipality names and their counts
+//            for ((municipality, count) in municipalityCountMap) {
+//                println("Municipality: $municipality, Count: $count")
+//            }
 
             Log.d("LibraryConverterFactory", "Library list size: ${libraryList.size}")
             val response = LibraryResponse(libraryList, uniqueMunicipiNomValues.toList())

@@ -188,7 +188,7 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
                 errorMessage.postValue("Error: No hi ha connexió a internet")
                 isLoading.value = false
             } catch (e: Exception) {
-                Log.d("LibraryViewModel", "Error: $e")
+                Log.d("LibraryViewModel", "Error getting libraries: $e")
                 errorMessage.postValue("Error: No s'han pogut obtenir les biblioteques")
                 isLoading.value = false
             }
