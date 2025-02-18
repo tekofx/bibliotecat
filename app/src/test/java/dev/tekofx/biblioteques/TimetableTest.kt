@@ -99,7 +99,7 @@ class TimetableTest {
         val time21 = LocalTime.of(10, 0)
         assertEquals(
             LibraryStatus(
-                LibraryStatus.Value.Closed.Holiday,
+                LibraryStatus.Value.MayBeOpen.Holiday,
                 message = "Festiu Cap d'Any",
                 color = StatusColor.ORANGE
             ), timetable.getOpenStatus(tuesday, time21)
