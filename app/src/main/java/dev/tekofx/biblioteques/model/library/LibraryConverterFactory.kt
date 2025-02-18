@@ -229,6 +229,11 @@ class LibraryConverterFactory : Converter.Factory() {
 
                 else -> {
                     Log.e("LibraryConverterFactory", "getTimeIntervals: No time intervals")
+                    Log.e(
+                        "LibraryConverterFactory",
+                        "getTimeIntervals: ${jsonObject.getString("adreca_nom")}"
+                    )
+
                     Log.e("LibraryConverterFactory", "getTimeIntervals: $timeintervalString")
                     Log.e("LibraryConverterFactory", "getTimeIntervals: $textHours")
                 }

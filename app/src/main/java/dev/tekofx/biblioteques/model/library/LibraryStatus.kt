@@ -18,7 +18,15 @@ data class LibraryStatus(
             object openTomorrow : Closed()
             object openInDays : Closed()
             object closedTemporarily : Closed()
-            object Holiday : Closed()
+        }
+
+        sealed class MayBeOpen : Value() {
+            object Holiday : MayBeOpen()
+
+            // When can't extract the hours from the API
+            object Unknow : MayBeOpen()
+
+
         }
     }
 }

@@ -26,23 +26,33 @@ class Timetable(
     ): LibraryStatus {
         holidays.find { it.date == date }?.let {
             return LibraryStatus(
-                LibraryStatus.Value.Closed.Holiday, StatusColor.ORANGE, "Festiu ${it.name}"
+                LibraryStatus.Value.MayBeOpen.Holiday, StatusColor.ORANGE, "Festiu ${it.name}"
+            )
+        }
+
+        val currentInterval = getInterval(date, time)
+
+        // If a day doesnt have any interval.from and interval.to, the app couldn't parse the timetable
+        if (currentInterval != null && currentInterval.from == null && currentInterval.to == null) {
+            return LibraryStatus(
+                LibraryStatus.Value.MayBeOpen.Unknow,
+                StatusColor.ORANGE,
+                currentInterval.observation ?: "Unknow timetable"
             )
         }
 
         if (isOpen(date, time)) {
-            val currentInterval = getInterval(date, time)!!
             return if (isClosingSoon(date, time)) {
                 LibraryStatus(
                     LibraryStatus.Value.Open.closingSoon,
                     StatusColor.YELLOW,
-                    "Obert · Tanca a les ${currentInterval.to}"
+                    "Obert · Tanca a les ${currentInterval!!.to}"
                 )
             } else {
                 LibraryStatus(
                     LibraryStatus.Value.Open.open,
                     StatusColor.GREEN,
-                    "Obert · Fins a ${currentInterval.to}"
+                    "Obert · Fins a ${currentInterval!!.to}"
                 )
             }
         } else {
@@ -177,8 +187,13 @@ class Timetable(
     private fun getInterval(date: LocalDate, time: LocalTime): TimeInterval? {
         val currentTimetable = getSeasonTimetableOfDate(date)
         val dayTimeTable = currentTimetable.dayTimetables[date.dayOfWeek]
+
         return dayTimeTable?.timeIntervals?.find { interval ->
-            time == interval.from || (time.isAfter(interval.from) && time.isBefore(interval.to))
+            if (interval.from != null || interval.to != null) {
+                time == interval.from || (time.isAfter(interval.from) && time.isBefore(interval.to))
+            } else {
+                interval.observation != null
+            }
         }
     }
 
