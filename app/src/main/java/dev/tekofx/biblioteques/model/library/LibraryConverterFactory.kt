@@ -50,15 +50,15 @@ class LibraryConverterFactory : Converter.Factory() {
                 val libraryElement = elementsArray.getJSONObject(i)
 
                 val imageArray = libraryElement.getJSONArray("imatge")
-                val pointId = libraryElement.getString("punt_id")
-                val addressName = libraryElement.getString("adreca_nom")
+                val id = libraryElement.getString("punt_id")
+                val name = libraryElement.getString("adreca_nom")
                 val description = libraryElement.getString("descripcio")
                 val municipalityName =
                     libraryElement.getJSONObject("grup_adreca").getString("municipi_nom")
                 uniqueMunicipiNomValues.add(municipalityName)
-                val postalCode = libraryElement.getJSONObject("rel_municipis").getString("ine")
                 val addressFull =
                     libraryElement.getJSONObject("grup_adreca").getString("adreca_completa")
+                val postalCode = libraryElement.getJSONObject("rel_municipis").getString("ine")
                 val image = if (imageArray.length() > 0) imageArray.getString(0) else ""
                 val emails =
                     jsonArrayToStringArray(libraryElement.getJSONArray("email")).ifEmpty { null }
@@ -85,8 +85,8 @@ class LibraryConverterFactory : Converter.Factory() {
                 val timetable = Timetable(timetableHivern, timetableEstiu, emptyList())
 
                 val library = Library(
-                    id = pointId,
-                    name = addressName,
+                    id = id,
+                    name = name,
                     description = description,
                     municipality = municipalityName,
                     address = addressFull,
