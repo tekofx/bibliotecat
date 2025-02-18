@@ -213,9 +213,9 @@ class LibraryConverterFactory : Converter.Factory() {
             for (time in textHours) {
                 val parts = time.split(":")
                 val hour = parts[0]
-                val minute = if (parts.size > 1) parts[1].padStart(2, '0') else "0"
+                var minute = if (parts.size > 1) parts[1].padStart(2, '0') else "0"
                 if (minute.length > 2) {
-                    minute.take(2)
+                    minute = minute.take(2)
                 }
                 validTimes.add(LocalTime.of(hour.toInt(), minute.toInt()))
             }
