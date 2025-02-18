@@ -176,6 +176,7 @@ class LibraryConverterFactory : Converter.Factory() {
 
     }
 
+
     private fun getTimeIntervals(
         jsonObject: JSONObject,
         estacio: String,
@@ -186,16 +187,15 @@ class LibraryConverterFactory : Converter.Factory() {
         val timeintervalString =
             jsonObject.getString(String.format("horari_%s_%s", estacio, day)).lowercase()
 
-
+        val timeTimeIntervals = mutableListOf<TimeInterval>()
         val regexMonths =
             "(gener|febrer|març|abril|maig|juny|juliol|agost|setembre|octubre|novembre|desembre)".toRegex()
         val regexDayOfWeek =
             "(dilluns|dimarts|dimecres|dijous|divendres|dissabte|diumenge)".toRegex()
 
         // Timetable contains text
-        if (regexMonths.containsMatchIn(timeintervalString) || regexDayOfWeek.containsMatchIn(
-                timeintervalString
-            )
+        if (regexMonths.containsMatchIn(timeintervalString) ||
+            regexDayOfWeek.containsMatchIn(timeintervalString)
         ) {
             val timeInterval = TimeInterval(null, null, timeintervalString)
             val timeIntervalsList = mutableListOf<TimeInterval>()
@@ -214,6 +214,38 @@ class LibraryConverterFactory : Converter.Factory() {
             return null
         }
 
+        try {
+            val regex = Regex("""\d+([:.,]?\d*)""")
+            val textHours =
+                regex.findAll(timeintervalString)
+                    .map { it.value.replace(".", ":").replace(",", ":").replace("h", "") }.toList()
+            val validTimes = mutableListOf<LocalTime>()
+
+
+
+            for (time in textHours) {
+                val parts = time.split(":")
+                val hour = parts[0]
+                var minute = if (parts.size > 1) parts[1].padStart(2, '0') else "0"
+                validTimes.add(LocalTime.of(hour.toInt(), minute.toInt()))
+            }
+
+            if (validTimes.size == 2) {
+                timeTimeIntervals.add(TimeInterval(validTimes[0], validTimes[1]))
+            } else if (validTimes.size == 4) {
+                timeTimeIntervals.add(TimeInterval(validTimes[0], validTimes[1]))
+                timeTimeIntervals.add(TimeInterval(validTimes[2], validTimes[3]))
+            } else {
+                println("No time intervals")
+                println(timeintervalString)
+                println(textHours)
+                println("\n")
+            }
+
+        } catch (exception: Exception) {
+            println(exception)
+        }
+
 
         // If text contains matí o tarda remove it
         if (timeintervalString.contains("matí") || timeintervalString.contains(" tarda")) timeintervalString.replace(
@@ -227,40 +259,39 @@ class LibraryConverterFactory : Converter.Factory() {
         val timeIntervalsStrings = regexTime.findAll(timeintervalString).map { it.value }.chunked(2)
 
 
-        val timeTimeIntervals = mutableListOf<TimeInterval>()
-        for (timeIntervalString in timeIntervalsStrings) {
-            var startTimeString = timeIntervalString[0] // "15:30"
-            var endTimeString = timeIntervalString[1]   // "19:30"
-
-            // Fix minutes if it has an extra 0 like in 15:300
-            if (endTimeString.length > 5)
-                endTimeString = endTimeString.substring(0, 5)
-
-            //Fix minutes if it has an extra 0 like in 15:300
-            if (startTimeString.length > 5) {
-                startTimeString = startTimeString.substring(0, 5)
-            }
-
-            // Fix hours like 13,20 and 14,
-            if (startTimeString.contains(",") && startTimeString.length > 3)
-                startTimeString = startTimeString.replace(",", ":")
-            else
-                startTimeString = startTimeString.replace(",", "")
-
-            if (endTimeString.contains(",") && endTimeString.length > 3)
-                endTimeString = endTimeString.replace(",", ":")
-            else
-                endTimeString = endTimeString.replace(",", "")
-
-            val startTime = parseTime(startTimeString) // LocalTime 15:30
-            val endTime = parseTime(endTimeString)   // LocalTime 19:30
-
-            val timeInterval = TimeInterval(
-                startTime, endTime, null
-            )
-            timeTimeIntervals.add(timeInterval)
-
-        }
+//        for (timeIntervalString in timeIntervalsStrings) {
+//            var startTimeString = timeIntervalString[0] // "15:30"
+//            var endTimeString = timeIntervalString[1]   // "19:30"
+//
+//            // Fix minutes if it has an extra 0 like in 15:300
+//            if (endTimeString.length > 5)
+//                endTimeString = endTimeString.substring(0, 5)
+//
+//            //Fix minutes if it has an extra 0 like in 15:300
+//            if (startTimeString.length > 5) {
+//                startTimeString = startTimeString.substring(0, 5)
+//            }
+//
+//            // Fix hours like 13,20 and 14,
+//            if (startTimeString.contains(",") && startTimeString.length > 3)
+//                startTimeString = startTimeString.replace(",", ":")
+//            else
+//                startTimeString = startTimeString.replace(",", "")
+//
+//            if (endTimeString.contains(",") && endTimeString.length > 3)
+//                endTimeString = endTimeString.replace(",", ":")
+//            else
+//                endTimeString = endTimeString.replace(",", "")
+//
+//            val startTime = parseTime(startTimeString) // LocalTime 15:30
+//            val endTime = parseTime(endTimeString)   // LocalTime 19:30
+//
+//            val timeInterval = TimeInterval(
+//                startTime, endTime, null
+//            )
+//            timeTimeIntervals.add(timeInterval)
+//
+//        }
 
         return timeTimeIntervals
     }
