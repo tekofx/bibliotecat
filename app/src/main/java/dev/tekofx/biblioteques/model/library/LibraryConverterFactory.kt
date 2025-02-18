@@ -15,7 +15,6 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
 
 
 class LibraryConverterFactory : Converter.Factory() {
@@ -47,9 +46,7 @@ class LibraryConverterFactory : Converter.Factory() {
                     "Error getting bibliotecavirtual.diba.cat: $exception"
                 )
             }
-            val municipalityCountMap = mutableMapOf<String, Int>()
             for (i in 0 until elementsArray.length()) {
-
                 val libraryElement = elementsArray.getJSONObject(i)
 
                 val imageArray = libraryElement.getJSONArray("imatge")
@@ -59,8 +56,6 @@ class LibraryConverterFactory : Converter.Factory() {
                 val municipalityName =
                     libraryElement.getJSONObject("grup_adreca").getString("municipi_nom")
                 uniqueMunicipiNomValues.add(municipalityName)
-//                municipalityCountMap[municipalityName] =
-//                    municipalityCountMap.getOrDefault(municipalityName, 0) + 1
                 val postalCode = libraryElement.getJSONObject("rel_municipis").getString("ine")
                 val addressFull =
                     libraryElement.getJSONObject("grup_adreca").getString("adreca_completa")
@@ -106,11 +101,6 @@ class LibraryConverterFactory : Converter.Factory() {
                 )
                 libraryList.add(library)
             }
-            // Print the municipality names and their counts
-//            for ((municipality, count) in municipalityCountMap) {
-//                println("Municipality: $municipality, Count: $count")
-//            }
-
             Log.d("LibraryConverterFactory", "Library list size: ${libraryList.size}")
             val response = LibraryResponse(libraryList, uniqueMunicipiNomValues.toList())
             response
@@ -204,9 +194,8 @@ class LibraryConverterFactory : Converter.Factory() {
         }
 
         // If its closed
-        if (timeintervalString.contains("tancat")) {
+        if (timeintervalString.contains("tancat") || timeintervalString.contains("tancada")) {
             return null
-
         }
 
         // If the string is blank
@@ -221,95 +210,35 @@ class LibraryConverterFactory : Converter.Factory() {
                     .map { it.value.replace(".", ":").replace(",", ":").replace("h", "") }.toList()
             val validTimes = mutableListOf<LocalTime>()
 
-
-
             for (time in textHours) {
                 val parts = time.split(":")
                 val hour = parts[0]
-                var minute = if (parts.size > 1) parts[1].padStart(2, '0') else "0"
+                val minute = if (parts.size > 1) parts[1].padStart(2, '0') else "0"
+                if (minute.length > 2) {
+                    minute.take(2)
+                }
                 validTimes.add(LocalTime.of(hour.toInt(), minute.toInt()))
             }
 
-            if (validTimes.size == 2) {
-                timeTimeIntervals.add(TimeInterval(validTimes[0], validTimes[1]))
-            } else if (validTimes.size == 4) {
-                timeTimeIntervals.add(TimeInterval(validTimes[0], validTimes[1]))
-                timeTimeIntervals.add(TimeInterval(validTimes[2], validTimes[3]))
-            } else {
-                println("No time intervals")
-                println(timeintervalString)
-                println(textHours)
-                println("\n")
+            when (validTimes.size) {
+                2 -> timeTimeIntervals.add(TimeInterval(validTimes[0], validTimes[1]))
+                4 -> {
+                    timeTimeIntervals.add(TimeInterval(validTimes[0], validTimes[1]))
+                    timeTimeIntervals.add(TimeInterval(validTimes[2], validTimes[3]))
+                }
+
+                else -> {
+                    Log.e("LibraryConverterFactory", "getTimeIntervals: No time intervals")
+                    Log.e("LibraryConverterFactory", "getTimeIntervals: $timeintervalString")
+                    Log.e("LibraryConverterFactory", "getTimeIntervals: $textHours")
+                }
             }
 
         } catch (exception: Exception) {
-            println(exception)
+            Log.e("LibraryConverterFactory", "getTimeIntervals: $exception")
         }
-
-
-        // If text contains matí o tarda remove it
-        if (timeintervalString.contains("matí") || timeintervalString.contains(" tarda")) timeintervalString.replace(
-            "matí",
-            ""
-        ).replace("tarda", "")
-
-
-        // Format timeintervals
-        val regexTime = """(\d+)([:.,])?(\d+)?""".toRegex()
-        val timeIntervalsStrings = regexTime.findAll(timeintervalString).map { it.value }.chunked(2)
-
-
-//        for (timeIntervalString in timeIntervalsStrings) {
-//            var startTimeString = timeIntervalString[0] // "15:30"
-//            var endTimeString = timeIntervalString[1]   // "19:30"
-//
-//            // Fix minutes if it has an extra 0 like in 15:300
-//            if (endTimeString.length > 5)
-//                endTimeString = endTimeString.substring(0, 5)
-//
-//            //Fix minutes if it has an extra 0 like in 15:300
-//            if (startTimeString.length > 5) {
-//                startTimeString = startTimeString.substring(0, 5)
-//            }
-//
-//            // Fix hours like 13,20 and 14,
-//            if (startTimeString.contains(",") && startTimeString.length > 3)
-//                startTimeString = startTimeString.replace(",", ":")
-//            else
-//                startTimeString = startTimeString.replace(",", "")
-//
-//            if (endTimeString.contains(",") && endTimeString.length > 3)
-//                endTimeString = endTimeString.replace(",", ":")
-//            else
-//                endTimeString = endTimeString.replace(",", "")
-//
-//            val startTime = parseTime(startTimeString) // LocalTime 15:30
-//            val endTime = parseTime(endTimeString)   // LocalTime 19:30
-//
-//            val timeInterval = TimeInterval(
-//                startTime, endTime, null
-//            )
-//            timeTimeIntervals.add(timeInterval)
-//
-//        }
-
         return timeTimeIntervals
     }
-
-
-    private fun parseTime(timeString: String): LocalTime? {
-        return try {
-            var output = timeString
-            if (output.length < 3) {
-                output += ":00"
-            }
-
-            LocalTime.parse(output.replace(".", ":"), timeFormatter)
-        } catch (e: DateTimeParseException) {
-            throw RuntimeException("Time parsing failed")
-        }
-    }
-
 
     private fun parseMonth(monthName: String): Int {
         return when {
@@ -328,8 +257,6 @@ class LibraryConverterFactory : Converter.Factory() {
             else -> {
                 return 0
             }
-
-
         }
     }
 
