@@ -7,9 +7,9 @@ import dev.tekofx.biblioteques.dto.HolidayResponse
 import dev.tekofx.biblioteques.dto.LibraryResponse
 import dev.tekofx.biblioteques.model.holiday.Holiday
 import dev.tekofx.biblioteques.model.library.Library
-import org.json.JSONException
 import retrofit2.Response
 import retrofit2.awaitResponse
+import java.net.UnknownHostException
 import java.time.LocalDate
 
 class LibraryRepository(
@@ -38,12 +38,12 @@ class LibraryRepository(
                 addHolidaysToLibraries(libraries, localHolidays, cataloniaHolidays)
 
             return LibraryResponse(librariesWithHolidays, municipalities)
-        } catch (e: JSONException) {
-            Log.e("LibraryRepository", "Error getting libraries", e)
-            return LibraryResponse(emptyList(), emptyList())
+        } catch (e: UnknownHostException) {
+            Log.e("LibraryRepository", "Error getting libraries $e")
+            throw e
         } catch (e: Exception) {
-            Log.e("LibraryRepository", "Error getting libraries", e)
-            return LibraryResponse(emptyList(), emptyList())
+            Log.e("LibraryRepository", "Error getting libraries $e")
+            throw e
         }
     }
 
