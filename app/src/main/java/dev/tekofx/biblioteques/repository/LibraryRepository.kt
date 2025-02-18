@@ -122,6 +122,7 @@ class LibraryRepository(
                 library.postalCode == holiday.postalCode
             }
             library.timetable.holidays = holy.plus(cataloniaHolidays)
+            library.updateLibraryStatus()
         }
         return libraries
     }
