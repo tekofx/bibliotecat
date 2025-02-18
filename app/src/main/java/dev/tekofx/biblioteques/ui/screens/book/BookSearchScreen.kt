@@ -142,8 +142,8 @@ fun BookSearch(
 
         TextIconButton(
             modifier = Modifier.fillMaxWidth(),
-            text = search.searchScope.name,
-            startIcon = search.searchScope.icon,
+            text = search.catalog.name,
+            startIcon = search.catalog.icon,
             onClick = {
                 showSearchScopeBottomSheet = !showSearchScopeBottomSheet
             }
@@ -187,7 +187,7 @@ fun BookSearch(
             show = showSearchScopeBottomSheet,
             onToggleShow = { showSearchScopeBottomSheet = !showSearchScopeBottomSheet },
             searchArguments = searchScopes,
-            selectedItem = search.searchScope,
+            selectedItem = search.catalog,
             onItemSelected = onSeachScopeSelected,
             showSearchBar = true,
             maxHeight = 300.dp

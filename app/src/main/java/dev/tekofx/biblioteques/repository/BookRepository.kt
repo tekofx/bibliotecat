@@ -9,7 +9,7 @@ import retrofit2.Call
 class BookRepository(private val bookService: BookService) {
     fun search(search: Search): Call<BookResponse> {
         Log.d("BookRepository", "Request $search")
-        return bookService.search(search.query, search.searchType.value, search.searchScope.value)
+        return bookService.search(search.query, search.searchType.value, search.catalog.value)
     }
 
     fun getSearchScope(): Call<BookResponse> {

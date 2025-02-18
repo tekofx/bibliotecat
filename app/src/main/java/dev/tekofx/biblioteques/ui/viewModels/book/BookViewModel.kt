@@ -397,7 +397,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     }
 
     fun onSearchScopeChange(value: SearchArgument) {
-        _search.value = _search.value.copy(searchScope = value)
+        _search.value = _search.value.copy(catalog = value)
     }
 
     /**
