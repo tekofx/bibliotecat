@@ -94,7 +94,7 @@ class LibraryConverterFactory : Converter.Factory() {
                     webUrl = webUrl,
                     location = listOf(latitude, longitude),
                     image = image,
-                    timetable = null,
+                    timetable = timetable,
                     postalCode = postalCode
                 )
                 libraryList.add(library)
@@ -140,6 +140,7 @@ class LibraryConverterFactory : Converter.Factory() {
         val timeIntervalsDivendres = getTimeIntervals(jsonObject, estacio, "divendres")
         val timeIntervalsDissabte = getTimeIntervals(jsonObject, estacio, "dissabte")
         val timeIntervalsDiumenge = getTimeIntervals(jsonObject, estacio, "diumenge")
+
 
         val observationsHtml = jsonObject.getString("observacions_$estacio").ifEmpty { null }
 
