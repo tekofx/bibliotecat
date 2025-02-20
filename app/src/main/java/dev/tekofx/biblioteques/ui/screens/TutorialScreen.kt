@@ -70,15 +70,15 @@ import dev.tekofx.biblioteques.utils.RequestLocationPermissionUsingRememberLaunc
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun TutorialScreen(
-    navHostController: NavHostController?,
-    preferencesViewModel: PreferencesViewModel?
+    navHostController: NavHostController,
+    preferencesViewModel: PreferencesViewModel
 ) {
     val totalPages = 3
     val pagerState = rememberPagerState { totalPages }
 
     fun navigateToWelcomeScreen() {
-        preferencesViewModel?.saveShowTutorial(false)
-        navHostController?.navigate(NavigateDestinations.WELCOME_SCREEN)
+        preferencesViewModel.saveShowTutorial(false)
+        navHostController.navigate(NavigateDestinations.WELCOME_SCREEN)
     }
 
 
