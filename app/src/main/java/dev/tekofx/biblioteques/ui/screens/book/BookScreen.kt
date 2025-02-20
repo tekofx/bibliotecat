@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,8 +34,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -90,6 +93,9 @@ fun BookScreen(
     val listState = rememberLazyListState()
     val context = LocalContext.current
 
+    // FloatingActionButton visibility state
+    val isFabVisible = remember { mutableStateOf(true) }
+
     // Get book info
     LaunchedEffect(key1 = null) {
         Log.d("BookScreen", "currentBook: ${currentBook?.title} bookUrl:$bookUrl")
@@ -101,9 +107,20 @@ fun BookScreen(
     }
 
 
+    // Observe scroll state to hide/show FAB
+    LaunchedEffect(listState) {
+        println(listState.layoutInfo.visibleItemsInfo)
+        snapshotFlow { listState.layoutInfo.visibleItemsInfo }
+            .collect { visibleItems ->
+                isFabVisible.value = visibleItems.any { it.index == 1 }
+            }
+    }
+
     Scaffold(
         floatingActionButton = {
-            if (currentBook != null) {
+            AnimatedVisibility(
+                visible = isFabVisible.value && currentBook != null,
+            ) {
                 ExtendedFloatingActionButton(
                     onClick = {
                         val intent =
@@ -121,7 +138,6 @@ fun BookScreen(
                             contentDescription = "web"
                         )
                     }
-
                 )
             }
         }
