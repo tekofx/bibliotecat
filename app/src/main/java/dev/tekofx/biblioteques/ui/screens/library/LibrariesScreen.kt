@@ -11,22 +11,29 @@ import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -79,69 +86,58 @@ fun LibrariesScreen(
 
     // Errors
     val errorMessage by libraryViewModel.errorMessage.observeAsState("")
+    val scope = rememberCoroutineScope()
+    val scaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = rememberStandardBottomSheetState(
+            initialValue = SheetValue.Hidden,
+            skipHiddenState = false
+        )
+    )
 
-
-    Scaffold(
-        modifier = Modifier.padding(horizontal = 5.dp),
-        floatingActionButton = {
-            if (!isLoading) {
-                BadgedBox(
-                    badge = {
-                        if (filtersApplied) {
-                            Badge(
-                                modifier = Modifier.size(20.dp),
-                                containerColor = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    }
-                ) {
-
-                    ExtendedFloatingActionButton(
-                        text = { Text("Filtrar") },
-                        icon = {
-                            Icon(
-                                IconResource.fromDrawableResource(R.drawable.filter_list)
-                                    .asPainterResource(),
-                                contentDescription = ""
-                            )
-                        },
-                        onClick = {
-                            showBottomSheet = true
-                        }
-                    )
-                }
-            }
-        }
-    ) {
-        PullToRefreshBox(
-            isRefreshing = isLoading,
-            onRefresh = { libraryViewModel.getLibraries() },
-        ) {
-            Loader(isLoading, "Obtenint Biblioteques")
-            Alert(errorMessage, AlertType.ERROR, floating = true)
-            LibraryList(
-                libraries = libraries,
+    BottomSheetScaffold(
+        modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
+        scaffoldState = scaffoldState,
+        sheetContent = {
+            SearchBottomSheet(
+                municipalities = municipalities,
+                textFieldValue = queryText,
+                showOnlyOpen = showOnlyOpenTest,
                 filtersApplied = filtersApplied,
-                isLoading = isLoading,
-                onLibraryCardClick = {
-                    navHostController.navigate("${NavigateDestinations.LIBRARY_DETAILS_ROUTE}?pointId=${it}")
-                }
+                selectedMunicipality = selectedMunicipalityTest,
+                onShowOnlyOpen = libraryViewModel::onShowOnlyOpen,
+                onSelectedMunicipality = libraryViewModel::onMunicipalityChanged,
+                onTextFieldChange = libraryViewModel::onSearchTextChanged,
+                onClearFilters = libraryViewModel::clearFilters,
+                onClose = { scope.launch { scaffoldState.bottomSheetState.hide() } }
             )
         }
-
-        SearchBottomSheet(
-            municipalities = municipalities,
-            textFieldValue = queryText,
-            show = showBottomSheet,
-            showOnlyOpen = showOnlyOpenTest,
-            filtersApplied = filtersApplied,
-            selectedMunicipality = selectedMunicipalityTest,
-            onShowOnlyOpen = libraryViewModel::onShowOnlyOpen,
-            onSelectedMunicipality = libraryViewModel::onMunicipalityChanged,
-            onToggleShow = { showBottomSheet = !showBottomSheet },
-            onTextFieldChange = libraryViewModel::onSearchTextChanged,
-            onClearFilters = libraryViewModel::clearFilters
-        )
+    ) {
+        Scaffold(
+            modifier = Modifier.padding(horizontal = 5.dp),
+            floatingActionButton = {
+                LibrariesFAB(
+                    show = !isLoading,
+                    filtersApplied = filtersApplied,
+                    onClick = { scope.launch { scaffoldState.bottomSheetState.expand() } }
+                )
+            }
+        ) {
+            PullToRefreshBox(
+                isRefreshing = isLoading,
+                onRefresh = { libraryViewModel.getLibraries() },
+            ) {
+                Loader(isLoading, "Obtenint Biblioteques")
+                Alert(errorMessage, AlertType.ERROR, floating = true)
+                LibraryList(
+                    libraries = libraries,
+                    filtersApplied = filtersApplied,
+                    isLoading = isLoading,
+                    onLibraryCardClick = {
+                        navHostController.navigate("${NavigateDestinations.LIBRARY_DETAILS_ROUTE}?pointId=${it}")
+                    }
+                )
+            }
+        }
     }
 }
 
@@ -153,90 +149,104 @@ fun SearchBottomSheet(
     textFieldValue: String,
     showOnlyOpen: Boolean,
     selectedMunicipality: String,
-    show: Boolean,
     filtersApplied: Boolean,
-    onToggleShow: () -> Unit,
     onShowOnlyOpen: (value: Boolean) -> Unit,
     onSelectedMunicipality: (String) -> Unit,
     onTextFieldChange: (text: String) -> Unit,
-    onClearFilters: () -> Unit
+    onClearFilters: () -> Unit,
+    onClose: () -> Unit
 
 ) {
-    val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
-    val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
 
-    if (show) {
-        ModalBottomSheet(
-            onDismissRequest = {
-                onToggleShow()
-            },
-            sheetState = sheetState
-        ) {
-            Column(
-                modifier = Modifier.padding(10.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                SearchBar(
-                    value = textFieldValue,
-                    onValueChange = onTextFieldChange,
-                    label = "Nom Biblioteca",
-                    onDone = {},
-                )
-                AutoCompleteSelectBar(
-                    entries = municipalities,
-                    onSelectedEntry = onSelectedMunicipality,
-                    selectedEntry = selectedMunicipality,
-                )
-                SurfaceSwitch(
-                    value = showOnlyOpen,
-                    onValueChange = onShowOnlyOpen,
-                    iconResource = IconResource.fromDrawableResource(R.drawable.schedule),
-                    title = "Obert ara",
-                    description = "Mostar només les biblioteques obertes"
-                )
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .animateContentSize(),
-                    horizontalArrangement = Arrangement.spacedBy(
-                        space = 10.dp,
-                        alignment = Alignment.CenterHorizontally
-                    )
-                ) {
 
-                    TextIconButton(
-                        text = "Tanca",
-                        startIcon = IconResource.fromImageVector(Icons.Outlined.Close),
-                        onClick = {
-                            scope.launch { sheetState.hide() }.invokeOnCompletion {
-                                if (!sheetState.isVisible) {
-                                    onToggleShow()
-                                }
-                            }
-                        }
-                    )
-                    AnimatedVisibility(
-                        visible = filtersApplied,
-                        enter = scaleIn() + expandHorizontally(),
-                        exit = scaleOut() + shrinkHorizontally()
-                    ) {
-                        TextIconButtonOutlined(
-                            text = "Eliminar filtres",
-                            icon = IconResource.fromDrawableResource(R.drawable.filter_list_off),
-                            onClick = {
-                                focusManager.clearFocus()
-                                onClearFilters()
-                            }
-                        )
+    Column(
+        modifier = Modifier.padding(10.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        SearchBar(
+            value = textFieldValue,
+            onValueChange = onTextFieldChange,
+            label = "Nom Biblioteca",
+            onDone = {},
+        )
+        AutoCompleteSelectBar(
+            entries = municipalities,
+            onSelectedEntry = onSelectedMunicipality,
+            selectedEntry = selectedMunicipality,
+        )
+        SurfaceSwitch(
+            value = showOnlyOpen,
+            onValueChange = onShowOnlyOpen,
+            iconResource = IconResource.fromDrawableResource(R.drawable.schedule),
+            title = "Obert ara",
+            description = "Mostar només les biblioteques obertes"
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .animateContentSize(),
+            horizontalArrangement = Arrangement.spacedBy(
+                space = 10.dp,
+                alignment = Alignment.CenterHorizontally
+            )
+        ) {
+
+            TextIconButton(
+                text = "Tanca",
+                startIcon = IconResource.fromImageVector(Icons.Outlined.Close),
+                onClick = { onClose() }
+            )
+            AnimatedVisibility(
+                visible = filtersApplied,
+                enter = scaleIn() + expandHorizontally(),
+                exit = scaleOut() + shrinkHorizontally()
+            ) {
+                TextIconButtonOutlined(
+                    text = "Eliminar filtres",
+                    icon = IconResource.fromDrawableResource(R.drawable.filter_list_off),
+                    onClick = {
+                        focusManager.clearFocus()
+                        onClearFilters()
                     }
+                )
+            }
+        }
+    }
+    Spacer(modifier = Modifier.imePadding())
+}
+
+
+@Composable
+fun LibrariesFAB(
+    show: Boolean,
+    filtersApplied: Boolean,
+    onClick: () -> Unit
+) {
+    if (show) {
+        BadgedBox(
+            badge = {
+                if (filtersApplied) {
+                    Badge(
+                        modifier = Modifier.size(20.dp),
+                        containerColor = MaterialTheme.colorScheme.primary
+                    )
                 }
             }
+        ) {
 
+            ExtendedFloatingActionButton(
+                text = { Text("Filtrar") },
+                icon = {
+                    Icon(
+                        IconResource.fromDrawableResource(R.drawable.filter_list)
+                            .asPainterResource(),
+                        contentDescription = ""
+                    )
+                },
+                onClick = { onClick() }
+            )
         }
     }
 }
-
