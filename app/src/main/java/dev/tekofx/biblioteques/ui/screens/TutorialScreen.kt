@@ -34,13 +34,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.LocationOn
-import androidx.compose.material.icons.outlined.Warning
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -57,6 +55,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import dev.tekofx.biblioteques.R
@@ -71,15 +70,15 @@ import dev.tekofx.biblioteques.utils.RequestLocationPermissionUsingRememberLaunc
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun TutorialScreen(
-    navHostController: NavHostController,
-    preferencesViewModel: PreferencesViewModel
+    navHostController: NavHostController?,
+    preferencesViewModel: PreferencesViewModel?
 ) {
-    val totalPages = 4
+    val totalPages = 3
     val pagerState = rememberPagerState { totalPages }
 
     fun navigateToWelcomeScreen() {
-        preferencesViewModel.saveShowTutorial(false)
-        navHostController.navigate(NavigateDestinations.WELCOME_SCREEN)
+        preferencesViewModel?.saveShowTutorial(false)
+        navHostController?.navigate(NavigateDestinations.WELCOME_SCREEN)
     }
 
 
@@ -106,7 +105,6 @@ fun TutorialScreen(
                 1 -> Page1()
                 2 -> Page2()
                 3 -> Page3()
-                4 -> Page4()
                 else -> Page1() // Default fallback
             }
         }
@@ -275,8 +273,7 @@ fun Page2() {
 
         val bullet = "\u2022"
         val messages = listOf(
-            "Veure biblioteques de la província de Barcelona",
-            "Filtrar biblioteques per Obert/Tancat, nom de la biblioteca o municipi",
+            "Veure biblioteques y filtrar de la província de Barcelona",
             "Consulta informació sobre una biblioteca, com ara horari o ubicació",
             "Cerca llibres i altres recursos a Aladí amb una interfície d'usuari bonica",
         )
@@ -287,6 +284,7 @@ fun Page2() {
                 modifier = Modifier.fillMaxWidth(),
                 text = "$bullet\t $it",
                 textAlign = TextAlign.Justify,
+                style = Typography.bodyLarge
             )
         }
 
@@ -307,42 +305,11 @@ fun Page3() {
         )
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = "Aquesta app no és oficial de la Diputació de Barcelona"
+            text = "Aquesta és una app de codi obert, no és oficial de la Diputació de Barcelona"
         )
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = "Aquesta aplicació és de codi obert, podeu consultar el codi aquí"
-        )
-
-        Card(
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.errorContainer,
-            ),
-        ) {
-            Column(
-                modifier = Modifier
-                    .padding(10.dp)
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    Icon(Icons.Outlined.Warning, contentDescription = "")
-                    Text(
-                        text = "Important"
-                    )
-                }
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Justify,
-                    text = "Aquesta app no té en compte els dies festius, per la qual cosa pot que de vegades aparegui una biblioteca com oberta però no ho estigui."
-                )
-            }
-        }
 
         TextIconButton(
-            text = "Github",
+            text = "Codí font",
             onClick = {
                 val intent =
                     Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/tekofx/Biblioteques"))
@@ -354,32 +321,31 @@ fun Page3() {
     }
 }
 
+
+
+
+@Preview
 @Composable
-fun Page4() {
-    var show by remember { mutableStateOf(false) }
-    ColumnContainer {
-        Text(
-            text = "Permisos",
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            style = Typography.headlineLarge,
-        )
-
-        Text("Aquesta aplicació necessitarà accés a la ubicació si voleu trobar biblioteques a prop vostre")
-        TextIconButton(
-            text = "Mostra la finestra emergent de permisos",
-            startIcon = IconResource.fromImageVector(Icons.Outlined.LocationOn),
-            onClick = { show = !show }
-        )
-
-        if (show) {
-            RequestLocationPermissionUsingRememberLauncherForActivityResult(
-                onPermissionGranted = {},
-                onPermissionDenied = {}
-            )
-        }
+fun Page1Preview() {
+    Surface {
+        Page1()
     }
 }
 
 
+@Preview
+@Composable
+fun Page2Preview() {
+    Surface {
+        Page2()
+    }
+}
+
+@Preview
+@Composable
+fun Page3Preview() {
+    Surface {
+        Page3()
+    }
+}
 
