@@ -13,8 +13,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import dev.tekofx.biblioteques.ui.screens.LoadingScreen
 import dev.tekofx.biblioteques.ui.screens.MapScreen
-import dev.tekofx.biblioteques.ui.screens.TutorialScreen
 import dev.tekofx.biblioteques.ui.screens.WelcomeScreen
 import dev.tekofx.biblioteques.ui.screens.book.BookResultsScreen
 import dev.tekofx.biblioteques.ui.screens.book.BookScreen
@@ -39,23 +39,23 @@ fun Navigation(
     NavHost(
         navController = navHostController,
         //startDestination = if (preferences.showTutorial) NavigateDestinations.TUTORIAL_SCREEN else NavigateDestinations.TUTORIAL_SCREEN,
-        startDestination = if (preferences.showTutorial) NavigateDestinations.TUTORIAL_SCREEN else NavigateDestinations.WELCOME_SCREEN
+        startDestination = if (preferences.showWelcomeScreen) NavigateDestinations.WELCOME_SCREEN else NavigateDestinations.LOADING_SCREEN
     ) {
 
         // Tutorial
         composable(
-            route = NavigateDestinations.TUTORIAL_SCREEN,
+            route = NavigateDestinations.WELCOME_SCREEN,
             exitTransition = { fadeOut() }
         ) {
-            TutorialScreen(navHostController, preferencesViewModel)
+            WelcomeScreen(navHostController, preferencesViewModel)
         }
 
         // Welcome
         composable(
-            route = NavigateDestinations.WELCOME_SCREEN,
+            route = NavigateDestinations.LOADING_SCREEN,
             exitTransition = { fadeOut() }
         ) {
-            WelcomeScreen(navHostController, libraryViewModel)
+            LoadingScreen(navHostController, libraryViewModel)
         }
 
         // Libraries

@@ -25,7 +25,7 @@ sealed class BottomNavigationItems(
     object Tutorial : BottomNavigationItems(
         IconResource.fromDrawableResource(R.drawable.ic_notifications_black_24dp),
         "Tutorial",
-        NavigateDestinations.TUTORIAL_SCREEN
+        NavigateDestinations.WELCOME_SCREEN
     )
 
 

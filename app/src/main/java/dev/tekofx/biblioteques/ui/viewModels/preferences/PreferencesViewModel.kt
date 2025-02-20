@@ -10,13 +10,13 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 data class UiState(
-    val showTutorial: Boolean
+    val showWelcomeScreen: Boolean
 )
 
 class PreferencesViewModel(private val repository: PreferencesRepository) : ViewModel() {
     val uiState: StateFlow<UiState> =
-        repository.currentShowTutorial.map { showTutorial ->
-            UiState(showTutorial)
+        repository.currentShowTutorial.map { showWelcomeScreen ->
+            UiState(showWelcomeScreen)
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -25,7 +25,7 @@ class PreferencesViewModel(private val repository: PreferencesRepository) : View
 
     fun saveShowTutorial(value: Boolean) {
         viewModelScope.launch {
-            repository.saveShowTutorial(value)
+            repository.saveShowWelcomeScreen(value)
         }
     }
 }
