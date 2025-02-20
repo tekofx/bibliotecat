@@ -2,6 +2,7 @@ package dev.tekofx.biblioteques.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.outlined.Settings
 import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.ui.IconResource
 
@@ -22,10 +23,10 @@ sealed class BottomNavigationItems(
         NavigateDestinations.BOOK_SEARCH_ROUTE
     )
 
-    object Tutorial : BottomNavigationItems(
-        IconResource.fromDrawableResource(R.drawable.ic_notifications_black_24dp),
-        "Tutorial",
-        NavigateDestinations.WELCOME_SCREEN
+    object Settings : BottomNavigationItems(
+        IconResource.fromImageVector(Icons.Outlined.Settings),
+        "Settings",
+        NavigateDestinations.SETTINGS_ROUTE
     )
 
 

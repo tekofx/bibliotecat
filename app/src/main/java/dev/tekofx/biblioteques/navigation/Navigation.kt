@@ -15,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import dev.tekofx.biblioteques.ui.screens.LoadingScreen
 import dev.tekofx.biblioteques.ui.screens.MapScreen
+import dev.tekofx.biblioteques.ui.screens.SettingsScreen
 import dev.tekofx.biblioteques.ui.screens.WelcomeScreen
 import dev.tekofx.biblioteques.ui.screens.book.BookResultsScreen
 import dev.tekofx.biblioteques.ui.screens.book.BookScreen
@@ -167,6 +168,15 @@ fun Navigation(
         { backStackEntry ->
             val pointId = backStackEntry.arguments!!.getString("pointId")!!
             MapScreen(pointId, libraryViewModel)
+        }
+
+        composable(
+            route = NavigateDestinations.SETTINGS_ROUTE,
+            enterTransition = ::slideInToLeft,
+            exitTransition = ::slideOutToBottom,
+        )
+        {
+            SettingsScreen()
         }
 
     }
