@@ -20,10 +20,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
@@ -33,14 +32,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.Check
-import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -61,11 +58,9 @@ import androidx.navigation.NavHostController
 import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.IconResource
-import dev.tekofx.biblioteques.ui.components.ColumnContainer
 import dev.tekofx.biblioteques.ui.components.input.TextIconButton
 import dev.tekofx.biblioteques.ui.theme.Typography
 import dev.tekofx.biblioteques.ui.viewModels.preferences.PreferencesViewModel
-import dev.tekofx.biblioteques.utils.RequestLocationPermissionUsingRememberLauncherForActivityResult
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -73,7 +68,7 @@ fun TutorialScreen(
     navHostController: NavHostController,
     preferencesViewModel: PreferencesViewModel
 ) {
-    val totalPages = 3
+    val totalPages = 4
     val pagerState = rememberPagerState { totalPages }
 
     fun navigateToWelcomeScreen() {
@@ -82,19 +77,15 @@ fun TutorialScreen(
     }
 
 
-    Column {
-        Row(
+    Column(
+        modifier = Modifier.padding(vertical = 50.dp)
+    ) {
+        Text(
+            text = "Benvingut a ${stringResource(R.string.app_name)}",
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
-        ) {
-
-            TextButton(
-                onClick = { navigateToWelcomeScreen() }
-            ) {
-                Text("Skip")
-            }
-        }
-
+            textAlign = TextAlign.Center,
+            style = Typography.headlineLarge,
+        )
         HorizontalPager(
             state = pagerState,
             modifier = Modifier
@@ -105,6 +96,7 @@ fun TutorialScreen(
                 1 -> Page1()
                 2 -> Page2()
                 3 -> Page3()
+                4 -> Page4()
                 else -> Page1() // Default fallback
             }
         }
@@ -120,7 +112,23 @@ fun TutorialScreen(
                 onFinishClicked = ::navigateToWelcomeScreen,
             )
         }
-        Spacer(modifier = Modifier.height(20.dp))
+    }
+}
+
+@Composable
+fun Base(
+    page: @Composable () -> Unit
+) {
+    Column(
+        modifier = Modifier.padding(vertical = 50.dp)
+    ) {
+        Text(
+            text = "Benvingut a ${stringResource(R.string.app_name)}",
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center,
+            style = Typography.headlineLarge,
+        )
+        page()
     }
 }
 
@@ -244,14 +252,13 @@ fun Dot(isSelected: Boolean) {
 
 @Composable
 fun Page1() {
-    ColumnContainer {
-        Text(
-            text = "Benvingut a ${stringResource(R.string.app_name)}",
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            style = Typography.headlineLarge,
-        )
-
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 20.dp, vertical = 50.dp),
+        verticalArrangement = Arrangement.SpaceEvenly,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Image(
             painter = painterResource(R.drawable.ic_launcher_foreground),
             modifier = Modifier.size(300.dp),
@@ -263,72 +270,108 @@ fun Page1() {
 
 @Composable
 fun Page2() {
-    ColumnContainer {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 20.dp, vertical = 50.dp),
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+
         Text(
-            text = "Característiques",
             modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            style = Typography.headlineLarge,
+            text = "${stringResource(R.string.app_name)} us ajudarà a trobar biblioteques de la Xarxa de Biblioteques Municipals de la Diputació de Barcelona",
+            textAlign = TextAlign.Justify,
+            style = Typography.titleMedium
         )
 
-        val bullet = "\u2022"
-        val messages = listOf(
-            "Veure biblioteques y filtrar de la província de Barcelona",
-            "Consulta informació sobre una biblioteca, com ara horari o ubicació",
-            "Cerca llibres i altres recursos a Aladí amb una interfície d'usuari bonica",
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = "També podràs veure informació de les biblioteques, com ara el seu horari",
+            textAlign = TextAlign.Justify,
+            style = Typography.titleMedium
         )
 
-
-        messages.forEach {
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = "$bullet\t $it",
-                textAlign = TextAlign.Justify,
-                style = Typography.bodyLarge
-            )
-        }
-
+        Icon(
+            IconResource.fromDrawableResource(R.drawable.local_library)
+                .asPainterResource(),
+            contentDescription = "",
+            modifier = Modifier.size(200.dp)
+        )
 
     }
 }
 
 @Composable
 fun Page3() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 20.dp, vertical = 50.dp),
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = "Cerca llibres i altres recursos a Aladí amb una interfície d'usuari bonica",
+            textAlign = TextAlign.Justify,
+            style = Typography.titleMedium
+        )
+        Icon(
+            IconResource.fromDrawableResource(R.drawable.book)
+                .asPainterResource(),
+            contentDescription = "",
+            modifier = Modifier.size(200.dp)
+        )
+    }
+}
+
+@Composable
+fun Page4() {
     val context = LocalContext.current
 
-    ColumnContainer {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 20.dp, vertical = 50.dp),
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Justify,
+                text = "Aquesta és una app de codi obert, el codi és públic i qualsevol pot contribuir al seu desenvolupament",
+                style = Typography.titleMedium
+            )
+
+
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = "Sobre aquesta aplicació",
-            textAlign = TextAlign.Center,
-            style = Typography.headlineLarge
-        )
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = "Aquesta és una app de codi obert, no és oficial de la Diputació de Barcelona"
+            text = "No és una app oficial de la Diputació de Barcelona",
+            style = Typography.titleMedium
         )
 
-        TextIconButton(
-            text = "Codí font",
-            onClick = {
-                val intent =
-                    Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/tekofx/Biblioteques"))
-                context.startActivity(intent)
-            },
-            startIcon = IconResource.fromDrawableResource(R.drawable.github_mark)
+        Icon(
+            IconResource.fromDrawableResource(R.drawable.book)
+                .asPainterResource(),
+            contentDescription = "",
+            modifier = Modifier.size(200.dp)
         )
 
     }
 }
 
 
-
-
 @Preview
 @Composable
 fun Page1Preview() {
     Surface {
-        Page1()
+        Base {
+            Page1()
+
+        }
     }
 }
 
@@ -337,7 +380,10 @@ fun Page1Preview() {
 @Composable
 fun Page2Preview() {
     Surface {
-        Page2()
+        Base {
+            Page2()
+
+        }
     }
 }
 
@@ -345,7 +391,19 @@ fun Page2Preview() {
 @Composable
 fun Page3Preview() {
     Surface {
-        Page3()
+        Base {
+            Page3()
+        }
+    }
+}
+
+@Preview
+@Composable
+fun Page4Preview() {
+    Surface {
+        Base {
+            Page4()
+        }
     }
 }
 
