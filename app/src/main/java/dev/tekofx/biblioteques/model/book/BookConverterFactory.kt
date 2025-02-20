@@ -7,6 +7,7 @@ import com.fleeksoft.ksoup.nodes.Element
 import com.fleeksoft.ksoup.select.Elements
 import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.dto.BookResponse
+import dev.tekofx.biblioteques.exceptions.NotFound
 import dev.tekofx.biblioteques.model.result.BookResult
 import dev.tekofx.biblioteques.model.result.BookResults
 import dev.tekofx.biblioteques.model.result.GeneralResult
@@ -59,7 +60,7 @@ class BookConverterFactory : Converter.Factory() {
 
                 notResultsH2Element != null -> {
                     Log.d("BookConverterFactory", "Not results")
-                    BookResponse()
+                    throw NotFound()
                 }
 
                 browseHeaderEntriesElement != null -> {
@@ -127,7 +128,7 @@ class BookConverterFactory : Converter.Factory() {
 
                 else -> {
                     Log.d("BookConverterFactory", "Else case")
-                    throw Error()
+                    throw NotFound()
                 }
             }
 
