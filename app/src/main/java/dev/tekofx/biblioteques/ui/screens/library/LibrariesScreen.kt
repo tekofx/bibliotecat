@@ -12,13 +12,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Badge
@@ -35,9 +32,13 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -65,6 +66,8 @@ fun LibrariesScreen(
     navHostController: NavHostController,
     libraryViewModel: LibraryViewModel
 ) {
+    // State to track if AutoCompleteSelectBar is focused
+    val isAutoCompleteFocused = remember { mutableStateOf(false) }
 
     // Data
     val municipalities by libraryViewModel.municipalities.collectAsState()
@@ -87,13 +90,21 @@ fun LibrariesScreen(
     val scaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberStandardBottomSheetState(
             initialValue = SheetValue.Hidden,
-            skipHiddenState = false
+            skipHiddenState = false,
         )
     )
+    val focusManager = LocalFocusManager.current
+
+    // LaunchedEffect to run code when sheetContent is hidden
+    LaunchedEffect(scaffoldState.bottomSheetState.currentValue) {
+        if (scaffoldState.bottomSheetState.currentValue == SheetValue.PartiallyExpanded) {
+            focusManager.clearFocus()
+        }
+    }
 
     BottomSheetScaffold(
-        modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
         scaffoldState = scaffoldState,
+        sheetPeekHeight = 0.dp,
         sheetContent = {
             SearchBottomSheet(
                 municipalities = municipalities,
@@ -105,9 +116,11 @@ fun LibrariesScreen(
                 onSelectedMunicipality = libraryViewModel::onMunicipalityChanged,
                 onTextFieldChange = libraryViewModel::onSearchTextChanged,
                 onClearFilters = libraryViewModel::clearFilters,
-                onClose = { scope.launch { scaffoldState.bottomSheetState.hide() } }
+                onClose = { scope.launch { scaffoldState.bottomSheetState.hide() } },
+                isAutoCompleteFocused = isAutoCompleteFocused
             )
-        }
+        },
+        sheetSwipeEnabled = !isAutoCompleteFocused.value
     ) {
         Scaffold(
             modifier = Modifier.padding(horizontal = 5.dp),
@@ -151,11 +164,11 @@ fun SearchBottomSheet(
     onSelectedMunicipality: (String) -> Unit,
     onTextFieldChange: (text: String) -> Unit,
     onClearFilters: () -> Unit,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    isAutoCompleteFocused: MutableState<Boolean>
 
 ) {
     val focusManager = LocalFocusManager.current
-
 
     Column(
         modifier = Modifier.padding(10.dp),
@@ -172,6 +185,10 @@ fun SearchBottomSheet(
             entries = municipalities,
             onSelectedEntry = onSelectedMunicipality,
             selectedEntry = selectedMunicipality,
+            onFocusChange = { isFocused: Boolean ->
+                isAutoCompleteFocused.value = isFocused
+            }
+
         )
         SurfaceSwitch(
             value = showOnlyOpen,
@@ -193,7 +210,9 @@ fun SearchBottomSheet(
             TextIconButton(
                 text = "Tanca",
                 startIcon = IconResource.fromImageVector(Icons.Outlined.Close),
-                onClick = { onClose() }
+                onClick = {
+                    onClose()
+                }
             )
             AnimatedVisibility(
                 visible = filtersApplied,

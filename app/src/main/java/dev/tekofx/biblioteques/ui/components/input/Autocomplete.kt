@@ -40,8 +40,8 @@ fun AutoCompleteSelectBar(
     selectedEntry: String,
     onSelectedEntry: (String) -> Unit,
     entries: List<String>,
+    onFocusChange: (Boolean) -> Unit
 ) {
-
     val heightTextFields by remember { mutableStateOf(55.dp) }
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
     var expanded by remember { mutableStateOf(false) }
@@ -68,6 +68,7 @@ fun AutoCompleteSelectBar(
             onValueChange = {
                 onSelectedEntry(it)
                 expanded = true
+                onFocusChange(true)
             },
             interactionSource = remember { MutableInteractionSource() }
                 .also { interactionSource ->
@@ -75,6 +76,7 @@ fun AutoCompleteSelectBar(
                         interactionSource.interactions.collect { interaction ->
                             if (interaction is PressInteraction.Release) {
                                 expanded = !expanded
+                                onFocusChange(expanded)
                             }
                         }
                     }
@@ -87,6 +89,7 @@ fun AutoCompleteSelectBar(
                             .size(24.dp)
                             .clickable {
                                 onSelectedEntry("")
+                                onFocusChange(false)
                             },
                         imageVector = Icons.Rounded.Clear,
                         contentDescription = "clear",
@@ -130,6 +133,7 @@ fun AutoCompleteSelectBar(
                         ItemElement(title = it) { title ->
                             onSelectedEntry(title)
                             expanded = false
+                            onFocusChange(false)
                         }
                     }
                 }
