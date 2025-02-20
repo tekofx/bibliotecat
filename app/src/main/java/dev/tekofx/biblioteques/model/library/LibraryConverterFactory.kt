@@ -14,12 +14,10 @@ import java.lang.reflect.Type
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 
 
 class LibraryConverterFactory : Converter.Factory() {
 
-    private val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("[H:mm][HH:mm]")
 
     override fun responseBodyConverter(
         type: Type, annotations: Array<Annotation>, retrofit: Retrofit
@@ -96,7 +94,7 @@ class LibraryConverterFactory : Converter.Factory() {
                     webUrl = webUrl,
                     location = listOf(latitude, longitude),
                     image = image,
-                    timetable = timetable,
+                    timetable = null,
                     postalCode = postalCode
                 )
                 libraryList.add(library)

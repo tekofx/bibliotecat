@@ -48,8 +48,11 @@ import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.model.library.Library
 import dev.tekofx.biblioteques.model.library.Season
 import dev.tekofx.biblioteques.model.library.SeasonTimeTable
+import dev.tekofx.biblioteques.model.library.Timetable
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.Accordion
+import dev.tekofx.biblioteques.ui.components.Alert
+import dev.tekofx.biblioteques.ui.components.AlertType
 import dev.tekofx.biblioteques.ui.components.InfoIntentCard
 import dev.tekofx.biblioteques.ui.components.Loader
 import dev.tekofx.biblioteques.ui.components.SmallMap
@@ -138,7 +141,7 @@ fun LibraryScreen(
                     TabRowComponent(
                         tabEntries = tabEntries,
                         contentScreens = listOf(
-                            { LibraryTimetable(library) },
+                            { LibraryTimetable(library.timetable) },
                             {
                                 LibraryLocation(library, onMapClick = {
                                     //navHostController.navigate(NavigateDestinations.MAP_ROUTE + "?pointId=$pointID")
@@ -163,7 +166,7 @@ fun LibraryScreen(
 
 @Composable
 fun LibraryTimetable(
-    library: Library
+    timetable: Timetable?
 
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
@@ -171,63 +174,65 @@ fun LibraryTimetable(
     val summerIcon = IconResource.fromDrawableResource(R.drawable.sunny).asPainterResource()
     val winterIcon = IconResource.fromDrawableResource(R.drawable.ac_unit).asPainterResource()
 
-    Column(
-        modifier = Modifier
-            .fillMaxHeight()
-            .verticalScroll(scrollState),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+    timetable?.let {
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .verticalScroll(scrollState),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
 
-        ) {
+            ) {
 
-        SegmentedButtons {
-            SegmentedButtonItem(
-                selected = selectedTabIndex == 0,
-                onClick = { selectedTabIndex = 0 },
-                label = {
-                    Text(
-                        text = "Horari ${
-                            library.timetable.getSeasonTimetableOfDate(
-                                LocalDate.now()
-                            ).season.translation
-                        }"
-                    )
-                },
-                icon = {
-                    if (library.timetable.getSeasonTimetableOfDate(LocalDate.now()).season == Season.SUMMER) Icon(
-                        painter = summerIcon,
-                        contentDescription = "Summer"
-                    ) else Icon(painter = winterIcon, contentDescription = "Winter")
+            SegmentedButtons {
+                SegmentedButtonItem(
+                    selected = selectedTabIndex == 0,
+                    onClick = { selectedTabIndex = 0 },
+                    label = {
+                        Text(
+                            text = "Horari ${
+                                timetable.getSeasonTimetableOfDate(
+                                    LocalDate.now()
+                                ).season.translation
+                            }"
+                        )
+                    },
+                    icon = {
+                        if (timetable.getSeasonTimetableOfDate(LocalDate.now()).season == Season.SUMMER) Icon(
+                            painter = summerIcon,
+                            contentDescription = "Summer"
+                        ) else Icon(painter = winterIcon, contentDescription = "Winter")
+                    }
+                )
+                SegmentedButtonItem(
+                    selected = selectedTabIndex == 1,
+                    onClick = { selectedTabIndex = 1 },
+                    label = {
+                        Text(
+                            text = "Horari ${
+                                timetable.getNextSeasonTimetableOfDate(
+                                    LocalDate.now()
+                                ).season.translation
+                            }"
+                        )
+                    },
+                    icon = {
+                        if (timetable.getNextSeasonTimetableOfDate(LocalDate.now()).season == Season.SUMMER) Icon(
+                            painter = summerIcon,
+                            contentDescription = "Summer"
+                        ) else Icon(painter = winterIcon, contentDescription = "Winter")
+                    }
+
+                )
+
+            }
+            when (selectedTabIndex) {
+                0 -> LibraryTimeTable(timetable.getSeasonTimetableOfDate(LocalDate.now()))
+                1 -> {
+                    LibraryTimeTable(timetable.getNextSeasonTimetableOfDate(LocalDate.now()))
                 }
-            )
-            SegmentedButtonItem(
-                selected = selectedTabIndex == 1,
-                onClick = { selectedTabIndex = 1 },
-                label = {
-                    Text(
-                        text = "Horari ${
-                            library.timetable.getNextSeasonTimetableOfDate(
-                                LocalDate.now()
-                            ).season.translation
-                        }"
-                    )
-                },
-                icon = {
-                    if (library.timetable.getNextSeasonTimetableOfDate(LocalDate.now()).season == Season.SUMMER) Icon(
-                        painter = summerIcon,
-                        contentDescription = "Summer"
-                    ) else Icon(painter = winterIcon, contentDescription = "Winter")
-                }
-
-            )
-
-        }
-        when (selectedTabIndex) {
-            0 -> LibraryTimeTable(library.timetable.getSeasonTimetableOfDate(LocalDate.now()))
-            1 -> {
-                LibraryTimeTable(library.timetable.getNextSeasonTimetableOfDate(LocalDate.now()))
             }
         }
-    }
+    } ?: Alert("No timetable", alertType = AlertType.INFO, modifier = Modifier.fillMaxWidth())
 }
 
 @Composable
