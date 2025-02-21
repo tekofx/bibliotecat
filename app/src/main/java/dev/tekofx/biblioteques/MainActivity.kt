@@ -16,8 +16,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -28,6 +30,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,7 +56,9 @@ import dev.tekofx.biblioteques.repository.BookRepository
 import dev.tekofx.biblioteques.repository.HolidayRepository
 import dev.tekofx.biblioteques.repository.LibraryRepository
 import dev.tekofx.biblioteques.repository.PreferencesRepository
+import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.BottomNavigationBar
+import dev.tekofx.biblioteques.ui.components.input.TextIconButton
 import dev.tekofx.biblioteques.ui.theme.MyApplicationTheme
 import dev.tekofx.biblioteques.ui.viewModels.book.BookViewModel
 import dev.tekofx.biblioteques.ui.viewModels.book.BookViewModelFactory
@@ -61,6 +66,7 @@ import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModel
 import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModelFactory
 import dev.tekofx.biblioteques.ui.viewModels.preferences.PreferencesViewModel
 import dev.tekofx.biblioteques.ui.viewModels.preferences.PreferencesViewModelFactory
+import kotlinx.coroutines.launch
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
     name = "setting"
@@ -125,13 +131,24 @@ fun SettingsInfoModalSheet(
     onClose: () -> Unit,
     navController: NavHostController
 ) {
+
+    val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
+
+    fun close() {
+        scope.launch { sheetState.hide() }.invokeOnCompletion {
+            if (!sheetState.isVisible) {
+                onClose()
+            }
+        }
+    }
+
     if (show) {
         ModalBottomSheet(
             onDismissRequest = {
-                onClose()
+                close()
             },
             sheetState = sheetState,
         ) {
@@ -142,23 +159,33 @@ fun SettingsInfoModalSheet(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Button(
+                FilledTonalButton(
+                    modifier = Modifier.fillMaxWidth(),
                     onClick = {
                         navController.navigate(NavigateDestinations.SETTINGS_ROUTE)
-                        onClose()
+                        close()
                     }
                 ) {
                     Text("Settings")
                 }
-                Button(onClick = {}) {
+                FilledTonalButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {}
+                ) {
                     Text("Info")
                 }
+                TextIconButton(
+                    text = "Tanca",
+                    startIcon = IconResource.fromImageVector(Icons.Outlined.Close),
+                    onClick = { close() }
+                )
+
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun MainScreen(
     libraryViewModel: LibraryViewModel,
