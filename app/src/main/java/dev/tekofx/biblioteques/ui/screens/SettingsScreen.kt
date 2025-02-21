@@ -40,61 +40,66 @@ fun SettingsScreen() {
                 }
             )
         },
-        content = { innerPadding ->
-            Column(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .padding(horizontal = 10.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(horizontal = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
 
 
-                Text("App Setttings", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary)
-                SurfaceSwitch(
-                    value = false,
-                    title = "Material Theme",
-                    onValueChange = {},
-                    iconResource = IconResource.fromImageVector(Icons.Outlined.Create)
-                )
-                SurfaceSwitch(
-                    value = false,
-                    title = "Loading Screen",
-                    description = "Show the loading screen at startup",
-                    onValueChange = {},
-                    iconResource = IconResource.fromImageVector(Icons.Outlined.Refresh)
-                )
+            Text(
+                "App Setttings",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.primary
+            )
+            SurfaceSwitch(
+                value = false,
+                title = "Material Theme",
+                onValueChange = {},
+                iconResource = IconResource.fromImageVector(Icons.Outlined.Create)
+            )
+            SurfaceSwitch(
+                value = false,
+                title = "Loading Screen",
+                description = "Show the loading screen at startup",
+                onValueChange = {},
+                iconResource = IconResource.fromImageVector(Icons.Outlined.Refresh)
+            )
 
-                Text("About", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary)
+            Text(
+                "About",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.primary
+            )
 
-                Section(
-                    title = "Version",
-                    description = "Version 1.0.0",
-                    iconResource = IconResource.fromImageVector(Icons.Outlined.Info)
-                )
+            Section(
+                title = "Version",
+                description = "Version 1.0.0",
+                iconResource = IconResource.fromImageVector(Icons.Outlined.Info)
+            )
 
-                Section(
-                    title = "Changelog",
-                    description = "Check the changes in the app",
-                    iconResource = IconResource.fromDrawableResource(R.drawable.history)
-                )
+            Section(
+                title = "Changelog",
+                description = "Check the changes in the app",
+                iconResource = IconResource.fromDrawableResource(R.drawable.history)
+            )
 
-                Section(
-                    title = "Source Code",
-                    description = "Check on Github",
-                    iconResource = IconResource.fromDrawableResource(R.drawable.data_object)
-                )
+            Section(
+                title = "Source Code",
+                description = "Check on Github",
+                iconResource = IconResource.fromDrawableResource(R.drawable.data_object)
+            )
 
-                Section(
-                    title = "Licenses",
-                    description = "Used in the code of this app",
-                    iconResource = IconResource.fromDrawableResource(R.drawable.licence)
-                )
-
-            }
+            Section(
+                title = "Licenses",
+                description = "Used in the code of this app",
+                iconResource = IconResource.fromDrawableResource(R.drawable.licence)
+            )
         }
-    )
+    }
 }
-
 
 
 @Composable
