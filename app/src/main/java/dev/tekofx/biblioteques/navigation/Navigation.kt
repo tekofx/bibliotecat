@@ -175,8 +175,8 @@ fun Navigation(
 
         composable(
             route = NavigateDestinations.SETTINGS_ROUTE,
-            enterTransition = ::slideInToLeft,
-            exitTransition = ::slideOutToBottom,
+            enterTransition = ::slideInToTop,
+            exitTransition = ::slideOutToBottom
         )
         {
             SettingsScreen()
@@ -184,8 +184,8 @@ fun Navigation(
 
         composable(
             route = NavigateDestinations.ABOUT_ROUTE,
-            enterTransition = ::slideInToLeft,
-            exitTransition = ::slideOutToBottom,
+            enterTransition = ::slideInToTop,
+            exitTransition = ::slideOutToBottom
         )
         {
             AboutScreen()
