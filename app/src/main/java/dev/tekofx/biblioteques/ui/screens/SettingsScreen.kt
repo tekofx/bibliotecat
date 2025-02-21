@@ -48,8 +48,6 @@ fun SettingsScreen() {
                 .padding(horizontal = 10.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-
-
             Text(
                 "App Setttings",
                 style = MaterialTheme.typography.titleLarge,
@@ -68,10 +66,6 @@ fun SettingsScreen() {
                 onValueChange = {},
                 iconResource = IconResource.fromImageVector(Icons.Outlined.Refresh)
             )
-
-
-
-
         }
     }
 }
