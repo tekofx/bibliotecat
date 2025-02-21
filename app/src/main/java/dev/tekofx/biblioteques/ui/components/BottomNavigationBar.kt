@@ -27,7 +27,6 @@ fun BottomNavigationBar(
     val items = listOf(
         BottomNavigationItems.Libraries,
         BottomNavigationItems.Catalog,
-        BottomNavigationItems.Settings
     )
 
     BottomAppBar(
