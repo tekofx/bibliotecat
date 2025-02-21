@@ -10,17 +10,25 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.tekofx.biblioteques.R
+import dev.tekofx.biblioteques.getAppVersion
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.Section
 
 @Composable
 fun AboutScreen() {
+
+    val context = LocalContext.current
+    val version = getAppVersion(context)
+
     Scaffold { padding ->
         Column(
-            modifier = Modifier.padding(padding).padding(10.dp),
+            modifier = Modifier
+                .padding(padding)
+                .padding(10.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Text(
@@ -28,11 +36,13 @@ fun AboutScreen() {
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.primary
             )
-            Section(
-                title = "Version",
-                description = "Version 1.0.0",
-                iconResource = IconResource.fromImageVector(Icons.Outlined.Info)
-            )
+            if (version != null) {
+                Section(
+                    title = "Version",
+                    description = version.versionName,
+                    iconResource = IconResource.fromImageVector(Icons.Outlined.Info)
+                )
+            }
 
             Section(
                 title = "Changelog",
