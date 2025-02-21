@@ -14,7 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.tekofx.biblioteques.R
-import dev.tekofx.biblioteques.getAppVersion
+import dev.tekofx.biblioteques.getAppInfo
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.Section
 
@@ -22,7 +22,7 @@ import dev.tekofx.biblioteques.ui.components.Section
 fun AboutScreen() {
 
     val context = LocalContext.current
-    val version = getAppVersion(context)
+    val version = getAppInfo(context)
 
     Scaffold { padding ->
         Column(

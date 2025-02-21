@@ -5,15 +5,20 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.pm.PackageInfoCompat
 
-data class AppVersion(
+
+data class AppInfo(
     val versionName: String,
     val versionNumber: Long,
+    val appName: String
 )
 
-fun getAppVersion(
+fun getAppInfo(
     context: Context,
-): AppVersion? {
+): AppInfo? {
+
     return try {
+
+        // Get Version
         val packageManager = context.packageManager
         val packageName = context.packageName
         val packageInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -21,10 +26,20 @@ fun getAppVersion(
         } else {
             packageManager.getPackageInfo(packageName, 0)
         }
-        println(packageInfo.versionName)
-        AppVersion(
+
+        // Get Name
+        val applicationInfo = context.applicationInfo
+        val stringId = applicationInfo.labelRes
+        val appName = if (stringId == 0) {
+            applicationInfo.nonLocalizedLabel.toString()
+        } else {
+            context.getString(stringId)
+        }
+
+        AppInfo(
             versionName = packageInfo.versionName,
             versionNumber = PackageInfoCompat.getLongVersionCode(packageInfo),
+            appName = appName
         )
 
 
