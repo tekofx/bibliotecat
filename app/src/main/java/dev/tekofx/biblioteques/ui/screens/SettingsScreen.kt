@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.ui.IconResource
+import dev.tekofx.biblioteques.ui.components.Section
 import dev.tekofx.biblioteques.ui.components.input.SurfaceSwitch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,65 +69,15 @@ fun SettingsScreen() {
                 iconResource = IconResource.fromImageVector(Icons.Outlined.Refresh)
             )
 
-            Text(
-                "About",
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.primary
-            )
 
-            Section(
-                title = "Version",
-                description = "Version 1.0.0",
-                iconResource = IconResource.fromImageVector(Icons.Outlined.Info)
-            )
 
-            Section(
-                title = "Changelog",
-                description = "Check the changes in the app",
-                iconResource = IconResource.fromDrawableResource(R.drawable.history)
-            )
 
-            Section(
-                title = "Source Code",
-                description = "Check on Github",
-                iconResource = IconResource.fromDrawableResource(R.drawable.data_object)
-            )
-
-            Section(
-                title = "Licenses",
-                description = "Used in the code of this app",
-                iconResource = IconResource.fromDrawableResource(R.drawable.licence)
-            )
         }
     }
 }
 
 
-@Composable
-fun Section(title: String, description: String, iconResource: IconResource) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        tonalElevation = 20.dp,
-        shape = MaterialTheme.shapes.extraLarge
-    ) {
-        Row(
-            modifier = Modifier.padding(10.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                painter = iconResource.asPainterResource(),
-                contentDescription = ""
-            )
-            Column(
-                verticalArrangement = Arrangement.spacedBy(5.dp)
-            ) {
-                Text(title, style = MaterialTheme.typography.titleLarge)
-                Text(description)
-            }
-        }
-    }
-}
+
 
 @Preview
 @Composable
