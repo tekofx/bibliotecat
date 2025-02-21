@@ -3,8 +3,11 @@ package dev.tekofx.biblioteques.ui.components
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
@@ -17,7 +20,10 @@ import dev.tekofx.biblioteques.navigation.BottomNavigationItems
 import dev.tekofx.biblioteques.navigation.currentRoute
 
 @Composable
-fun BottomNavigationBar(navHostController: NavHostController) {
+fun BottomNavigationBar(
+    navHostController: NavHostController,
+    onMenuClick: () -> Unit
+) {
     val items = listOf(
         BottomNavigationItems.Libraries,
         BottomNavigationItems.Catalog,
@@ -30,6 +36,12 @@ fun BottomNavigationBar(navHostController: NavHostController) {
             .padding(0.dp)
             .height(60.dp)
     ) {
+        IconButton(onClick = onMenuClick) {
+            Icon(
+                Icons.Outlined.Menu,
+                contentDescription = ""
+            )
+        }
         NavigationBar {
             items.forEach { item ->
                 val selected = currentRoute(navController = navHostController) == item.path
