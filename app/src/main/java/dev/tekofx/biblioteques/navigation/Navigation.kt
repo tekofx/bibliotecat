@@ -13,6 +13,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import dev.tekofx.biblioteques.ui.screens.AboutScreen
 import dev.tekofx.biblioteques.ui.screens.LoadingScreen
 import dev.tekofx.biblioteques.ui.screens.MapScreen
 import dev.tekofx.biblioteques.ui.screens.SettingsScreen
@@ -170,6 +171,8 @@ fun Navigation(
             MapScreen(pointId, libraryViewModel)
         }
 
+        // Settings and About
+
         composable(
             route = NavigateDestinations.SETTINGS_ROUTE,
             enterTransition = ::slideInToLeft,
@@ -177,6 +180,15 @@ fun Navigation(
         )
         {
             SettingsScreen()
+        }
+
+        composable(
+            route = NavigateDestinations.ABOUT_ROUTE,
+            enterTransition = ::slideInToLeft,
+            exitTransition = ::slideOutToBottom,
+        )
+        {
+            AboutScreen()
         }
 
     }

@@ -170,9 +170,12 @@ fun SettingsInfoModalSheet(
                 }
                 FilledTonalButton(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = {}
+                    onClick = {
+                        navController.navigate(NavigateDestinations.ABOUT_ROUTE)
+                        close()
+                    }
                 ) {
-                    Text("Info")
+                    Text("About")
                 }
                 TextIconButton(
                     text = "Tanca",

@@ -10,4 +10,5 @@ object NavigateDestinations {
     const val BOOK_DETAILS_ROUTE = "$BOOK_SEARCH_ROUTE/book"
     const val MAP_ROUTE = "Map"
     const val SETTINGS_ROUTE = "Settings"
+    const val ABOUT_ROUTE = "About"
 }
