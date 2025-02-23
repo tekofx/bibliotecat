@@ -11,4 +11,5 @@ object NavigateDestinations {
     const val MAP_ROUTE = "Map"
     const val SETTINGS_ROUTE = "Settings"
     const val ABOUT_ROUTE = "About"
+    const val LICENSES_ROUTE = "$ABOUT_ROUTE/licenses"
 }

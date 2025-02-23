@@ -13,11 +13,12 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import dev.tekofx.biblioteques.ui.screens.AboutScreen
 import dev.tekofx.biblioteques.ui.screens.LoadingScreen
 import dev.tekofx.biblioteques.ui.screens.MapScreen
 import dev.tekofx.biblioteques.ui.screens.SettingsScreen
 import dev.tekofx.biblioteques.ui.screens.WelcomeScreen
+import dev.tekofx.biblioteques.ui.screens.about.AboutScreen
+import dev.tekofx.biblioteques.ui.screens.about.LicensesScreen
 import dev.tekofx.biblioteques.ui.screens.book.BookResultsScreen
 import dev.tekofx.biblioteques.ui.screens.book.BookScreen
 import dev.tekofx.biblioteques.ui.screens.book.BookSearchScreen
@@ -171,7 +172,7 @@ fun Navigation(
             MapScreen(pointId, libraryViewModel)
         }
 
-        // Settings and About
+        // Settings
 
         composable(
             route = NavigateDestinations.SETTINGS_ROUTE,
@@ -182,13 +183,24 @@ fun Navigation(
             SettingsScreen()
         }
 
+        // About
+
         composable(
             route = NavigateDestinations.ABOUT_ROUTE,
             enterTransition = ::slideInToTop,
             exitTransition = ::slideOutToBottom
         )
         {
-            AboutScreen()
+            AboutScreen(navHostController)
+        }
+
+        composable(
+            route = NavigateDestinations.LICENSES_ROUTE,
+            enterTransition = ::slideInToTop,
+            exitTransition = ::slideOutToBottom
+        )
+        {
+            LicensesScreen()
         }
 
     }

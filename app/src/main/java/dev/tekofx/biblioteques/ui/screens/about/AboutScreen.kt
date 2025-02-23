@@ -1,4 +1,4 @@
-package dev.tekofx.biblioteques.ui.screens
+package dev.tekofx.biblioteques.ui.screens.about
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,13 +13,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.getAppInfo
+import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.Section
 
 @Composable
-fun AboutScreen() {
+fun AboutScreen(navHostController: NavHostController) {
 
     val context = LocalContext.current
     val version = getAppInfo(context)
@@ -63,6 +66,7 @@ fun AboutScreen() {
                 description = "Used in the code of this app",
                 leftIcon = IconResource.fromDrawableResource(R.drawable.licence),
                 rightIcon = IconResource.fromDrawableResource(R.drawable.open_in_new),
+                onClick = { navHostController.navigate(NavigateDestinations.LICENSES_ROUTE) }
             )
         }
     }
@@ -71,5 +75,5 @@ fun AboutScreen() {
 @Preview
 @Composable
 fun AboutScreenPreview() {
-    AboutScreen()
+    AboutScreen(rememberNavController())
 }

@@ -25,12 +25,14 @@ fun Section(
     title: String,
     description: String,
     leftIcon: IconResource?,
-    rightIcon: IconResource? = null
+    rightIcon: IconResource? = null,
+    onClick: (() -> Unit)? = null,
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         tonalElevation = 20.dp,
-        shape = MaterialTheme.shapes.extraLarge
+        shape = MaterialTheme.shapes.extraLarge,
+        onClick = { onClick?.invoke() }
     ) {
         Row(
             modifier = Modifier
@@ -76,6 +78,7 @@ fun SectionPreview() {
         "Title",
         "Description",
         leftIcon = IconResource.fromImageVector(Icons.Outlined.AccountCircle),
-        rightIcon = IconResource.fromImageVector(Icons.Outlined.PlayArrow)
+        rightIcon = IconResource.fromImageVector(Icons.Outlined.PlayArrow),
+        onClick = {}
     )
 }
