@@ -1,7 +1,6 @@
 package dev.tekofx.biblioteques
 
 import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -31,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,9 +43,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -59,7 +56,6 @@ import dev.tekofx.biblioteques.navigation.showBottomAppBar
 import dev.tekofx.biblioteques.repository.BookRepository
 import dev.tekofx.biblioteques.repository.HolidayRepository
 import dev.tekofx.biblioteques.repository.LibraryRepository
-import dev.tekofx.biblioteques.repository.PreferencesRepository
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.BottomNavigationBar
 import dev.tekofx.biblioteques.ui.components.input.TextIconButton
@@ -68,13 +64,10 @@ import dev.tekofx.biblioteques.ui.viewModels.book.BookViewModel
 import dev.tekofx.biblioteques.ui.viewModels.book.BookViewModelFactory
 import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModel
 import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModelFactory
+import dev.tekofx.biblioteques.ui.viewModels.preferences.Preferences
 import dev.tekofx.biblioteques.ui.viewModels.preferences.PreferencesViewModel
 import dev.tekofx.biblioteques.ui.viewModels.preferences.PreferencesViewModelFactory
 import kotlinx.coroutines.launch
-
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
-    name = "setting"
-)
 
 class MainActivity : ComponentActivity() {
 
@@ -84,29 +77,32 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         val libraryViewModel = ViewModelProvider(
-            this,
-            LibraryViewModelFactory(
+            this, LibraryViewModelFactory(
                 LibraryRepository(
-                    LibraryService.getInstance(),
-                    HolidayService.getInstance()
-                ),
-                HolidayRepository(HolidayService.getInstance())
+                    LibraryService.getInstance(), HolidayService.getInstance()
+                ), HolidayRepository(HolidayService.getInstance())
             )
         )[LibraryViewModel::class.java]
 
         val bookViewModel = ViewModelProvider(
-            this,
-            BookViewModelFactory(BookRepository(BookService.getInstance()))
+            this, BookViewModelFactory(BookRepository(BookService.getInstance()))
         )[BookViewModel::class.java]
 
         val preferencesViewModel = ViewModelProvider(
-            this,
-            PreferencesViewModelFactory(PreferencesRepository(dataStore))
+            this, PreferencesViewModelFactory(
+                Preferences(
+                    context = this
+                )
+            )
         )[PreferencesViewModel::class.java]
 
         installSplashScreen()
         setContent {
-            MyApplicationTheme {
+            val isDynamicColorEnabled by preferencesViewModel.isDynamicColorEnabled.collectAsState()
+            println(isDynamicColorEnabled)
+            MyApplicationTheme(
+                dynamicColor = isDynamicColorEnabled
+            ) {
                 MainScreen(libraryViewModel, bookViewModel, preferencesViewModel)
                 SetNavigationBarColor()
             }
@@ -131,9 +127,7 @@ fun SetNavigationBarColor() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsInfoModalSheet(
-    show: Boolean,
-    onClose: () -> Unit,
-    navController: NavHostController
+    show: Boolean, onClose: () -> Unit, navController: NavHostController
 ) {
 
     val scope = rememberCoroutineScope()
@@ -163,13 +157,10 @@ fun SettingsInfoModalSheet(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                FilledTonalButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = {
-                        navController.navigate(NavigateDestinations.SETTINGS_ROUTE)
-                        close()
-                    }
-                ) {
+                FilledTonalButton(modifier = Modifier.fillMaxWidth(), onClick = {
+                    navController.navigate(NavigateDestinations.SETTINGS_ROUTE)
+                    close()
+                }) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(10.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -178,13 +169,10 @@ fun SettingsInfoModalSheet(
                         Text("Settings")
                     }
                 }
-                FilledTonalButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = {
-                        navController.navigate(NavigateDestinations.ABOUT_ROUTE)
-                        close()
-                    }
-                ) {
+                FilledTonalButton(modifier = Modifier.fillMaxWidth(), onClick = {
+                    navController.navigate(NavigateDestinations.ABOUT_ROUTE)
+                    close()
+                }) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(10.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -193,11 +181,9 @@ fun SettingsInfoModalSheet(
                         Text("About")
                     }
                 }
-                TextIconButton(
-                    text = "Tanca",
+                TextIconButton(text = "Tanca",
                     startIcon = IconResource.fromImageVector(Icons.Outlined.Close),
-                    onClick = { close() }
-                )
+                    onClick = { close() })
 
             }
         }
@@ -216,23 +202,18 @@ fun MainScreen(
     val currentRoute = navBackStackEntry?.destination?.route
     var showModalSheet by remember { mutableStateOf(false) }
 
-    Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .navigationBarsPadding(),
-        bottomBar = {
-            AnimatedVisibility(
-                enter = slideInVertically(initialOffsetY = { it }),
-                exit = slideOutVertically(targetOffsetY = { it }),
-                visible = showBottomAppBar(currentRoute)
-            ) {
-                BottomNavigationBar(
-                    navHostController = navController,
-                    onMenuClick = { showModalSheet = true }
-                )
-            }
+    Scaffold(modifier = Modifier
+        .fillMaxSize()
+        .navigationBarsPadding(), bottomBar = {
+        AnimatedVisibility(
+            enter = slideInVertically(initialOffsetY = { it }),
+            exit = slideOutVertically(targetOffsetY = { it }),
+            visible = showBottomAppBar(currentRoute)
+        ) {
+            BottomNavigationBar(navHostController = navController,
+                onMenuClick = { showModalSheet = true })
         }
-    ) { padding ->
+    }) { padding ->
         SettingsInfoModalSheet(
             show = showModalSheet,
             onClose = { showModalSheet = false },
@@ -240,8 +221,7 @@ fun MainScreen(
         )
 
         Box(
-            modifier = Modifier
-                .padding(padding)
+            modifier = Modifier.padding(padding)
         ) {
             Navigation(navController, libraryViewModel, bookViewModel, preferencesViewModel)
         }

@@ -1,31 +1,53 @@
 package dev.tekofx.biblioteques.ui.viewModels.preferences
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.tekofx.biblioteques.repository.PreferencesRepository
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-data class UiState(
-    val showWelcomeScreen: Boolean
-)
 
-class PreferencesViewModel(private val repository: PreferencesRepository) : ViewModel() {
-    val uiState: StateFlow<UiState> =
-        repository.currentShowTutorial.map { showWelcomeScreen ->
-            UiState(showWelcomeScreen)
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = UiState(false)
-        )
+class Preferences(context: Context) {
+    private val sharedPreferences: SharedPreferences =
+        context.getSharedPreferences("settings", Context.MODE_PRIVATE)
 
-    fun saveShowTutorial(value: Boolean) {
+
+    fun isDynamicColorEnabled(): Boolean {
+        return sharedPreferences.getBoolean("dynamic_color", true)
+    }
+
+    fun setDynamicColorEnabled(enabled: Boolean) {
+        sharedPreferences.edit().putBoolean("dynamic_color", enabled).apply()
+    }
+
+    fun isShowWelcomeScreen(): Boolean {
+        return sharedPreferences.getBoolean("show_welcome_screen", true)
+    }
+
+    fun setShowWelcomeScreen(enabled: Boolean) {
+        sharedPreferences.edit().putBoolean("show_welcome_screen", enabled).apply()
+    }
+}
+
+class PreferencesViewModel(private val preferences: Preferences) : ViewModel() {
+    private val _isDynamicColorEnabled = MutableStateFlow(preferences.isDynamicColorEnabled())
+    val isDynamicColorEnabled: StateFlow<Boolean> = _isDynamicColorEnabled
+    private val _isShowWelcomeScreen = MutableStateFlow(preferences.isShowWelcomeScreen())
+    val isShowWelcomeScreen: StateFlow<Boolean> = _isShowWelcomeScreen
+
+    fun setDynamicColorEnabled(enabled: Boolean) {
         viewModelScope.launch {
-            repository.saveShowWelcomeScreen(value)
+            preferences.setDynamicColorEnabled(enabled)
+            _isDynamicColorEnabled.value = enabled
+        }
+    }
+
+    fun setShowWelcomeScreen(enabled: Boolean) {
+        viewModelScope.launch {
+            preferences.setShowWelcomeScreen(enabled)
+            _isDynamicColorEnabled.value = enabled
         }
     }
 }

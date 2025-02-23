@@ -37,12 +37,12 @@ fun Navigation(
     preferencesViewModel: PreferencesViewModel
 ) {
 
-    val preferences by preferencesViewModel.uiState.collectAsState()
+    val showWelcome by preferencesViewModel.isShowWelcomeScreen.collectAsState()
 
     NavHost(
         navController = navHostController,
         //startDestination = if (preferences.showTutorial) NavigateDestinations.TUTORIAL_SCREEN else NavigateDestinations.TUTORIAL_SCREEN,
-        startDestination = if (preferences.showWelcomeScreen) NavigateDestinations.WELCOME_SCREEN else NavigateDestinations.LOADING_SCREEN
+        startDestination = if (showWelcome) NavigateDestinations.WELCOME_SCREEN else NavigateDestinations.LOADING_SCREEN
     ) {
 
         // Tutorial
@@ -180,7 +180,7 @@ fun Navigation(
             exitTransition = ::slideOutToBottom
         )
         {
-            SettingsScreen()
+            SettingsScreen(preferencesViewModel)
         }
 
         // About

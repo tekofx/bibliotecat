@@ -69,7 +69,7 @@ fun WelcomeScreen(
     val pagerState = rememberPagerState { totalPages }
 
     fun navigateToWelcomeScreen() {
-        preferencesViewModel.saveShowTutorial(false)
+        preferencesViewModel.setShowWelcomeScreen(false)
         navHostController.navigate(NavigateDestinations.LOADING_SCREEN)
     }
 
