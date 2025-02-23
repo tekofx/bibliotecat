@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -20,27 +21,49 @@ import androidx.compose.ui.unit.dp
 import dev.tekofx.biblioteques.ui.IconResource
 
 @Composable
-fun Section(title: String, description: String, iconResource: IconResource) {
+fun Section(
+    title: String,
+    description: String,
+    leftIcon: IconResource?,
+    rightIcon: IconResource? = null
+) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         tonalElevation = 20.dp,
         shape = MaterialTheme.shapes.extraLarge
     ) {
         Row(
-            modifier = Modifier.padding(vertical = 10.dp, horizontal = 20.dp),
-            horizontalArrangement = Arrangement.spacedBy(20.dp),
+            modifier = Modifier
+                .padding(vertical = 10.dp, horizontal = 20.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                modifier = Modifier.size(30.dp),
-                painter = iconResource.asPainterResource(),
-                contentDescription = ""
-            )
-            Column(
-                verticalArrangement = Arrangement.spacedBy(5.dp)
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(title, style = MaterialTheme.typography.titleLarge)
-                Text(description)
+
+                leftIcon?.let {
+                    Icon(
+                        modifier = Modifier.size(30.dp),
+                        painter = leftIcon.asPainterResource(),
+                        contentDescription = ""
+                    )
+                }
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(5.dp),
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Text(title, style = MaterialTheme.typography.titleLarge)
+                    Text(description)
+                }
+            }
+            rightIcon?.let {
+                Icon(
+                    modifier = Modifier.size(30.dp),
+                    painter = rightIcon.asPainterResource(),
+                    contentDescription = ""
+                )
             }
         }
     }
@@ -52,6 +75,7 @@ fun SectionPreview() {
     Section(
         "Title",
         "Description",
-        IconResource.fromImageVector(Icons.Outlined.AccountCircle)
+        leftIcon = IconResource.fromImageVector(Icons.Outlined.AccountCircle),
+        rightIcon = IconResource.fromImageVector(Icons.Outlined.PlayArrow)
     )
 }

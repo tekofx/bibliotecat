@@ -40,26 +40,29 @@ fun AboutScreen() {
                 Section(
                     title = "Version",
                     description = version.versionName,
-                    iconResource = IconResource.fromImageVector(Icons.Outlined.Info)
+                    leftIcon = IconResource.fromImageVector(Icons.Outlined.Info)
                 )
             }
 
             Section(
                 title = "Changelog",
                 description = "Check the changes in the app",
-                iconResource = IconResource.fromDrawableResource(R.drawable.history)
+                leftIcon = IconResource.fromDrawableResource(R.drawable.history),
+                rightIcon = IconResource.fromDrawableResource(R.drawable.open_in_new),
             )
 
             Section(
                 title = "Source Code",
                 description = "Check on Github",
-                iconResource = IconResource.fromDrawableResource(R.drawable.data_object)
+                leftIcon = IconResource.fromDrawableResource(R.drawable.data_object),
+                rightIcon = IconResource.fromDrawableResource(R.drawable.open_in_new),
             )
 
             Section(
                 title = "Licenses",
                 description = "Used in the code of this app",
-                iconResource = IconResource.fromDrawableResource(R.drawable.licence)
+                leftIcon = IconResource.fromDrawableResource(R.drawable.licence),
+                rightIcon = IconResource.fromDrawableResource(R.drawable.open_in_new),
             )
         }
     }
