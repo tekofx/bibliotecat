@@ -37,10 +37,10 @@ import dev.tekofx.biblioteques.model.search.SearchArgument
 import dev.tekofx.biblioteques.model.search.SearchTypes
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.IconResource
-import dev.tekofx.biblioteques.ui.components.Alert
-import dev.tekofx.biblioteques.ui.components.AlertType
-import dev.tekofx.biblioteques.ui.components.SelectBottomSheet
+import dev.tekofx.biblioteques.ui.components.feedback.Alert
+import dev.tekofx.biblioteques.ui.components.feedback.AlertType
 import dev.tekofx.biblioteques.ui.components.input.SearchBar
+import dev.tekofx.biblioteques.ui.components.input.SelectBottomSheet
 import dev.tekofx.biblioteques.ui.components.input.TextIconButton
 import dev.tekofx.biblioteques.ui.viewModels.book.BookViewModel
 

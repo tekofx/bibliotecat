@@ -51,14 +51,14 @@ import dev.tekofx.biblioteques.model.library.SeasonTimeTable
 import dev.tekofx.biblioteques.model.library.Timetable
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.Accordion
-import dev.tekofx.biblioteques.ui.components.Alert
-import dev.tekofx.biblioteques.ui.components.AlertType
 import dev.tekofx.biblioteques.ui.components.InfoIntentCard
-import dev.tekofx.biblioteques.ui.components.Loader
 import dev.tekofx.biblioteques.ui.components.SmallMap
 import dev.tekofx.biblioteques.ui.components.StatusBadge
 import dev.tekofx.biblioteques.ui.components.TabEntry
 import dev.tekofx.biblioteques.ui.components.TabRowComponent
+import dev.tekofx.biblioteques.ui.components.feedback.Alert
+import dev.tekofx.biblioteques.ui.components.feedback.AlertType
+import dev.tekofx.biblioteques.ui.components.feedback.Loader
 import dev.tekofx.biblioteques.ui.components.input.SegmentedButtonItem
 import dev.tekofx.biblioteques.ui.components.input.SegmentedButtons
 import dev.tekofx.biblioteques.ui.theme.Typography

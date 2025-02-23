@@ -1,4 +1,4 @@
-package dev.tekofx.biblioteques.ui.components
+package dev.tekofx.biblioteques.ui.components.input
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -32,8 +32,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.tekofx.biblioteques.model.search.SearchArgument
 import dev.tekofx.biblioteques.ui.IconResource
-import dev.tekofx.biblioteques.ui.components.input.SearchBar
-import dev.tekofx.biblioteques.ui.components.input.TextIconButton
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

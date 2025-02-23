@@ -1,4 +1,4 @@
-package dev.tekofx.biblioteques.ui.components
+package dev.tekofx.biblioteques.ui.components.feedback
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

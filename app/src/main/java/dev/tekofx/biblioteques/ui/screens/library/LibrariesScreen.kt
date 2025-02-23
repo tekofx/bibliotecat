@@ -48,9 +48,9 @@ import androidx.navigation.NavHostController
 import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.IconResource
-import dev.tekofx.biblioteques.ui.components.Alert
-import dev.tekofx.biblioteques.ui.components.AlertType
-import dev.tekofx.biblioteques.ui.components.Loader
+import dev.tekofx.biblioteques.ui.components.feedback.Alert
+import dev.tekofx.biblioteques.ui.components.feedback.AlertType
+import dev.tekofx.biblioteques.ui.components.feedback.Loader
 import dev.tekofx.biblioteques.ui.components.input.SearchBar
 import dev.tekofx.biblioteques.ui.components.input.SurfaceSwitch
 import dev.tekofx.biblioteques.ui.components.input.TextIconButton

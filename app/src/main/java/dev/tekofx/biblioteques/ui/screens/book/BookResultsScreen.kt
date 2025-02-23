@@ -38,8 +38,8 @@ import dev.tekofx.biblioteques.model.result.SearchResult
 import dev.tekofx.biblioteques.model.search.SearchArgument
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.components.Cover
-import dev.tekofx.biblioteques.ui.components.Loader
 import dev.tekofx.biblioteques.ui.components.PaginatedList
+import dev.tekofx.biblioteques.ui.components.feedback.Loader
 import dev.tekofx.biblioteques.ui.theme.Typography
 import dev.tekofx.biblioteques.ui.viewModels.book.BookViewModel
 
