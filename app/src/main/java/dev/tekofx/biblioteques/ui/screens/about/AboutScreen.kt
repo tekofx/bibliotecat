@@ -16,10 +16,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import dev.tekofx.biblioteques.R
-import dev.tekofx.biblioteques.getAppInfo
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.Section
+import dev.tekofx.biblioteques.utils.getAppInfo
 
 @Composable
 fun AboutScreen(navHostController: NavHostController) {
