@@ -5,9 +5,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -19,26 +21,37 @@ import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.Section
+import dev.tekofx.biblioteques.utils.IntentType
 import dev.tekofx.biblioteques.utils.getAppInfo
+import dev.tekofx.biblioteques.utils.openApp
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutScreen(navHostController: NavHostController) {
 
     val context = LocalContext.current
     val version = getAppInfo(context)
 
-    Scaffold { padding ->
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        "About",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            )
+        }
+    ) { padding ->
         Column(
             modifier = Modifier
                 .padding(padding)
                 .padding(10.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Text(
-                "About",
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.primary
-            )
+
             if (version != null) {
                 Section(
                     title = "Version",
@@ -59,6 +72,13 @@ fun AboutScreen(navHostController: NavHostController) {
                 description = "Check on Github",
                 leftIcon = IconResource.fromDrawableResource(R.drawable.data_object),
                 rightIcon = IconResource.fromDrawableResource(R.drawable.open_in_new),
+                onClick = {
+                    openApp(
+                        context,
+                        IntentType.WEB,
+                        context.getString(R.string.source_code_repo)
+                    )
+                }
             )
 
             Section(
