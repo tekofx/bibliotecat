@@ -21,13 +21,14 @@ import androidx.compose.ui.unit.dp
 fun LicensesScreen() {
     Scaffold(
         topBar = {
-            TopAppBar(title = {
-                Text(
-                    "Licenses",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            })
+            TopAppBar(
+                title = {
+                    Text(
+                        "Licenses",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                })
         }
     ) { padding ->
         Column(
