@@ -24,7 +24,7 @@ fun LicensesScreen() {
             TopAppBar(
                 title = {
                     Text(
-                        "Licenses",
+                        "Llicències",
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.primary
                     )

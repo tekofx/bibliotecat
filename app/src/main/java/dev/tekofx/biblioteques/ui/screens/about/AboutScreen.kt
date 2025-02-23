@@ -37,7 +37,7 @@ fun AboutScreen(navHostController: NavHostController) {
             TopAppBar(
                 title = {
                     Text(
-                        "About",
+                        "Sobre",
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -61,15 +61,15 @@ fun AboutScreen(navHostController: NavHostController) {
             }
 
             Section(
-                title = "Changelog",
-                description = "Check the changes in the app",
+                title = "Registre de canvis",
+                description = "Veure els canvis a l'aplicació",
                 leftIcon = IconResource.fromDrawableResource(R.drawable.history),
                 rightIcon = IconResource.fromDrawableResource(R.drawable.open_in_new),
             )
 
             Section(
-                title = "Source Code",
-                description = "Check on Github",
+                title = "Codi font",
+                description = "Veure a Github",
                 leftIcon = IconResource.fromDrawableResource(R.drawable.data_object),
                 rightIcon = IconResource.fromDrawableResource(R.drawable.open_in_new),
                 onClick = {
@@ -82,8 +82,8 @@ fun AboutScreen(navHostController: NavHostController) {
             )
 
             Section(
-                title = "Licenses",
-                description = "Used in the code of this app",
+                title = "Llicències",
+                description = "Utilitzades en el codi d'aquesta aplicació",
                 leftIcon = IconResource.fromDrawableResource(R.drawable.licence),
                 rightIcon = IconResource.fromDrawableResource(R.drawable.open_in_new),
                 onClick = { navHostController.navigate(NavigateDestinations.LICENSES_ROUTE) }

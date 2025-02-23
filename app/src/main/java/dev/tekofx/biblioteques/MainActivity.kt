@@ -166,7 +166,7 @@ fun SettingsInfoModalSheet(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(Icons.Outlined.Settings, contentDescription = "SettingsScreen")
-                        Text("Settings")
+                        Text("Configuració")
                     }
                 }
                 FilledTonalButton(modifier = Modifier.fillMaxWidth(), onClick = {
@@ -178,7 +178,7 @@ fun SettingsInfoModalSheet(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(Icons.Outlined.Info, contentDescription = "AboutScreen")
-                        Text("About")
+                        Text("Sobre")
                     }
                 }
                 TextIconButton(text = "Tanca",

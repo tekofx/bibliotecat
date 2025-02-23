@@ -31,7 +31,7 @@ fun SettingsScreen(
             TopAppBar(
                 title = {
                     Text(
-                        "Settings", style = MaterialTheme.typography.titleLarge,
+                        "Configuració", style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
                 },
@@ -47,14 +47,15 @@ fun SettingsScreen(
         ) {
             SurfaceSwitch(
                 value = dynamicColorEnabled,
-                title = "Material Theme",
-                onValueChange = { preferencesViewModel?.setDynamicColorEnabled(it) },
+                title = "Color dinàmic",
+                description = "Activa per fer coincidir l'esquema de colors de l'aplicació amb el fons de pantalla del teu dispositiu",
+                onValueChange = { preferencesViewModel.setDynamicColorEnabled(it) },
                 iconResource = IconResource.fromImageVector(Icons.Outlined.Create)
             )
             SurfaceSwitch(
                 value = false,
-                title = "Loading Screen",
-                description = "Show the loading screen at startup",
+                title = "Pantalla de càrrega",
+                description = "Mostra la pantalla de càrrega a l'inici",
                 onValueChange = {},
                 iconResource = IconResource.fromImageVector(Icons.Outlined.Refresh)
             )
