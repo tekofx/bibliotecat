@@ -65,7 +65,7 @@ fun LicenceCard(
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(10.dp),
+        shape = MaterialTheme.shapes.small,
         tonalElevation = 10.dp
     ) {
 

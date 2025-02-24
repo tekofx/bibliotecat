@@ -21,6 +21,7 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.MailOutline
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -264,7 +265,7 @@ fun LibraryTimeTable(seasonTimeTable: SeasonTimeTable) {
         seasonTimeTable.dayTimetables.forEach {
             Surface(
                 tonalElevation = if (it.key == LocalDate.now().dayOfWeek) 100.dp else if (it.value.open) 5.dp else 1.dp,
-                shape = RoundedCornerShape(10.dp),
+                shape = MaterialTheme.shapes.small,
             ) {
 
                 Column(
@@ -311,7 +312,7 @@ fun LibraryContact(library: Library) {
                 modifier = Modifier
                     .fillMaxWidth(),
                 tonalElevation = 20.dp,
-                shape = RoundedCornerShape(10.dp)
+                shape = MaterialTheme.shapes.small
             ) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(10.dp),

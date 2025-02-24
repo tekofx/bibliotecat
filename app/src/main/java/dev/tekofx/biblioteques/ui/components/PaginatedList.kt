@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -90,7 +91,7 @@ fun <T> PaginatedList(
                     modifier = Modifier.fillMaxWidth(),
 
                     tonalElevation = 20.dp,
-                    shape = RoundedCornerShape(10.dp)
+                    shape = MaterialTheme.shapes.small
                 ) {
                     Text(
                         modifier = Modifier.padding(10.dp),

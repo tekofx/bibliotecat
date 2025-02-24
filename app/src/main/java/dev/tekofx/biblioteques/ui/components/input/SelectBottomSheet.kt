@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Close
@@ -132,7 +131,7 @@ fun Item(
 ) {
     Surface(
         tonalElevation = if (selectedItem == item) 20.dp else 0.dp,
-        shape = RoundedCornerShape(10.dp),
+        shape = MaterialTheme.shapes.small,
         onClick = { onItemSelected(item) }
     ) {
         Row(

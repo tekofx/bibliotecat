@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -193,7 +194,7 @@ fun GeneralSearchResultCard(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         tonalElevation = 20.dp,
-        shape = RoundedCornerShape(10.dp),
+        shape = MaterialTheme.shapes.small,
         onClick = { onClick() }
     )
     {

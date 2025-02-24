@@ -8,13 +8,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.MailOutline
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,7 +37,7 @@ fun InfoIntentCard(contactType: IntentType, text: String) {
         when (contactType) {
             IntentType.MAIL -> IconResource.fromImageVector(Icons.Outlined.MailOutline)
             IntentType.PHONE -> IconResource.fromImageVector(Icons.Outlined.Phone)
-            IntentType.WEB ->  IconResource.fromDrawableResource(R.drawable.public_icon)
+            IntentType.WEB -> IconResource.fromDrawableResource(R.drawable.public_icon)
             IntentType.LOCATION -> IconResource.fromImageVector(Icons.Outlined.LocationOn)
         }
     }
@@ -48,7 +47,7 @@ fun InfoIntentCard(contactType: IntentType, text: String) {
             .fillMaxWidth()
             .clickable { openApp(context, contactType, text) },
         tonalElevation = 20.dp,
-        shape = RoundedCornerShape(10.dp)
+        shape = MaterialTheme.shapes.small
     ) {
         Row(
             modifier = Modifier.padding(10.dp),

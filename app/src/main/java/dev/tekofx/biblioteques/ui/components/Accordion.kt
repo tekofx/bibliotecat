@@ -9,11 +9,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
+import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.theme.Typography
@@ -50,7 +52,7 @@ fun Accordion(
             indication = null, // Remove the click animation
             interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() }
         ),
-        shape = RoundedCornerShape(10.dp),
+        shape = MaterialTheme.shapes.small,
     ) {
         Column(
             modifier = Modifier
@@ -117,4 +119,10 @@ fun AccordionArrow(
         contentDescription = "accordionArrow"
     )
 
+}
+
+@Preview
+@Composable
+fun AccordionPreview() {
+    Accordion("Title", "Description", IconResource.fromImageVector(Icons.Outlined.PlayArrow))
 }
