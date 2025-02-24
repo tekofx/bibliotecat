@@ -3,10 +3,8 @@ package dev.tekofx.biblioteques.ui.screens.book
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -104,7 +102,8 @@ fun BookScreen(
     // FloatingActionButton visibility state
     val isFabVisible = remember { mutableStateOf(true) }
 
-    val showImage = remember { mutableStateOf(false) }
+
+    val fullscreenCover = remember { mutableStateOf(false) }
 
     // Get book info
     LaunchedEffect(key1 = null) {
@@ -155,7 +154,7 @@ fun BookScreen(
         if (currentBook == null) {
             Text(text = "No es puc trobar el llibre", textAlign = TextAlign.Justify)
         } else {
-            FullScreenCover(showImage, currentBook)
+            FullScreenCover(fullscreenCover, currentBook)
             LazyColumn(
                 state = listState,
                 modifier = Modifier
@@ -172,7 +171,7 @@ fun BookScreen(
                         modifier = Modifier
                             .clip(RoundedCornerShape(10.dp))
                             .clickable {
-                                showImage.value = !showImage.value
+                                fullscreenCover.value = !fullscreenCover.value
                             },
                         contentScale = ContentScale.Crop,
                     )
@@ -240,8 +239,8 @@ private fun FullScreenCover(
     AnimatedVisibility(
         modifier = Modifier.zIndex(100F),
         visible = showImage.value,
-        enter = fadeIn() + expandVertically(),
-        exit = fadeOut() + shrinkVertically()
+        enter = fadeIn(),
+        exit = fadeOut()
     ) {
         Box(
             modifier = Modifier
