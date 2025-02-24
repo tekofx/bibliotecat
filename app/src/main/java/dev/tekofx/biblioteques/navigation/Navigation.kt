@@ -41,8 +41,8 @@ fun Navigation(
 
     NavHost(
         navController = navHostController,
-        //startDestination = if (preferences.showTutorial) NavigateDestinations.TUTORIAL_SCREEN else NavigateDestinations.TUTORIAL_SCREEN,
-        startDestination = if (showWelcome) NavigateDestinations.WELCOME_SCREEN else NavigateDestinations.LOADING_SCREEN
+        //startDestination = if (showWelcome) NavigateDestinations.WELCOME_SCREEN else NavigateDestinations.LOADING_SCREEN,
+        startDestination = NavigateDestinations.LIBRARIES_ROUTE
     ) {
 
         // Tutorial
@@ -70,10 +70,18 @@ fun Navigation(
                 if (initialState.destination.route == NavigateDestinations.BOOK_SEARCH_ROUTE) {
                     slideInToRight(this)
                 } else {
-                    null
+                    slideInToTop(this)
                 }
             },
-            exitTransition = { fadeOut() },
+            exitTransition = {
+
+                if (targetState.destination.route == NavigateDestinations.BOOK_SEARCH_ROUTE) {
+                    slideOutToLeft(this)
+                } else {
+                    fadeOut()
+                }
+
+            },
         ) {
             LibrariesScreen(navHostController, libraryViewModel)
         }
@@ -236,5 +244,17 @@ fun slideInToLeft(scope: AnimatedContentTransitionScope<NavBackStackEntry>): Ent
 fun slideOutToBottom(scope: AnimatedContentTransitionScope<NavBackStackEntry>): ExitTransition {
     return scope.slideOutOfContainer(
         AnimatedContentTransitionScope.SlideDirection.Down,
+    )
+}
+
+fun slideOutToRight(scope: AnimatedContentTransitionScope<NavBackStackEntry>): ExitTransition {
+    return scope.slideOutOfContainer(
+        AnimatedContentTransitionScope.SlideDirection.Right,
+    )
+}
+
+fun slideOutToLeft(scope: AnimatedContentTransitionScope<NavBackStackEntry>): ExitTransition {
+    return scope.slideOutOfContainer(
+        AnimatedContentTransitionScope.SlideDirection.Left,
     )
 }
