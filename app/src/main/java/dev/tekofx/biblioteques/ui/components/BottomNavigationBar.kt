@@ -1,6 +1,7 @@
 package dev.tekofx.biblioteques.ui.components
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -41,15 +42,17 @@ fun BottomNavigationBar(
                 contentDescription = ""
             )
         }
-        NavigationBar {
+        NavigationBar(
+            modifier = Modifier.fillMaxWidth()
+        ) {
             items.forEach { item ->
-                val selected = currentRoute(navController = navHostController) == item.path
+                val selected = currentRoute(navController = navHostController) == item.route
                 NavigationBarItem(
                     modifier = Modifier.height(30.dp),
                     selected = selected,
                     onClick = {
                         if (!selected) { // Avoid navigating to the same destination
-                            navHostController.navigate(item.path) {
+                            navHostController.navigate(item.route) {
                                 popUpTo(navHostController.graph.findStartDestination().id) {
                                     saveState = true
                                 }
@@ -58,10 +61,18 @@ fun BottomNavigationBar(
                         }
                     },
                     icon = {
-                        Icon(
-                            item.icon.asPainterResource(),
-                            contentDescription = item.title
-                        )
+                        if (selected) {
+
+                            Icon(
+                                item.selectedIcon.asPainterResource(),
+                                contentDescription = item.title
+                            )
+                        } else {
+                            Icon(
+                                item.unselectedIcon.asPainterResource(),
+                                contentDescription = item.title
+                            )
+                        }
                     },
                     label = {
                         Text(
@@ -69,10 +80,7 @@ fun BottomNavigationBar(
                         )
                     }
                 )
-
-
             }
         }
     }
-
 }

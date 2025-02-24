@@ -2,23 +2,27 @@ package dev.tekofx.biblioteques.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.outlined.Home
 import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.ui.IconResource
 
 sealed class BottomNavigationItems(
-    val icon: IconResource,
     val title: String,
-    val path: String
+    val selectedIcon: IconResource,
+    val unselectedIcon: IconResource,
+    val route: String
 ) {
-    object Libraries : BottomNavigationItems(
-        IconResource.fromImageVector(Icons.Filled.Home),
-        "Biblioteques",
-        NavigateDestinations.LIBRARIES_ROUTE
+    data object Libraries : BottomNavigationItems(
+        title = "Biblioteques",
+        selectedIcon = IconResource.fromImageVector(Icons.Filled.Home),
+        unselectedIcon = IconResource.fromImageVector(Icons.Outlined.Home),
+        route = NavigateDestinations.LIBRARIES_ROUTE
     )
 
-    object Catalog : BottomNavigationItems(
-        IconResource.fromDrawableResource(R.drawable.book),
-        "Catàleg",
-        NavigateDestinations.BOOK_SEARCH_ROUTE
+    data object Catalog : BottomNavigationItems(
+        title = "Catàleg",
+        selectedIcon = IconResource.fromDrawableResource(R.drawable.menu_book_filled),
+        unselectedIcon = IconResource.fromDrawableResource(R.drawable.menu_book),
+        route = NavigateDestinations.BOOK_SEARCH_ROUTE
     )
 }
