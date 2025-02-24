@@ -3,9 +3,11 @@ package dev.tekofx.biblioteques.ui.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.PlayArrow
@@ -40,26 +42,25 @@ fun Section(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
 
-                leftIcon?.let {
-                    Icon(
-                        modifier = Modifier.size(30.dp),
-                        painter = leftIcon.asPainterResource(),
-                        contentDescription = ""
-                    )
-                }
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(5.dp),
-                    horizontalAlignment = Alignment.Start
-                ) {
-                    Text(title, style = MaterialTheme.typography.titleLarge)
-                    Text(description)
-                }
+
+            leftIcon?.let {
+                Icon(
+                    modifier = Modifier.size(30.dp),
+                    painter = leftIcon.asPainterResource(),
+                    contentDescription = ""
+                )
             }
+            Spacer(modifier = Modifier.width(10.dp))
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(5.dp),
+                horizontalAlignment = Alignment.Start
+            ) {
+                Text(title, style = MaterialTheme.typography.titleLarge)
+                Text(text = description)
+            }
+            Spacer(modifier = Modifier.width(10.dp))
             rightIcon?.let {
                 Icon(
                     modifier = Modifier.size(30.dp),

@@ -3,8 +3,10 @@ package dev.tekofx.biblioteques.ui.components.input
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material3.Icon
@@ -41,21 +43,21 @@ fun SurfaceSwitch(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+
+            Icon(
+                iconResource.asPainterResource(),
+                contentDescription = ""
+            )
+            Spacer(modifier = Modifier.width(10.dp))
+            Column(
+                modifier = Modifier.weight(1f)
             ) {
-                Icon(
-                    iconResource.asPainterResource(),
-                    contentDescription = ""
-                )
-                Column {
-                    Text(text = title, style = Typography.bodyLarge)
-                    description?.let {
-                        Text(text = it, style = Typography.bodySmall)
-                    }
+                Text(text = title, style = Typography.bodyLarge)
+                description?.let {
+                    Text(text = it, style = Typography.bodySmall)
                 }
             }
+            Spacer(modifier = Modifier.width(10.dp))
             Switch(
                 checked = value,
                 onCheckedChange = {
