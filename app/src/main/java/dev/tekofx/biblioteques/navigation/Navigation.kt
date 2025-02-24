@@ -138,7 +138,7 @@ fun Navigation(
             enterTransition = ::slideInToTop,
             popEnterTransition = ::slideInToBottom,
             popExitTransition = ::slideOutToBottom,
-        ) { backStackEntry ->
+        ) {
             BookResultsScreen(navHostController, bookViewModel)
         }
 

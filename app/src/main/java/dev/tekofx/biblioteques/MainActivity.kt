@@ -99,7 +99,6 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         setContent {
             val isDynamicColorEnabled by preferencesViewModel.isDynamicColorEnabled.collectAsState()
-            println(isDynamicColorEnabled)
             MyApplicationTheme(
                 dynamicColor = isDynamicColorEnabled
             ) {

@@ -15,7 +15,7 @@ class Preferences(context: Context) {
 
 
     fun isDynamicColorEnabled(): Boolean {
-        return sharedPreferences.getBoolean("dynamic_color", true)
+        return sharedPreferences.getBoolean("dynamic_color", false)
     }
 
     fun setDynamicColorEnabled(enabled: Boolean) {
