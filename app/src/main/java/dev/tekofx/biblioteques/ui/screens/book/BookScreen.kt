@@ -3,6 +3,11 @@ package dev.tekofx.biblioteques.ui.screens.book
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +36,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,10 +54,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.model.StatusColor
+import dev.tekofx.biblioteques.model.book.Book
 import dev.tekofx.biblioteques.model.book.BookCopy
 import dev.tekofx.biblioteques.model.book.BookDetails
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
@@ -80,7 +88,6 @@ fun BookScreen(
     val bookCopies by bookViewModel.bookCopies.collectAsState()
     val areThereMoreCopies by bookViewModel.areThereMoreCopies.collectAsState()
 
-
     // Input
     val availableNowChip by bookViewModel.availableNowChip.collectAsState()
     val canReserveChip by bookViewModel.canReserveChip.collectAsState()
@@ -96,6 +103,8 @@ fun BookScreen(
 
     // FloatingActionButton visibility state
     val isFabVisible = remember { mutableStateOf(true) }
+
+    val showImage = remember { mutableStateOf(false) }
 
     // Get book info
     LaunchedEffect(key1 = null) {
@@ -142,9 +151,11 @@ fun BookScreen(
             }
         }
     ) {
+
         if (currentBook == null) {
             Text(text = "No es puc trobar el llibre", textAlign = TextAlign.Justify)
         } else {
+            FullScreenCover(showImage, currentBook)
             LazyColumn(
                 state = listState,
                 modifier = Modifier
@@ -159,8 +170,11 @@ fun BookScreen(
                         contentDescription = null,
                         placeholder = rememberVectorPainter(image = Icons.Outlined.AccountBox),
                         modifier = Modifier
-                            .clip(RoundedCornerShape(10.dp)),
-                        contentScale = ContentScale.Crop
+                            .clip(RoundedCornerShape(10.dp))
+                            .clickable {
+                                showImage.value = !showImage.value
+                            },
+                        contentScale = ContentScale.Crop,
                     )
                 }
                 item {
@@ -213,6 +227,40 @@ fun BookScreen(
                     )
                 }
 
+            }
+        }
+    }
+}
+
+@Composable
+private fun FullScreenCover(
+    showImage: MutableState<Boolean>,
+    currentBook: Book?
+) {
+    AnimatedVisibility(
+        modifier = Modifier.zIndex(100F),
+        visible = showImage.value,
+        enter = fadeIn() + expandVertically(),
+        exit = fadeOut() + shrinkVertically()
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                tonalElevation = 10.dp,
+                onClick = { showImage.value = !showImage.value }
+            ) {
+
+                AsyncImage(
+                    model = currentBook!!.image,
+                    contentDescription = null,
+                    placeholder = rememberVectorPainter(image = Icons.Outlined.AccountBox),
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp)),
+                )
             }
         }
     }
