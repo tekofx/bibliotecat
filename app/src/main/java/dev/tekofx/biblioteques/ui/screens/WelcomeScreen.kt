@@ -314,7 +314,7 @@ fun Page3() {
             style = Typography.titleMedium
         )
         Icon(
-            IconResource.fromDrawableResource(R.drawable.book)
+            IconResource.fromDrawableResource(R.drawable.kid_star)
                 .asPainterResource(),
             contentDescription = "",
             modifier = Modifier.size(200.dp)
@@ -349,7 +349,7 @@ fun Page4() {
         )
 
         Icon(
-            IconResource.fromDrawableResource(R.drawable.book)
+            IconResource.fromDrawableResource(R.drawable.data_object)
                 .asPainterResource(),
             contentDescription = "",
             modifier = Modifier.size(200.dp)
