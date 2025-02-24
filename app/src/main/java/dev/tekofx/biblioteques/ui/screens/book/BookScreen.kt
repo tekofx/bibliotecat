@@ -1,8 +1,6 @@
 package dev.tekofx.biblioteques.ui.screens.book
 
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.net.Uri
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
@@ -65,6 +63,8 @@ import dev.tekofx.biblioteques.ui.components.animations.SlideVertically
 import dev.tekofx.biblioteques.ui.components.input.SearchBar
 import dev.tekofx.biblioteques.ui.theme.Typography
 import dev.tekofx.biblioteques.ui.viewModels.book.BookViewModel
+import dev.tekofx.biblioteques.utils.IntentType
+import dev.tekofx.biblioteques.utils.openApp
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -74,6 +74,7 @@ fun BookScreen(
     navController: NavHostController,
     bookViewModel: BookViewModel
 ) {
+
     // Data
     val currentBook by bookViewModel.currentBook.collectAsState()
     val bookCopies by bookViewModel.bookCopies.collectAsState()
@@ -88,7 +89,6 @@ fun BookScreen(
     // Loaders
     val isLoadingBookCopies by bookViewModel.isLoadingBookCopies.collectAsState()
     val isLoadingMoreBookCopies by bookViewModel.isLoadingMoreBookCopies.collectAsState()
-
     val isLoadingBookDetails by bookViewModel.isLoadingBookDetails.collectAsState()
 
     val listState = rememberLazyListState()
@@ -124,12 +124,11 @@ fun BookScreen(
             ) {
                 ExtendedFloatingActionButton(
                     onClick = {
-                        val intent =
-                            Intent(
-                                Intent.ACTION_VIEW,
-                                Uri.parse("https://aladi.diba.cat/${currentBook!!.url}")
-                            )
-                        context.startActivity(intent)
+                        openApp(
+                            context,
+                            IntentType.WEB,
+                            "https://aladi.diba.cat/${currentBook!!.url}"
+                        )
                     },
                     text = { Text("Veure en Aladi") },
                     icon = {
@@ -154,54 +153,6 @@ fun BookScreen(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-//                item {
-//                    Surface(
-//                        tonalElevation = 40.dp,
-//                        shape = RoundedCornerShape(20.dp),
-//                    ) {
-//                        Column(
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .wrapContentHeight()
-//                                .padding(10.dp)
-//                        ) {
-//                            Row(
-//                                verticalAlignment = Alignment.Top,
-//                                horizontalArrangement = Arrangement.spacedBy(10.dp)
-//                            ) {
-//                                AsyncImage(
-//                                    model = currentBook!!.image,
-//                                    contentDescription = null,
-//                                    modifier = Modifier
-//                                        .height(200.dp)
-//                                        .aspectRatio(0.6f)
-//                                        .clip(RoundedCornerShape(10.dp)),
-//                                    contentScale = ContentScale.Crop
-//                                )
-//                                Column(
-//                                    modifier = Modifier.fillMaxHeight(),
-//                                    verticalArrangement = Arrangement.Top
-//                                ) {
-//                                    Text(
-//                                        text = currentBook!!.title,
-//                                        style = Typography.titleLarge
-//                                    )
-//                                    Text(
-//                                        text = currentBook!!.author,
-//                                        style = Typography.titleMedium
-//                                    )
-//                                    currentBook!!.publication?.let {
-//                                        Text(
-//                                            text = it,
-//                                            style = Typography.titleMedium
-//                                        )
-//                                    }
-//                                }
-//                            }
-//
-//                        }
-//                    }
-//                }
                 item {
                     AsyncImage(
                         model = currentBook!!.image,
