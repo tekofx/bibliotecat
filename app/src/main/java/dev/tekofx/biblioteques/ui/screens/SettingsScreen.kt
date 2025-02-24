@@ -48,7 +48,7 @@ fun SettingsScreen(
             SurfaceSwitch(
                 value = dynamicColorEnabled,
                 title = "Color dinàmic",
-                description = "Activa per fer coincidir l'esquema de colors de l'aplicació amb el fons de pantalla del teu dispositiu",
+                description = "Utilitzar els colors del fons de pantalla com a colors de l'app",
                 onValueChange = { preferencesViewModel.setDynamicColorEnabled(it) },
                 iconResource = IconResource.fromImageVector(Icons.Outlined.Create)
             )
