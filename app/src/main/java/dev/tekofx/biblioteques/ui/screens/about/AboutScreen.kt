@@ -1,8 +1,10 @@
 package dev.tekofx.biblioteques.ui.screens.about
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -11,7 +13,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,7 +34,7 @@ import dev.tekofx.biblioteques.utils.openApp
 fun AboutScreen(navHostController: NavHostController) {
 
     val context = LocalContext.current
-    val version = getAppInfo(context)
+    val appInfo = getAppInfo(context)
 
     Scaffold(
         topBar = {
@@ -49,13 +53,22 @@ fun AboutScreen(navHostController: NavHostController) {
             modifier = Modifier
                 .padding(padding)
                 .padding(10.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            if (version != null) {
+            if (appInfo != null) {
+                Image(
+                    IconResource.fromDrawableResource(appInfo.icon).asPainterResource(),
+                    contentDescription = "Image",
+                    modifier = Modifier
+                        .size(200.dp),
+                    contentScale = ContentScale.Crop
+                )
+                Text(text = appInfo.appName, style = MaterialTheme.typography.displaySmall)
                 Section(
                     title = "Version",
-                    description = version.versionName,
+                    description = appInfo.versionName,
                     leftIcon = IconResource.fromImageVector(Icons.Outlined.Info)
                 )
             }

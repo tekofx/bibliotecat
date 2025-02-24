@@ -74,6 +74,9 @@ dependencies {
     // Animation
     implementation(libs.androidx.animation.core.android)
 
+    // RememberDrawablePainter
+    implementation(libs.accompanist.drawablepainter)
+
 
     ///////////////////////////// Other Libraries /////////////////////////////
 
@@ -97,6 +100,8 @@ dependencies {
     implementation(libs.ksoup.network)
     implementation(libs.androidx.animation.core.android)
     implementation(libs.androidx.animation.core.android)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.core.ktx)
 
 
     ///////////////////////////// Testing Libraries /////////////////////////////

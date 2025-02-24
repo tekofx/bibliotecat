@@ -2,6 +2,7 @@ package dev.tekofx.biblioteques.utils
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import android.os.Build
 import androidx.core.content.pm.PackageInfoCompat
 
@@ -9,7 +10,8 @@ import androidx.core.content.pm.PackageInfoCompat
 data class AppInfo(
     val versionName: String,
     val versionNumber: Long,
-    val appName: String
+    val appName: String,
+    val icon: Drawable
 )
 
 fun getAppInfo(
@@ -36,13 +38,17 @@ fun getAppInfo(
             context.getString(stringId)
         }
 
+        println(appName)
+
+        // Icon
+        val icon: Drawable = packageManager.getApplicationIcon(applicationInfo)
+
         AppInfo(
             versionName = packageInfo.versionName,
             versionNumber = PackageInfoCompat.getLongVersionCode(packageInfo),
-            appName = appName
+            appName = appName,
+            icon = icon
         )
-
-
     } catch (e: Exception) {
         null
     }

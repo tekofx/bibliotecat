@@ -1,32 +1,46 @@
 package dev.tekofx.biblioteques.ui
 
+import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
+import com.google.accompanist.drawablepainter.rememberDrawablePainter
+import dev.tekofx.biblioteques.R
 
 class IconResource private constructor(
-    @DrawableRes private val resID: Int?,
-    private val imageVector: ImageVector?
+    @DrawableRes private val resID: Int? = null,
+    private val imageVector: ImageVector? = null,
+    private val drawable: Drawable? = null
 ) {
 
     @Composable
     fun asPainterResource(): Painter {
-        resID?.let {
-            return painterResource(id = resID)
+
+        return when {
+            resID != null -> painterResource(id = resID)
+            imageVector != null -> rememberVectorPainter(image = imageVector)
+            drawable != null -> rememberDrawablePainter(drawable)
+            else -> {
+                painterResource(R.drawable.sunny)
+            }
         }
-        return rememberVectorPainter(image = imageVector!!)
+
     }
 
     companion object {
         fun fromDrawableResource(@DrawableRes resID: Int): IconResource {
-            return IconResource(resID, null)
+            return IconResource(resID = resID)
+        }
+
+        fun fromDrawableResource(drawable: Drawable): IconResource {
+            return IconResource(drawable = drawable)
         }
 
         fun fromImageVector(imageVector: ImageVector?): IconResource {
-            return IconResource(null, imageVector)
+            return IconResource(imageVector = imageVector)
         }
     }
 }
