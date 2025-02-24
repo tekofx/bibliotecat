@@ -118,7 +118,6 @@ fun BookScreen(
 
     // Observe scroll state to hide/show FAB
     LaunchedEffect(listState) {
-        println(listState.layoutInfo.visibleItemsInfo)
         snapshotFlow { listState.layoutInfo.visibleItemsInfo }
             .collect { visibleItems ->
                 isFabVisible.value = visibleItems.any { it.index == 1 }

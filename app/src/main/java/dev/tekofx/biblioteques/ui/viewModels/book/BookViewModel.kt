@@ -301,13 +301,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                 _currentBook.value = responseBook
                 _bookCopies.value = responseBook.bookCopies
                 isLoadingBookDetails.value = false
-                println("value ${responseBody.thereAreMoreCopies}")
                 _areThereMoreCopies.value = responseBody.thereAreMoreCopies
-                if (responseBody.thereAreMoreCopies) {
-                    //getBookCopies(responseBook)
-                    println("There are more books")
-                }
-
             }
 
             override fun onFailure(p0: Call<BookResponse>, t: Throwable) {
