@@ -9,15 +9,15 @@ data class LibraryStatus(
 ) {
     sealed class Value {
         sealed class Open : Value() {
-            object open : Open()
-            object closingSoon : Open()
+            data object open : Open()
+            data object closingSoon : Open()
         }
 
         sealed class Closed : Value() {
-            object openAfternoon : Closed()
-            object openTomorrow : Closed()
-            object openInDays : Closed()
-            object closedTemporarily : Closed()
+            data object openAfternoon : Closed()
+            data object openTomorrow : Closed()
+            data object openInDays : Closed()
+            data object closedTemporarily : Closed()
         }
 
         sealed class MayBeOpen : Value() {

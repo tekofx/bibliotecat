@@ -60,9 +60,6 @@ fun BookResultsScreen(
     val isLoadingNextPageResults by bookViewModel.isLoadingNextPageResults.collectAsState()
     val isLoadingResults by bookViewModel.isLoadingResults.collectAsState()
 
-    // Error
-    val errorMessage by bookViewModel.errorMessage.collectAsState()
-
     LaunchedEffect(key1 = 1) {
         Log.d("BookResultsScreen", "Found ${results.items.size} elements")
         bookViewModel.setCanNavigateToResults(false)
@@ -93,7 +90,6 @@ fun BookResultsScreen(
                 PaginatedList(
                     searchResults = results as BookResults,
                     isLoading = isLoadingNextPageResults,
-                    key = { book -> book.id },
                     onLoadMore = bookViewModel::getNextResultsPage,
 
                     ) { book ->
@@ -109,7 +105,6 @@ fun BookResultsScreen(
                 PaginatedList(
                     searchResults = results as GeneralResults,
                     isLoading = isLoadingNextPageResults,
-                    key = { searchResult: SearchResult -> searchResult.text },
                     onLoadMore = bookViewModel::getNextResultsPage,
                 ) { searchResult ->
                     GeneralSearchResultCard(

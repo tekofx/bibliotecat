@@ -100,7 +100,6 @@ fun Navigation(
                 pointID = pointId,
                 libraryUrl = libraryUrl,
                 libraryViewModel,
-                navHostController
             )
         }
         // Books
@@ -233,12 +232,6 @@ fun slideInToLeft(scope: AnimatedContentTransitionScope<NavBackStackEntry>): Ent
 }
 
 // SlideOut Transitions
-
-fun slideOutToTop(scope: AnimatedContentTransitionScope<NavBackStackEntry>): ExitTransition {
-    return scope.slideOutOfContainer(
-        AnimatedContentTransitionScope.SlideDirection.Up,
-    )
-}
 
 fun slideOutToBottom(scope: AnimatedContentTransitionScope<NavBackStackEntry>): ExitTransition {
     return scope.slideOutOfContainer(

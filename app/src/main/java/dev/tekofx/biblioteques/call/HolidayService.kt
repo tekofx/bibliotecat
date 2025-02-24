@@ -13,7 +13,7 @@ import retrofit2.http.Url
 interface HolidayService {
 
 
-    @GET()
+    @GET
     fun getJson(@Url url: String): Call<HolidayResponse>
 
 

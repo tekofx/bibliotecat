@@ -20,11 +20,10 @@ data class DayTimeTable(val timeIntervals: List<TimeInterval>) {
 
     override fun toString(): String {
         var output = ""
-        if (timeIntervals.isEmpty()) {
-            output += "Tancat"
+        output += if (timeIntervals.isEmpty()) {
+            "Tancat"
         } else {
-
-            output += timeIntervals.joinToString(", ")
+            timeIntervals.joinToString(", ")
         }
         return output
     }

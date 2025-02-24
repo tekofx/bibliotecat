@@ -40,7 +40,6 @@ import kotlinx.coroutines.flow.filter
 @Composable
 fun <T> PaginatedList(
     searchResults: SearchResults<T>,
-    key: ((item: SearchResult) -> Any)? = null,
     onLoadMore: () -> Unit,
     isLoading: Boolean,
     content: @Composable (item: SearchResult) -> Unit,

@@ -1,6 +1,5 @@
 package dev.tekofx.biblioteques.ui.screens.library
 
-import AutoCompleteSelectBar
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -51,6 +50,7 @@ import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.feedback.Alert
 import dev.tekofx.biblioteques.ui.components.feedback.AlertType
 import dev.tekofx.biblioteques.ui.components.feedback.Loader
+import dev.tekofx.biblioteques.ui.components.input.AutoCompleteSelectBar
 import dev.tekofx.biblioteques.ui.components.input.SearchBar
 import dev.tekofx.biblioteques.ui.components.input.SurfaceSwitch
 import dev.tekofx.biblioteques.ui.components.input.TextIconButton
@@ -66,7 +66,7 @@ fun LibrariesScreen(
     navHostController: NavHostController,
     libraryViewModel: LibraryViewModel
 ) {
-    // State to track if AutoCompleteSelectBar is focused
+    // State to track if dev.tekofx.biblioteques.ui.components.input.AutoCompleteSelectBar is focused
     val isAutoCompleteFocused = remember { mutableStateOf(false) }
 
     // Data
@@ -152,7 +152,6 @@ fun LibrariesScreen(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBottomSheet(
     municipalities: List<String>,

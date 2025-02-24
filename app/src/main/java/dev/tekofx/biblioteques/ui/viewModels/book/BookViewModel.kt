@@ -67,7 +67,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
 
 
     // Errors
-    val errorMessage = MutableStateFlow<String>("")
+    val errorMessage = MutableStateFlow("")
 
     // Data filtering
     val bookCopies = _bookCopies
@@ -135,7 +135,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                         errorMessage.value = ""
                     }
                 }
-                Log.e("BookViewModel", "Error getting search Scope: ${t}")
+                Log.e("BookViewModel", "Error getting search Scope: $t")
             }
 
         })
@@ -221,7 +221,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     }
 
     /**
-     * Searchs a term in aladi.diba.cat. It uses a [queryText] and a [searchTypes]
+     * Searchs a term in aladi.diba.cat. It uses [search]
      *
      */
     fun search() {

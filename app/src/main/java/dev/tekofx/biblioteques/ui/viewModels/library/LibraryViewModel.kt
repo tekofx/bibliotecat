@@ -35,7 +35,7 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
     val selectedMunicipality = _selectedMunicipality.asStateFlow()
 
     // Loaders
-    val isLoading = MutableStateFlow<Boolean>(false)
+    val isLoading = MutableStateFlow(false)
 
 
     // Inputs

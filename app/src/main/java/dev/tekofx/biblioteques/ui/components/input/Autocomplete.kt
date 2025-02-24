@@ -1,3 +1,5 @@
+package dev.tekofx.biblioteques.ui.components.input
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.clickable
@@ -32,7 +34,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import dev.tekofx.biblioteques.ui.components.AccordionArrow
-import dev.tekofx.biblioteques.ui.components.input.SearchBar
 import java.text.Normalizer
 
 @Composable

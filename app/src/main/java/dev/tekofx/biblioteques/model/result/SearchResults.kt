@@ -5,7 +5,7 @@ abstract class SearchResults<SearchResult>(
     open val pages: List<String>,
     open val numItems: Int
 ) {
-    var currentPage: Int = 0
+    private var currentPage: Int = 0
 
     fun areMorePages(): Boolean {
         return pages.isNotEmpty()

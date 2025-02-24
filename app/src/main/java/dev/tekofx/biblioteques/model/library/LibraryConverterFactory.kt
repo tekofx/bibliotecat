@@ -305,7 +305,7 @@ class LibraryConverterFactory : Converter.Factory() {
         var yearTerminaEstiu = currentDate.year
 
         // If current date is between summer start and winter start. We are in summer
-        if (currentDate >= summerStartDate && currentDate <= winterStartDate) {
+        if (currentDate in summerStartDate..winterStartDate) {
             yearTerminaEstiu += 1
         } else {
             if (currentDate.month.value <= monthComencaEstiu) {

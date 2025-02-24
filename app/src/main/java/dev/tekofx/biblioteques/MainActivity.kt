@@ -54,7 +54,6 @@ import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.navigation.Navigation
 import dev.tekofx.biblioteques.navigation.showBottomAppBar
 import dev.tekofx.biblioteques.repository.BookRepository
-import dev.tekofx.biblioteques.repository.HolidayRepository
 import dev.tekofx.biblioteques.repository.LibraryRepository
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.components.BottomNavigationBar
@@ -80,7 +79,7 @@ class MainActivity : ComponentActivity() {
             this, LibraryViewModelFactory(
                 LibraryRepository(
                     LibraryService.getInstance(), HolidayService.getInstance()
-                ), HolidayRepository(HolidayService.getInstance())
+                )
             )
         )[LibraryViewModel::class.java]
 
