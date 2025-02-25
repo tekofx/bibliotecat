@@ -33,6 +33,8 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
     val currentLibrary: StateFlow<Library?> = _currentLibrary
     private val _selectedMunicipality = MutableStateFlow("")
     val selectedMunicipality = _selectedMunicipality.asStateFlow()
+    private val _isFirstLoad = MutableStateFlow<Boolean>(true)
+    val isFirstLoad = _isFirstLoad.asStateFlow()
 
     // Loaders
     val isLoading = MutableStateFlow(false)
@@ -175,7 +177,6 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
         Log.d("LibraryViewModel", "getLibraries")
         errorMessage.postValue("")   // Clear error message
         isLoading.value = true
-        _libraries.value = emptyList()
         viewModelScope.launch {
             try {
                 val response = repository.getLibraries()
@@ -192,7 +193,10 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
                 errorMessage.postValue("Error: No s'han pogut obtenir les biblioteques")
                 isLoading.value = false
             }
+
+            _isFirstLoad.value = false
         }
+
     }
 
 

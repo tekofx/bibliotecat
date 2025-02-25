@@ -95,6 +95,7 @@ fun LibrariesScreen(
     )
     val focusManager = LocalFocusManager.current
 
+    val isFirstLoad by libraryViewModel.isFirstLoad.collectAsState()
     // LaunchedEffect to run code when sheetContent is hidden
     LaunchedEffect(scaffoldState.bottomSheetState.currentValue) {
         if (scaffoldState.bottomSheetState.currentValue == SheetValue.PartiallyExpanded) {
@@ -133,10 +134,10 @@ fun LibrariesScreen(
             }
         ) {
             PullToRefreshBox(
-                isRefreshing = isLoading,
+                isRefreshing = !isFirstLoad && isLoading,
                 onRefresh = { libraryViewModel.getLibraries() },
             ) {
-                Loader(isLoading, "Obtenint Biblioteques")
+                Loader(isFirstLoad && isLoading, "Obtenint Biblioteques")
                 Alert(errorMessage, AlertType.ERROR, floating = true)
                 LibraryList(
                     libraries = libraries,
