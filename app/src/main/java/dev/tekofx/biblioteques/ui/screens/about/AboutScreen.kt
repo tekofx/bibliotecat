@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -98,7 +99,7 @@ fun AboutScreen(navHostController: NavHostController) {
                 title = "Llicències",
                 description = "Utilitzades en el codi d'aquesta aplicació",
                 leftIcon = IconResource.fromDrawableResource(R.drawable.licence),
-                rightIcon = IconResource.fromDrawableResource(R.drawable.open_in_new),
+                rightIcon = IconResource.fromImageVector(Icons.AutoMirrored.Outlined.ArrowForward),
                 onClick = { navHostController.navigate(NavigateDestinations.LICENSES_ROUTE) }
             )
         }

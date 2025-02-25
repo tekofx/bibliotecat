@@ -194,8 +194,28 @@ fun Navigation(
 
         composable(
             route = NavigateDestinations.ABOUT_ROUTE,
-            enterTransition = ::slideInToTop,
-            exitTransition = ::slideOutToBottom
+            enterTransition = {
+                if (initialState.destination.route == NavigateDestinations.LICENSES_ROUTE) {
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Right,
+                    )
+                } else {
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Up,
+                    )
+                }
+            },
+            exitTransition = {
+                if (targetState.destination.route == NavigateDestinations.LICENSES_ROUTE) {
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Left,
+                    )
+                } else {
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Down,
+                    )
+                }
+            },
         )
         {
             AboutScreen(navHostController)
@@ -203,8 +223,8 @@ fun Navigation(
 
         composable(
             route = NavigateDestinations.LICENSES_ROUTE,
-            enterTransition = ::slideInToTop,
-            exitTransition = ::slideOutToBottom
+            enterTransition = ::slideInToLeft,
+            exitTransition = ::slideOutToRight
         )
         {
             LicensesScreen()
