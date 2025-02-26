@@ -55,11 +55,10 @@ fun SelectBottomSheetContent(
     ) {
         Text(text = "Cerca on ${selectedItem.name}")
         if (showSearchBar) {
-
             SearchBar(
                 value = textfieldValue,
                 onValueChange = { textfieldValue = it },
-                label = "Filtrar Llocs",
+                label = "Filtrar catàlegs",
                 trailingIcon = {
                     Icon(Icons.Outlined.Search, contentDescription = "")
                 },
