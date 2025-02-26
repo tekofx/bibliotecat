@@ -60,7 +60,7 @@ fun BookSearchScreen(
 
     // Input
     val search by bookViewModel.search.collectAsState()
-    val searchScopes by bookViewModel.catalogs.collectAsState()
+    val catalogs by bookViewModel.catalogs.collectAsState()
 
 
     // Loader
@@ -125,11 +125,11 @@ fun BookSearchScreen(
                 // Where to search
                 SelectBottomSheetContent(
                     onClose = { closeBottomSheet() },
-                    searchArguments = searchScopes,
+                    searchArguments = catalogs,
                     selectedItem = search.catalog,
                     onItemSelected = {
                         closeBottomSheet()
-                        bookViewModel.onSearchScopeChange(it)
+                        bookViewModel.onCatalogChange(it)
                     },
                     showSearchBar = true,
                     maxHeight = 300.dp

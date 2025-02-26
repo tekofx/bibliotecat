@@ -33,7 +33,7 @@ import java.util.concurrent.TimeoutException
 
 class BookViewModel(private val repository: BookRepository) : ViewModel() {
     // Data
-    val searchScopes = MutableStateFlow<List<SearchArgument>>(emptyList())
+    val catalogs = MutableStateFlow<List<SearchArgument>>(emptyList())
     private val _results = MutableStateFlow<SearchResults<out SearchResult>>(EmptyResults())
     val results = _results.asStateFlow()
     private val _currentBook = MutableStateFlow<Book?>(null)
@@ -99,29 +99,29 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
         )
 
     init {
-        getSearchScope()
+        getCatalogs()
     }
 
     /**
-     * Gets the search scope from the aladi.diba.cat. This allows user to search in different libraries or catalogs
+     * Gets the catalogs from the aladi.diba.cat. This allows user to search in different libraries or catalogs
      * in the same search.
      * The search scope is a list of [SearchArgument] that contains the name of the library and the id of the library.
      *
      */
-    private fun getSearchScope() {
+    private fun getCatalogs() {
         errorMessage.value = ""
-        val response = repository.getSearchScope()
+        val response = repository.getCatalogs()
         response.enqueue(object : Callback<BookResponse> {
             override fun onResponse(
                 call: Call<BookResponse>, response: Response<BookResponse>
             ) {
-                val searchScopesResponse =
-                    response.body()?.searchScopes ?: return onFailure(
+                val catalogsResponse =
+                    response.body()?.catalogs ?: return onFailure(
                         call,
-                        Throwable("Not searchScopes")
+                        Throwable("Not catalogs found")
                     )
 
-                searchScopes.value = searchScopesResponse
+                catalogs.value = catalogsResponse
                 errorMessage.value = ""
             }
 
@@ -390,7 +390,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
         _search.value = _search.value.copy(searchType = value)
     }
 
-    fun onSearchScopeChange(value: SearchArgument) {
+    fun onCatalogChange(value: SearchArgument) {
         _search.value = _search.value.copy(catalog = value)
     }
 

@@ -17,6 +17,6 @@ data class BookResponse(
     @SerializedName("bookDetails") var bookDetails: BookDetails? = null,
     @SerializedName("pages") var pages: List<String> = emptyList(),
     @SerializedName("results") var results: SearchResults<out SearchResult>? = null,
-    @SerializedName("searchScopes") var searchScopes: List<SearchArgument> = emptyList()
+    @SerializedName("catalogs") var catalogs: List<SearchArgument> = emptyList()
 )
 

@@ -12,8 +12,8 @@ class BookRepository(private val bookService: BookService) {
         return bookService.search(search.query, search.searchType.value, search.catalog.value)
     }
 
-    fun getSearchScope(): Call<BookResponse> {
-        return bookService.getSearchScope()
+    fun getCatalogs(): Call<BookResponse> {
+        return bookService.getCatalogs()
     }
 
     fun getBookDetails(url: String): Call<BookResponse> {

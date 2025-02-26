@@ -18,7 +18,7 @@ interface BookService {
     ): Call<BookResponse>
 
     @GET(value = "/search*cat/X")
-    fun getSearchScope(): Call<BookResponse>
+    fun getCatalogs(): Call<BookResponse>
 
     @GET(value = "{url}")
     fun getHtmlByUrl(@Path("url") url: String): Call<BookResponse>

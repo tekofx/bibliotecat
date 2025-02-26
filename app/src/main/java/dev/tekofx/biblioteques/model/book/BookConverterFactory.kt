@@ -54,7 +54,7 @@ class BookConverterFactory : Converter.Factory() {
                     val searchScopes = getSearchScope(doc)
                     BookResponse(
                         body = responseBodyString,
-                        searchScopes = searchScopes
+                        catalogs = searchScopes
                     )
                 }
 
