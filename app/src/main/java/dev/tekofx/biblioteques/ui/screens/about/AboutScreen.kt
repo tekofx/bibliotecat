@@ -96,7 +96,7 @@ fun AboutScreen(navHostController: NavHostController) {
             )
 
             Section(
-                title = "Llicències",
+                title = "Recursos",
                 description = "Utilitzades en el codi d'aquesta aplicació",
                 leftIcon = IconResource.fromDrawableResource(R.drawable.licence),
                 rightIcon = IconResource.fromImageVector(Icons.AutoMirrored.Outlined.ArrowForward),
