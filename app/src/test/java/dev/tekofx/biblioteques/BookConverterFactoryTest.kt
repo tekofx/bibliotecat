@@ -58,7 +58,7 @@ class BookConverterFactoryTest {
 
     private val sut = BookRepository(api)
 
-    private val searchScopeAllCatalog = SearchArgument(
+    private val allCatalog = SearchArgument(
         "Tot el catàleg",
         "171",
         icon = IconResource.fromDrawableResource(R.drawable.library_books)
@@ -213,7 +213,7 @@ class BookConverterFactoryTest {
                 Search(
                     "sanderson",
                     SearchTypeAuthor,
-                    searchScopeAllCatalog
+                    allCatalog
                 )
             ).execute()
             assert(response.body()?.results is SearchResults)
@@ -224,7 +224,7 @@ class BookConverterFactoryTest {
     fun `search by topic`() {
         runBlocking {
             val response =
-                realBookRepository.search(Search("plantes", SearchTypeTopic, searchScopeAllCatalog))
+                realBookRepository.search(Search("plantes", SearchTypeTopic, allCatalog))
                     .execute()
 
             assert(response.body()?.results is SearchResults)
@@ -235,7 +235,7 @@ class BookConverterFactoryTest {
     fun `search by issn and get list of issns`() {
         runBlocking {
             val response =
-                realBookRepository.search(Search("978", SearchTypeISBN, searchScopeAllCatalog))
+                realBookRepository.search(Search("978", SearchTypeISBN, allCatalog))
                     .execute()
 
             val results = response.body()?.results!!
@@ -252,7 +252,7 @@ class BookConverterFactoryTest {
                 Search(
                     "9788419260260",
                     SearchTypeISBN,
-                    searchScopeAllCatalog
+                    allCatalog
                 )
             ).execute()
             assert(response.body()?.results is BookResults)
@@ -267,7 +267,7 @@ class BookConverterFactoryTest {
                 Search(
                     "N San",
                     SearchTypeSignature,
-                    searchScopeAllCatalog
+                    allCatalog
                 )
             ).execute()
 
@@ -281,7 +281,7 @@ class BookConverterFactoryTest {
     fun `search by signature and not found`() {
         runBlocking {
             val response =
-                realBookRepository.search(Search("san", SearchTypeSignature, searchScopeAllCatalog))
+                realBookRepository.search(Search("san", SearchTypeSignature, allCatalog))
                     .execute()
             val results = response.body()?.results!!
             assert(response.body()?.results is SearchResults)

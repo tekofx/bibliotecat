@@ -50,11 +50,11 @@ class BookConverterFactory : Converter.Factory() {
 
             when {
                 advancedSearchElement != null -> {
-                    Log.d("BookConverterFactory", "Get Search Scope")
-                    val searchScopes = getSearchScope(doc)
+                    Log.d("BookConverterFactory", "Get Catalogs")
+                    val catalogs = getCatalogs(doc)
                     BookResponse(
                         body = responseBodyString,
-                        catalogs = searchScopes
+                        catalogs = catalogs
                     )
                 }
 
@@ -136,16 +136,16 @@ class BookConverterFactory : Converter.Factory() {
     }
 
 
-    private fun getSearchScope(doc: Document): List<SearchArgument> {
-        val searchScopes = mutableListOf<SearchArgument>()
-        val searchScopeElement =
+    private fun getCatalogs(doc: Document): List<SearchArgument> {
+        val catalogs = mutableListOf<SearchArgument>()
+        val catalogElement =
             doc.selectFirst("select#searchscope")?.getElementsByTag("option")
                 ?: return emptyList()
-        for (searchVal in searchScopeElement) {
+        for (searchVal in catalogElement) {
             val value = searchVal.attr("value")
             val text = searchVal.text()
             val icon = getIcon(text)
-            searchScopes.add(
+            catalogs.add(
                 SearchArgument(
                     text,
                     value,
@@ -153,7 +153,7 @@ class BookConverterFactory : Converter.Factory() {
                 )
             )
         }
-        return searchScopes
+        return catalogs
     }
 
     private fun getIcon(value: String): IconResource {

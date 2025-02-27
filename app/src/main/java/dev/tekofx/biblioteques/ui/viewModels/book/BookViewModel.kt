@@ -135,7 +135,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                         errorMessage.value = ""
                     }
                 }
-                Log.e("BookViewModel", "Error getting search Scope: $t")
+                Log.e("BookViewModel", "Error getting catalogs: $t")
             }
 
         })

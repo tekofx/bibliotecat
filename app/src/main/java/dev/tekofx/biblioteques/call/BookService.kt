@@ -14,7 +14,7 @@ interface BookService {
     fun search(
         @Query("searcharg") searchArg: String,
         @Query("searchtype") searchType: String,
-        @Query("searchscope") searchScope: String,
+        @Query("searchscope") catalog: String,
     ): Call<BookResponse>
 
     @GET(value = "/search*cat/X")
