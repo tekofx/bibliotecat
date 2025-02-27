@@ -9,7 +9,6 @@ import dev.tekofx.biblioteques.model.result.SearchResults
 import dev.tekofx.biblioteques.model.search.SearchArgument
 
 data class BookResponse(
-    @SerializedName("body") var body: String = "",
     @SerializedName("book") var book: Book? = null,
     @SerializedName("bookCopies") var bookCopies: List<BookCopy> = arrayListOf(),
     @SerializedName("thereAreMoreCopies") var thereAreMoreCopies: Boolean = false,

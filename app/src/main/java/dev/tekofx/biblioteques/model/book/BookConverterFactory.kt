@@ -53,7 +53,6 @@ class BookConverterFactory : Converter.Factory() {
                     Log.d("BookConverterFactory", "Get Catalogs")
                     val catalogs = getCatalogs(doc)
                     BookResponse(
-                        body = responseBodyString,
                         catalogs = catalogs
                     )
                 }
@@ -68,7 +67,6 @@ class BookConverterFactory : Converter.Factory() {
                     val generalResults = constructGeneralResults(doc)
                     val pages = getPages(doc)
                     BookResponse(
-                        body = responseBodyString,
                         pages = pages,
                         results = generalResults
                     )
@@ -107,7 +105,6 @@ class BookConverterFactory : Converter.Factory() {
 
                     Log.d("BookConverterFactory", "Search with multiple books")
                     BookResponse(
-                        body = responseBodyString,
                         totalBooks = totalBooks,
                         results = bookResults
                     )
@@ -120,7 +117,6 @@ class BookConverterFactory : Converter.Factory() {
 
                     Log.d("BookConverterFactory", "Search by Signature with Book Results")
                     BookResponse(
-                        body = responseBodyString,
                         totalBooks = totalBooks,
                         results = bookResults
                     )
