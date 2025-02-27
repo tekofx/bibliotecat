@@ -100,7 +100,7 @@ fun AboutScreen(navHostController: NavHostController) {
                 description = "Utilitzades en el codi d'aquesta aplicació",
                 leftIcon = IconResource.fromDrawableResource(R.drawable.licence),
                 rightIcon = IconResource.fromImageVector(Icons.AutoMirrored.Outlined.ArrowForward),
-                onClick = { navHostController.navigate(NavigateDestinations.LICENSES_ROUTE) }
+                onClick = { navHostController.navigate(NavigateDestinations.RESOURCES_ROUTE) }
             )
         }
     }

@@ -29,7 +29,7 @@ data class License(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LicensesScreen() {
+fun ResourcesScreen() {
 
     val licenseCat = License(
         "Llicència oberta d’ús d'informació - Catalunya",
@@ -54,26 +54,26 @@ fun LicensesScreen() {
                 .padding(horizontal = 10.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            LicenceCard(
+            ResourceCard(
                 title = "Calendari de festes locals a Catalunya",
                 description = "Generalitat de Catalunya. Departament de Departament d'Empresa i Treball. Portal de la transparència",
                 license = licenseCat,
                 url = "https://analisi.transparenciacatalunya.cat/Treball/Calendari-de-festes-locals-a-Catalunya/b4eh-r8up/about_data"
             )
-            LicenceCard(
+            ResourceCard(
                 title = "Festius generals de Catalunya",
                 description = "Generalitat de Catalunya. Departament de Departament d'Empresa i Treball. Portal de la transparència",
                 license = licenseCat,
                 url = "https://analisi.transparenciacatalunya.cat/Treball/Festius-generals-de-Catalunya/8qnu-agns/about_data"
             )
-            LicenceCard(
+            ResourceCard(
                 title = "Xarxa de Biblioteques",
                 description = "Diputación de Barcelona. Dades obertes",
                 license = licenseCC0,
                 url = "https://dadesobertes.diba.cat/datasets/biblioteques-municipals"
             )
 
-            LicenceCard(
+            ResourceCard(
                 title = "Catàleg Aladí",
                 description = "Xarxa de Biblioteques Municipals de la província de Barcelona",
                 url = "https://dadesobertes.diba.cat/datasets/biblioteques-municipals"
@@ -84,7 +84,7 @@ fun LicensesScreen() {
 }
 
 @Composable
-fun LicenceCard(
+fun ResourceCard(
     title: String,
     description: String,
     url: String,
@@ -140,6 +140,6 @@ fun LicensePill(
 
 @Preview
 @Composable
-fun LicensesScreenPreview() {
-    LicensesScreen()
+fun ResourcesScreenPreview() {
+    ResourcesScreen()
 }

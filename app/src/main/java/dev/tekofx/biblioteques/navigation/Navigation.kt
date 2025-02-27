@@ -18,7 +18,7 @@ import dev.tekofx.biblioteques.ui.screens.MapScreen
 import dev.tekofx.biblioteques.ui.screens.SettingsScreen
 import dev.tekofx.biblioteques.ui.screens.WelcomeScreen
 import dev.tekofx.biblioteques.ui.screens.about.AboutScreen
-import dev.tekofx.biblioteques.ui.screens.about.LicensesScreen
+import dev.tekofx.biblioteques.ui.screens.about.ResourcesScreen
 import dev.tekofx.biblioteques.ui.screens.book.BookResultsScreen
 import dev.tekofx.biblioteques.ui.screens.book.BookScreen
 import dev.tekofx.biblioteques.ui.screens.book.BookSearchScreen
@@ -195,7 +195,7 @@ fun Navigation(
         composable(
             route = NavigateDestinations.ABOUT_ROUTE,
             enterTransition = {
-                if (initialState.destination.route == NavigateDestinations.LICENSES_ROUTE) {
+                if (initialState.destination.route == NavigateDestinations.RESOURCES_ROUTE) {
                     slideIntoContainer(
                         AnimatedContentTransitionScope.SlideDirection.Right,
                     )
@@ -206,7 +206,7 @@ fun Navigation(
                 }
             },
             exitTransition = {
-                if (targetState.destination.route == NavigateDestinations.LICENSES_ROUTE) {
+                if (targetState.destination.route == NavigateDestinations.RESOURCES_ROUTE) {
                     slideOutOfContainer(
                         AnimatedContentTransitionScope.SlideDirection.Left,
                     )
@@ -222,12 +222,12 @@ fun Navigation(
         }
 
         composable(
-            route = NavigateDestinations.LICENSES_ROUTE,
+            route = NavigateDestinations.RESOURCES_ROUTE,
             enterTransition = ::slideInToLeft,
             exitTransition = ::slideOutToRight
         )
         {
-            LicensesScreen()
+            ResourcesScreen()
         }
 
     }
