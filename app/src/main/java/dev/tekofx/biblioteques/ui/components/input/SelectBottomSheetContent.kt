@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Close
@@ -20,9 +21,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,10 +44,19 @@ fun SelectBottomSheetContent(
     onItemSelected: (SearchArgument) -> Unit,
     showSearchBar: Boolean = false,
     maxHeight: Dp = Dp.Unspecified,
+    onScrolling: ((Boolean) -> Unit)? = null
 ) {
-
-
     var textfieldValue by remember { mutableStateOf("") }
+    val listState = rememberLazyListState()
+    val currentOnScrolling by rememberUpdatedState(onScrolling)
+
+    val isScrolling by remember {
+        derivedStateOf { listState.isScrollInProgress }
+    }
+
+    LaunchedEffect(isScrolling) {
+        currentOnScrolling?.let { it(isScrolling) }
+    }
 
     Column(
         modifier = Modifier
@@ -65,6 +78,7 @@ fun SelectBottomSheetContent(
             )
         }
         LazyColumn(
+            state = listState,
             modifier = Modifier
                 .padding(horizontal = 10.dp)
                 .heightIn(0.dp, maxHeight),

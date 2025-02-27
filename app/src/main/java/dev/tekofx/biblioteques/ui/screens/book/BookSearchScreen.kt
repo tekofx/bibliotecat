@@ -74,6 +74,7 @@ fun BookSearchScreen(
     val focus = LocalFocusManager.current
     val density = LocalDensity.current
     var showSearchType by remember { mutableStateOf(false) }
+    var isScrolling by remember { mutableStateOf(false) }
 
 
 
@@ -107,7 +108,8 @@ fun BookSearchScreen(
 
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
-        sheetSwipeEnabled = false,
+        sheetSwipeEnabled = !isScrolling,
+        sheetPeekHeight = 0.dp,
         sheetContent = {
 
             if (showSearchType) {
@@ -132,7 +134,8 @@ fun BookSearchScreen(
                         bookViewModel.onCatalogChange(it)
                     },
                     showSearchBar = true,
-                    maxHeight = 300.dp
+                    maxHeight = 300.dp,
+                    onScrolling = { isScrolling = it }
                 )
             }
         }
