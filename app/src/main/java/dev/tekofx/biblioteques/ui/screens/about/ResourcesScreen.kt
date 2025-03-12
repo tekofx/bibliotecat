@@ -79,6 +79,13 @@ fun ResourcesScreen() {
                 url = "https://dadesobertes.diba.cat/datasets/biblioteques-municipals"
             )
 
+            ResourceCard(
+                title = "Directori de Biblioteques Municipals",
+                description = "Xarxa de Biblioteques Municipals de la província de Barcelona",
+                url = "https://bibliotecavirtual.diba.cat/ca/busca-una-biblioteca"
+            )
+
+
         }
     }
 }
