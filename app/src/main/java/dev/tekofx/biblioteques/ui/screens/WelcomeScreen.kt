@@ -45,7 +45,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -56,6 +57,7 @@ import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.ui.IconResource
 import dev.tekofx.biblioteques.ui.theme.Typography
 import dev.tekofx.biblioteques.ui.viewModels.preferences.PreferencesViewModel
+import dev.tekofx.biblioteques.utils.getAppInfo
 
 @Composable
 fun WelcomeScreen(
@@ -246,6 +248,8 @@ fun Dot(isSelected: Boolean) {
 
 @Composable
 fun Page1() {
+    val context = LocalContext.current
+    val appInfo = getAppInfo(context)
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -253,14 +257,17 @@ fun Page1() {
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Image(
-            painter = painterResource(R.drawable.ic_launcher_foreground),
-            modifier = Modifier.size(300.dp),
-            contentDescription = ""
-        )
+        if (appInfo != null) {
+            Image(
+                IconResource.fromDrawableResource(appInfo.icon).asPainterResource(),
+                contentDescription = "Image",
+                modifier = Modifier
+                    .size(200.dp),
+                contentScale = ContentScale.Crop
+            )
+        }
     }
 }
-
 
 @Composable
 fun Page2() {
