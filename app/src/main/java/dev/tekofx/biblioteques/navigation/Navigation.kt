@@ -42,7 +42,7 @@ fun Navigation(
     NavHost(
         navController = navHostController,
         //startDestination = if (showWelcome) NavigateDestinations.WELCOME_SCREEN else NavigateDestinations.LOADING_SCREEN,
-        startDestination = NavigateDestinations.LIBRARIES_ROUTE
+        startDestination = if (showWelcome) NavigateDestinations.WELCOME_SCREEN else NavigateDestinations.LIBRARIES_ROUTE
     ) {
 
         // Tutorial
