@@ -371,6 +371,7 @@ fun BookCopiesSegment(
                     onCanReserveChipClick = onCanReserveChipClick,
                     onTextFieldChange = onTextFieldChange,
                     textFieldValue = textFieldValue,
+                    onFocus = getMoreBookCopies,
                     listState = listState
                 )
 
@@ -416,6 +417,7 @@ fun BookCopiesFilters(
     showCanReserve: Boolean,
     onTextFieldChange: (String) -> Unit,
     textFieldValue: String,
+    onFocus: () -> Unit,
     listState: LazyListState
 ) {
     val focusRequester = remember { FocusRequester() }
@@ -435,6 +437,7 @@ fun BookCopiesFilters(
                     if (focusState.isFocused) {
                         coroutineScope.launch {
                             listState.animateScrollToItem(3)
+                            onFocus()
                         }
                     }
                 },
