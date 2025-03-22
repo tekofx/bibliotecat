@@ -52,7 +52,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     val isLoadingMoreBookCopies = MutableStateFlow(false)
 
     // Helpers
-    val canNavigateToResults = MutableStateFlow(false)
+    val canNavigate = MutableStateFlow(false)
     private val pageIndex = mutableIntStateOf(0)
 
     // Inputs
@@ -242,7 +242,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
                 val responseResults =
                     response.body()?.results ?: return onFailure(call, NotFound())
                 _results.value = responseResults
-                canNavigateToResults.value = true
+                canNavigate.value = true
                 isLoadingSearch.value = false
             }
 
@@ -407,8 +407,8 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
         _bookCopies.value = emptyList()
     }
 
-    fun setCanNavigateToResults(value: Boolean) {
-        canNavigateToResults.value = value
+    fun setCanNavigate(value: Boolean) {
+        canNavigate.value = value
     }
 
     /**

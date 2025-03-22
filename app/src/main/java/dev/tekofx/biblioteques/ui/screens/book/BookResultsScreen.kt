@@ -62,7 +62,7 @@ fun BookResultsScreen(
 
     LaunchedEffect(key1 = 1) {
         Log.d("BookResultsScreen", "Found ${results.items.size} elements")
-        bookViewModel.setCanNavigateToResults(false)
+        bookViewModel.setCanNavigate(false)
         bookViewModel.resetCurrentBook()
     }
     Scaffold(

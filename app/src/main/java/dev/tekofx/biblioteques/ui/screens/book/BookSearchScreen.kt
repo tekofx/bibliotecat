@@ -65,7 +65,7 @@ fun BookSearchScreen(
 
     // Loader
     val isLoadingSearch by bookViewModel.isLoadingSearch.collectAsState()
-    val canNavigateToResults by bookViewModel.canNavigateToResults.collectAsState()
+    val canNavigate by bookViewModel.canNavigate.collectAsState()
 
     // Error
     val errorMessage by bookViewModel.errorMessage.collectAsState()
@@ -78,10 +78,14 @@ fun BookSearchScreen(
 
 
 
-    LaunchedEffect(canNavigateToResults) {
-        if (canNavigateToResults) {
+    LaunchedEffect(canNavigate) {
+        if (canNavigate) {
             Log.d("BookSearchScreen", "Found ${results.items.size} elements")
-            navHostController.navigate(NavigateDestinations.BOOK_RESULTS_ROUTE)
+            if (results.items.size == 1) {
+                navHostController.navigate("${NavigateDestinations.BOOK_DETAILS_ROUTE}/${results.items[0].id}")
+            } else {
+                navHostController.navigate(NavigateDestinations.BOOK_RESULTS_ROUTE)
+            }
         }
     }
 

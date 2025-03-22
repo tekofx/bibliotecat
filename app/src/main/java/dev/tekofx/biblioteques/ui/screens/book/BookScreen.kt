@@ -108,6 +108,7 @@ fun BookScreen(
     // Get book info
     LaunchedEffect(key1 = null) {
         Log.d("BookScreen", "currentBook: ${currentBook?.title} bookUrl:$bookUrl")
+        bookViewModel.setCanNavigate(false)
 
         if (currentBook == null) {
             bookViewModel.getBookDetails(bookUrl.toInt())
