@@ -43,7 +43,7 @@ fun Alert(
                 .fillMaxSize()
                 .padding(20.dp)
         } else {
-            Modifier
+            modifier
         },
         contentAlignment = if (floating) Alignment.Center else Alignment.TopStart
     ) {
