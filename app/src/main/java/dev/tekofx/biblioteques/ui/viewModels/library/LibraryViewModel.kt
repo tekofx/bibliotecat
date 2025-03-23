@@ -181,6 +181,9 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
             try {
                 val response = repository.getLibraries()
                 _libraries.value = response.elements
+                response.elements.forEach {
+                    println(it.timetable?.holidays)
+                }
                 municipalities.value = response.municipalities
                 isLoading.value = false
                 errorMessage.postValue("")

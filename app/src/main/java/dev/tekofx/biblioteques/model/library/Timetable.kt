@@ -6,12 +6,26 @@ import dev.tekofx.biblioteques.utils.formatDayOfWeek
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.temporal.WeekFields
+import java.util.Locale
 
 class Timetable(
     private val winterTimetable: SeasonTimeTable,
     private val summerTimetable: SeasonTimeTable,
-    var holidays: List<Holiday>,
+    val holidays: List<Holiday>,
 ) {
+
+
+    fun getWeekOfDay(date: LocalDate) {
+        val weekFields = WeekFields.of(Locale.getDefault())
+        val startOfWeek = date.with(weekFields.dayOfWeek(), 1)
+        val endOfWeek = date.with(weekFields.dayOfWeek(), 7)
+
+        var currentDay = startOfWeek
+        while (!currentDay.isAfter(endOfWeek)) {
+            currentDay = currentDay.plusDays(1)
+        }
+    }
 
 
     /**

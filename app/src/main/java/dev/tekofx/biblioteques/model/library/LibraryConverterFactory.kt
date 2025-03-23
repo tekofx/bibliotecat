@@ -4,12 +4,17 @@ import android.util.Log
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.network.parseGetRequestBlocking
 import com.fleeksoft.ksoup.nodes.Document
+import dev.tekofx.biblioteques.call.HolidayService
+import dev.tekofx.biblioteques.dto.HolidayResponse
 import dev.tekofx.biblioteques.dto.LibraryResponse
+import kotlinx.coroutines.runBlocking
 import okhttp3.ResponseBody
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Converter
+import retrofit2.Response
 import retrofit2.Retrofit
+import retrofit2.awaitResponse
 import java.lang.reflect.Type
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -43,6 +48,13 @@ class LibraryConverterFactory : Converter.Factory() {
                     "LibraryConverterFactory",
                     "Error getting bibliotecavirtual.diba.cat: $exception"
                 )
+            }
+            val localHolidaysResponse: HolidayResponse? = runBlocking {
+                getLocalHolidaysResponse(LocalDate.now().year)?.body()
+            }
+
+            val cataloniaHolidaysResponse: HolidayResponse? = runBlocking {
+                getCataloniaHolidaysResponse(LocalDate.now().year)?.body()
             }
             for (i in 0 until elementsArray.length()) {
                 val libraryElement = elementsArray.getJSONObject(i)
@@ -80,8 +92,15 @@ class LibraryConverterFactory : Converter.Factory() {
                 }
                 // Horaris
                 val (timetableHivern, timetableEstiu) = getTimetables(libraryElement)
-                val timetable = Timetable(timetableHivern, timetableEstiu, emptyList())
 
+                val localHolidays = localHolidaysResponse?.body?.filter { holiday ->
+                    holiday.postalCode == postalCode
+                }
+
+                val cataloniaHolidays = cataloniaHolidaysResponse?.body
+                val holidays = cataloniaHolidays.orEmpty() + localHolidays.orEmpty()
+
+                val timetable = Timetable(timetableHivern, timetableEstiu, holidays)
                 val library = Library(
                     id = id,
                     name = name,
@@ -105,6 +124,66 @@ class LibraryConverterFactory : Converter.Factory() {
         }
     }
 
+    /**
+     * Gets the local holiday days from the API
+     * @param year: Int
+     * @return Response<HolidayResponse>?
+     */
+    private suspend fun getLocalHolidaysResponse(year: Int): Response<HolidayResponse>? {
+        val localHolidaysUrl =
+            "https://analisi.transparenciacatalunya.cat/resource/b4eh-r8up.json?\$query=SELECT\n" +
+                    "  `any_calendari`,\n" +
+                    "  `data`,\n" +
+                    "  `ajuntament_o_nucli_municipal`,\n" +
+                    "  `codi_municipi_ine`,\n" +
+                    "  `festiu`\n" +
+                    "WHERE\n" +
+                    "  (`any_calendari` = \"$year\")\n" +
+                    "  AND (caseless_starts_with(`codi_municipi_ine`, \"08\")\n" +
+                    "  AND (caseless_ne(`ajuntament_o_nucli_municipal`, \"null\")\n" +
+                    "  AND caseless_ne(`ajuntament_o_nucli_municipal`, \"C. A. de Catalunya\"\n)))" +
+                    "ORDER BY `data` ASC NULL LAST"
+
+        val localHolidaysResponse = try {
+            HolidayService.getInstance().getJson(localHolidaysUrl).awaitResponse()
+        } catch (e: Exception) {
+            Log.e("LibraryRepository", "Error getting local holiday days", e)
+            null
+        }
+
+        Log.d(
+            "LibraryRespository",
+            "Got Local Holidays: ${localHolidaysResponse?.body()?.body?.size}"
+        )
+
+        return localHolidaysResponse
+    }
+
+    /**
+     * Gets the Catalonia holiday days from the API
+     * @param year: Int
+     * @return Response<HolidayResponse>?
+     */
+    private suspend fun getCataloniaHolidaysResponse(year: Int): Response<HolidayResponse>? {
+        val cataloniaHolidaysUrl =
+            "https://analisi.transparenciacatalunya.cat/resource/8qnu-agns.json?\$query=SELECT `codi`, `any`, `data`, `nom_del_festiu` WHERE `any` IN (\"$year\")"
+
+        val cataloniaHolidaysResponse = try {
+            HolidayService.getInstance().getJson(cataloniaHolidaysUrl).awaitResponse()
+        } catch (e: Exception) {
+            Log.e("LibraryRepository", "Error getting catalonia holiday days", e)
+            null
+        }
+
+        Log.d(
+            "LibraryRespository",
+            "Got Catalonia Holidays: ${cataloniaHolidaysResponse?.body()?.body?.size}"
+        )
+
+        return cataloniaHolidaysResponse
+    }
+
+
     private fun jsonArrayToStringArray(jsonArray: JSONArray): List<String> {
         val stringList = mutableListOf<String>()
         for (i in 0 until jsonArray.length()) {
@@ -123,7 +202,7 @@ class LibraryConverterFactory : Converter.Factory() {
     private fun getTimetable(
         jsonObject: JSONObject,
         season: Season,
-        dateInterval: DateInterval
+        dateInterval: DateInterval,
     ): SeasonTimeTable {
 
         var estacio = "hivern"

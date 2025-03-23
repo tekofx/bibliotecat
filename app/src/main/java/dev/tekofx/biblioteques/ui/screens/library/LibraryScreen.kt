@@ -67,6 +67,8 @@ import dev.tekofx.biblioteques.utils.formatDate
 import dev.tekofx.biblioteques.utils.formatDayOfWeek
 import dev.tekofx.biblioteques.utils.openApp
 import java.time.LocalDate
+import java.time.temporal.WeekFields
+import java.util.Locale
 
 
 val tabEntries = listOf(
@@ -232,6 +234,19 @@ fun LibraryTimetable(
 
 @Composable
 fun LibraryTimeTable(seasonTimeTable: SeasonTimeTable) {
+    val today = LocalDate.now()
+    val weekFields = WeekFields.of(Locale.getDefault())
+    val startOfWeek = today.with(weekFields.dayOfWeek(), 1)
+    val endOfWeek = today.with(weekFields.dayOfWeek(), 7)
+
+    var currentDay = startOfWeek
+    while (!currentDay.isAfter(endOfWeek)) {
+        println(currentDay)
+        currentDay = currentDay.plusDays(1)
+    }
+
+
+
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -257,6 +272,7 @@ fun LibraryTimeTable(seasonTimeTable: SeasonTimeTable) {
         }
 
         seasonTimeTable.dayTimetables.forEach {
+
             Surface(
                 tonalElevation = if (it.key == LocalDate.now().dayOfWeek) 100.dp else if (it.value.open) 5.dp else 1.dp,
                 shape = MaterialTheme.shapes.small,
@@ -269,6 +285,7 @@ fun LibraryTimeTable(seasonTimeTable: SeasonTimeTable) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
+
                     Text(
                         text = formatDayOfWeek(it.key),
                         style = Typography.bodyLarge,

@@ -5,7 +5,9 @@ package dev.tekofx.biblioteques.model.library
  *
  * @property timeIntervals A list of time intervals for the day.
  */
-data class DayTimeTable(val timeIntervals: List<TimeInterval>) {
+data class DayTimeTable(
+    val timeIntervals: List<TimeInterval>,
+) {
 
     var open = false
 
