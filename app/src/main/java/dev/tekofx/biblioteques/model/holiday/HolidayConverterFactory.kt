@@ -6,6 +6,7 @@ import org.json.JSONArray
 import retrofit2.Converter
 import retrofit2.Retrofit
 import java.lang.reflect.Type
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -22,7 +23,7 @@ class HolidayConverterFactory : Converter.Factory() {
                 val data = body.string()
                 val jsonArray = JSONArray(data)
 
-                val holidayList: List<Holiday> =
+                val holidayList: Map<LocalDate, Holiday> =
                     if (jsonArray.getJSONObject(0).has("any_calendari")) {
                         constructLocalHolidays(jsonArray)
                     } else {
@@ -34,8 +35,8 @@ class HolidayConverterFactory : Converter.Factory() {
         }
     }
 
-    private fun constructGeneralCataloniaHolidays(jsonArray: JSONArray): List<Holiday> {
-        val localHolidayList = mutableListOf<Holiday>()
+    private fun constructGeneralCataloniaHolidays(jsonArray: JSONArray): Map<LocalDate, Holiday> {
+        val localHolidayList = mutableMapOf<LocalDate, Holiday>()
         for (i in 0 until jsonArray.length()) {
             val jsonObject = jsonArray.getJSONObject(i)
             val year = jsonObject.getInt("any")
@@ -50,18 +51,15 @@ class HolidayConverterFactory : Converter.Factory() {
                 name = holidayName,
                 postalCode = "08"
             )
-            localHolidayList.add(holiday)
+            localHolidayList[localDate] = holiday
         }
         return localHolidayList
     }
 
-    private fun constructLocalHolidays(jsonArray: JSONArray): List<Holiday> {
-        val localHolidayList = mutableListOf<Holiday>()
+    private fun constructLocalHolidays(jsonArray: JSONArray): Map<LocalDate, Holiday> {
+        val localHolidayList = mutableMapOf<LocalDate, Holiday>()
         for (i in 0 until jsonArray.length()) {
-
             val jsonObject = jsonArray.getJSONObject(i)
-
-
             val year = jsonObject.getInt("any_calendari")
             val localDateTime = LocalDateTime.parse(jsonObject.getString("data"), formatter)
             val localDate = localDateTime.toLocalDate()
@@ -76,7 +74,7 @@ class HolidayConverterFactory : Converter.Factory() {
                 name = holidayObject,
                 postalCode = postalCode
             )
-            localHolidayList.add(holiday)
+            localHolidayList[localDate] = holiday
         }
         return localHolidayList
     }

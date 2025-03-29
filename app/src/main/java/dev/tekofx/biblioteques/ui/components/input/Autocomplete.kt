@@ -33,7 +33,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
-import dev.tekofx.biblioteques.ui.components.AccordionArrow
+import dev.tekofx.biblioteques.ui.components.accordion.AccordionArrow
 import java.text.Normalizer
 
 @Composable

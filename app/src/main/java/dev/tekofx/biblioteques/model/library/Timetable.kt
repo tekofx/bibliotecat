@@ -6,25 +6,24 @@ import dev.tekofx.biblioteques.utils.formatDayOfWeek
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
-import java.time.temporal.WeekFields
-import java.util.Locale
 
 class Timetable(
     private val winterTimetable: SeasonTimeTable,
     private val summerTimetable: SeasonTimeTable,
-    val holidays: List<Holiday>,
+    val holidays: Map<LocalDate, Holiday>,
 ) {
+    fun getNextSevenDaysDayTimetables(date: LocalDate): Map<LocalDate, DayTimeTable> {
+        val result = mutableMapOf<LocalDate, DayTimeTable>()
+        var currentDate = date
+        for (i in 0 until 7) {
+            val dayTimetable = getDayTimetable(currentDate)
+            if (dayTimetable != null) {
 
-
-    fun getWeekOfDay(date: LocalDate) {
-        val weekFields = WeekFields.of(Locale.getDefault())
-        val startOfWeek = date.with(weekFields.dayOfWeek(), 1)
-        val endOfWeek = date.with(weekFields.dayOfWeek(), 7)
-
-        var currentDay = startOfWeek
-        while (!currentDay.isAfter(endOfWeek)) {
-            currentDay = currentDay.plusDays(1)
+                result[currentDate] = dayTimetable.copy(holiday = holidays[currentDate])
+            }
+            currentDate = currentDate.plusDays(1)
         }
+        return result
     }
 
 
@@ -38,12 +37,12 @@ class Timetable(
     fun getOpenStatus(
         date: LocalDate, time: LocalTime
     ): LibraryStatus {
-        holidays.find { it.date == date }?.let {
+
+        holidays[date]?.let {
             return LibraryStatus(
-                LibraryStatus.Value.MayBeOpen.Holiday, StatusColor.ORANGE, "Festiu ${it.name}"
+                LibraryStatus.Value.MayBeOpen.Holiday, StatusColor.ORANGE, it.name
             )
         }
-
         val currentInterval = getInterval(date, time)
 
         // If a day doesnt have any interval.from and interval.to, the app couldn't parse the timetable
@@ -107,7 +106,7 @@ class Timetable(
      * @param time
      */
     private fun isOpen(date: LocalDate, time: LocalTime): Boolean {
-        holidays.find { it.date == date }?.let { return false }
+        holidays[date]?.let { return false }
         val dayTimetable = getDayTimetable(date)
         return dayTimetable?.timeIntervals?.any { interval ->
             interval.from?.let { fromTime ->

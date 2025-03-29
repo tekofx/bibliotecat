@@ -1,5 +1,7 @@
 package dev.tekofx.biblioteques.model.library
 
+import dev.tekofx.biblioteques.model.holiday.Holiday
+
 /**
  * Represents a timetable for a specific day, containing multiple intervals.
  *
@@ -7,6 +9,7 @@ package dev.tekofx.biblioteques.model.library
  */
 data class DayTimeTable(
     val timeIntervals: List<TimeInterval>,
+    val holiday: Holiday? = null
 ) {
 
     var open = false

@@ -94,8 +94,8 @@ class LibraryConverterFactory : Converter.Factory() {
                 val (timetableHivern, timetableEstiu) = getTimetables(libraryElement)
 
                 val localHolidays = localHolidaysResponse?.body?.filter { holiday ->
-                    holiday.postalCode == postalCode
-                }
+                    holiday.value.postalCode == postalCode
+                }?.toMutableMap()
 
                 val cataloniaHolidays = cataloniaHolidaysResponse?.body
                 val holidays = cataloniaHolidays.orEmpty() + localHolidays.orEmpty()
@@ -131,18 +131,7 @@ class LibraryConverterFactory : Converter.Factory() {
      */
     private suspend fun getLocalHolidaysResponse(year: Int): Response<HolidayResponse>? {
         val localHolidaysUrl =
-            "https://analisi.transparenciacatalunya.cat/resource/b4eh-r8up.json?\$query=SELECT\n" +
-                    "  `any_calendari`,\n" +
-                    "  `data`,\n" +
-                    "  `ajuntament_o_nucli_municipal`,\n" +
-                    "  `codi_municipi_ine`,\n" +
-                    "  `festiu`\n" +
-                    "WHERE\n" +
-                    "  (`any_calendari` = \"$year\")\n" +
-                    "  AND (caseless_starts_with(`codi_municipi_ine`, \"08\")\n" +
-                    "  AND (caseless_ne(`ajuntament_o_nucli_municipal`, \"null\")\n" +
-                    "  AND caseless_ne(`ajuntament_o_nucli_municipal`, \"C. A. de Catalunya\"\n)))" +
-                    "ORDER BY `data` ASC NULL LAST"
+            "https://analisi.transparenciacatalunya.cat/resource/b4eh-r8up.json?\$query=SELECT\n" + "  `any_calendari`,\n" + "  `data`,\n" + "  `ajuntament_o_nucli_municipal`,\n" + "  `codi_municipi_ine`,\n" + "  `festiu`\n" + "WHERE\n" + "  (`any_calendari` = \"$year\")\n" + "  AND (caseless_starts_with(`codi_municipi_ine`, \"08\")\n" + "  AND (caseless_ne(`ajuntament_o_nucli_municipal`, \"null\")\n" + "  AND caseless_ne(`ajuntament_o_nucli_municipal`, \"C. A. de Catalunya\"\n)))" + "ORDER BY `data` ASC NULL LAST"
 
         val localHolidaysResponse = try {
             HolidayService.getInstance().getJson(localHolidaysUrl).awaitResponse()
@@ -152,8 +141,7 @@ class LibraryConverterFactory : Converter.Factory() {
         }
 
         Log.d(
-            "LibraryRespository",
-            "Got Local Holidays: ${localHolidaysResponse?.body()?.body?.size}"
+            "LibraryRespository", "Got Local Holidays: ${localHolidaysResponse?.body()?.body?.size}"
         )
 
         return localHolidaysResponse
@@ -223,10 +211,8 @@ class LibraryConverterFactory : Converter.Factory() {
 
         val observationsHtml = jsonObject.getString("observacions_$estacio").ifEmpty { null }
 
-        val weekTimetableDeProva = SeasonTimeTable(
-            start = dateInterval.from,
-            end = dateInterval.to,
-            mapOf(
+        val weekTimetableDeProva =
+            SeasonTimeTable(start = dateInterval.from, end = dateInterval.to, mapOf(
                 DayOfWeek.MONDAY to DayTimeTable(timeIntervalsDilluns ?: listOf()),
                 DayOfWeek.TUESDAY to DayTimeTable(timeIntervalsDimarts ?: listOf()),
                 DayOfWeek.WEDNESDAY to DayTimeTable(timeIntervalsDimecres ?: listOf()),
@@ -234,11 +220,9 @@ class LibraryConverterFactory : Converter.Factory() {
                 DayOfWeek.FRIDAY to DayTimeTable(timeIntervalsDivendres ?: listOf()),
                 DayOfWeek.SATURDAY to DayTimeTable(timeIntervalsDissabte ?: listOf()),
                 DayOfWeek.SUNDAY to DayTimeTable(timeIntervalsDiumenge ?: listOf())
-            ),
-            season = season,
-            // If observationsHTML is not null parse it, if not let it null
-            observation = observationsHtml?.let { getObservacionsEstacio(jsonObject, estacio) }
-        )
+            ), season = season,
+                // If observationsHTML is not null parse it, if not let it null
+                observation = observationsHtml?.let { getObservacionsEstacio(jsonObject, estacio) })
 
         return weekTimetableDeProva
 
@@ -246,9 +230,7 @@ class LibraryConverterFactory : Converter.Factory() {
 
 
     private fun getTimeIntervals(
-        jsonObject: JSONObject,
-        estacio: String,
-        day: String
+        jsonObject: JSONObject, estacio: String, day: String
     ): List<TimeInterval>? {
 
 
@@ -262,8 +244,9 @@ class LibraryConverterFactory : Converter.Factory() {
             "(dilluns|dimarts|dimecres|dijous|divendres|dissabte|diumenge)".toRegex()
 
         // Timetable contains text
-        if (regexMonths.containsMatchIn(timeintervalString) ||
-            regexDayOfWeek.containsMatchIn(timeintervalString)
+        if (regexMonths.containsMatchIn(timeintervalString) || regexDayOfWeek.containsMatchIn(
+                timeintervalString
+            )
         ) {
             val timeInterval = TimeInterval(null, null, timeintervalString)
             val timeIntervalsList = mutableListOf<TimeInterval>()
@@ -283,9 +266,8 @@ class LibraryConverterFactory : Converter.Factory() {
 
         try {
             val regex = Regex("""\d+([:.,]?\d*)""")
-            val textHours =
-                regex.findAll(timeintervalString)
-                    .map { it.value.replace(".", ":").replace(",", ":").replace("h", "") }.toList()
+            val textHours = regex.findAll(timeintervalString)
+                .map { it.value.replace(".", ":").replace(",", ":").replace("h", "") }.toList()
             val validTimes = mutableListOf<LocalTime>()
 
             for (time in textHours) {
@@ -403,8 +385,7 @@ class LibraryConverterFactory : Converter.Factory() {
         val terminaEstiu = LocalDate.of(yearTerminaEstiu, monthComencaHivern, dayComencaHivern)
 
         return Pair(
-            DateInterval(comencaHivern, terminaHivern),
-            DateInterval(comencaEstiu, terminaEstiu)
+            DateInterval(comencaHivern, terminaHivern), DateInterval(comencaEstiu, terminaEstiu)
         )
 
 

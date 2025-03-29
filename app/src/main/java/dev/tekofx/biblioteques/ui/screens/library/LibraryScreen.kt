@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Clear
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.MailOutline
 import androidx.compose.material3.Icon
@@ -47,14 +45,15 @@ import dev.tekofx.biblioteques.R
 import dev.tekofx.biblioteques.model.library.Library
 import dev.tekofx.biblioteques.model.library.Season
 import dev.tekofx.biblioteques.model.library.SeasonTimeTable
+import dev.tekofx.biblioteques.model.library.TimeInterval
 import dev.tekofx.biblioteques.model.library.Timetable
 import dev.tekofx.biblioteques.ui.IconResource
-import dev.tekofx.biblioteques.ui.components.Accordion
 import dev.tekofx.biblioteques.ui.components.InfoIntentCard
 import dev.tekofx.biblioteques.ui.components.SmallMap
 import dev.tekofx.biblioteques.ui.components.StatusBadge
 import dev.tekofx.biblioteques.ui.components.TabEntry
-import dev.tekofx.biblioteques.ui.components.TabRowComponent
+import dev.tekofx.biblioteques.ui.components.accordion.Accordion
+import dev.tekofx.biblioteques.ui.components.accordion.AccordionAlt
 import dev.tekofx.biblioteques.ui.components.feedback.Alert
 import dev.tekofx.biblioteques.ui.components.feedback.AlertType
 import dev.tekofx.biblioteques.ui.components.feedback.Loader
@@ -65,10 +64,7 @@ import dev.tekofx.biblioteques.ui.viewModels.library.LibraryViewModel
 import dev.tekofx.biblioteques.utils.IntentType
 import dev.tekofx.biblioteques.utils.formatDate
 import dev.tekofx.biblioteques.utils.formatDayOfWeek
-import dev.tekofx.biblioteques.utils.openApp
 import java.time.LocalDate
-import java.time.temporal.WeekFields
-import java.util.Locale
 
 
 val tabEntries = listOf(
@@ -106,13 +102,11 @@ fun LibraryScreen(
             Column(
                 modifier = Modifier
                     .padding(bottom = 10.dp)
+                    .verticalScroll(rememberScrollState())
             ) {
                 AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(library.image)
-                        .memoryCachePolicy(CachePolicy.ENABLED)
-                        .crossfade(true)
-                        .build(),
+                    model = ImageRequest.Builder(LocalContext.current).data(library.image)
+                        .memoryCachePolicy(CachePolicy.ENABLED).crossfade(true).build(),
                     placeholder = painterResource(R.drawable.local_library),
                     contentDescription = null,
                     modifier = Modifier
@@ -129,30 +123,26 @@ fun LibraryScreen(
                 ) {
                     Text(text = library.name, style = Typography.headlineSmall)
                     Text(text = library.municipality, style = Typography.titleLarge)
-                    StatusBadge(
-                        library.libraryStatus.color,
-                        library.libraryStatus.message,
-                        Typography.titleMedium
-                    )
+                    LibraryTest(library)
+                    InfoIntentCard(IntentType.LOCATION, library.address)
+                    library.emails?.forEach {
+                        InfoIntentCard(
+                            contactType = IntentType.MAIL, text = it
+                        )
+                    }
 
-                    TabRowComponent(
-                        tabEntries = tabEntries,
-                        contentScreens = listOf(
-                            { LibraryTimetable(library.timetable) },
-                            {
-                                LibraryLocation(library, onMapClick = {
-                                    //navHostController.navigate(NavigateDestinations.MAP_ROUTE + "?pointId=$pointID")
-                                    openApp(
-                                        currentContext,
-                                        IntentType.LOCATION,
-                                        library.location.joinToString(",")
-                                    )
-                                })
-                            },
-                            { LibraryContact(library) },
-                        ),
-                        modifier = Modifier.fillMaxSize(),
-                    )
+                    library.phones?.forEach {
+                        InfoIntentCard(
+                            contactType = IntentType.PHONE, text = it
+                        )
+                    }
+
+                    library.webUrl?.let {
+                        InfoIntentCard(
+                            IntentType.WEB, library.webUrl
+                        )
+                    }
+
                 }
             }
         }
@@ -181,8 +171,7 @@ fun LibraryTimetable(
             ) {
 
             SegmentedButtons {
-                SegmentedButtonItem(
-                    selected = selectedTabIndex == 0,
+                SegmentedButtonItem(selected = selectedTabIndex == 0,
                     onClick = { selectedTabIndex = 0 },
                     label = {
                         Text(
@@ -195,11 +184,9 @@ fun LibraryTimetable(
                     },
                     icon = {
                         if (timetable.getSeasonTimetableOfDate(LocalDate.now()).season == Season.SUMMER) Icon(
-                            painter = summerIcon,
-                            contentDescription = "Summer"
+                            painter = summerIcon, contentDescription = "Summer"
                         ) else Icon(painter = winterIcon, contentDescription = "Winter")
-                    }
-                )
+                    })
                 SegmentedButtonItem(
                     selected = selectedTabIndex == 1,
                     onClick = { selectedTabIndex = 1 },
@@ -214,8 +201,7 @@ fun LibraryTimetable(
                     },
                     icon = {
                         if (timetable.getNextSeasonTimetableOfDate(LocalDate.now()).season == Season.SUMMER) Icon(
-                            painter = summerIcon,
-                            contentDescription = "Summer"
+                            painter = summerIcon, contentDescription = "Summer"
                         ) else Icon(painter = winterIcon, contentDescription = "Winter")
                     }
 
@@ -233,29 +219,81 @@ fun LibraryTimetable(
 }
 
 @Composable
+fun LibraryTest(library: Library) {
+
+    val nextSevenDaysTimetables = library.timetable?.getNextSevenDaysDayTimetables(LocalDate.now())
+
+    AccordionAlt(header = {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Icon(
+                IconResource.fromDrawableResource(R.drawable.clock).asPainterResource(),
+                contentDescription = ""
+            )
+            StatusBadge(
+                library.libraryStatus.color,
+                library.libraryStatus.message,
+                Typography.titleMedium
+            )
+        }
+    }, content = {
+
+        Column(
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = Modifier.padding(10.dp)
+        ) {
+            nextSevenDaysTimetables?.forEach {
+                Surface(
+                    tonalElevation = if (it.key == LocalDate.now()) 100.dp else if (it.value.open) 5.dp else 1.dp,
+                    shape = MaterialTheme.shapes.small,
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = formatDayOfWeek(it.key.dayOfWeek),
+                            style = Typography.bodyLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+
+                            if (it.value.timeIntervals.isEmpty()) {
+                                Text("Tancat")
+                            } else if (it.value.holiday != null) {
+                                Text(it.value.holiday!!.name)
+                            } else {
+                                it.value.timeIntervals.forEach { timeInterval: TimeInterval ->
+                                    Text(
+                                        text = timeInterval.toString(),
+                                        style = Typography.bodyLarge
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    })
+}
+
+@Composable
 fun LibraryTimeTable(seasonTimeTable: SeasonTimeTable) {
-    val today = LocalDate.now()
-    val weekFields = WeekFields.of(Locale.getDefault())
-    val startOfWeek = today.with(weekFields.dayOfWeek(), 1)
-    val endOfWeek = today.with(weekFields.dayOfWeek(), 7)
-
-    var currentDay = startOfWeek
-    while (!currentDay.isAfter(endOfWeek)) {
-        println(currentDay)
-        currentDay = currentDay.plusDays(1)
-    }
-
-
-
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Surface(
-            tonalElevation = 20.dp,
-            shape = RoundedCornerShape(50.dp)
+            tonalElevation = 20.dp, shape = RoundedCornerShape(50.dp)
         ) {
-
             Text(
                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
                 text = "${formatDate(seasonTimeTable.start)} - ${formatDate(seasonTimeTable.end)}",
@@ -265,10 +303,38 @@ fun LibraryTimeTable(seasonTimeTable: SeasonTimeTable) {
 
         seasonTimeTable.observation?.let {
             Accordion(
-                title = "Observacions",
-                description = seasonTimeTable.observation,
-                icon = IconResource.fromImageVector(Icons.Outlined.Info)
-            )
+                header = { Text("Header") },
+            ) {
+                Text("Test")
+            }
+        }
+
+        Accordion(
+            header = { Text("Header") },
+        ) {
+            seasonTimeTable.dayTimetables.forEach {
+
+                Surface(
+                    tonalElevation = if (it.key == LocalDate.now().dayOfWeek) 100.dp else if (it.value.open) 5.dp else 1.dp,
+                    shape = MaterialTheme.shapes.small,
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = formatDayOfWeek(it.key),
+                            style = Typography.bodyLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = it.value.toString(), style = Typography.bodyLarge
+                        )
+                    }
+                }
+            }
         }
 
         seasonTimeTable.dayTimetables.forEach {
@@ -277,33 +343,21 @@ fun LibraryTimeTable(seasonTimeTable: SeasonTimeTable) {
                 tonalElevation = if (it.key == LocalDate.now().dayOfWeek) 100.dp else if (it.value.open) 5.dp else 1.dp,
                 shape = MaterialTheme.shapes.small,
             ) {
-
-                Column(
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-
                     Text(
                         text = formatDayOfWeek(it.key),
                         style = Typography.bodyLarge,
                         fontWeight = FontWeight.Bold
                     )
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceAround,
-
-                        ) {
-                        Text(
-                            text = it.value.toString(),
-                            style = Typography.bodyLarge
-                        )
-                    }
+                    Text(
+                        text = it.value.toString(), style = Typography.bodyLarge
+                    )
                 }
-
-
             }
         }
     }
@@ -320,8 +374,7 @@ fun LibraryContact(library: Library) {
 
         if (library.emails == null && library.phones == null && library.webUrl == null) {
             Surface(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 tonalElevation = 20.dp,
                 shape = MaterialTheme.shapes.small
             ) {
@@ -338,9 +391,7 @@ fun LibraryContact(library: Library) {
                         contentDescription = "No dades de contacte"
                     )
                     Text(
-                        modifier = Modifier
-                            .padding(20.dp),
-                        text = "No dades de contacte"
+                        modifier = Modifier.padding(20.dp), text = "No dades de contacte"
                     )
                 }
             }
@@ -348,22 +399,19 @@ fun LibraryContact(library: Library) {
 
             library.emails?.forEach {
                 InfoIntentCard(
-                    contactType = IntentType.MAIL,
-                    text = it
+                    contactType = IntentType.MAIL, text = it
                 )
             }
 
             library.phones?.forEach {
                 InfoIntentCard(
-                    contactType = IntentType.PHONE,
-                    text = it
+                    contactType = IntentType.PHONE, text = it
                 )
             }
 
             library.webUrl?.let {
                 InfoIntentCard(
-                    IntentType.WEB,
-                    library.webUrl
+                    IntentType.WEB, library.webUrl
                 )
             }
         }
