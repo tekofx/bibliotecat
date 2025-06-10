@@ -15,7 +15,7 @@ class Timetable(
     fun getNextSevenDaysDayTimetables(date: LocalDate): Map<LocalDate, DayTimeTable> {
         val result = mutableMapOf<LocalDate, DayTimeTable>()
         var currentDate = date
-        for (i in 0 until 7) {
+        repeat(7) {
             val dayTimetable = getDayTimetable(currentDate)
             if (dayTimetable != null) {
 
