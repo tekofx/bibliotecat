@@ -1,15 +1,13 @@
 package dev.tekofx.biblioteques.repository
 
 import android.util.Log
-import dev.tekofx.biblioteques.call.HolidayService
 import dev.tekofx.biblioteques.call.LibraryService
 import dev.tekofx.biblioteques.dto.LibraryResponse
 import retrofit2.awaitResponse
 import java.net.UnknownHostException
 
 class LibraryRepository(
-    private val libraryService: LibraryService,
-    private val holidayService: HolidayService
+    private val libraryService: LibraryService
 ) {
     suspend fun getLibraries(): LibraryResponse {
         try {

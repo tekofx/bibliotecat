@@ -48,7 +48,7 @@ class LibraryConverterFactoryTest {
         .build()
         .create(HolidayService::class.java)
 
-    private val sut = LibraryRepository(libraryApi, holidayApi)
+    private val sut = LibraryRepository(libraryApi)
 
     @After
     fun tearDown() {

@@ -22,10 +22,10 @@ import org.osmdroid.util.GeoPoint
 
 @Composable
 fun Map(
+    modifier: Modifier = Modifier,
     library: Library,
     onClick: () -> Unit,
     properties: MapProperties = DefaultMapProperties,
-    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
 

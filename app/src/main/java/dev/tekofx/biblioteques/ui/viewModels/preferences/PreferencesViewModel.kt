@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import androidx.core.content.edit
 
 
 class Preferences(context: Context) {
@@ -19,7 +20,7 @@ class Preferences(context: Context) {
     }
 
     fun setDynamicColorEnabled(enabled: Boolean) {
-        sharedPreferences.edit().putBoolean("dynamic_color", enabled).apply()
+        sharedPreferences.edit { putBoolean("dynamic_color", enabled) }
     }
 
     fun isShowWelcomeScreen(): Boolean {
@@ -27,7 +28,7 @@ class Preferences(context: Context) {
     }
 
     fun setShowWelcomeScreen(enabled: Boolean) {
-        sharedPreferences.edit().putBoolean("show_welcome_screen", enabled).apply()
+        sharedPreferences.edit { putBoolean("show_welcome_screen", enabled) }
     }
 }
 

@@ -8,7 +8,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.Composable
 
 enum class SlideDirection {
-    UP, DOWN
+    UP,
 }
 
 @Composable

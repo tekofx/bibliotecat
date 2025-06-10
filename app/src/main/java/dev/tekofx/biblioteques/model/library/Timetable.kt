@@ -113,8 +113,8 @@ class Timetable(
                 interval.to?.let { toTime ->
                     time.isAfter(fromTime) && time.isBefore(toTime)
                 }
-            } ?: false
-        } ?: false
+            } == true
+        } == true
     }
 
     /**
@@ -220,7 +220,7 @@ class Timetable(
     private fun getNextIntervalOfDay(date: LocalDate, time: LocalTime): TimeInterval? {
         val dayTimeTable = getDayTimetable(date)
         return dayTimeTable?.timeIntervals?.find { interval ->
-            interval.from?.let { time.isBefore(it) } ?: false
+            interval.from?.let { time.isBefore(it) } == true
         }
     }
 }

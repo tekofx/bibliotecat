@@ -48,7 +48,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dev.tekofx.biblioteques.call.BookService
-import dev.tekofx.biblioteques.call.HolidayService
 import dev.tekofx.biblioteques.call.LibraryService
 import dev.tekofx.biblioteques.navigation.NavigateDestinations
 import dev.tekofx.biblioteques.navigation.Navigation
@@ -78,7 +77,7 @@ class MainActivity : ComponentActivity() {
         val libraryViewModel = ViewModelProvider(
             this, LibraryViewModelFactory(
                 LibraryRepository(
-                    LibraryService.getInstance(), HolidayService.getInstance()
+                    LibraryService.getInstance()
                 )
             )
         )[LibraryViewModel::class.java]

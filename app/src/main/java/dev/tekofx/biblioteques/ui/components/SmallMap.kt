@@ -37,11 +37,12 @@ fun SmallMap(
             .clip(RoundedCornerShape(10.dp))
     ) {
         Map(
-            library, properties = noFullscreenProperties,
             onClick = onClick,
+            library = library,
             modifier = Modifier.pointerInput(Unit) {
                 detectVerticalDragGestures { _, _ -> } // Disable Drag
-            }
+            },
+            properties = noFullscreenProperties,
         )
     }
 }

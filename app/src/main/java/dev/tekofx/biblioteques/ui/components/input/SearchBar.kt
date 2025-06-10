@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun SearchBar(
-    modifier: Modifier = Modifier.fillMaxWidth(),
+    modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
     onDone: (KeyboardActionScope.() -> Unit)? = null,
@@ -34,7 +34,7 @@ fun SearchBar(
     shape: Shape = RoundedCornerShape(50.dp)
 ) {
     TextField(
-        modifier = modifier,
+        modifier = modifier.fillMaxWidth(),
         value = value,
         colors = TextFieldDefaults.colors(
             focusedIndicatorColor = Color.Transparent,

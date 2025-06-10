@@ -9,7 +9,6 @@ class Library(
     val name: String,
     val description: String,
     val municipality: String,
-    val postalCode: String,
     val address: String,
     val bibliotecaVirtualUrl: String?,
     val emails: List<String>?,
@@ -27,9 +26,4 @@ class Library(
         )
 
 
-    fun updateLibraryStatus(date: LocalDate = LocalDate.now(), time: LocalTime = LocalTime.now()) {
-        timetable?.let {
-            libraryStatus = timetable.getOpenStatus(date, time)
-        }
-    }
 }

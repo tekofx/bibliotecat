@@ -113,8 +113,7 @@ class LibraryConverterFactory : Converter.Factory() {
                     webUrl = webUrl,
                     location = listOf(latitude, longitude),
                     image = image,
-                    timetable = timetable,
-                    postalCode = postalCode
+                    timetable = timetable
                 )
                 libraryList.add(library)
             }
@@ -131,7 +130,7 @@ class LibraryConverterFactory : Converter.Factory() {
      */
     private suspend fun getLocalHolidaysResponse(year: Int): Response<HolidayResponse>? {
         val localHolidaysUrl =
-            "https://analisi.transparenciacatalunya.cat/resource/b4eh-r8up.json?\$query=SELECT\n" + "  `any_calendari`,\n" + "  `data`,\n" + "  `ajuntament_o_nucli_municipal`,\n" + "  `codi_municipi_ine`,\n" + "  `festiu`\n" + "WHERE\n" + "  (`any_calendari` = \"$year\")\n" + "  AND (caseless_starts_with(`codi_municipi_ine`, \"08\")\n" + "  AND (caseless_ne(`ajuntament_o_nucli_municipal`, \"null\")\n" + "  AND caseless_ne(`ajuntament_o_nucli_municipal`, \"C. A. de Catalunya\"\n)))" + "ORDER BY `data` ASC NULL LAST"
+            "https://analisi.transparenciacatalunya.cat/resource/b4eh-r8up.json?\$query=SELECT\n  `any_calendari`,\n  `data`,\n  `ajuntament_o_nucli_municipal`,\n  `codi_municipi_ine`,\n  `festiu`\nWHERE\n  (`any_calendari` = \"$year\")\n  AND (caseless_starts_with(`codi_municipi_ine`, \"08\")\n  AND (caseless_ne(`ajuntament_o_nucli_municipal`, \"null\")\n  AND caseless_ne(`ajuntament_o_nucli_municipal`, \"C. A. de Catalunya\"\n)))ORDER BY `data` ASC NULL LAST"
 
         val localHolidaysResponse = try {
             HolidayService.getInstance().getJson(localHolidaysUrl).awaitResponse()

@@ -319,7 +319,6 @@ var LibraryAbrera = Library(
     webUrl = "https://www.biblioabrera.cat",
     image = "https://bibliotecavirtual.diba.cat/documents/346453/0/Abrera_edifici_exterior+vitrall.jpg/b5b6ae1d-a271-422e-8fe3-bf2a993a9713?t=1327512463534",
     location = listOf(123.0, 12.2),
-    postalCode = "09012",
     timetable = timetable,
 )
 
@@ -335,6 +334,5 @@ var LibraryCanCasacuberta = Library(
     webUrl = "https://badabiblios.cat",
     image = "https://bibliotecavirtual.diba.cat/documents/344811/0/Biblioteca+Can+Casacuberta+-+Entrada.jpg/92bf817c-e870-4756-9677-11fd1115fdb8?t=1337090668782",
     location = listOf(41.4451890, 2.2467790),
-    postalCode = "08912",
     timetable = emptyTimetable,
 )

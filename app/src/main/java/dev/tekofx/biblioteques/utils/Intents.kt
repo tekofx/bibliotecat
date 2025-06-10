@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import androidx.core.net.toUri
 
 enum class IntentType {
     MAIL,
@@ -17,10 +18,10 @@ enum class IntentType {
 fun openApp(context: Context, intentType: IntentType, data: String) {
 
     val uri = when (intentType) {
-        IntentType.PHONE -> Uri.parse("tel:${Uri.encode("+34$data")}")
-        IntentType.MAIL -> Uri.parse("mailto:${Uri.encode(data)}")
-        IntentType.WEB -> Uri.parse(data)
-        IntentType.LOCATION -> Uri.parse("geo:0,0?q=${Uri.encode(data)}")
+        IntentType.PHONE -> "tel:${Uri.encode("+34$data")}".toUri()
+        IntentType.MAIL -> "mailto:${Uri.encode(data)}".toUri()
+        IntentType.WEB -> data.toUri()
+        IntentType.LOCATION -> "geo:0,0?q=${Uri.encode(data)}".toUri()
     }
 
     val intent = Intent(
