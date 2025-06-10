@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Biblioteques"
+rootProject.name = "bibliotecat"
 include(":app")

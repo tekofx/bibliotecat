@@ -17,11 +17,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:windowSoftInputMode="adjustResize"
-        android:theme="@style/Theme.Biblioteques"
+        android:theme="@style/Theme.bibliotecat"
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"
-            android:theme="@style/Theme.Biblioteques"
+            android:theme="@style/Theme.bibliotecat"
 
             android:exported="true">
             <intent-filter>

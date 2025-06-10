@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "dev.tekofx.biblioteques"
+    namespace = "dev.tekofx.bibliotecat"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "dev.tekofx.biblioteques"
+        applicationId = "dev.tekofx.bibliotecat"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
