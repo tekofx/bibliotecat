@@ -2,9 +2,9 @@ package dev.tekofx.bibliotecat.ui.screens.about
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material.icons.outlined.Info
@@ -51,7 +51,7 @@ fun AboutScreen(navHostController: NavHostController) {
             )
         }
     ) { padding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .padding(padding)
                 .padding(10.dp),
@@ -60,79 +60,97 @@ fun AboutScreen(navHostController: NavHostController) {
         ) {
 
             if (appInfo != null) {
-                Image(
-                    IconResource.fromDrawableResource(appInfo.icon).asPainterResource(),
-                    contentDescription = "Image",
-                    modifier = Modifier
-                        .size(150.dp),
-                    contentScale = ContentScale.Crop
-                )
-                Text(text = appInfo.appName, style = MaterialTheme.typography.displaySmall)
-                Section(
-                    title = "Version",
-                    description = appInfo.versionName,
-                    leftIcon = IconResource.fromImageVector(Icons.Outlined.Info)
+                item {
+
+                    Image(
+                        IconResource.fromDrawableResource(appInfo.icon).asPainterResource(),
+                        contentDescription = "Image",
+                        modifier = Modifier
+                            .size(150.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+                item {
+
+                    Text(text = appInfo.appName, style = MaterialTheme.typography.displaySmall)
+                }
+                item {
+                    Section(
+                        title = "Version",
+                        description = appInfo.versionName,
+                        leftIcon = IconResource.fromImageVector(Icons.Outlined.Info)
+                    )
+                }
+            }
+            item {
+                Text(
+                    "App",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
-            Text(
-                "App",
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.primary
-            )
-            Section(
-                title = "Registre de canvis",
-                description = "Veure els canvis a l'aplicació",
-                leftIcon = IconResource.fromDrawableResource(R.drawable.history),
-                rightIcon = IconResource.fromDrawableResource(R.drawable.open_in_new),
-                onClick = {
-                    openApp(
-                        context,
-                        IntentType.WEB,
-                        context.getString(R.string.changelog_url)
-                    )
-                }
-            )
-
-            Section(
-                title = "Codi font",
-                description = "Veure a Github",
-                leftIcon = IconResource.fromDrawableResource(R.drawable.data_object),
-                rightIcon = IconResource.fromDrawableResource(R.drawable.open_in_new),
-                onClick = {
-                    openApp(
-                        context,
-                        IntentType.WEB,
-                        context.getString(R.string.source_code_repo)
-                    )
-                }
-            )
-
-            Section(
-                title = "Recursos",
-                description = "Utilitzades en el codi d'aquesta aplicació",
-                leftIcon = IconResource.fromDrawableResource(R.drawable.licence),
-                rightIcon = IconResource.fromImageVector(Icons.AutoMirrored.Outlined.ArrowForward),
-                onClick = { navHostController.navigate(NavigateDestinations.RESOURCES_ROUTE) }
-            )
-            Text(
-                "Desenvolupador",
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.primary
-            )
-            Section(
-                title = "Donar a Ko-fi",
-                description = "Suporta el desenvolupament de app",
-                leftIcon = IconResource.fromDrawableResource(R.drawable.kofi_symbol),
-                rightIcon = IconResource.fromDrawableResource(R.drawable.open_in_new),
-                tint = Color.Unspecified,
-                onClick = {
-                    openApp(
-                        context,
-                        IntentType.WEB,
-                        "https://ko-fi.com/tekofx"
-                    )
-                }
-            )
+            item {
+                Section(
+                    title = "Registre de canvis",
+                    description = "Veure els canvis a l'aplicació",
+                    leftIcon = IconResource.fromDrawableResource(R.drawable.history),
+                    rightIcon = IconResource.fromDrawableResource(R.drawable.open_in_new),
+                    onClick = {
+                        openApp(
+                            context,
+                            IntentType.WEB,
+                            context.getString(R.string.changelog_url)
+                        )
+                    }
+                )
+            }
+            item {
+                Section(
+                    title = "Codi font",
+                    description = "Veure a Github",
+                    leftIcon = IconResource.fromDrawableResource(R.drawable.data_object),
+                    rightIcon = IconResource.fromDrawableResource(R.drawable.open_in_new),
+                    onClick = {
+                        openApp(
+                            context,
+                            IntentType.WEB,
+                            context.getString(R.string.source_code_repo)
+                        )
+                    }
+                )
+            }
+            item {
+                Section(
+                    title = "Recursos",
+                    description = "Utilitzades en el codi d'aquesta aplicació",
+                    leftIcon = IconResource.fromDrawableResource(R.drawable.licence),
+                    rightIcon = IconResource.fromImageVector(Icons.AutoMirrored.Outlined.ArrowForward),
+                    onClick = { navHostController.navigate(NavigateDestinations.RESOURCES_ROUTE) }
+                )
+            }
+            item {
+                Text(
+                    "Desenvolupador",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+            item {
+                Section(
+                    title = "Donar a Ko-fi",
+                    description = "Suporta el desenvolupament de app",
+                    leftIcon = IconResource.fromDrawableResource(R.drawable.kofi_symbol),
+                    rightIcon = IconResource.fromDrawableResource(R.drawable.open_in_new),
+                    tint = Color.Unspecified,
+                    onClick = {
+                        openApp(
+                            context,
+                            IntentType.WEB,
+                            "https://ko-fi.com/tekofx"
+                        )
+                    }
+                )
+            }
         }
     }
 }
