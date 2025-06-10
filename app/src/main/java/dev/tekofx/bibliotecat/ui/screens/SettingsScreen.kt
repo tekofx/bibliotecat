@@ -1,8 +1,9 @@
 package dev.tekofx.bibliotecat.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Create
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,6 +29,10 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
+                windowInsets = WindowInsets(
+                    top = 0.dp,
+                    bottom = 0.dp
+                ),
                 title = {
                     Text(
                         "Configuració", style = MaterialTheme.typography.titleLarge,
@@ -38,19 +43,21 @@ fun SettingsScreen(
                 )
         },
     ) { innerPadding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
                 .padding(horizontal = 10.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            SurfaceSwitch(
-                value = dynamicColorEnabled,
-                title = "Color dinàmic",
-                description = "Utilitzar els colors del fons de pantalla com a colors de l'app",
-                onValueChange = { preferencesViewModel.setDynamicColorEnabled(it) },
-                iconResource = IconResource.fromImageVector(Icons.Outlined.Create)
-            )
+            item {
+                SurfaceSwitch(
+                    value = dynamicColorEnabled,
+                    title = "Color dinàmic",
+                    description = "Utilitzar els colors del fons de pantalla com a colors de l'app",
+                    onValueChange = { preferencesViewModel.setDynamicColorEnabled(it) },
+                    iconResource = IconResource.fromImageVector(Icons.Outlined.Create)
+                )
+            }
         }
     }
 }
