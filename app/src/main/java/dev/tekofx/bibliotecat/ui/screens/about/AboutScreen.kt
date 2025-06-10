@@ -84,6 +84,13 @@ fun AboutScreen(navHostController: NavHostController) {
                 description = "Veure els canvis a l'aplicació",
                 leftIcon = IconResource.fromDrawableResource(R.drawable.history),
                 rightIcon = IconResource.fromDrawableResource(R.drawable.open_in_new),
+                onClick = {
+                    openApp(
+                        context,
+                        IntentType.WEB,
+                        context.getString(R.string.changelog_url)
+                    )
+                }
             )
 
             Section(
