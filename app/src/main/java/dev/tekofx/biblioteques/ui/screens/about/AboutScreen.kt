@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -16,6 +17,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -63,7 +65,7 @@ fun AboutScreen(navHostController: NavHostController) {
                     IconResource.fromDrawableResource(appInfo.icon).asPainterResource(),
                     contentDescription = "Image",
                     modifier = Modifier
-                        .size(200.dp),
+                        .size(150.dp),
                     contentScale = ContentScale.Crop
                 )
                 Text(text = appInfo.appName, style = MaterialTheme.typography.displaySmall)
@@ -73,7 +75,11 @@ fun AboutScreen(navHostController: NavHostController) {
                     leftIcon = IconResource.fromImageVector(Icons.Outlined.Info)
                 )
             }
-
+            Text(
+                "App",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.primary
+            )
             Section(
                 title = "Registre de canvis",
                 description = "Veure els canvis a l'aplicació",
@@ -101,6 +107,25 @@ fun AboutScreen(navHostController: NavHostController) {
                 leftIcon = IconResource.fromDrawableResource(R.drawable.licence),
                 rightIcon = IconResource.fromImageVector(Icons.AutoMirrored.Outlined.ArrowForward),
                 onClick = { navHostController.navigate(NavigateDestinations.RESOURCES_ROUTE) }
+            )
+            Text(
+                "Desenvolupador",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Section(
+                title = "Donar a Ko-fi",
+                description = "Suporta el desenvolupament de app",
+                leftIcon = IconResource.fromDrawableResource(R.drawable.kofi_symbol),
+                rightIcon = IconResource.fromDrawableResource(R.drawable.open_in_new),
+                tint = Color.Unspecified,
+                onClick = {
+                    openApp(
+                        context,
+                        IntentType.WEB,
+                        "https://ko-fi.com/tekofx"
+                    )
+                }
             )
         }
     }
