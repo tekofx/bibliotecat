@@ -1,6 +1,6 @@
-# Biblioteques
+# Bibliotecat
 
-Biblioteques is an Android application built using Kotlin and Jetpack Compose. It provides a
+Bibliotecat is an Android application built using Kotlin and Jetpack Compose. It provides a
 user-friendly interface to browse and manage libraries.
 
 ## Features
