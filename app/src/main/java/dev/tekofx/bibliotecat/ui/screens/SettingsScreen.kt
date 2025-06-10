@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Create
-import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -51,13 +50,6 @@ fun SettingsScreen(
                 description = "Utilitzar els colors del fons de pantalla com a colors de l'app",
                 onValueChange = { preferencesViewModel.setDynamicColorEnabled(it) },
                 iconResource = IconResource.fromImageVector(Icons.Outlined.Create)
-            )
-            SurfaceSwitch(
-                value = false,
-                title = "Pantalla de càrrega",
-                description = "Mostra la pantalla de càrrega a l'inici",
-                onValueChange = {},
-                iconResource = IconResource.fromImageVector(Icons.Outlined.Refresh)
             )
         }
     }
