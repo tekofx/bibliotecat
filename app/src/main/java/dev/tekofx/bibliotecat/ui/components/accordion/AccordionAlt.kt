@@ -1,6 +1,8 @@
 package dev.tekofx.bibliotecat.ui.components.accordion
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,11 +29,16 @@ fun AccordionAlt(
     var rotateIcon by remember { mutableStateOf(false) }
 
     Card(
-        modifier = Modifier.clickable(onClick = {
-            show = !show
-            rotateIcon = !rotateIcon
-        }, indication = null, // Remove the click animation
-            interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() }),
+        modifier = Modifier
+            .animateContentSize()
+            .clickable(
+                onClick = {
+                    show = !show
+                    rotateIcon = !rotateIcon
+                },
+
+                indication = null, // Remove the click animation
+                interactionSource = remember { MutableInteractionSource() }),
         shape = MaterialTheme.shapes.small,
     ) {
         Column {
