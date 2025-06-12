@@ -1,9 +1,25 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     //alias(libs.plugins.jetbrains.kotlin.android)
     id("org.jetbrains.kotlin.android").version("1.9.0")
 }
 
+fun fetchGitCommitHash(): String {
+    val process = ProcessBuilder("git", "rev-parse", "--verify", "--short", "HEAD")
+        .redirectErrorStream(true)
+        .start()
+    return process.inputStream.bufferedReader().use { it.readText().trim() }
+}
+
+val keyProps = Properties()
+val keyPropsFile: File = rootProject.file("signature/keystore.properties")
+if (keyPropsFile.exists()) {
+    println("Loading keystore properties from ${keyPropsFile.absolutePath}")
+    keyProps.load(FileInputStream(keyPropsFile))
+}
 android {
     namespace = "dev.tekofx.bibliotecat"
     compileSdk = 34
@@ -17,15 +33,47 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+    signingConfigs {
+        create("release") {
+            keyAlias = keyProps["keyAlias"] as String?
+            keyPassword = keyProps["keyPassword"] as String?
+            storeFile = keyProps["storeFile"]?.let { file(it as String) }
+            storePassword = keyProps["storePassword"] as String?
+        }
+    }
+
+    flavorDimensions("distribution")
+
+    productFlavors {
+        create("github") {
+            dimension = "distribution"
+        }
+        create("fdroid") {
+            dimension = "distribution"
+        }
+        create("googlePlay") {
+            dimension = "distribution"
+        }
+    }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
+        }
+        all {
+            signingConfig = signingConfigs.getByName("release")
+        }
+    }
+    applicationVariants.all {
+        outputs.all {
+            (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
+                "Bibliotecat-${defaultConfig.versionName}.apk"
         }
     }
     compileOptions {
