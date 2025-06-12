@@ -66,9 +66,7 @@ android {
             )
             signingConfig = signingConfigs.getByName("release")
         }
-        all {
-            signingConfig = signingConfigs.getByName("release")
-        }
+        debug { }
     }
     applicationVariants.all {
         outputs.all {
