@@ -13,7 +13,7 @@ sealed class BottomNavigationItems(
     val route: String
 ) {
     data object Libraries : BottomNavigationItems(
-        title = "bibliotecat",
+        title = "Biblioteques",
         selectedIcon = IconResource.fromImageVector(Icons.Filled.Home),
         unselectedIcon = IconResource.fromImageVector(Icons.Outlined.Home),
         route = NavigateDestinations.LIBRARIES_ROUTE
