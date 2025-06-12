@@ -23,4 +23,5 @@ user-friendly interface to browse and manage libraries.
 
 ## License
 
-This project is licensed under the MIT License. See the `LICENSE` file for more details.
+This project is licensed under the GNU GPLv3 License. See
+the [LICENSE](https://github.com/tekofx/bibliotecat/blob/main/LICENSE) file for more details.
