@@ -17,7 +17,7 @@ jobs:
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> signature/keystore.properties
 
       - uses: gradle/gradle-build-action@v2.4.2
-      - run: gradle assembleGithubRelease
+      - run: gradle assembleRelease
 
       - uses: actions/upload-artifact@v4
         with:
