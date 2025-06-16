@@ -42,19 +42,6 @@ android {
         }
     }
 
-    flavorDimensions("distribution")
-
-    productFlavors {
-        create("github") {
-            dimension = "distribution"
-        }
-        create("fdroid") {
-            dimension = "distribution"
-        }
-        create("googlePlay") {
-            dimension = "distribution"
-        }
-    }
 
     buildTypes {
         release {
