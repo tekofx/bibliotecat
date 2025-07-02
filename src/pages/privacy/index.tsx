@@ -8,11 +8,16 @@ export default function Hello() {
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    height: '50vh',
                     fontSize: '20px',
+                    paddingLeft: '10vw',
+                    paddingRight: '10vw',
+                    paddingTop: '10vh',
+                    paddingBottom: '10vh',
                 }}>
-                <p>
-                    Bibliotecat no emmagatzema las teves dades personals.
+                <p style={{textAlign: "justify"}}>
+                    Bibliotecat no emmagatzema las teves dades personals. Es una aplicacion de codi obert que permet als
+                    usuaris gestionar les seves biblioteques de manera privada i segura. No es guarden dades
+                    localment al teu dispositiu. Això garanteix la teva privacitat i seguretat en tot moment.
                 </p>
             </div>
         </Layout>
