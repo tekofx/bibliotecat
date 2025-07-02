@@ -39,14 +39,9 @@ const config: Config = {
     presets: [
         [
             'classic',
+
             {
-                docs: {
-                    sidebarPath: './sidebars.ts',
-                    // Please change this to your repo.
-                    // Remove this to remove the "edit this page" links.
-                    editUrl:
-                        'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
-                },
+                docs: false,
                 theme: {
                     customCss: './src/css/custom.css',
                 },
@@ -76,16 +71,13 @@ const config: Config = {
             copyright: `Copyright © ${new Date().getFullYear()} Bibliotecat`,
             links: [
                 {
-                    title: 'Docs',
+                    title: 'Privacy',
                     items: [
                         {
-                            label: 'Style Guide',
-                            to: 'docs/',
+                            label: 'Privacy',
+                            to: 'privacy',
                         },
-                        {
-                            label: 'Second Doc',
-                            to: 'docs/doc2/',
-                        },
+
                     ],
                 },]
         },
