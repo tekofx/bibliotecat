@@ -7,7 +7,7 @@
 /* You can override the default Infima variables here. */
 :root {
     --ifm-color-primary: #904A43;
-    --ifm-code-font-size: 94%;
+    --ifm-code-font-size: 95%;
     --ifm-footer-background-color: #775652;
     --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 }
