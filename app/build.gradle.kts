@@ -24,11 +24,18 @@ android {
     namespace = "dev.tekofx.bibliotecat"
     compileSdk = 34
 
+    dependenciesInfo {
+        // Disables dependency metadata when building APKs.
+        includeInApk = false
+        // Disables dependency metadata when building Android App Bundles.
+        includeInBundle = false
+    }
+
     defaultConfig {
         applicationId = "dev.tekofx.bibliotecat"
         minSdk = 26
         targetSdk = 34
-        versionCode = 1
+        versionCode = 2
         versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
