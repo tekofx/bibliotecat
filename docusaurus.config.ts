@@ -8,6 +8,7 @@ const config: Config = {
     title: 'Bibliotecat',
     tagline: 'Cerca biblioteques i llibres de la província de Barcelona',
     favicon: 'img/favicon.ico',
+    trailingSlash: true,
 
     // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
     future: {
