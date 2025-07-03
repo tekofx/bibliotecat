@@ -1,5 +1,0 @@
-<resources>
-    <string name="app_name">Bibliotecat</string>
-    <string name="source_code_repo">https://github.com/tekofx/bibliotecat</string>
-    <string name="changelog_url">https://github.com/tekofx/bibliotecat/blob/main/CHANGELOG.md</string>
-</resources>

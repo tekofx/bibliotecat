@@ -1,9 +1,0 @@
-<i>Bibliotecat</i> Aplicació moderna per cercar biblioteques a la província de Barcelona i explorar aladi.cat, construeix usant Jetpack Compose
-
-<b>Característiques:</b>
-
-- Cercar biblioteques a la província de Barcelona
-- Filtra les biblioteques en funció de diversos criteris
-- Mostra informació detallada sobre cada biblioteca
-- Cerca a Aladí.cat
-
