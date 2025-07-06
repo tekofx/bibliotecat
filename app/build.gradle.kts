@@ -34,7 +34,7 @@ android {
     defaultConfig {
         applicationId = "dev.tekofx.bibliotecat"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 2
         versionName = "1.0.0"
 
